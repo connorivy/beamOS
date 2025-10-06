@@ -19,15 +19,15 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints;
 
 public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClientV2
 {
-    private readonly StructuralAnalysisApiClientV1 apiClientV1;
+    private readonly IStructuralAnalysisApiClientV1 apiClientV1;
 
-    private StructuralAnalysisApiClientV2(StructuralAnalysisApiClientV1 apiClientV1)
+    public StructuralAnalysisApiClientV2(IStructuralAnalysisApiClientV1 apiClientV1)
     {
         this.apiClientV1 = apiClientV1;
     }
 
-    public StructuralAnalysisApiClientV2(HttpClient httpClient)
-        : this(new StructuralAnalysisApiClientV1(httpClient)) { }
+    public static StructuralAnalysisApiClientV2 CreateFromHttpClient(HttpClient httpClient) =>
+        new(new StructuralAnalysisApiClientV1(httpClient));
 
     public Task<ApiResponse<ModelResponse>> AcceptModelProposal(
         ModelResourceWithIntIdRequest<List<EntityProposal>?> request,
