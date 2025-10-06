@@ -19,6 +19,7 @@ public static partial class DI
     )
     {
         services.AddCommandHandlers().AddClientCommandHandlers().AddSimpleCommandHandlers();
+        services.AddStructuralAnalysisSdkRequired();
 
         services.AddFluxor(options =>
             options.ScanAssemblies(typeof(DI).Assembly).AddMiddleware<HistoryMiddleware>()
