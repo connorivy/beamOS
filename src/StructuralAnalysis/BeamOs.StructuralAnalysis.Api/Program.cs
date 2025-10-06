@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Infrastructure;
+using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.AspNetCore.Http.Metadata;
 using Scalar.AspNetCore;
 
@@ -94,12 +95,13 @@ builder.Services.AddAi();
 
 WebApplication app = builder.Build();
 
-#if DEBUG
+// #if DEBUG
 if (!isTestContainer)
 {
     await app.InitializeBeamOsDb();
 }
-#endif
+
+// #endif
 
 // app.MapStructuralEndpoints();
 // app.MapSpeckleEndpoints();

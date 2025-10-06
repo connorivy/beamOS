@@ -2,6 +2,7 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.WebApp.Components.Features.Dialogs;
+using BeamOs.WebApp.Components.Features.Tutorial;
 using BeamOs.WebApp.Components.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
@@ -21,6 +22,9 @@ public partial class Models : FluxorComponent
 
     [Inject]
     private IState<ModelPageState> ModelState { get; set; }
+
+    [Inject]
+    private IState<TutorialState> TutorialState { get; set; }
 
     [Inject]
     private IDispatcher Dispatcher { get; init; }
@@ -58,11 +62,7 @@ public partial class Models : FluxorComponent
             }
         }
 
-        this.RecentlyModifiedModels =
-        [
-            .. userModels?.Take(4) ?? [],
-            .. ModelPageState.SampleModelResponses.Take(4 - (userModels?.Count ?? 0)),
-        ];
+        this.RecentlyModifiedModels = [.. userModels?.Take(4) ?? []];
 
         this.Dispatcher.Dispatch(new ModelsDoneLoading());
 
@@ -84,6 +84,16 @@ public partial class Models : FluxorComponent
             "Sample" => Color.Warning,
             _ => Color.Default,
         };
+    }
+
+    private string GetModelUrl(ModelInfoResponse model)
+    {
+        // Tutorial model navigates to /tutorial page
+        if (model.Id == this.TutorialState.Value.ModelId)
+        {
+            return "/tutorial";
+        }
+        return ModelEditor.GetRelativeUrl(model.Id);
     }
 
     private async Task ShowCreateModelDialog()

@@ -1,5 +1,6 @@
 @page "/models"
 @using System.Security.Claims
+@using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models
 @using BeamOs.WebApp.Components.Pages
 @using Microsoft.AspNetCore.Authorization
 
@@ -57,8 +58,15 @@
                             <MudItem xs="12" sm="6" md="4" lg="3">
                                 <MudCard Class="h-full hover:shadow-lg transition-shadow">
                                     <MudCardHeader>
-                                        <MudAvatar Color="Color.Primary" Class="mr-2">@model.Name[0]</MudAvatar>
-                                        <MudText Typo="Typo.h6" Class="font-semibold">@model.Name</MudText>
+                                        <CardHeaderContent>
+                                            <MudText Typo="Typo.h6" Class="font-semibold">@model.Name</MudText>
+                                        </CardHeaderContent>
+                                        <CardHeaderActions>
+                                            <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                                Href="@ModelEditor.GetRelativeUrl(model.Id)">
+                                                View
+                                            </MudButton>
+                                        </CardHeaderActions>
                                     </MudCardHeader>
                                     <MudCardContent>
                                         <MudText Typo="Typo.body2">@model.Description</MudText>
@@ -75,12 +83,6 @@
                                             </MudChip>
                                         </div>
                                     </MudCardContent>
-                                    <MudCardActions Class="justify-end">
-                                        <MudButton Variant="Variant.Text" Color="Color.Primary"
-                                            Href="@ModelEditor.GetRelativeUrl(model.Id)">
-                                            View
-                                        </MudButton>
-                                    </MudCardActions>
                                 </MudCard>
                             </MudItem>
                         }
@@ -102,13 +104,23 @@
         <div class="my-8">
             <MudText Typo="Typo.h5" Class="font-bold mb-4">Sample Models</MudText>
             <MudGrid Spacing="3" Justify="Justify.FlexStart">
-                @foreach (var model in ModelPageState.SampleModelResponses)
+                @{
+                    IEnumerable<ModelInfoResponse> sampleModels = [TutorialState.Value.TutorialModel,
+                        ..ModelPageState.SampleModelResponses];
+                }
+                @foreach (var model in sampleModels)
                 {
                     <MudItem xs="12" sm="6" md="4" lg="3">
                         <MudCard Class="h-full hover:shadow-lg transition-shadow">
                             <MudCardHeader>
-                                <MudAvatar Color="Color.Primary" Class="mr-2">@model.Name[0]</MudAvatar>
-                                <MudText Typo="Typo.h6" Class="font-semibold">@model.Name</MudText>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6" Class="font-semibold">@model.Name</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudButton Variant="Variant.Text" Color="Color.Primary" Href="@GetModelUrl(model)">
+                                        View
+                                    </MudButton>
+                                </CardHeaderActions>
                             </MudCardHeader>
                             <MudCardContent>
                                 <MudText Typo="Typo.body2">@model.Description</MudText>
@@ -119,12 +131,6 @@
                                     </MudChip>
                                 </div>
                             </MudCardContent>
-                            <MudCardActions Class="justify-end">
-                                <MudButton Variant="Variant.Text" Color="Color.Primary"
-                                    Href="@ModelEditor.GetRelativeUrl(model.Id)">
-                                    View
-                                </MudButton>
-                            </MudCardActions>
                         </MudCard>
                     </MudItem>
                 }

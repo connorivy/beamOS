@@ -39,9 +39,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install mkl
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: install pwsh
+        run: |
+          chmod +x ./scripts/installPwsh.sh
+          ./scripts/installPwsh.sh
+
       - name: Install .NET dependencies
         run: dotnet restore
+
+      - name: npm ci
+        run: npm ci --prefix ./src/WebApp/BeamOs.WebApp.Components
 
       - name: build web app components
         run: dotnet build ./src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj
         continue-on-error: true
+
+      - name: build webapp tests
+        run: dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
+  
+      - name: Install playwright
+        run: pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install
