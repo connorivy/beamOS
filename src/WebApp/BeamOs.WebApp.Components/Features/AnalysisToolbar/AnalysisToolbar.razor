@@ -70,7 +70,7 @@
     [Parameter]
     public required string CanvasId { get; init; }
 
-    private RunDsmCommandCommandHandler runDsmCommandCommandHandler;
+    private RunOpenSeesCommandCommandHandler runAnalysisCommandHandler;
     private ReceiveFromSpeckleCommandHandler ReceiveFromSpeckleCommandHandler;
     private readonly ModelRepairClientCommandHandler modelRepairClientCommandHandler;
     private IState<AnalysisToolbarState> state;
@@ -82,7 +82,7 @@
     private IDispatcher dispatcher;
 
     public AnalysisToolbar(
-    RunDsmCommandCommandHandler runDsmCommandCommandHandler,
+    RunOpenSeesCommandCommandHandler runOpenSeesCommandCommandHandler,
     ReceiveFromSpeckleCommandHandler receiveFromSpeckleCommandHandler,
     IState<AnalysisToolbarState> state,
     IStructuralAnalysisApiClientV1 structuralAnalysisApiClientV1,
@@ -94,7 +94,7 @@
     ModelRepairClientCommandHandler modelRepairClientCommandHandler
     )
     {
-        this.runDsmCommandCommandHandler = runDsmCommandCommandHandler;
+        this.runAnalysisCommandHandler = runOpenSeesCommandCommandHandler;
         this.ReceiveFromSpeckleCommandHandler = receiveFromSpeckleCommandHandler;
         this.state = state;
         this.structuralAnalysisApiClientV1 = structuralAnalysisApiClientV1;
@@ -108,7 +108,7 @@
 
     private async Task RunAnalysis()
     {
-        var result = await runDsmCommandCommandHandler.ExecuteAsync(new()
+        var result = await runAnalysisCommandHandler.ExecuteAsync(new()
         {
             ModelId = this.ModelId,
             Body = new()

@@ -135,10 +135,15 @@ internal sealed class OpenSeesAnalysisModel(Model model, UnitSettings unitSettin
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
+            // todo: just make this a config setting
             if (Directory.Exists("/opt/OpenSees/build/bin"))
             {
                 // i don't know why, but the executable is much faster when built in the docker container
                 exePath = "/opt/OpenSees/build/bin/OpenSees";
+            }
+            else if (Directory.Exists("/home/site/wwwroot/OpenSees/build/bin"))
+            {
+                exePath = "/home/site/wwwroot/OpenSees/build/bin/OpenSees";
             }
             else
             {
