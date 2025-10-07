@@ -2,12 +2,14 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { Provider } from "react-redux"
 
+
 import { App } from "./App"
 import { store } from "./app/store"
 import "./index.css"
 import { ThemeProvider } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
 import theme from "./theme"
+import { BrowserRouter } from "react-router"
 
 const container = document.getElementById("root")
 
@@ -19,7 +21,9 @@ if (container) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Provider store={store}>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </Provider>
       </ThemeProvider>
     </StrictMode>,
