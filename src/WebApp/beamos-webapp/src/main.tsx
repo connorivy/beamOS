@@ -11,6 +11,7 @@ import CssBaseline from "@mui/material/CssBaseline"
 import theme from "./theme"
 import { BrowserRouter } from "react-router"
 import { AuthProvider } from "./auth/AuthContext"
+import { ApiClientProvider } from "./features/api-client/ApiClientContext"
 
 const container = document.getElementById("root")
 
@@ -24,7 +25,9 @@ if (container) {
         <Provider store={store}>
           <BrowserRouter>
             <AuthProvider>
-              <App />
+              <ApiClientProvider>
+                <App />
+              </ApiClientProvider>
             </AuthProvider>
           </BrowserRouter>
         </Provider>

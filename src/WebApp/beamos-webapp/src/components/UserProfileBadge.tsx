@@ -24,9 +24,9 @@ export const UserProfileBadge = () => {
     return (
         <>
             <IconButton color="inherit" onClick={handleMenuOpen} size="small" sx={{ ml: 1 }}>
-                {/* <Avatar src={user.avatarUrl} alt={user.name} sx={{ width: 32, height: 32 }}>
-                    {user.name[0]}
-                </Avatar> */}
+                <Avatar src={""} alt={user.email} sx={{ width: 32, height: 32 }}>
+                    {user.email[0]}
+                </Avatar>
             </IconButton>
             <Menu
                 anchorEl={anchorEl}
@@ -36,8 +36,6 @@ export const UserProfileBadge = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                {/* <MenuItem disabled>{user.name}</MenuItem> */}
-                <MenuItem disabled>User</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
         </>

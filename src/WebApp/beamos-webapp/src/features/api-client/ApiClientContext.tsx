@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 import type { IIdentityApiClientV1 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
-import type { IStructuralAnalysisApiClientV1 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1";
+import { StructuralAnalysisApiClientV1, type IStructuralAnalysisApiClientV1 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1";
 
 // Define the context type
 export type ApiClientType = IStructuralAnalysisApiClientV1;
@@ -11,18 +11,13 @@ export const ApiClientContext = createContext<ApiClientType | undefined>(undefin
 export const IdentityApiClientContext = createContext<IdentityApiClientType | undefined>(undefined);
 
 // Provider component
-export function ApiClientProvider({ children, apiClient }: { children: ReactNode; apiClient: ApiClientType }) {
+export function ApiClientProvider({ children }: { children: ReactNode }) {
+  const backendUrl = import.meta.env.VITE_STRUCTURALBACKEND_URL as string | undefined;
+  const apiClient = new StructuralAnalysisApiClientV1(backendUrl);
   return (
     <ApiClientContext.Provider value={apiClient}>
       {children}
     </ApiClientContext.Provider>
-  );
-}
-export function IdentityApiClientProvider({ children, apiClient }: { children: ReactNode; apiClient: IdentityApiClientType }) {
-  return (
-    <IdentityApiClientContext.Provider value={apiClient}>
-      {children}
-    </IdentityApiClientContext.Provider>
   );
 }
 

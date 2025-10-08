@@ -76,7 +76,7 @@ export const HomePage = (): JSX.Element => {
           <Grid size={{ xs: 12, md: 4 }} sx={{ display: 'flex' }}>
             <Card sx={{ borderRadius: 3, boxShadow: 2, minHeight: 260, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                <Box sx={{ bgcolor: "#6366f1", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
+                <Box sx={{ bgcolor: "primary.main", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
                   {/* Open Source Icon */}
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 25 24" fill="none"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" stroke="white" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" /></svg>
                 </Box>
@@ -90,7 +90,7 @@ export const HomePage = (): JSX.Element => {
           <Grid size={{ xs: 12, md: 4 }} sx={{ display: 'flex' }}>
             <Card sx={{ borderRadius: 3, boxShadow: 2, minHeight: 260, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                <Box sx={{ bgcolor: "#6366f1", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
+                <Box sx={{ bgcolor: "primary.main", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
                   {/* Robust Code Testing Icon */}
                   <svg className="h-8 w-8" width="32" height="32" viewBox="0 0 24 24" strokeWidth="2" stroke="white" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="9" y1="3" x2="15" y2="3" /><line x1="10" y1="9" x2="14" y2="9" /><path d="M10 3v6l-4 11a.7 .7 0 0 0 .5 1h11a.7 .7 0 0 0 .5 -1l-4 -11v-6" /></svg>
                 </Box>
@@ -104,7 +104,7 @@ export const HomePage = (): JSX.Element => {
           <Grid size={{ xs: 12, md: 4 }} sx={{ display: 'flex' }}>
             <Card sx={{ borderRadius: 3, boxShadow: 2, minHeight: 260, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                <Box sx={{ bgcolor: "#6366f1", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
+                <Box sx={{ bgcolor: "primary.main", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
                   {/* API Access Icon */}
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 25 24" fill="none"><path d="M3.29 14.78L3.2 14.69C2.81 14.3 2.81 13.67 3.2 13.28L9.29 7.18C9.68 6.79 10.31 6.79 10.7 7.18L13.99 10.47L20.38 3.29C20.76 2.86 21.43 2.85 21.83 3.25C22.2 3.63 22.22 4.23 21.87 4.62L14.7 12.69C14.32 13.12 13.66 13.14 13.25 12.73L10 9.48L4.7 14.78C4.32 15.17 3.68 15.17 3.29 14.78ZM4.7 20.78L10 15.48L13.25 18.73C13.66 19.14 14.32 19.12 14.7 18.69L21.87 10.62C22.22 10.23 22.2 9.63 21.83 9.25C21.43 8.85 20.76 8.86 20.38 9.29L13.99 16.47L10.7 13.18C10.31 12.79 9.68 12.79 9.29 13.18L3.2 19.28C2.81 19.67 2.81 20.3 3.2 20.69L3.29 20.78C3.68 21.17 4.32 21.17 4.7 20.78Z" fill="white"></path></svg>
                 </Box>
