@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Box,
     Typography,
@@ -24,9 +24,12 @@ import {
     TableRow,
     Tooltip,
     Snackbar,
+    CircularProgress,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { useIdentityApiClient } from "../features/api-client/ApiClientContext";
+import type { IApiTokenResponse } from "../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
 
 // Dummy scopes for demonstration
 const SCOPES = [
@@ -35,17 +38,32 @@ const SCOPES = [
     { label: "models:write", value: "models:write" },
 ];
 
-
 export default function DeveloperSettingsTab() {
-    const [tokens, setTokens] = useState([
-        { name: "test", scopes: ["models:read", "models:write"], created: "2025-03-09" },
-    ]);
+    const identityApiClient = useIdentityApiClient();
+
+    const [tokens, setTokens] = useState<IApiTokenResponse[]>([]);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [newName, setNewName] = useState("");
     const [newScopes, setNewScopes] = useState<string[]>([]);
     const [showToken, setShowToken] = useState<string | null>(null);
     const [copySnackbar, setCopySnackbar] = useState(false);
     const [deleteIdx, setDeleteIdx] = useState<number | null>(null);
+    const [tokensLoading, setTokensLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTokens = async () => {
+            setTokensLoading(true);
+            try {
+                const result = await identityApiClient.getUserApiTokens();
+                setTokens(result);
+            } catch {
+                // handle error if needed
+            } finally {
+                setTokensLoading(false);
+            }
+        };
+        void fetchTokens();
+    }, [identityApiClient]);
 
     const handleDeleteRequest = (idx: number) => {
         setDeleteIdx(idx);
@@ -74,7 +92,7 @@ export default function DeveloperSettingsTab() {
         const generatedToken = Math.random().toString(36).substring(2, 18);
         setTokens([
             ...tokens,
-            { name: newName, scopes: newScopes, created: new Date().toISOString().slice(0, 10) },
+            { name: newName, scopes: newScopes, createdOn: new Date(), value: "" },
         ]);
         setShowToken(generatedToken);
         setNewName("");
@@ -119,42 +137,50 @@ export default function DeveloperSettingsTab() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {tokens.map((token, idx) => (
-                            <TableRow key={token.name}>
-                                <TableCell>{token.name}</TableCell>
-                                <TableCell>
-                                    <Stack direction="row" spacing={1}>
-                                        {token.scopes.map(scope => (
-                                            <Chip key={scope} label={scope} size="small" color="default" variant="outlined" />
-                                        ))}
-                                    </Stack>
+                        {tokensLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={4} align="center">
+                                    <CircularProgress size={32} />
                                 </TableCell>
-                                <TableCell>{token.created}</TableCell>
-                                <TableCell align="right">
-                                    <Tooltip title="Delete">
-                                        <IconButton color="error" onClick={() => { handleDeleteRequest(idx); }}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </TableCell>
-
-                                {/* Delete Confirmation Dialog */}
-                                <Dialog open={deleteIdx !== null} onClose={handleDeleteCancel}>
-                                    <DialogTitle>Delete API Token?</DialogTitle>
-                                    <DialogContent>
-                                        <Typography gutterBottom>
-                                            Are you sure you want to delete this API token? This action is <b>permanent</b> and cannot be undone.
-                                        </Typography>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleDeleteCancel}>Cancel</Button>
-                                        <Button color="error" variant="contained" onClick={handleDeleteConfirm} autoFocus>
-                                            Delete
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
                             </TableRow>
-                        ))}
+                        ) : (
+                            tokens.map((token, idx) => (
+                                <TableRow key={token.name}>
+                                    <TableCell>{token.name}</TableCell>
+                                    <TableCell>
+                                        <Stack direction="row" spacing={1}>
+                                            {token.scopes.map(scope => (
+                                                <Chip key={scope} label={scope} size="small" color="default" variant="outlined" />
+                                            ))}
+                                        </Stack>
+                                    </TableCell>
+                                    <TableCell>{token.created}</TableCell>
+                                    <TableCell align="right">
+                                        <Tooltip title="Delete">
+                                            <IconButton color="error" onClick={() => { handleDeleteRequest(idx); }}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </TableCell>
+
+                                    {/* Delete Confirmation Dialog */}
+                                    <Dialog open={deleteIdx !== null} onClose={handleDeleteCancel}>
+                                        <DialogTitle>Delete API Token?</DialogTitle>
+                                        <DialogContent>
+                                            <Typography gutterBottom>
+                                                Are you sure you want to delete this API token? This action is <b>permanent</b> and cannot be undone.
+                                            </Typography>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleDeleteCancel}>Cancel</Button>
+                                            <Button color="error" variant="contained" onClick={handleDeleteConfirm} autoFocus>
+                                                Delete
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
