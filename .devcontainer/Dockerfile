@@ -39,6 +39,34 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     git
 
+# install dependencies for playwright
+RUN apt-get install -y \
+    libglib2.0-0t64 \
+    libnspr4 \
+    libnss3 \
+    libdbus-1-3 \
+    libatk1.0-0t64 \
+    libatk-bridge2.0-0t64 \
+    libcups2t64 \
+    libxcb1 \
+    libxkbcommon0 \
+    libatspi2.0-0t64 \
+    libx11-6 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libcairo2 \
+    libpango-1.0-0 \
+    libasound2t64 \
+    libxcursor1 \
+    libgtk-3-0t64 \
+    libpangocairo-1.0-0 \
+    libcairo-gobject2 \
+    libgdk-pixbuf-2.0-0
+
 # # Install k6
 # RUN gpg -k
 # RUN gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69

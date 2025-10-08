@@ -31,6 +31,8 @@ dotnet build ./src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.cspr
 
 # pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install
 
+npx playwright install
+
 python3 -m venv venv
 source venv/bin/activate
 
