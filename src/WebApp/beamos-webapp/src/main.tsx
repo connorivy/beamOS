@@ -10,6 +10,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
 import theme from "./theme"
 import { BrowserRouter } from "react-router"
+import { AuthProvider } from "./auth/AuthContext"
 
 const container = document.getElementById("root")
 
@@ -22,7 +23,9 @@ if (container) {
         <CssBaseline />
         <Provider store={store}>
           <BrowserRouter>
-            <App />
+            <AuthProvider>
+              <App />
+            </AuthProvider>
           </BrowserRouter>
         </Provider>
       </ThemeProvider>

@@ -1,29 +1,38 @@
-
-import { useEffect, useLayoutEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { Typography, Box } from "@mui/material";
 import { useIdentityApiClient } from "../api-client/ApiClientContext";
-
-// Read backend URL from Vite environment variable
-const identityBackendUrl = import.meta.env.VITE_IDENTITY_BACKEND_URL as string | undefined;
+import { useAuth } from "../../auth/AuthContext";
 
 // Helper to get query params
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
 
+// function parseJwt(token: string): any {
+//     try {
+//         const base64Url = token.split('.')[1];
+//         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+//         const jsonPayload = decodeURIComponent(
+//             atob(base64)
+//                 .split('')
+//                 .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+//                 .join('')
+//         );
+//         return JSON.parse(jsonPayload);
+//     } catch {
+//         return null;
+//     }
+// }
+
 const LoginWithGoogleRedirect: React.FC = () => {
     const query = useQuery();
     const navigate = useNavigate();
-    const [token, setToken] = useState<string | null>(null);
     const apiClient = useIdentityApiClient();
+    const { login } = useAuth();
 
     useEffect(() => {
         const code = query.get("code");
-        if (!identityBackendUrl) {
-            alert("Identity backend URL is not configured. Please contact support.");
-            return;
-        }
         if (!code) {
             alert("No code found in URL. Please try logging in again.");
             void navigate("/login");
@@ -33,10 +42,10 @@ const LoginWithGoogleRedirect: React.FC = () => {
         const fetchAccessToken = async (code: string) => {
             try {
                 const response = await apiClient.loginWithGoogleCode(code);
-                setToken(response);
+                login({ token: response });
             }
             catch {
-                setToken(null);
+                login({ token: null });
             }
         };
 
@@ -50,3 +59,5 @@ const LoginWithGoogleRedirect: React.FC = () => {
         </Box>
     );
 };
+
+export default LoginWithGoogleRedirect;

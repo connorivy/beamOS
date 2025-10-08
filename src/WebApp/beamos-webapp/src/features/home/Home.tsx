@@ -13,10 +13,13 @@ import IconButton from "@mui/material/IconButton";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { useNavigate } from "react-router";
+import { useAuth } from "../../auth/AuthContext";
+import { UserProfileBadge } from "../../components/UserProfileBadge";
 import type { JSX } from "react"
 
 export const HomePage = (): JSX.Element => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   return (
     <Box sx={{ minHeight: "100vh" }}>
       {/* Navbar */}
@@ -38,7 +41,11 @@ export const HomePage = (): JSX.Element => {
             <IconButton color="inherit" href="https://github.com/connorivy/beamOS" target="_blank">
               <GitHubIcon />
             </IconButton>
-            <Button color="inherit" sx={{ textTransform: "none", fontWeight: 600 }} onClick={() => { void navigate("/login"); }}>Login</Button>
+            {user ? (
+              <UserProfileBadge />
+            ) : (
+              <Button color="inherit" sx={{ textTransform: "none", fontWeight: 600 }} onClick={() => { void navigate("/login"); }}>Login</Button>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
@@ -71,7 +78,7 @@ export const HomePage = (): JSX.Element => {
               <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
                 <Box sx={{ bgcolor: "#6366f1", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
                   {/* Open Source Icon */}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 25 24" fill="none"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" stroke="white" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 25 24" fill="none"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" stroke="white" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" /></svg>
                 </Box>
                 <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>Open Source</Typography>
                 <Typography align="center">
@@ -85,7 +92,7 @@ export const HomePage = (): JSX.Element => {
               <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
                 <Box sx={{ bgcolor: "#6366f1", borderRadius: 2, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
                   {/* Robust Code Testing Icon */}
-                  <svg className="h-8 w-8" width="32" height="32" viewBox="0 0 24 24" strokeWidth="2" stroke="white" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="9" y1="3" x2="15" y2="3" /><line x1="10" y1="9" x2="14" y2="9" /><path d="M10 3v6l-4 11a.7 .7 0 0 0 .5 1h11a.7 .7 0 0 0 .5 -1l-4 -11v-6"/></svg>
+                  <svg className="h-8 w-8" width="32" height="32" viewBox="0 0 24 24" strokeWidth="2" stroke="white" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="9" y1="3" x2="15" y2="3" /><line x1="10" y1="9" x2="14" y2="9" /><path d="M10 3v6l-4 11a.7 .7 0 0 0 .5 1h11a.7 .7 0 0 0 .5 -1l-4 -11v-6" /></svg>
                 </Box>
                 <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>Robust Code Testing</Typography>
                 <Typography align="center">

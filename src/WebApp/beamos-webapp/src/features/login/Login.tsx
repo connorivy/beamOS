@@ -5,7 +5,7 @@ import type { JSX } from "react";
 // import { useIdentityApiClient } from "../api-client/ApiClientContext";
 
 // Read backend URL from Vite environment variable, explicitly type as string | undefined
-const identityBackendUrl = import.meta.env.VITE_IDENTITY_BACKEND_URL as string | undefined;
+const identityFrontendUrl = import.meta.env.VITE_IDENTITY_FRONTEND_URL as string | undefined;
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 
 export const LoginPage = (): JSX.Element => {
@@ -22,7 +22,7 @@ export const LoginPage = (): JSX.Element => {
         startIcon={<GoogleIcon />}
         sx={{ fontWeight: 700, px: 4, py: 1.5 }}
         onClick={() => {
-          if (!identityBackendUrl) {
+          if (!identityFrontendUrl) {
             alert("Identity backend URL is not configured. Please contact support.");
             return;
           }
@@ -33,7 +33,7 @@ export const LoginPage = (): JSX.Element => {
           // Generate a random state string
           const state = crypto.randomUUID().replace(/-/g, "");
           // Build the redirect URI (backend endpoint)
-          const redirectUri = `${identityBackendUrl}/api/login-with-google-code`;
+          const redirectUri = `${identityFrontendUrl}/login-with-google-redirect`;
           // Build the Google OAuth URL
           const googleAuthUrl =
             "https://accounts.google.com/o/oauth2/v2/auth?" +
