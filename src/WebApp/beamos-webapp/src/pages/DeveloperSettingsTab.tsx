@@ -29,9 +29,8 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useIdentityApiClient } from "../features/api-client/ApiClientContext";
-import type { IApiTokenResponse } from "../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
+import { CreateApiTokenRequest, type IApiTokenResponse } from "../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
 
-// Dummy scopes for demonstration
 const SCOPES = [
     { label: "models:read", value: "models:read" },
     { label: "models:propose", value: "models:propose" },
@@ -47,7 +46,7 @@ export default function DeveloperSettingsTab() {
     const [newScopes, setNewScopes] = useState<string[]>([]);
     const [showToken, setShowToken] = useState<string | null>(null);
     const [copySnackbar, setCopySnackbar] = useState(false);
-    const [deleteIdx, setDeleteIdx] = useState<number | null>(null);
+    const [deleteIdx, setDeleteIdx] = useState<string | null>(null);
     const [tokensLoading, setTokensLoading] = useState(true);
 
     useEffect(() => {
@@ -65,13 +64,19 @@ export default function DeveloperSettingsTab() {
         void fetchTokens();
     }, [identityApiClient]);
 
-    const handleDeleteRequest = (idx: number) => {
-        setDeleteIdx(idx);
+    const handleDeleteRequest = (name: string) => {
+        setDeleteIdx(name);
     };
 
-    const handleDeleteConfirm = () => {
+    const handleDeleteConfirm = async () => {
         if (deleteIdx !== null) {
-            setTokens(tokens.filter((_, i) => i !== deleteIdx));
+            setTokens(tokens.filter(token => token.name !== deleteIdx));
+            try {
+                await identityApiClient.deleteApiToken(deleteIdx);
+            }
+            catch {
+                // handle error if needed
+            }
             setDeleteIdx(null);
         }
     };
@@ -86,15 +91,23 @@ export default function DeveloperSettingsTab() {
         );
     };
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         if (!newName || newScopes.length === 0) return;
         // Simulate token value
-        const generatedToken = Math.random().toString(36).substring(2, 18);
+        let tokenResponse: IApiTokenResponse;
+        try {
+            tokenResponse = await identityApiClient.createApiToken(new CreateApiTokenRequest({ name: newName, scopes: newScopes }));
+        } catch {
+            // toast error
+            console.error("Error creating token");
+
+            return;
+        }
         setTokens([
             ...tokens,
             { name: newName, scopes: newScopes, createdOn: new Date(), value: "" },
         ]);
-        setShowToken(generatedToken);
+        setShowToken(tokenResponse.value);
         setNewName("");
         setNewScopes([]);
     };
@@ -144,7 +157,7 @@ export default function DeveloperSettingsTab() {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            tokens.map((token, idx) => (
+                            tokens.map((token) => (
                                 <TableRow key={token.name}>
                                     <TableCell>{token.name}</TableCell>
                                     <TableCell>
@@ -157,7 +170,7 @@ export default function DeveloperSettingsTab() {
                                     <TableCell>{token.created}</TableCell>
                                     <TableCell align="right">
                                         <Tooltip title="Delete">
-                                            <IconButton color="error" onClick={() => { handleDeleteRequest(idx); }}>
+                                            <IconButton color="error" onClick={() => { handleDeleteRequest(token.name); }}>
                                                 <DeleteIcon />
                                             </IconButton>
                                         </Tooltip>
@@ -187,13 +200,12 @@ export default function DeveloperSettingsTab() {
 
             {/* Create Token Dialog */}
             <Dialog open={createDialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>Create New Token</DialogTitle>
+                <DialogTitle>{showToken ? "Token Created" : "Create New Token"}</DialogTitle>
                 <DialogContent>
                     {showToken ? (
                         <Box sx={{ mt: 2, mb: 2 }}>
-                            <Typography variant="subtitle1" gutterBottom>New Token</Typography>
                             <Paper variant="outlined" sx={{ p: 2, display: 'flex', alignItems: 'center', mb: 2 }}>
-                                <Typography sx={{ wordBreak: 'break-all', mr: 2 }}>{showToken}</Typography>
+                                <Typography sx={{ wordBreak: 'break-all', mr: 2 }} data-testid="token-value">{showToken}</Typography>
                                 <Tooltip title="Copy">
                                     <IconButton onClick={() => { void handleCopy(); }} color="primary">
                                         <ContentCopyIcon />

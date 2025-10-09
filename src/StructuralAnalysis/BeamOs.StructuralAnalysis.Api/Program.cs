@@ -9,21 +9,40 @@ using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.AspNetCore.Http.Metadata;
 using Scalar.AspNetCore;
+using Testcontainers.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var testConnectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
-bool isTestContainer = testConnectionString is not null;
+string connectionString;
+bool isTestContainer;
+if (args[0] == "USE_TEMP_DB")
+{
+    PostgreSqlContainer testContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:15-alpine")
+        .Build();
+    await testContainer.StartAsync();
+    connectionString = $"{testContainer.GetConnectionString()};Include Error Detail=True";
+    isTestContainer = true;
+}
+else if (
+    Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING") is string testConnectionString
+)
+{
+    connectionString = testConnectionString;
+    isTestContainer = true;
+}
+else
+{
+    connectionString =
+        builder.Configuration.GetConnectionString("BeamOsDb")
+        ?? throw new InvalidOperationException("Connection string 'BeamOsDb' not found.");
+    isTestContainer = false;
+}
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
 });
-
-var connectionString =
-    testConnectionString
-    ?? builder.Configuration.GetConnectionString("BeamOsDb")
-    ?? throw new InvalidOperationException("Connection string 'BeamOsDb' not found.");
 
 builder
     .Services.AddStructuralAnalysisRequired()
