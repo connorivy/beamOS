@@ -61,7 +61,9 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BeamOs.Tests.Architecture/BeamOs.Tests.Architecture.csproj" />
+    <Project Path="tests/BeamOs.Tests.Common.Integration/BeamOs.Tests.Common.Integration.csproj" />
     <Project Path="tests/BeamOs.Tests.Common/BeamOs.Tests.Common.csproj" />
+    <Project Path="tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj" />
     <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Integration/BeamOs.Tests.StructuralAnalysis.Integration.csproj" />
     <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit.Shared/BeamOs.Tests.StructuralAnalysis.Unit.Shared.shproj" />
     <Project Path="tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit/BeamOs.Tests.StructuralAnalysis.Unit.csproj" />

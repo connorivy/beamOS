@@ -40,9 +40,4 @@ public sealed class WebAppFactory(string connectionString, TimeProvider? timePro
     }
 }
 
-public class TestsInitializer
-{
-    public TestsInitializer() { }
-}
-
 #endif
