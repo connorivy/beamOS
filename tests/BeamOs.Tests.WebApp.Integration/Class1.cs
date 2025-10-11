@@ -1,9 +1,10 @@
 ﻿using System.Text.RegularExpressions;
+using BeamOs.StructuralAnalysis.Api;
 using TUnit.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
-public partial class Class1 : ReactPageTestWithBackend
+public partial class Class1 : ReactPageTestWithBackend<IAssemblyMarkerStructuralAnalysisApi>
 {
     [Test]
     public async Task HomePage_ShouldLoadSuccessfully()

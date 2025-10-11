@@ -10,8 +10,27 @@ using TUnit.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
-public class ReactPageTest : ContextTest
+public class BlazorPageTest<TBlazorApp> : ContextTest
+    where TBlazorApp : class
 {
+    // private static BlazorApplicationFactory<TBlazorApp>? host;
+
+    // [Before(TUnitHookType.Class)]
+    // public static async Task BlazorWebAppFactorySetup()
+    // {
+    //     host = new BlazorApplicationFactory<TBlazorApp>();
+    //     await host.StartAsync();
+    // }
+
+    public override BrowserNewContextOptions ContextOptions(TestContext testContext)
+    {
+        var options = base.ContextOptions(testContext);
+        options.BaseURL =
+            "http://localhost:5077"
+            ?? throw new InvalidOperationException("Host is not initialized.");
+        return options;
+    }
+
     public PageContext PageContext { get; private set; } = null!;
     public IPage Page => this.PageContext.Page;
 
@@ -45,11 +64,10 @@ public class ReactPageTest : ContextTest
             this.PageContext = null!;
         }
     }
-
-    protected string GetUrl(string relativeUrl) => "http://localhost:5173" + relativeUrl;
 }
 
-public class ReactPageTestWithBackend<TApi> : ReactPageTest
+public class BlazorPageTestWithBackend<TBlazorApp, TApi> : BlazorPageTest<TBlazorApp>
+    where TBlazorApp : class
     where TApi : class
 {
     protected virtual Action<IServiceCollection>? ConfigureDb { get; } =

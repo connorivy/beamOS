@@ -2,13 +2,13 @@ using Microsoft.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
-public class PageContext : IAsyncDisposable
+public sealed class PageContext : IAsyncDisposable
 {
     private PageContext(
         IBrowser browser,
         IBrowserContext context,
         IPage page,
-        string? testNameIfFailure
+        string testNameIfFailure
     )
     {
         this.Browser = browser ?? throw new ArgumentNullException(nameof(browser));
@@ -20,40 +20,42 @@ public class PageContext : IAsyncDisposable
     public IBrowser Browser { get; }
     public IBrowserContext Context { get; }
     public IPage Page { get; }
-    private readonly string? testNameIfFailure;
+    private readonly string testNameIfFailure;
 
     public static async Task<PageContext> CreateAsync(
         IBrowser browser,
         IBrowserContext context,
         IPage page,
-        string? testNameIfFailure
+        string testNameIfFailure
     )
     {
         var contextInstance = new PageContext(browser, context, page, testNameIfFailure);
-        if (testNameIfFailure is not null)
-        {
-            await contextInstance.Context.Tracing.StartAsync(
-                new()
-                {
-                    Screenshots = true,
-                    Snapshots = true,
-                    Sources = true,
-                }
-            );
-        }
+        await contextInstance.Context.Tracing.StartAsync(
+            new()
+            {
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true,
+            }
+        );
         return contextInstance;
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (this.testNameIfFailure != null)
+        bool testFailed = TestContext.Current.Result.State == TestState.Failed;
+        var path = testFailed ? $"trace-{this.testNameIfFailure}.zip" : null;
+        await this.Context.Tracing.StopAsync(new() { Path = path }).ConfigureAwait(false);
+        if (testFailed)
         {
-            await this
-                .Context.Tracing.StopAsync(new() { Path = $"trace-{testNameIfFailure}.zip" })
-                .ConfigureAwait(false);
+            Console.WriteLine(
+                $"Test {TestContext.Current?.TestName} failed. View trace info with this command:\n"
+                    // + $"    npx playwright show-trace ./bin/Debug/net9.0/{path}"
+                    + $"    pwsh ./bin/Debug/net9.0/playwright.ps1 show-trace ./bin/Debug/net9.0/{path}"
+            );
         }
         await this.Page.CloseAsync().ConfigureAwait(false);
-        await this.Context.CloseAsync().ConfigureAwait(false);
-        await this.Browser.CloseAsync().ConfigureAwait(false);
+        // await this.Context.CloseAsync().ConfigureAwait(false);
+        // await this.Browser.CloseAsync().ConfigureAwait(false);
     }
 }
