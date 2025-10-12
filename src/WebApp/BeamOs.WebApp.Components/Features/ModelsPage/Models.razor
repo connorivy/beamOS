@@ -105,9 +105,8 @@
             <MudText Typo="Typo.h5" Class="font-bold mb-4">Sample Models</MudText>
             <MudGrid Spacing="3" Justify="Justify.FlexStart">
                 @{
-                    @* IEnumerable<ModelInfoResponse> sampleModels = [TutorialState.Value.TutorialModel,
-                        ..ModelPageState.SampleModelResponses]; *@
-                    IEnumerable<ModelInfoResponse> sampleModels = ModelPageState.SampleModelResponses;
+                    IEnumerable<ModelInfoResponse> sampleModels = [TutorialState.Value.TutorialModel,
+                        ..ModelPageState.SampleModelResponses];
                 }
                 @foreach (var model in sampleModels)
                 {

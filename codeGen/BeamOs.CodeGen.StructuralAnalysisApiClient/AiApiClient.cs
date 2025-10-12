@@ -32,7 +32,7 @@ namespace BeamOs.CodeGen.AiApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="AiApiClientException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<GithubModelsChatResponse>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<void>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -71,7 +71,7 @@ namespace BeamOs.CodeGen.AiApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="AiApiClientException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<GithubModelsChatResponse>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<void>> GithubModelsChatAsync(System.Guid modelId, GithubModelsChatRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -87,7 +87,6 @@ namespace BeamOs.CodeGen.AiApiClient
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -121,7 +120,7 @@ namespace BeamOs.CodeGen.AiApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<GithubModelsChatResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<void>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             return ApiResponse.FromValue(objectResponse_.Object);
                         }
                         var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
