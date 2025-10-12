@@ -124,27 +124,6 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         CancellationToken ct = default
     ) => apiClientV1.CreateModelAsync(request, ct);
 
-    public async Task<ApiResponse<ModelResponse>> CreateTempModel(
-        CreateModelRequest request,
-        CancellationToken ct = default
-    )
-    {
-        // Temporary workaround - try to use CreateTempModelAsync if available, otherwise fall back to CreateModelAsync
-        try
-        {
-            var method = apiClientV1.GetType().GetMethod("CreateTempModelAsync");
-            if (method != null)
-            {
-                var task = (Task<ApiResponse<ModelResponse>>)method.Invoke(apiClientV1, new object[] { request, ct });
-                return await task;
-            }
-        }
-        catch { }
-        
-        // Fallback to regular CreateModel
-        return await apiClientV1.CreateModelAsync(request, ct);
-    }
-
     public Task<ApiResponse<ModelProposalResponse>> CreateModelProposal(
         ModelResourceRequest<ModelProposalData> request,
         CancellationToken ct = default
