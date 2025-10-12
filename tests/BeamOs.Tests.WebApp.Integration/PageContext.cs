@@ -50,8 +50,8 @@ public sealed class PageContext : IAsyncDisposable
         {
             Console.WriteLine(
                 $"Test {TestContext.Current?.TestName} failed. View trace info with this command:\n"
-                    // + $"    npx playwright show-trace ./bin/Debug/net9.0/{path}"
-                    + $"    pwsh ./bin/Debug/net9.0/playwright.ps1 show-trace ./bin/Debug/net9.0/{path}"
+                    + $"    npx playwright show-trace ./bin/Debug/net9.0/{path} --host 0.0.0.0"
+            // + $"    pwsh ./bin/Debug/net9.0/playwright.ps1 show-trace ./bin/Debug/net9.0/{path}"
             );
         }
         await this.Page.CloseAsync().ConfigureAwait(false);

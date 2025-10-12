@@ -1,21 +1,20 @@
 ﻿using System.Text.RegularExpressions;
-using BeamOs.StructuralAnalysis.Api;
-using TUnit.Playwright;
+using Microsoft.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
-public partial class Class1 : ReactPageTestWithBackend<IAssemblyMarkerStructuralAnalysisApi>
+public partial class Class1 : BlazorPageTest
 {
     [Test]
     public async Task HomePage_ShouldLoadSuccessfully()
     {
         // Act
-        await this.PageContext.Page.GotoAsync(this.GetUrl("/"));
+        await this.PageContext.Page.GotoAsync(
+            "/",
+            new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle }
+        );
 
         // Assert
-        await this.Expect(this.PageContext.Page).ToHaveTitleAsync(MyRegex());
+        await this.Expect(this.PageContext.Page).ToHaveTitleAsync("beamOS");
     }
-
-    [GeneratedRegexAttribute("beamOS|react", RegexOptions.IgnoreCase, "")]
-    private static partial System.Text.RegularExpressions.Regex MyRegex();
 }

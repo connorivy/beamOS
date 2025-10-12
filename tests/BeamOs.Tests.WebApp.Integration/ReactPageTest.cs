@@ -70,7 +70,7 @@ public class ReactPageTestWithBackend<TApi> : ReactPageTest
 
     protected virtual Action<IServiceCollection>? ConfigureServices { get; }
 
-    protected WebAppFactoryBase<TApi> Factory { get; private set; }
+    protected ExternalWebAppFactory<TApi> Factory { get; private set; }
 
     protected HttpClient HttpClient { get; private set; }
     protected Uri BaseAddress =>
@@ -80,18 +80,18 @@ public class ReactPageTestWithBackend<TApi> : ReactPageTest
     [Before(TUnitHookType.Test, "", 0)]
     public async Task WebAppFactorySetup()
     {
-        this.Factory = new WebAppFactoryBase<TApi>(
-            Common.Integration.DbTestContainer.GetConnectionString(),
-            services =>
-            {
-                this.ConfigureServices?.Invoke(services);
-                this.ConfigureDb?.Invoke(services);
-            }
-        );
-        this.HttpClient = this.Factory.CreateClient();
-        await this.PageContext.Page.AddInitScriptAsync(
-            $"window.BASE_API_URL = '{this.HttpClient.BaseAddress}';"
-        );
+        // this.Factory = new ExternalWebAppFactory<TApi>(
+        //     Common.Integration.DbTestContainer.GetConnectionString(),
+        //     services =>
+        //     {
+        //         this.ConfigureServices?.Invoke(services);
+        //         this.ConfigureDb?.Invoke(services);
+        //     }
+        // );
+        // this.HttpClient = this.Factory.CreateClient();
+        // await this.PageContext.Page.AddInitScriptAsync(
+        //     $"window.BASE_API_URL = '{this.HttpClient.BaseAddress}';"
+        // );
     }
 
     protected BeamOsResultApiClient ApiClient =>

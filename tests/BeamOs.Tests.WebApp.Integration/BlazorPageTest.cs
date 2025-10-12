@@ -1,38 +1,70 @@
-using BeamOs.StructuralAnalysis;
-using BeamOs.StructuralAnalysis.Api.Endpoints;
-using BeamOs.StructuralAnalysis.Infrastructure;
-using BeamOs.Tests.Common;
-using BeamOs.Tests.StructuralAnalysis.Integration;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Playwright;
 using TUnit.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
-public class BlazorPageTest<TBlazorApp> : ContextTest
+public class WebContextTest(BrowserTypeLaunchOptions options) : BrowserTest(options)
+{
+    public WebContextTest()
+        : this(new()) { }
+
+    public IBrowserContext Context { get; private set; } = null!;
+
+    public virtual BrowserNewContextOptions ContextOptions(TestContext testContext)
+    {
+        return new() { Locale = "en-US", ColorScheme = ColorScheme.Light };
+    }
+
+    [Before(TUnitHookType.Test, "", 0)]
+    public async Task ContextSetup(TestContext testContext)
+    {
+        if (Browser == null)
+        {
+            throw new InvalidOperationException(
+                $"Browser is not initialized. This may indicate that {nameof(BrowserTest)}.{nameof(BrowserSetup)} did not execute properly."
+            );
+        }
+        await this.BeforeContextCreate();
+
+        Context = await NewContext(ContextOptions(testContext)).ConfigureAwait(false);
+    }
+
+    protected virtual Task BeforeContextCreate() => Task.CompletedTask;
+}
+
+public class BlazorPageTestBase<TBlazorApp> : WebContextTest
     where TBlazorApp : class
 {
-    // private static BlazorApplicationFactory<TBlazorApp>? host;
+    public BlazorPageTestBase()
+        : base(
+            new()
+            {
+                Timeout = 15_000, // 15 seconds
+            }
+        ) { }
 
-    // [Before(TUnitHookType.Class)]
-    // public static async Task BlazorWebAppFactorySetup()
+    public PageContext PageContext { get; private set; } = null!;
+    public IPage Page => this.PageContext.Page;
+
+    // private BlazorApplicationFactory<TBlazorApp> factory;
+
+    // protected override async Task BeforeContextCreate()
     // {
-    //     host = new BlazorApplicationFactory<TBlazorApp>();
-    //     await host.StartAsync();
+    //     this.factory = new BlazorApplicationFactory<TBlazorApp>(this.ConfigureWebHost);
+    //     await this.factory.StartAsync();
     // }
+
+    protected virtual void ConfigureWebHost(IWebHostBuilder builder) { }
 
     public override BrowserNewContextOptions ContextOptions(TestContext testContext)
     {
         var options = base.ContextOptions(testContext);
-        options.BaseURL =
-            "http://localhost:5077"
-            ?? throw new InvalidOperationException("Host is not initialized.");
+        // options.BaseURL = this.factory.ServerAddress;
+        options.BaseURL = AssemblySetup.WebAppFactory.ServerAddress;
+        options.IgnoreHTTPSErrors = true;
         return options;
     }
-
-    public PageContext PageContext { get; private set; } = null!;
-    public IPage Page => this.PageContext.Page;
 
     [Before(TUnitHookType.Test, "", 0)]
     public async Task PageSetup()
@@ -64,54 +96,8 @@ public class BlazorPageTest<TBlazorApp> : ContextTest
             this.PageContext = null!;
         }
     }
+
+    // public void Dispose() => this.factory.Dispose();
 }
 
-public class BlazorPageTestWithBackend<TBlazorApp, TApi> : BlazorPageTest<TBlazorApp>
-    where TBlazorApp : class
-    where TApi : class
-{
-    protected virtual Action<IServiceCollection>? ConfigureDb { get; } =
-        (services) =>
-        {
-            using IServiceScope scope = services.BuildServiceProvider().CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-
-            if (BeamOsEnv.IsCiEnv())
-            {
-                dbContext.Database.Migrate();
-            }
-            else
-            {
-                dbContext.Database.EnsureCreated();
-            }
-        };
-
-    protected virtual Action<IServiceCollection>? ConfigureServices { get; }
-
-    protected WebAppFactoryBase<TApi> Factory { get; private set; }
-
-    protected HttpClient HttpClient { get; private set; }
-    protected Uri BaseAddress =>
-        this.HttpClient.BaseAddress
-        ?? throw new InvalidOperationException("HttpClient BaseAddress is null");
-
-    [Before(TUnitHookType.Test, "", 0)]
-    public async Task WebAppFactorySetup()
-    {
-        this.Factory = new WebAppFactoryBase<TApi>(
-            Common.Integration.DbTestContainer.GetConnectionString(),
-            services =>
-            {
-                this.ConfigureServices?.Invoke(services);
-                this.ConfigureDb?.Invoke(services);
-            }
-        );
-        this.HttpClient = this.Factory.CreateClient();
-        await this.PageContext.Page.AddInitScriptAsync(
-            $"window.BASE_API_URL = '{this.HttpClient.BaseAddress}';"
-        );
-    }
-
-    protected BeamOsResultApiClient ApiClient =>
-        new(StructuralAnalysisApiClientV2.CreateFromHttpClient(this.HttpClient));
-}
+public class BlazorPageTest : BlazorPageTestBase<BeamOs.WebApp._Imports> { }
