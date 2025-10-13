@@ -1,6 +1,9 @@
 @using MudBlazor
 
-<MudDialog Role="DialogRole.AlertDialog" aria-label="tutorial">
+<MudDialog>
+    <TitleContent>
+        <MudText id="tutorial-title">tutorial</MudText>
+    </TitleContent>
     <DialogContent>
         <div class="mb-4">
             <MudText Typo="Typo.caption" Color="Color.Secondary">Step @(currentStep + 1) of 6</MudText>

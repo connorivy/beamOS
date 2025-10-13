@@ -42,9 +42,11 @@ public static class DI
         services.AddHttpClient<IStructuralAnalysisApiClientV1, StructuralAnalysisApiClientV1>(
             client => client.BaseAddress = new("http://localhost:5223")
         );
-        services.AddHttpClient<IStructuralAnalysisApiClientV2, StructuralAnalysisApiClientV2>(
-            client => client.BaseAddress = new("http://localhost:5223")
-        );
+        services.AddScoped<IStructuralAnalysisApiClientV2>(sp =>
+        {
+            var v1Client = sp.GetRequiredService<IStructuralAnalysisApiClientV1>();
+            return new StructuralAnalysisApiClientV2(v1Client);
+        });
         services.AddHttpClient<ISpeckleConnectorApi, SpeckleConnectorApi>(client =>
             client.BaseAddress = new("http://localhost:5223")
         );
