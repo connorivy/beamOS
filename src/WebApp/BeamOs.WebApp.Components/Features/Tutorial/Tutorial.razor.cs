@@ -49,8 +49,8 @@ public partial class Tutorial(
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        // Show welcome dialog on every render if it hasn't been shown yet for this navigation
-        if (!hasShownDialogForCurrentNavigation)
+        // Show welcome dialog only on first render after navigation to this page
+        if (firstRender && !hasShownDialogForCurrentNavigation)
         {
             hasShownDialogForCurrentNavigation = true;
 
@@ -67,8 +67,12 @@ public partial class Tutorial(
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        // Reset the dialog flag when navigating to this page
-        hasShownDialogForCurrentNavigation = false;
+        // Reset the dialog flag only when navigating to the tutorial page
+        var uri = new Uri(e.Location);
+        if (uri.AbsolutePath == "/tutorial")
+        {
+            hasShownDialogForCurrentNavigation = false;
+        }
     }
 
     public void Dispose()
