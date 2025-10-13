@@ -114,7 +114,9 @@
                         <MudCard Class="h-full hover:shadow-lg transition-shadow">
                             <MudCardHeader>
                                 <CardHeaderContent>
-                                    <MudText Typo="Typo.h6" Class="font-semibold">@model.Name</MudText>
+                                    <a href="@GetModelUrl(model)" style="text-decoration: none; color: inherit;">
+                                        <MudText Typo="Typo.h6" Class="font-semibold">@model.Name</MudText>
+                                    </a>
                                 </CardHeaderContent>
                                 <CardHeaderActions>
                                     <MudButton Variant="Variant.Text" Color="Color.Primary" Href="@GetModelUrl(model)">

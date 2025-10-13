@@ -2,65 +2,73 @@
 
 <MudDialog Role="DialogRole.AlertDialog" aria-label="tutorial">
     <DialogContent>
-        <MudStepper @ref="stepper" Linear="false" PreventStepChangeAsync="@(() => Task.FromResult(false))">
-            <MudStep Title="Welcome">
-                <MudText Typo="Typo.h6" Class="mb-4">Welcome to BeamOS!</MudText>
-                <MudText Typo="Typo.body1" Class="mb-3">
-                    This interactive tutorial will help you learn the basics of structural analysis with BeamOS.
-                </MudText>
-                <MudText Typo="Typo.body1" Class="mb-3">
-                    You'll learn how to:
-                </MudText>
-                <MudList T="string" Dense="true">
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">Create nodes and elements</MudListItem>
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">Apply loads and constraints</MudListItem>
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">Run structural analysis</MudListItem>
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">View and interpret results</MudListItem>
-                </MudList>
-            </MudStep>
-            <MudStep Title="Step 1">
-                <MudText Typo="Typo.h6" Class="mb-4">Creating Nodes</MudText>
-                <MudText Typo="Typo.body1">
-                    Learn how to create structural nodes in your model.
-                </MudText>
-                <!-- Placeholder for future GIF -->
-            </MudStep>
-            <MudStep Title="Step 2">
-                <MudText Typo="Typo.h6" Class="mb-4">Adding Elements</MudText>
-                <MudText Typo="Typo.body1">
-                    Connect nodes with structural elements.
-                </MudText>
-                <!-- Placeholder for future GIF -->
-            </MudStep>
-            <MudStep Title="Step 3">
-                <MudText Typo="Typo.h6" Class="mb-4">Applying Loads</MudText>
-                <MudText Typo="Typo.body1">
-                    Add loads and constraints to your structure.
-                </MudText>
-                <!-- Placeholder for future GIF -->
-            </MudStep>
-            <MudStep Title="Step 4">
-                <MudText Typo="Typo.h6" Class="mb-4">Running Analysis</MudText>
-                <MudText Typo="Typo.body1">
-                    Execute structural analysis on your model.
-                </MudText>
-                <!-- Placeholder for future GIF -->
-            </MudStep>
-            <MudStep Title="Step 5">
-                <MudText Typo="Typo.h6" Class="mb-4">Viewing Results</MudText>
-                <MudText Typo="Typo.body1">
-                    Interpret and visualize the analysis results.
-                </MudText>
-                <!-- Placeholder for future GIF -->
-            </MudStep>
-        </MudStepper>
+        <div class="mb-4">
+            <MudText Typo="Typo.caption" Color="Color.Secondary">Step @(currentStep + 1) of 6</MudText>
+        </div>
+        
+        @if (currentStep == 0)
+        {
+            <MudText Typo="Typo.h6" Class="mb-4">Welcome to BeamOS!</MudText>
+            <MudText Typo="Typo.body1" Class="mb-3">
+                This interactive tutorial will help you learn the basics of structural analysis with BeamOS.
+            </MudText>
+            <MudText Typo="Typo.body1" Class="mb-3">
+                You'll learn how to:
+            </MudText>
+            <MudList T="string" Dense="true">
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Check">Create nodes and elements</MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Check">Apply loads and constraints</MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Check">Run structural analysis</MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Check">View and interpret results</MudListItem>
+            </MudList>
+        }
+        else if (currentStep == 1)
+        {
+            <MudText Typo="Typo.h6" Class="mb-4">Creating Nodes</MudText>
+            <MudText Typo="Typo.body1">
+                Learn how to create structural nodes in your model.
+            </MudText>
+            <!-- Placeholder for future GIF -->
+        }
+        else if (currentStep == 2)
+        {
+            <MudText Typo="Typo.h6" Class="mb-4">Adding Elements</MudText>
+            <MudText Typo="Typo.body1">
+                Connect nodes with structural elements.
+            </MudText>
+            <!-- Placeholder for future GIF -->
+        }
+        else if (currentStep == 3)
+        {
+            <MudText Typo="Typo.h6" Class="mb-4">Applying Loads</MudText>
+            <MudText Typo="Typo.body1">
+                Add loads and constraints to your structure.
+            </MudText>
+            <!-- Placeholder for future GIF -->
+        }
+        else if (currentStep == 4)
+        {
+            <MudText Typo="Typo.h6" Class="mb-4">Running Analysis</MudText>
+            <MudText Typo="Typo.body1">
+                Execute structural analysis on your model.
+            </MudText>
+            <!-- Placeholder for future GIF -->
+        }
+        else if (currentStep == 5)
+        {
+            <MudText Typo="Typo.h6" Class="mb-4">Viewing Results</MudText>
+            <MudText Typo="Typo.body1">
+                Interpret and visualize the analysis results.
+            </MudText>
+            <!-- Placeholder for future GIF -->
+        }
     </DialogContent>
     <DialogActions>
-        @if (stepper != null && stepper.GetActiveIndex() < 5)
+        @if (currentStep < 5)
         {
             <MudButton OnClick="NextStep" Color="Color.Primary" Variant="Variant.Filled" aria-label="next">Next</MudButton>
         }
-        @if (stepper != null && stepper.GetActiveIndex() == 5)
+        @if (currentStep == 5)
         {
             <MudButton OnClick="Close" Color="Color.Primary" Variant="Variant.Filled" aria-label="close">Close</MudButton>
         }
@@ -71,11 +79,14 @@
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
 
-    private MudStepper stepper;
+    private int currentStep = 0;
 
     private void NextStep()
     {
-        stepper.ForceNext();
+        if (currentStep < 5)
+        {
+            currentStep++;
+        }
     }
 
     private void Close() => MudDialog.Close();
