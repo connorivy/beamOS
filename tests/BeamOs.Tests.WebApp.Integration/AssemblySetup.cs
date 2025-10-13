@@ -31,12 +31,13 @@ public class AssemblySetup
             new WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>().WithWebHostBuilder(
                 builder =>
                 {
+                    Environment.SetEnvironmentVariable(
+                        "TEST_CONNECTION_STRING",
+                        DbTestContainer.GetConnectionString()
+                    );
+                    Environment.SetEnvironmentVariable("DB_INITIALIZED", "true");
                     builder.ConfigureServices(services =>
                     {
-                        Environment.SetEnvironmentVariable(
-                            "TEST_CONNECTION_STRING",
-                            DbTestContainer.GetConnectionString()
-                        );
                         using IServiceScope scope = services.BuildServiceProvider().CreateScope();
                         var structuralDbContext =
                             scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
@@ -49,7 +50,6 @@ public class AssemblySetup
                         {
                             structuralDbContext.Database.EnsureCreated();
                         }
-                        Environment.SetEnvironmentVariable("DB_INITIALIZED", "true");
                     });
                 }
             );
