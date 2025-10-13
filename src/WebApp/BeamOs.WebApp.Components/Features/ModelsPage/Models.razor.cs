@@ -41,9 +41,11 @@ public partial class Models : FluxorComponent
 
     private List<ModelInfoResponse> FilteredModels =>
         this
-            .ModelState.Value.UserModelResponses.Where(model =>
-                model.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)
-            )
+            .ModelState.Value.UserModelResponses
+#if DEBUG
+            .Where(model => model.Name != "Tutorial Model") // Hide tutorial model in debug mode
+#endif
+            .Where(model => model.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(m => m.LastModified)
             .ToList();
 
