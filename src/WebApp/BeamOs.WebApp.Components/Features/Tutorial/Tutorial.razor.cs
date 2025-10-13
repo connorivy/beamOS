@@ -21,6 +21,7 @@ public partial class Tutorial(
     NavigationManager navigationManager
 ) : FluxorComponent, IDisposable
 {
+    private const string TutorialRoute = "/tutorial";
     private EditorComponent? editorComponent;
     private bool hasShownDialogForCurrentNavigation = false;
 
@@ -68,8 +69,7 @@ public partial class Tutorial(
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         // Reset the dialog flag only when navigating to the tutorial page
-        var uri = new Uri(e.Location);
-        if (uri.AbsolutePath == "/tutorial")
+        if (Uri.TryCreate(e.Location, UriKind.Absolute, out var uri) && uri.AbsolutePath == TutorialRoute)
         {
             hasShownDialogForCurrentNavigation = false;
         }
