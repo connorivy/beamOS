@@ -185,21 +185,6 @@ dotnet test --blame-hang-timeout 5m
 ### Issue: "No tests found" message
 **Solution**: Build the project first with `dotnet build` or remove `--no-build` flag
 
-## Performance Optimization
-
-### Faster Test Runs
-
-```bash
-# Skip restore and build for repeated runs
-dotnet test --no-restore --no-build
-
-# Run specific test categories only
-dotnet test tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit/
-
-# Use parallel execution (default, but can be controlled)
-dotnet test --parallel
-```
-
 ### CI/CD Considerations
 - Architecture test failures are expected and don't indicate problems
 - Integration tests require container support
