@@ -31,14 +31,14 @@ public partial class Tutorial(
 
     protected override async Task OnInitializedAsync()
     {
-        var createModelTask = apiClient.Models.CreateModelAsync(
+        var createModelTask = apiClient.Models.Temp.CreateTempModelAsync(
             tutorialState.Value.TutorialModelRequest
         );
         await base.OnInitializedAsync();
 
         // Show welcome dialog
         var dialogParameters = new DialogParameters();
-        var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
+        var dialogOptions = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
         await dialogService.ShowAsync<TutorialWelcomeDialog>(
             "Welcome to the BeamOS Tutorial",

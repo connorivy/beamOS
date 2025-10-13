@@ -2168,9 +2168,8 @@ export interface IDeflectionDiagramResponse {
 }
 
 export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
-    id!: number;
     proposalType?: number;
-    modelEntityId!: number;
+    id!: number;
     objectType!: number;
 
     [key: string]: any;
@@ -2190,9 +2189,8 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.id = _data["id"];
             this.proposalType = _data["proposalType"];
-            this.modelEntityId = _data["modelEntityId"];
+            this.id = _data["id"];
             this.objectType = _data["objectType"];
         }
     }
@@ -2210,18 +2208,16 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["id"] = this.id;
         data["proposalType"] = this.proposalType;
-        data["modelEntityId"] = this.modelEntityId;
+        data["id"] = this.id;
         data["objectType"] = this.objectType;
         return data;
     }
 }
 
 export interface IDeleteModelEntityProposal {
-    id: number;
     proposalType?: number;
-    modelEntityId: number;
+    id: number;
     objectType: number;
 
     [key: string]: any;
@@ -4574,6 +4570,10 @@ export interface INullableOfRestraint {
 }
 
 export class Point implements IPoint {
+    x!: number;
+    y!: number;
+    z!: number;
+    lengthUnit!: number;
 
     [key: string]: any;
 
@@ -4592,6 +4592,10 @@ export class Point implements IPoint {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
+            this.x = _data["x"];
+            this.y = _data["y"];
+            this.z = _data["z"];
+            this.lengthUnit = _data["lengthUnit"];
         }
     }
 
@@ -4608,11 +4612,19 @@ export class Point implements IPoint {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
+        data["x"] = this.x;
+        data["y"] = this.y;
+        data["z"] = this.z;
+        data["lengthUnit"] = this.lengthUnit;
         return data;
     }
 }
 
 export interface IPoint {
+    x: number;
+    y: number;
+    z: number;
+    lengthUnit: number;
 
     [key: string]: any;
 }
@@ -5153,6 +5165,12 @@ export interface IRatio {
 }
 
 export class Restraint implements IRestraint {
+    canTranslateAlongX!: boolean;
+    canTranslateAlongY!: boolean;
+    canTranslateAlongZ!: boolean;
+    canRotateAboutX!: boolean;
+    canRotateAboutY!: boolean;
+    canRotateAboutZ!: boolean;
 
     [key: string]: any;
 
@@ -5171,6 +5189,12 @@ export class Restraint implements IRestraint {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
+            this.canTranslateAlongX = _data["canTranslateAlongX"];
+            this.canTranslateAlongY = _data["canTranslateAlongY"];
+            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+            this.canRotateAboutX = _data["canRotateAboutX"];
+            this.canRotateAboutY = _data["canRotateAboutY"];
+            this.canRotateAboutZ = _data["canRotateAboutZ"];
         }
     }
 
@@ -5187,11 +5211,23 @@ export class Restraint implements IRestraint {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
+        data["canTranslateAlongX"] = this.canTranslateAlongX;
+        data["canTranslateAlongY"] = this.canTranslateAlongY;
+        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+        data["canRotateAboutX"] = this.canRotateAboutX;
+        data["canRotateAboutY"] = this.canRotateAboutY;
+        data["canRotateAboutZ"] = this.canRotateAboutZ;
         return data;
     }
 }
 
 export interface IRestraint {
+    canTranslateAlongX: boolean;
+    canTranslateAlongY: boolean;
+    canTranslateAlongZ: boolean;
+    canRotateAboutX: boolean;
+    canRotateAboutY: boolean;
+    canRotateAboutZ: boolean;
 
     [key: string]: any;
 }

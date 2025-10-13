@@ -124,6 +124,11 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         CancellationToken ct = default
     ) => apiClientV1.CreateModelAsync(request, ct);
 
+    public Task<ApiResponse<ModelResponse>> CreateTempModel(
+        CreateModelRequest request,
+        CancellationToken ct = default
+    ) => apiClientV1.CreateTempModelAsync(request, ct);
+
     public Task<ApiResponse<ModelProposalResponse>> CreateModelProposal(
         ModelResourceRequest<ModelProposalData> request,
         CancellationToken ct = default
