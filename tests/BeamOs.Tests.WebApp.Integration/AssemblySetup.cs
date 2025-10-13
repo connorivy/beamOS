@@ -33,7 +33,10 @@ public class AssemblySetup
                 {
                     builder.ConfigureServices(services =>
                     {
-                        Environment.SetEnvironmentVariable("DB_INITIALIZED", "true");
+                        Environment.SetEnvironmentVariable(
+                            "TEST_CONNECTION_STRING",
+                            DbTestContainer.GetConnectionString()
+                        );
                         using IServiceScope scope = services.BuildServiceProvider().CreateScope();
                         var structuralDbContext =
                             scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
@@ -46,6 +49,7 @@ public class AssemblySetup
                         {
                             structuralDbContext.Database.EnsureCreated();
                         }
+                        Environment.SetEnvironmentVariable("DB_INITIALIZED", "true");
                     });
                 }
             );
