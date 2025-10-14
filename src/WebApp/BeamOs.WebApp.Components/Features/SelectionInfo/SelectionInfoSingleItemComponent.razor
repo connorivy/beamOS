@@ -12,26 +12,26 @@
 
         if (editableSelectionInfo.FieldType == typeof(int))
         {
-            <MudTextField @ref="MudTextFieldIntRef" T="int?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsInt"
+            <MudTextField @ref="MudTextFieldIntRef" T="int?" Typo="Typo.body2" @bind-Value="@simpleSelectionInfo.ValueAsInt"
                 Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
                 @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }
         else if (editableSelectionInfo.FieldType == typeof(double))
         {
-            <MudTextField @ref="MudTextFieldDoubleRef" T="double?" Typo="Typo.input"
+            <MudTextField @ref="MudTextFieldDoubleRef" T="double?" Typo="Typo.body2"
                 @bind-Value="@simpleSelectionInfo.ValueAsDouble" Required="@editableSelectionInfo.IsRequired"
                 Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
                 @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }
         else if (editableSelectionInfo.FieldType == typeof(bool))
         {
-            <MudTextField @ref="MudTextFieldBoolRef" T="bool?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsBool"
+            <MudTextField @ref="MudTextFieldBoolRef" T="bool?" Typo="Typo.body2" @bind-Value="@simpleSelectionInfo.ValueAsBool"
                 Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
                 @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }
         else if (editableSelectionInfo.FieldType.IsEnum)
         {
-            <MudSelect T="int?" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsInt"
+            <MudSelect T="int?" Typo="Typo.body2" @bind-Value="@simpleSelectionInfo.ValueAsInt"
                 Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
                 @onfocus="(_) => OnFocus(editableSelectionInfo)">
                 @foreach (var val in Enum.GetValues(editableSelectionInfo.FieldType))
@@ -47,7 +47,7 @@
         }
         else
         {
-            <MudTextField @ref="MudTextFieldStringRef" Typo="Typo.input" @bind-Value="@simpleSelectionInfo.ValueAsString"
+            <MudTextField @ref="MudTextFieldStringRef" Typo="Typo.body2" @bind-Value="@simpleSelectionInfo.ValueAsString"
                 Required="@editableSelectionInfo.IsRequired" Label="@this.ObjectToDisplay.FieldName" OnlyValidateIfDirty="true"
                 @onfocus="(_) => OnFocus(editableSelectionInfo)" />
         }

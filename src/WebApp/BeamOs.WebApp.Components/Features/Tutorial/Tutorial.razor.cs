@@ -1,9 +1,6 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.WebApp.Components.Features.Editor;
-using BeamOs.WebApp.Components.Layout;
-using BeamOs.WebApp.Components.Pages;
 using Fluxor;
 using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
@@ -23,7 +20,7 @@ public partial class Tutorial(
 {
     private const string TutorialRoute = "/tutorial";
     private EditorComponent? editorComponent;
-    private bool hasShownDialogForCurrentNavigation = false;
+    private bool hasShownDialogForCurrentNavigation;
 
     public static CreateModelRequest DefaultCreateModelRequest =>
         new()
@@ -59,7 +56,7 @@ public partial class Tutorial(
             var dialogOptions = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
             await dialogService.ShowAsync<TutorialWelcomeDialog>(
-                "Welcome to the BeamOS Tutorial",
+                null,
                 dialogParameters,
                 dialogOptions
             );
@@ -69,7 +66,10 @@ public partial class Tutorial(
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         // Reset the dialog flag only when navigating to the tutorial page
-        if (Uri.TryCreate(e.Location, UriKind.Absolute, out var uri) && uri.AbsolutePath == TutorialRoute)
+        if (
+            Uri.TryCreate(e.Location, UriKind.Absolute, out var uri)
+            && uri.AbsolutePath == TutorialRoute
+        )
         {
             hasShownDialogForCurrentNavigation = false;
         }
