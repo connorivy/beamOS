@@ -1,4 +1,5 @@
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.Tests.Common;
@@ -74,4 +75,7 @@ public class AssemblySetup
         client?.Dispose();
         WebAppFactory?.Dispose();
     }
+
+    public static Func<PageContext, Task> CreateAuthenticatedUser { get; set; } =
+        (pageContext) => Task.CompletedTask;
 }

@@ -110,7 +110,11 @@ public partial class Models : FluxorComponent
 
         if (!result.Canceled)
         {
-            var modelResponse = result.Data as Result<ModelResponse>;
+            var modelResponse =
+                (result.Data as ApiResponse<ModelResponse>)
+                ?? throw new InvalidOperationException(
+                    $"Invalid dialog result of type {result.Data?.GetType()}"
+                );
             if (modelResponse.IsSuccess)
             {
                 NavigationManager.NavigateTo(ModelEditor.GetRelativeUrl(modelResponse.Value.Id));
