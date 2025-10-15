@@ -6,27 +6,14 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Infrastructure;
-using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.AspNetCore.Http.Metadata;
 using Scalar.AspNetCore;
-using Testcontainers.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString;
 bool isTestContainer;
-if (args[0] == "USE_TEMP_DB")
-{
-    PostgreSqlContainer testContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:15-alpine")
-        .Build();
-    await testContainer.StartAsync();
-    connectionString = $"{testContainer.GetConnectionString()};Include Error Detail=True";
-    isTestContainer = true;
-}
-else if (
-    Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING") is string testConnectionString
-)
+if (Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING") is string testConnectionString)
 {
     connectionString = testConnectionString;
     isTestContainer = true;
@@ -134,4 +121,17 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 #endif
 
-app.Run();
+try
+{
+    app.Logger.LogInformation("Starting application");
+    app.Run();
+}
+catch (Exception ex)
+{
+    app.Logger.LogCritical(ex, "Application terminated unexpectedly");
+    throw;
+}
+finally
+{
+    app.Logger.LogInformation("Shutting down application");
+}

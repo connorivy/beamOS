@@ -19,9 +19,7 @@
 
             @foreach (var scope in AvailableScopes)
             {
-                <MudCheckBox T="bool" ValueChanged="@(val => OnCheckedChanged(scope, val))"
-                Label="@scope" 
-                Class="mb-2" />
+                <MudCheckBox T="bool" ValueChanged="@(val => OnCheckedChanged(scope, val))" Label="@scope" Class="mb-2" />
             }
         }
         else
@@ -32,8 +30,10 @@
             <MudText Typo="Typo.body2" Class="mb-4 text-red-600 font-medium">
                 <strong>Warning:</strong> Treat this token like a password. If lost, you will need to generate a new one.
             </MudText>
-            <MudTextField @bind-Value="TokenValue" Label="API Token" ReadOnly="true" Variant="Variant.Outlined" Class="mb-4 rounded-lg" />
-            <MudButton OnClick="CopyToken" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true" Class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
+            <MudTextField @bind-Value="TokenValue" Label="API Token" ReadOnly="true" Variant="Variant.Outlined"
+                Class="mb-4 rounded-lg" />
+            <MudButton OnClick="CopyToken" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true"
+                Class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
                 Copy Token
             </MudButton>
         }
@@ -53,7 +53,7 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
 
     [Inject]
     public IUserApiTokenService UserApiTokenService { get; init; }
@@ -67,14 +67,14 @@
     private ApiToken NewToken = new ApiToken();
 
     private List<string> AvailableScopes = new List<string>
-    {
-        "models:read",
-        "models:write",
-        // "projects:read",
-        // "projects:write",
-        // "users:read",
-        // "users:write"
-    };
+{
+"models:read",
+"models:write",
+// "projects:read",
+// "projects:write",
+// "users:read",
+// "users:write"
+};
 
     private bool tokenCreated;
     private string? TokenValue;
@@ -114,10 +114,10 @@
         // MudDialog.Close(DialogResult.Ok(NewToken));
 
         var tokenRequest = new CreateApiTokenRequest
-            {
-                Name = NewToken.Name,
-                Scopes = NewToken.Scopes
-            };
+        {
+            Name = NewToken.Name,
+            Scopes = NewToken.Scopes
+        };
         var tokenResult = await UserApiTokenService.CreateToken(tokenRequest);
 
         if (tokenResult.IsSuccess)

@@ -61,10 +61,12 @@ public class BlazorPageTestBase<TBlazorApp> : WebContextTest
     {
         var options = base.ContextOptions(testContext);
         // options.BaseURL = this.factory.ServerAddress;
-        options.BaseURL = AssemblySetup.WebAppFactory.ServerAddress;
+        options.BaseURL = this.ServerAddress;
         options.IgnoreHTTPSErrors = true;
         return options;
     }
+
+    protected virtual string ServerAddress => AssemblySetup.WebAppFactory.ServerAddress;
 
     [Before(TUnitHookType.Test, "", 0)]
     public async Task PageSetup()

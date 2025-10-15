@@ -106,8 +106,15 @@ RUN apt-get install -y \
     libsecret-1.so.0 \
     libhyphen.so.0 \
     libmanette-0.2.so.0 \
-    libGLESv2.so.2 \
-    libx264
+    libGLESv2.so.2
+    # libx264 \
+    # libX11-xcb.so.1 \
+    # libXcursor.so.1 \
+    # libgtk-3.so.0 \
+    # libgdk-3.so.0 \
+    # libpangocairo-1.0.so.0 \
+    # libcairo-gobject.so.2 \
+    # libgdk_pixbuf-2.0.so.0
 
 # # Install k6
 # RUN gpg -k

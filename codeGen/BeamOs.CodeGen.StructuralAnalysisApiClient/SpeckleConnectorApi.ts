@@ -373,9 +373,8 @@ export interface ICreateNodeProposalResponse {
 }
 
 export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
-    id!: number;
     proposalType?: number;
-    modelEntityId!: number;
+    id!: number;
     objectType!: number;
 
     [key: string]: any;
@@ -395,9 +394,8 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.id = _data["id"];
             this.proposalType = _data["proposalType"];
-            this.modelEntityId = _data["modelEntityId"];
+            this.id = _data["id"];
             this.objectType = _data["objectType"];
         }
     }
@@ -415,18 +413,16 @@ export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["id"] = this.id;
         data["proposalType"] = this.proposalType;
-        data["modelEntityId"] = this.modelEntityId;
+        data["id"] = this.id;
         data["objectType"] = this.objectType;
         return data;
     }
 }
 
 export interface IDeleteModelEntityProposal {
-    id: number;
     proposalType?: number;
-    modelEntityId: number;
+    id: number;
     objectType: number;
 
     [key: string]: any;

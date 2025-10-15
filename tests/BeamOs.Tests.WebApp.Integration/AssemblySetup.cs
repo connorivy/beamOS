@@ -1,11 +1,9 @@
-using System.Diagnostics;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.Common.Integration;
 using BeamOs.WebApp;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,15 +16,17 @@ public class AssemblySetup
     private static WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>? backendFactory;
     public static BlazorApplicationFactory<_Imports> WebAppFactory { get; private set; } = null!;
     private static HttpClient? client;
+    public static bool Initialized { get; set; }
 
     [Before(TUnit.Core.HookType.Assembly)]
     public static async Task Setup()
     {
+        if (Initialized)
+        {
+            return;
+        }
         await DbTestContainer.InitializeAsync();
 
-        // var x = new BlazorApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>();
-        // await x.StartAsync();
-        // factory = x;
         backendFactory =
             new WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>().WithWebHostBuilder(
                 builder =>
@@ -65,6 +65,7 @@ public class AssemblySetup
             });
         });
         await WebAppFactory.StartAsync();
+        Initialized = true;
     }
 
     [After(TUnit.Core.HookType.Assembly)]

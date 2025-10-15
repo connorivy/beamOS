@@ -31,6 +31,8 @@ internal interface IModelRepository : IRepository<ModelId, Model>
         CancellationToken ct = default,
         params string[] includeNavigationProperties
     );
+
+    public void AddTempModel(Model aggregate);
 }
 
 internal sealed class InMemoryModelRepository(
@@ -51,6 +53,18 @@ internal sealed class InMemoryModelRepository(
 ) : IModelRepository
 {
     public void Add(Model aggregate)
+    {
+        if (!inMemoryModelRepositoryStorage.Models.TryAdd(aggregate.Id, aggregate))
+        {
+            unitOfWork.SimulatedFailures.Add(
+                new UniqueConstraintException(
+                    $"Model with ID {aggregate.Id} already exists in the repository."
+                )
+            );
+        }
+    }
+
+    public void AddTempModel(Model aggregate)
     {
         if (!inMemoryModelRepositoryStorage.Models.TryAdd(aggregate.Id, aggregate))
         {

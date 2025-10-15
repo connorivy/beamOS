@@ -1,3 +1,4 @@
+using BeamOs.Tests.Common;
 using Microsoft.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
@@ -23,10 +24,7 @@ public class TutorialTests : BlazorPageTest
         await this.Expect(this.Page).ToHaveURLAsync("/tutorial");
 
         // Verify that a pop-up appears with the tutorial content
-        var tutorialPopup = this.Page.GetByRole(
-            AriaRole.Dialog,
-            new PageGetByRoleOptions { Name = "tutorial" }
-        );
+        var tutorialPopup = this.Page.GetByRole(AriaRole.Dialog);
         await this.Expect(tutorialPopup).ToBeVisibleAsync();
 
         // Click through the tutorial steps
