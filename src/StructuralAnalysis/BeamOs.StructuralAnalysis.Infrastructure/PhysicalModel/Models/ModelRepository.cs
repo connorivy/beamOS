@@ -19,7 +19,7 @@ internal sealed class ModelRepository(
 
     public void AddTempModel(Model aggregate)
     {
-        dbContext.Models.Add(aggregate);
+        this.DbContext.Models.Add(aggregate);
     }
 
     public async Task<Model?> GetSingle(

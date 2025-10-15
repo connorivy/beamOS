@@ -16,6 +16,7 @@ public class AssemblySetup
 {
     private static WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>? backendFactory;
     public static BlazorApplicationFactory<_Imports> WebAppFactory { get; private set; } = null!;
+    public static string FrontendAddress { get; set; }
     private static HttpClient? client;
     public static bool Initialized { get; set; }
 
@@ -66,6 +67,7 @@ public class AssemblySetup
             });
         });
         await WebAppFactory.StartAsync();
+        FrontendAddress = WebAppFactory.ServerAddress;
         Initialized = true;
     }
 

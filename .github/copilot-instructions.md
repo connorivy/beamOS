@@ -52,9 +52,12 @@
 
 ### Common Build Issues & Solutions
 
+**Error: BLAZOR105 - Multiple JS files found**
+- **Solution**: Run the 'deepClean.sh' script in scripts/ to remove all bin/obj folders, then build again.
+
 **Error: BLAZOR106 - JS module file not found**
 - **Cause**: JavaScript components not built before .NET build
-- **Solution**: Run `npm run build` in `src/WebApp/BeamOs.WebApp.Components` first
+- **Solution**: This is a transient error that will resolve after the first build. Just run the command again and it will work.
 
 **Error: Cannot find referenced project**
 - **Cause**: Missing project references or clean build state

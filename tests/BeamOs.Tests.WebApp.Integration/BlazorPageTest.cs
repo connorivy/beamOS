@@ -6,9 +6,6 @@ namespace BeamOs.Tests.WebApp.Integration;
 
 public class WebContextTest(BrowserTypeLaunchOptions options) : BrowserTest(options)
 {
-    public WebContextTest()
-        : this(new()) { }
-
     public IBrowserContext Context { get; private set; } = null!;
 
     public virtual BrowserNewContextOptions ContextOptions(TestContext testContext)
@@ -37,12 +34,7 @@ public class BlazorPageTestBase<TBlazorApp> : WebContextTest
     where TBlazorApp : class
 {
     public BlazorPageTestBase()
-        : base(
-            new()
-            {
-                Timeout = 15_000, // 15 seconds
-            }
-        ) { }
+        : base(new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 15_000 }) { }
 
     public PageContext PageContext { get; private set; } = null!;
     public IPage Page => this.PageContext.Page;
@@ -61,12 +53,12 @@ public class BlazorPageTestBase<TBlazorApp> : WebContextTest
     {
         var options = base.ContextOptions(testContext);
         // options.BaseURL = this.factory.ServerAddress;
-        options.BaseURL = this.ServerAddress;
+        options.BaseURL = this.FrontendAddressOverride ?? AssemblySetup.FrontendAddress;
         options.IgnoreHTTPSErrors = true;
         return options;
     }
 
-    protected virtual string ServerAddress => AssemblySetup.WebAppFactory.ServerAddress;
+    protected virtual string? FrontendAddressOverride { get; }
 
     [Before(TUnitHookType.Test, "", 0)]
     public async Task PageSetup()
