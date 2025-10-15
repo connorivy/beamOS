@@ -6,3 +6,5 @@ namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 public record struct ModelCreatedEvent(Guid ModelId, int? UserId = null)
     : IDomainEvent,
         INotification;
+
+public record struct TempModelCreatedEvent(Guid ModelId) : IDomainEvent, INotification;

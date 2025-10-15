@@ -48,7 +48,7 @@ public partial class Tutorial(
         await base.OnAfterRenderAsync(firstRender);
 
         // Show welcome dialog only on first render after navigation to this page
-        if (firstRender && !hasShownDialogForCurrentNavigation)
+        if (firstRender)
         {
             hasShownDialogForCurrentNavigation = true;
 
