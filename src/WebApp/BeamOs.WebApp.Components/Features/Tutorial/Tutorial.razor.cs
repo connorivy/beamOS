@@ -43,8 +43,13 @@ public partial class Tutorial(
         var modelResponse = await createModelTask;
     }
 
+    private Task? ShowDialogTask;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Console.WriteLine(
+            $"Tutorial OnAfterRenderAsync called. firstRender: {firstRender}, hasShownDialogForCurrentNavigation: {hasShownDialogForCurrentNavigation}"
+        );
         await base.OnAfterRenderAsync(firstRender);
 
         // Show welcome dialog only on first render after navigation to this page
@@ -53,13 +58,22 @@ public partial class Tutorial(
             hasShownDialogForCurrentNavigation = true;
 
             var dialogParameters = new DialogParameters();
-            var dialogOptions = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+            var dialogOptions = new DialogOptions
+            {
+                BackdropClick = false,
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+            };
 
-            await dialogService.ShowAsync<TutorialWelcomeDialog>(
+            ShowDialogTask = dialogService.ShowAsync<TutorialWelcomeDialog>(
                 null,
                 dialogParameters,
                 dialogOptions
             );
+        }
+        if (ShowDialogTask is not null)
+        {
+            await ShowDialogTask;
         }
     }
 
