@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useEffect } from 'react';
-import { selectModelsPage, setSearchTerm, showCreateModelDialog, userModelsLoaded } from './modelsPageSlice';
+import { selectModelsPage, setSearchTerm, showCreateModelDialog, hideCreateModelDialog, userModelsLoaded } from './modelsPageSlice';
 import type { RootState } from '../../../store';
 import AppBarMain from '../../components/AppBarMain';
 import { useApiClient } from '../api-client/ApiClientContext';
@@ -14,18 +14,36 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import CreateModelDialog from './CreateModelDialog';
+import type { CreateModelRequest } from '../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1';
 
 const ModelsPage: React.FC = () => {
+
     const apiClient = useApiClient();
     const { user } = useAuth();
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const {
         isLoading,
         models,
         sampleModels,
         searchTerm,
         error,
+        showCreateModelDialog: showDialog,
     } = useAppSelector((state: RootState) => selectModelsPage(state));
+
+    const handleDialogClose = () => {
+        dispatch(hideCreateModelDialog());
+    };
+
+    const handleCreateModel = async (request: CreateModelRequest) => {
+        const result = await apiClient.createModel(request);
+        handleDialogClose();
+        if (result.id) {
+            void navigate(`/models/${result.id}`);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -125,6 +143,7 @@ const ModelsPage: React.FC = () => {
                 )}
                 {error && <Typography color="error" mt={4} align="center">{error}</Typography>}
             </Container>
+            <CreateModelDialog open={showDialog} onClose={handleDialogClose} onCreate={handleCreateModel} />
         </Box>
     );
 };
