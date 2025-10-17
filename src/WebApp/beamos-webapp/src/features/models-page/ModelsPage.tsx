@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { selectModelsPage, setSearchTerm, showCreateModelDialog, userModelsLoaded } from './modelsPageSlice';
 import type { RootState } from '../../../store';
 import './ModelsPage.css';
+import AppBarMain from '../../components/AppBarMain';
 import { useApiClient } from '../api-client/ApiClientContext';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
@@ -37,6 +38,7 @@ const ModelsPage: React.FC = () => {
 
     return (
         <div className="models-page-container">
+            <AppBarMain />
             <div className="header">
                 <h1>Models</h1>
                 <input
@@ -71,7 +73,7 @@ const ModelsPage: React.FC = () => {
                                         <h3>{model.name}</h3>
                                         <p>{model.description}</p>
                                         <span>{model.role}</span>
-                                        <span>{model.lastModified.toDateString()}</span>
+                                        <span>{model.lastModified}</span>
                                         <button>
                                             View
                                         </button>
