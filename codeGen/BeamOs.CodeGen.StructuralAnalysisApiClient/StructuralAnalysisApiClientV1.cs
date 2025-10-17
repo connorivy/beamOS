@@ -162,11 +162,6 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelResponse>> CreateTempModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
-        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelInfoResponse>>> GetModelsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -177,7 +172,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelProposalInfo>>> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelProposalInfo2>>> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -193,6 +188,11 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ApiResponse<bool>> RejectModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ApiResponse<ModelResponse>> CreateTempModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -237,7 +237,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<NodeResponse>> CreateNodeAsync(System.Guid modelId, CreateNodeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<NodeResponse>> CreateNodeAsync(System.Guid modelId, CreateNodeRequest2 body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -312,7 +312,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest2 body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -2424,79 +2424,6 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelResponse>> CreateTempModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, typeof(CreateModelRequest), BeamOsJsonSerializerContext.Default);
-                    var content_ = new System.Net.Http.ByteArrayContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                
-                    // Operation Path: "api/models/temp"
-                    urlBuilder_.Append("api/models/temp");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            return ApiResponse.FromValue(objectResponse_.Object);
-                        }
-                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                        if (problemObjectResponse_.Object == null)
-                        {
-                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
-                        }
-                        return problemObjectResponse_.Object;
-
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
-        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelInfoResponse>>> GetModelsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
@@ -2644,7 +2571,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelProposalInfo>>> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<System.Collections.Generic.ICollection<ModelProposalInfo2>>> GetModelProposalsAsync(System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -2690,7 +2617,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ModelProposalInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ModelProposalInfo2>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             return ApiResponse.FromValue(objectResponse_.Object);
                         }
                         var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2932,6 +2859,79 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<bool>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return ApiResponse.FromValue(objectResponse_.Object);
+                        }
+                        var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                        if (problemObjectResponse_.Object == null)
+                        {
+                            throw new StructuralAnalysisApiClientV1Exception("Response was null which was not expected.", status_, problemObjectResponse_.Text, headers_, null);
+                        }
+                        return problemObjectResponse_.Object;
+
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelResponse>> CreateTempModelAsync(CreateModelRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, typeof(CreateModelRequest), BeamOsJsonSerializerContext.Default);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/models/temp"
+                    urlBuilder_.Append("api/models/temp");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ModelResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             return ApiResponse.FromValue(objectResponse_.Object);
                         }
                         var problemObjectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3576,7 +3576,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<NodeResponse>> CreateNodeAsync(System.Guid modelId, CreateNodeRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<NodeResponse>> CreateNodeAsync(System.Guid modelId, CreateNodeRequest2 body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -3587,7 +3587,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, typeof(CreateNodeRequest), BeamOsJsonSerializerContext.Default);
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, typeof(CreateNodeRequest2), BeamOsJsonSerializerContext.Default);
                     var content_ = new System.Net.Http.ByteArrayContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
@@ -4760,7 +4760,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<SectionProfileResponse>> CreateSectionProfileAsync(System.Guid modelId, CreateSectionProfileRequest2 body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (modelId == null)
                 throw new System.ArgumentNullException("modelId");
@@ -4771,7 +4771,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, typeof(CreateSectionProfileRequest), BeamOsJsonSerializerContext.Default);
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, typeof(CreateSectionProfileRequest2), BeamOsJsonSerializerContext.Default);
                     var content_ = new System.Net.Http.ByteArrayContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;

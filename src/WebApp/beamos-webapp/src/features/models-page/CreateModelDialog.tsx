@@ -4,10 +4,51 @@ import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
 import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
+import { AngleUnit, LengthUnit } from "../../utils/type-extensions/UnitTypeContracts"
+import { ForceUnit } from "../../utils/type-extensions/UnitTypeContracts"
 import Box from "@mui/material/Box"
+import Select from "@mui/material/Select"
+import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import { AnalysisSettings, CreateModelRequest, ModelSettings, UnitSettings } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import { Element1dAnalysisType } from "../../utils/type-extensions/EnumContracts"
+
+type UnitSelectProps = {
+    label: string
+    value: number | undefined
+    unitEnum: Record<string, number>
+    onChange: (value: number | undefined) => void
+}
+
+const UnitSelect: React.FC<UnitSelectProps> = ({ label, value, unitEnum, onChange }) => (
+    <Select
+        label={label}
+        displayEmpty
+        value={value === undefined ? "" : String(value)}
+        onChange={e => {
+            const v = e.target.value === "" ? undefined : parseInt(e.target.value, 10)
+            onChange(v)
+        }}
+        fullWidth
+        renderValue={selected => {
+            if (!selected) {
+                return label
+            }
+            const entry = Object.entries(unitEnum).find(([_, val]) => String(val) === selected)
+            return entry ? entry[0] : label
+        }}
+    >
+        <MenuItem value="" disabled>{label}</MenuItem>
+        {Object.entries(unitEnum)
+            .filter(([key]) => key !== "Undefined")
+            .map(([key, val]) => (
+                <MenuItem key={String(val)} value={String(val)}>
+                    {key}
+                </MenuItem>
+            ))}
+    </Select>
+)
 
 export type CreateModelDialogProps = {
     open: boolean
@@ -22,20 +63,24 @@ const CreateModelDialog: React.FC<CreateModelDialogProps> = ({
 }) => {
     const [modelName, setModelName] = useState("")
     const [modelDescription, setModelDescription] = useState("")
-    const [unitSettings, setUnitSettings] = useState({
-        lengthUnit: 1,
-        forceUnit: 2,
-        angleUnit: 1,
+    const [unitSettings, setUnitSettings] = useState<{
+        lengthUnit: number | undefined
+        forceUnit: number | undefined
+        angleUnit: number | undefined
+    }>({
+        lengthUnit: undefined,
+        forceUnit: undefined,
+        angleUnit: undefined,
     })
-    const [yAxisUp, setYAxisUp] = useState(true)
-    const [analysisType, setAnalysisType] = useState(1)
+    const [yAxisUp, setYAxisUp] = useState(false)
+    const [analysisType, setAnalysisType] = useState<number | undefined>(undefined)
     const [submitting, setSubmitting] = useState(false)
 
     const handleClose = () => {
         if (!submitting) {
             setModelName("")
             setModelDescription("")
-            setUnitSettings({ lengthUnit: 1, forceUnit: 2, angleUnit: 1 })
+            setUnitSettings({ lengthUnit: undefined, forceUnit: undefined, angleUnit: undefined })
             setYAxisUp(true)
             setAnalysisType(1)
             onClose()
@@ -49,7 +94,11 @@ const CreateModelDialog: React.FC<CreateModelDialogProps> = ({
                 name: modelName,
                 description: modelDescription,
                 settings: new ModelSettings({
-                    unitSettings: new UnitSettings(unitSettings),
+                    unitSettings: new UnitSettings({
+                        lengthUnit: unitSettings.lengthUnit ?? 1,
+                        forceUnit: unitSettings.forceUnit ?? 2,
+                        angleUnit: unitSettings.angleUnit ?? 1,
+                    }),
                     yAxisUp,
                     analysisSettings: new AnalysisSettings({ element1DAnalysisType: analysisType }),
                 }),
@@ -88,41 +137,29 @@ const CreateModelDialog: React.FC<CreateModelDialogProps> = ({
                         minRows={2}
                     />
                     <Box display="flex" gap={2}>
-                        <TextField
+                        <UnitSelect
                             label="Length Unit"
-                            type="number"
                             value={unitSettings.lengthUnit}
-                            onChange={e => {
-                                setUnitSettings(u => ({
-                                    ...u,
-                                    lengthUnit: Number(e.target.value),
-                                }))
+                            unitEnum={LengthUnit}
+                            onChange={val => {
+                                setUnitSettings(u => ({ ...u, lengthUnit: val }))
                             }}
-                            fullWidth
                         />
-                        <TextField
+                        <UnitSelect
                             label="Force Unit"
-                            type="number"
                             value={unitSettings.forceUnit}
-                            onChange={e => {
-                                setUnitSettings(u => ({
-                                    ...u,
-                                    forceUnit: Number(e.target.value),
-                                }))
+                            unitEnum={ForceUnit}
+                            onChange={val => {
+                                setUnitSettings(u => ({ ...u, forceUnit: val }))
                             }}
-                            fullWidth
                         />
-                        <TextField
+                        <UnitSelect
                             label="Angle Unit"
-                            type="number"
                             value={unitSettings.angleUnit}
-                            onChange={e => {
-                                setUnitSettings(u => ({
-                                    ...u,
-                                    angleUnit: Number(e.target.value),
-                                }))
+                            unitEnum={AngleUnit}
+                            onChange={val => {
+                                setUnitSettings(u => ({ ...u, angleUnit: val }))
                             }}
-                            fullWidth
                         />
                     </Box>
                     <Box display="flex" gap={2} alignItems="center">
@@ -135,14 +172,13 @@ const CreateModelDialog: React.FC<CreateModelDialogProps> = ({
                             }}
                         />
                     </Box>
-                    <TextField
+                    <UnitSelect
                         label="Element 1D Analysis Type"
-                        type="number"
                         value={analysisType}
-                        onChange={e => {
-                            setAnalysisType(Number(e.target.value))
+                        unitEnum={Element1dAnalysisType}
+                        onChange={val => {
+                            setAnalysisType(val)
                         }}
-                        fullWidth
                     />
                 </Box>
             </DialogContent>
