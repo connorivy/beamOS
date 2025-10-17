@@ -130,7 +130,7 @@ public static partial class DependencyInjection
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
-                // .LogTo(Console.WriteLine, LogLevel.Information)
+                .LogTo(Console.WriteLine, LogLevel.Error)
 #endif
 #if !DEBUG
                 .UseLoggerFactory(

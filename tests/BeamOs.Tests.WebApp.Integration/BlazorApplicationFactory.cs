@@ -15,7 +15,8 @@ namespace BeamOs.Tests.WebApp.Integration;
 /// The app is available via <c>127.0.0.1</c> on a random free port chosen at start up.
 /// </summary>
 public sealed class BlazorApplicationFactory<TProgram>(
-    Action<IWebHostBuilder>? configureWebHost = null
+    Action<IWebHostBuilder>? configureWebHost = null,
+    int port = 0
 ) : WebApplicationFactory<TProgram>
     where TProgram : class
 {
@@ -58,7 +59,7 @@ public sealed class BlazorApplicationFactory<TProgram>(
         {
             configureWebHost?.Invoke(webHostBuilder);
             webHostBuilder.UseKestrel();
-            webHostBuilder.UseUrls("https://127.0.0.1:0");
+            webHostBuilder.UseUrls($"http://127.0.0.1:{port}");
         });
 
         host = builder.Build();
