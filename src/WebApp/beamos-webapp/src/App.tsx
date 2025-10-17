@@ -2,6 +2,7 @@
 
 import { Routes, Route } from "react-router";
 import { HomePage } from "./features/home/Home";
+import ModelsPage from "./features/models-page/ModelsPage";
 import type React from "react";
 import SettingsPage from "./features/settings/SettingsPage";
 
@@ -17,5 +18,6 @@ export const GetAllRoutes = (): React.ReactElement[] => {
   return [
     <Route path="/" element={<HomePage />} />,
     <Route path="/settings" element={<SettingsPage />} />,
+    <Route path="/models" element={<ModelsPage />} />,
   ];
 };
