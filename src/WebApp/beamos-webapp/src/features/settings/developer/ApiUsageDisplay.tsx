@@ -2,9 +2,9 @@ import { Box, Typography, Paper, Divider, Stack, Card, CardContent, Avatar, Chip
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CallMadeIcon from '@mui/icons-material/CallMade';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import type { IApiUsageResponse, UsageBreakdownResponse } from "../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
+import type { IApiUsageResponse, UsageBreakdownResponse } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
 import { useEffect, useState } from "react";
-import { useIdentityApiClient } from "../features/api-client/ApiClientContext";
+import { useIdentityApiClient } from "../../api-client/ApiClientContext";
 
 const ApiUsageDisplay = () => {
     const identityApiClient = useIdentityApiClient();

@@ -14,7 +14,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../auth/AuthContext";
-import { UserProfileBadge } from "../../components/UserProfileBadge";
+import { UserProfileBadge } from "./UserProfileBadge";
 import type { JSX } from "react"
 
 export const HomePage = (): JSX.Element => {

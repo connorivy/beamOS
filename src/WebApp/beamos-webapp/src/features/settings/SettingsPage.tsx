@@ -1,8 +1,8 @@
 
-import { Tabs, Tab, Box, Paper } from "@mui/material";
+import { Tabs, Tab, Box } from "@mui/material";
 import { useState } from "react";
-import UserSettingsTab from "./UserSettingsTab";
-import DeveloperSettingsTab from "./DeveloperSettingsTab";
+import UserSettingsTab from "./user/UserSettingsTab";
+import DeveloperSettingsTab from "./developer/DeveloperSettingsTab";
 
 
 const tabConfig = [

@@ -29,45 +29,48 @@ public class AssemblySetup
         }
         await DbTestContainer.InitializeAsync();
 
-        backendFactory =
-            new WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>().WithWebHostBuilder(
-                builder =>
-                {
-                    Environment.SetEnvironmentVariable(
-                        "TEST_CONNECTION_STRING",
-                        DbTestContainer.GetConnectionString()
-                    );
-                    Environment.SetEnvironmentVariable("DB_INITIALIZED", "true");
-                    builder.ConfigureServices(services =>
-                    {
-                        using IServiceScope scope = services.BuildServiceProvider().CreateScope();
-                        var structuralDbContext =
-                            scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
-
-                        if (BeamOsEnv.IsCiEnv())
-                        {
-                            structuralDbContext.Database.Migrate();
-                        }
-                        else
-                        {
-                            structuralDbContext.Database.EnsureCreated();
-                        }
-                    });
-                }
-            );
-        client = backendFactory.CreateClient();
-
-        WebAppFactory = new BlazorApplicationFactory<_Imports>(builder =>
-        {
-            builder.ConfigureServices(services =>
+        var backend = new BlazorApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>(
+            builder =>
             {
-                var apiClient = new StructuralAnalysisApiClientV1(client!);
-                services.RemoveAll<IStructuralAnalysisApiClientV1>();
-                services.AddSingleton<IStructuralAnalysisApiClientV1>(apiClient);
-            });
-        });
-        await WebAppFactory.StartAsync();
-        FrontendAddress = WebAppFactory.ServerAddress;
+                Environment.SetEnvironmentVariable(
+                    "TEST_CONNECTION_STRING",
+                    DbTestContainer.GetConnectionString()
+                );
+                Environment.SetEnvironmentVariable("DB_INITIALIZED", "true");
+                builder.ConfigureServices(services =>
+                {
+                    using IServiceScope scope = services.BuildServiceProvider().CreateScope();
+                    var structuralDbContext =
+                        scope.ServiceProvider.GetRequiredService<StructuralAnalysisDbContext>();
+
+                    if (BeamOsEnv.IsCiEnv())
+                    {
+                        structuralDbContext.Database.Migrate();
+                    }
+                    else
+                    {
+                        structuralDbContext.Database.EnsureCreated();
+                    }
+                });
+            },
+            7071
+        );
+        await backend.StartAsync();
+        backendFactory = backend;
+        // client = backendFactory.CreateClient();
+
+        // WebAppFactory = new BlazorApplicationFactory<_Imports>(builder =>
+        // {
+        //     builder.ConfigureServices(services =>
+        //     {
+        //         var apiClient = new StructuralAnalysisApiClientV1(client!);
+        //         services.RemoveAll<IStructuralAnalysisApiClientV1>();
+        //         services.AddSingleton<IStructuralAnalysisApiClientV1>(apiClient);
+        //     });
+        // });
+        // await WebAppFactory.StartAsync();
+        // FrontendAddress = WebAppFactory.ServerAddress;
+        FrontendAddress = "http://localhost:5173";
         Initialized = true;
     }
 

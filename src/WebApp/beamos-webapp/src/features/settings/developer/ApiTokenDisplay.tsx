@@ -28,8 +28,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { useIdentityApiClient } from "../features/api-client/ApiClientContext";
-import { CreateApiTokenRequest, type IApiTokenResponse } from "../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
+import { useIdentityApiClient } from "../../../features/api-client/ApiClientContext";
+import { CreateApiTokenRequest, type IApiTokenResponse } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/IdentityApiClientV1";
 
 const SCOPES = [
     { label: "models:read", value: "models:read" },

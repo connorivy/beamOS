@@ -1,10 +1,11 @@
 @using System.Reflection
 
 @inject Assembly AppAssembly;
+@inject Assembly[] AdditionalAssemblies;
 
 <Fluxor.Blazor.Web.StoreInitializer />
 
-<Router AppAssembly="@AppAssembly" AdditionalAssemblies="[typeof(BeamOs.WebApp.Components._Imports).Assembly]">
+<Router AppAssembly="@AppAssembly" AdditionalAssemblies="@AdditionalAssemblies">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         @* <FocusOnNavigate RouteData="routeData" Selector="h1" /> *@

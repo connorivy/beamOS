@@ -1,5 +1,5 @@
 import { Box, Typography, Divider } from "@mui/material";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../../../auth/AuthContext";
 
 export default function UserSettingsTab() {
     const { user } = useAuth();
