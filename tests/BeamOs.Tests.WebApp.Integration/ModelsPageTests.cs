@@ -37,19 +37,23 @@ public class ModelsPageTests : ReactPageTest
         await descriptionInput.FillAsync("This is a test model");
 
         // select the length unit from the dropdown
-        var lengthUnitDropdown = dialog.GetByLabel("lengthunit");
+        var lengthUnitDropdown = dialog
+            .GetByRole(AriaRole.Combobox)
+            .Filter(new() { HasText = "Length Unit" });
         await lengthUnitDropdown.ClickAsync();
-        var footOption = this.Page.GetByText("foot");
+        var footOption = this.Page.GetByRole(AriaRole.Option, new() { Name = "foot" });
         await footOption.ClickAsync();
 
         // select the kilopoundforce unit from the forceunit dropdown
-        var forceUnitDropdown = dialog.GetByLabel("forceunit");
+        var forceUnitDropdown = dialog
+            .GetByRole(AriaRole.Combobox)
+            .Filter(new() { HasText = "Force Unit" });
         await forceUnitDropdown.ClickAsync();
-        var kip = this.Page.GetByText("kilopoundforce");
+        var kip = this.Page.GetByRole(AriaRole.Option, new() { Name = "kilopoundforce" });
         await kip.ClickAsync();
 
         // click the submit button
-        var submitButton = dialog.GetByRole(AriaRole.Button, new() { Name = "submit" });
+        var submitButton = dialog.GetByRole(AriaRole.Button, new() { Name = "create" });
         await submitButton.ClickAsync();
 
         // wait for the page url to look something like {http}://localhost:{port}/models/{guid}
