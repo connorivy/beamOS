@@ -59,6 +59,13 @@ jobs:
 
       - name: build webapp tests
         run: dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
-  
+
       - name: Install playwright
         run: pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install
+
+      - name: Start beamos-webapp frontend
+        run: |
+          cd src/WebApp/beamos-webapp/
+          npm install
+          nohup npm run dev &
+  
