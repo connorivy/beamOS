@@ -16,7 +16,38 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import CreateModelDialog from './CreateModelDialog';
+
 import type { CreateModelRequest } from '../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1';
+
+type ModelInfoCardProps = {
+    model: {
+        id: string;
+        name: string;
+        description?: string;
+        role?: string;
+        lastModified?: string;
+    };
+    onView?: (id: string) => void;
+};
+
+const ModelInfoCard: React.FC<ModelInfoCardProps> = ({ model, onView }) => (
+    <Card
+        variant="outlined"
+        onClick={onView ? () => { onView(model.id); } : undefined}
+        sx={{
+            cursor: onView ? 'pointer' : 'default',
+            transition: 'box-shadow 0.2s',
+            '&:hover': onView ? { boxShadow: 6 } : undefined,
+        }}
+    >
+        <CardContent>
+            <Typography variant="h6" fontWeight={700}>{model.name}</Typography>
+            <Typography variant="body2" mb={1}>{model.description}</Typography>
+            <Typography variant="caption" fontStyle="italic">{model.role}</Typography><br />
+            <Typography variant="caption">{model.lastModified}</Typography>
+        </CardContent>
+    </Card>
+);
 
 const ModelsPage: React.FC = () => {
 
@@ -99,21 +130,11 @@ const ModelsPage: React.FC = () => {
                                 </Box>
                             ) : (
                                 <Grid columns={12} spacing={3} maxWidth="lg">
-                                    {filteredModels.map((model) => (
-                                        <Grid key={model.id} size={{ xs: 12, md: 6, lg: 4 }}>
-                                            <Card variant="outlined">
-                                                <CardContent>
-                                                    <Typography variant="h6" fontWeight={700}>{model.name}</Typography>
-                                                    <Typography variant="body2" mb={1}>{model.description}</Typography>
-                                                    <Typography variant="caption" fontStyle="italic">{model.role}</Typography><br />
-                                                    <Typography variant="caption">{model.lastModified}</Typography>
-                                                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                                                        <Button variant="outlined" size="small">View</Button>
-                                                    </Box>
-                                                </CardContent>
-                                            </Card>
-                                        </Grid>
-                                    ))}
+                                    <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                                        {filteredModels.map((model) => (
+                                            <ModelInfoCard model={model} onView={(id) => { void navigate(`/models/${id}`); }} />
+                                        ))}
+                                    </Grid>
                                 </Grid>
                             )
                         ) : (
@@ -124,20 +145,11 @@ const ModelsPage: React.FC = () => {
                         )}
                         <Typography variant="h6" fontWeight={600} mt={8} mb={2}>Sample Models</Typography>
                         <Grid columns={12} spacing={3} maxWidth="lg">
-                            {sampleModels.map((model) => (
-                                <Grid key={model.id} size={{ xs: 12, md: 6, lg: 4 }}>
-                                    <Card variant="outlined">
-                                        <CardContent>
-                                            <Typography variant="h6" fontWeight={700}>{model.name}</Typography>
-                                            <Typography variant="body2" mb={1}>{model.description}</Typography>
-                                            <Typography variant="caption" fontStyle="italic">{model.role}</Typography>
-                                            <Box display="flex" justifyContent="flex-end" mt={2}>
-                                                <Button variant="outlined" size="small">View</Button>
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            ))}
+                            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                                {sampleModels.map((model) => (
+                                    <ModelInfoCard model={model} onView={(id) => { void navigate(`/models/${id}`); }} />
+                                ))}
+                            </Grid>
                         </Grid>
                     </>
                 )}

@@ -3,6 +3,7 @@
 import { Routes, Route } from "react-router";
 import { HomePage } from "./features/home/Home";
 import ModelsPage from "./features/models-page/ModelsPage";
+import ModelEditor from "./features/editors/ModelEditor";
 import type React from "react";
 import SettingsPage from "./features/settings/SettingsPage";
 
@@ -19,5 +20,6 @@ export const GetAllRoutes = (): React.ReactElement[] => {
     <Route path="/" element={<HomePage />} />,
     <Route path="/settings" element={<SettingsPage />} />,
     <Route path="/models" element={<ModelsPage />} />,
+    <Route path="/models/:modelId" element={<ModelEditor />} />,
   ];
 };

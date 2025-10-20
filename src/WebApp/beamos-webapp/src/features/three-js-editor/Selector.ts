@@ -3,7 +3,7 @@ import type { RaycastInfo } from "./Raycaster"
 import { isBeamOsMesh } from "./Raycaster"
 import type { TransformController } from "./TransformController"
 import type { IBeamOsMesh } from "./BeamOsMesh"
-import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
+// import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
 // import {
 //   ChangeSelectionCommand,
 //   SelectedObject,
@@ -333,7 +333,7 @@ export class SelectorInfo {
   private _currentSelection: IBeamOsMesh[] = []
 
   constructor(
-    private dotnetDispatcherApi: IEditorEventsApi,
+    // private dotnetDispatcherApi: IEditorEventsApi,
     private canvasId: string,
   ) {}
 

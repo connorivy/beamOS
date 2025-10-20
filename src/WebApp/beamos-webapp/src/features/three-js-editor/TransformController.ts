@@ -1,8 +1,8 @@
 import type * as THREE from "three"
 import { TransformControls } from "three/addons/controls/TransformControls.js"
 
-import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
-import { Coordinate3D, MoveNodeCommand } from "./EditorApi/EditorEventsApi"
+// import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
+import { Coordinate3D } from "./EditorApi/EditorEventsApi"
 import { BeamOsNode } from "./SceneObjects/BeamOsNode"
 import type { Controls } from "./Controls"
 
@@ -15,7 +15,7 @@ export class TransformController {
     camera: THREE.Camera,
     private domElement: HTMLElement,
     private controls: Controls,
-    private dispatcher: IEditorEventsApi,
+    // private dispatcher: IEditorEventsApi,
   ) {
     this.transformControl = new TransformControls(camera, domElement)
     scene.add(this.transformControl)
@@ -52,23 +52,23 @@ export class TransformController {
         throw new Error("start location is undefined")
       }
 
-      this.dispatcher
-        .dispatchMoveNodeCommand(
-          new MoveNodeCommand({
-            canvasId: this.domElement.id,
-            nodeId: dragEvent.target.object.beamOsId,
-            previousLocation: this.startLocation,
-            newLocation: new Coordinate3D({
-              x: dragEvent.target.object.position.x,
-              y: dragEvent.target.object.position.y,
-              z: dragEvent.target.object.position.z,
-            }),
-            handledByBlazor: false,
-            handledByEditor: true,
-            handledByServer: false,
-          }),
-        )
-        .catch(console.error)
+      //   this.dispatcher
+      //     .dispatchMoveNodeCommand(
+      //       new MoveNodeCommand({
+      //         canvasId: this.domElement.id,
+      //         nodeId: dragEvent.target.object.beamOsId,
+      //         previousLocation: this.startLocation,
+      //         newLocation: new Coordinate3D({
+      //           x: dragEvent.target.object.position.x,
+      //           y: dragEvent.target.object.position.y,
+      //           z: dragEvent.target.object.position.z,
+      //         }),
+      //         handledByBlazor: false,
+      //         handledByEditor: true,
+      //         handledByServer: false,
+      //       }),
+      //     )
+      //     .catch(console.error)
 
       this.startLocation = undefined
     } else {

@@ -1,4 +1,5 @@
 using BeamOs.Ai;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.SpeckleConnector;
@@ -6,6 +7,7 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Infrastructure;
+using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.AspNetCore.Http.Metadata;
 using Scalar.AspNetCore;
 

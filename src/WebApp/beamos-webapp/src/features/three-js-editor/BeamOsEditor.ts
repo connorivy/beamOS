@@ -6,8 +6,8 @@ import { EditorApi } from "./EditorApi"
 // import { Line2 } from 'three/addons/lines/Line2.js';
 // import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 // import { SimpleGui } from './SimpleGui';
-import type { EditorConfigurations } from "./EditorConfigurations"
-import type { IEditorEventsApi } from "../../../../../../codeGen/BeamOs.CodeGen.EditorApi/EditorEventsApi"
+import { EditorConfigurations } from "./EditorConfigurations"
+// import type { IEditorEventsApi } from "../../../../../../codeGen/BeamOs.CodeGen.EditorApi/EditorEventsApi"
 // import { DotnetApiFactory } from "./EditorApi/DotnetApiFactory"
 import { Controls } from "./Controls"
 import { Camera } from "./Camera"
@@ -29,7 +29,7 @@ export class BeamOsEditor {
 
   constructor(
     public domElement: HTMLElement,
-    public dotnetDispatcherApi: IEditorEventsApi,
+    // public dotnetDispatcherApi: IEditorEventsApi,
     private editorConfigurations: EditorConfigurations,
   ) {
     this.scene = new THREE.Scene()
@@ -51,7 +51,8 @@ export class BeamOsEditor {
     })
     editorConfigurations.yAxisUp = false
 
-    const selectorInfo = new SelectorInfo(dotnetDispatcherApi, domElement.id)
+    // const selectorInfo = new SelectorInfo(dotnetDispatcherApi, domElement.id)
+    const selectorInfo = new SelectorInfo(domElement.id)
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: domElement,
@@ -71,7 +72,7 @@ export class BeamOsEditor {
       this.camera.camera,
       this.domElement,
       this.controls,
-      dotnetDispatcherApi,
+      // dotnetDispatcherApi,
     )
     this.selector = new Selector(
       this.domElement,
@@ -107,22 +108,16 @@ export class BeamOsEditor {
     this.animate()
   }
 
-  //   static createFromId(
-  //     domElementId: string,
-  //     eventsApiDotnetRef: any,
-  //     isReadOnly: boolean,
-  //   ): BeamOsEditor {
-  //     const domElement = document.getElementById(domElementId)
-  //     if (!domElement) {
-  //       throw new Error(`Unable to find dom element with id ${domElementId}`)
-  //     }
+  static createFromId(domElementId: string, isReadOnly: boolean): BeamOsEditor {
+    const domElement = document.getElementById(domElementId)
+    if (!domElement) {
+      throw new Error(`Unable to find dom element with id ${domElementId}`)
+    }
 
-  //     let dotnetDispatcherApi =
-  //       DotnetApiFactory<IEditorEventsApi>(eventsApiDotnetRef)
-  //     let editorConfigurations = new EditorConfigurations(isReadOnly)
+    const editorConfigurations = new EditorConfigurations(isReadOnly)
 
-  //     return new this(domElement, dotnetDispatcherApi, editorConfigurations)
-  //   }
+    return new this(domElement, editorConfigurations)
+  }
 
   initCanvas() {
     this.scene.background = new THREE.Color(0x333333)
@@ -225,12 +220,12 @@ export class BeamOsEditor {
       this.camera.camera,
       this.domElement,
       this.controls,
-      this.dotnetDispatcherApi,
+      // this.dotnetDispatcherApi,
     )
 
     // Recreate selector with the new camera, controls, and transformController
     const selectorInfo = new SelectorInfo(
-      this.dotnetDispatcherApi,
+      // this.dotnetDispatcherApi,
       this.domElement.id,
     )
 

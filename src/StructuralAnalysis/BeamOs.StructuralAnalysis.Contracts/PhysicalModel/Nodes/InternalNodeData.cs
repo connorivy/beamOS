@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 
@@ -34,8 +35,6 @@ public record InternalNodeData
     [Required]
     public Restraint Restraint { get; init; } = Restraint.Free;
 
-    // public InternalNodeData() { }
-
     public Dictionary<string, string>? Metadata { get; init; }
 }
 
@@ -54,6 +53,9 @@ public record CreateInternalNodeRequest : InternalNodeData
         this.Id = id;
     }
 
+    [JsonConstructor]
+    public CreateInternalNodeRequest() { }
+
     public int? Id { get; init; }
 }
 
@@ -71,6 +73,9 @@ public record InternalNode : InternalNodeData, IHasIntId
     {
         this.Id = id;
     }
+
+    [JsonConstructor]
+    public InternalNode() { }
 
     public required int Id { get; init; }
 }
