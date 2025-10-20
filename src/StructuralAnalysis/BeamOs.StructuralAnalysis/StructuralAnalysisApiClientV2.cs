@@ -157,37 +157,37 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
     public Task<ApiResponse<ModelEntityResponse>> DeleteElement1d(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.DeleteElement1dAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.DeleteElement1dAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelEntityResponse>> DeleteLoadCase(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.DeleteLoadCaseAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.DeleteLoadCaseAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelEntityResponse>> DeleteLoadCombination(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.DeleteLoadCombinationAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.DeleteLoadCombinationAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelEntityResponse>> DeleteMomentLoad(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.DeleteMomentLoadAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.DeleteMomentLoadAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelEntityResponse>> DeleteNode(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.DeleteNodeAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.DeleteNodeAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelEntityResponse>> DeletePointLoad(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.DeletePointLoadAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.DeletePointLoadAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelEntityResponse>> DeleteSectionProfile(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.DeleteSectionProfileAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.DeleteSectionProfileAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<AnalyticalResultsResponse>> GetDiagrams(
         GetDiagramsRequest request,
@@ -197,22 +197,22 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
     public Task<ApiResponse<Element1dResponse>> GetElement1d(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.GetElement1dAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.GetElement1dAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<InternalNodeContract>> GetInternalNode(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.GetInternalNodeAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.GetInternalNodeAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<LoadCaseContract>> GetLoadCase(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.GetLoadCaseAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.GetLoadCaseAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<LoadCombinationContract>> GetLoadCombination(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.GetLoadCombinationAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.GetLoadCombinationAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelResponse>> GetModel(
         ModelResourceRequest request,
@@ -222,7 +222,7 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
     public Task<ApiResponse<ModelProposalResponse>> GetModelProposal(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.GetModelProposalAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.GetModelProposalAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ICollection<ModelProposalInfo>>> GetModelProposals(
         ModelResourceRequest request,
@@ -261,7 +261,7 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
     public Task<ApiResponse<ResultSetResponse>> GetResultSet(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.GetResultSetAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.GetResultSetAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelResponse>> ModelRestore(
         ModelResourceRequest<DateTimeOffset> request,
@@ -337,7 +337,7 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
     public Task<ApiResponse<bool>> RejectModelProposal(
         ModelResourceWithIntIdRequest request,
         CancellationToken ct = default
-    ) => apiClientV1.RejectModelProposalAsync(request.ModelId, request.Id, ct);
+    ) => apiClientV1.RejectModelProposalAsync(request.Id, request.ModelId, ct);
 
     public Task<ApiResponse<ModelProposalResponse>> RepairModel(
         ModelResourceRequest<string> request,

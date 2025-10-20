@@ -106,7 +106,7 @@ public record CreateInternalNodeProposalResponse : IEntityProposal
     public CreateInternalNodeProposalResponse(
         ProposedID element1dId,
         Ratio ratioAlongElement1d,
-        Restraint? restraint = null,
+        Restraint restraint,
         Dictionary<string, string>? metadata = null
     )
     {
@@ -123,7 +123,7 @@ public record CreateInternalNodeProposalResponse : IEntityProposal
 
     public required ProposedID Element1dId { get; init; }
     public required Ratio RatioAlongElement1d { get; init; }
-    public Restraint? Restraint { get; init; }
+    public required Restraint Restraint { get; init; }
 
     // public InternalNodeData() { }
 
@@ -151,9 +151,7 @@ public record ModifyNodeProposalResponse : CreateNodeProposalResponse, IEntityMo
     }
 }
 
-public record ModifyInternalNodeProposalResponse
-    : CreateInternalNodeProposalResponse,
-        IEntityModificationProposal
+public record ModifyInternalNodeProposalResponse : IEntityModificationProposal
 {
     [SetsRequiredMembers]
     public ModifyInternalNodeProposalResponse(
@@ -164,17 +162,36 @@ public record ModifyInternalNodeProposalResponse
         Restraint? restraint = null,
         Dictionary<string, string>? metadata = null
     )
-        : base(element1dId, ratioAlongElement1d, restraint, metadata)
     {
         this.Id = id;
         this.ExistingInternalNodeId = existingInternalNodeId;
-        this.ProposalType = ProposalType.Modify;
+        this.Element1dId = element1dId;
+        if (ratioAlongElement1d.As(RatioUnit.DecimalFraction) is < 0 or > 1)
+        {
+            throw new ArgumentException("Ratio along element must be between 0 and 1");
+        }
+
+        this.RatioAlongElement1d = ratioAlongElement1d;
+        this.Metadata = metadata;
+        this.Restraint = restraint;
     }
+
+    public required int Id { get; init; }
+    public required ProposedID Element1dId { get; init; }
+    public required Ratio RatioAlongElement1d { get; init; }
+    public Restraint? Restraint { get; init; }
+
+    [JsonIgnore]
+    public BeamOsObjectType ObjectType => BeamOsObjectType.InternalNode;
+
+    [JsonIgnore]
+    public ProposalType ProposalType => ProposalType.Modify;
 
     public required int ExistingInternalNodeId { get; init; }
 
     [JsonIgnore]
     public int ExistingId => this.ExistingInternalNodeId;
+    public Dictionary<string, string>? Metadata { get; init; }
 }
 
 public interface IEntityProposal : IHasIntId

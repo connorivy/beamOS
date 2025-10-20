@@ -40,8 +40,8 @@ public sealed class DeleteMomentLoadCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.DeleteMomentLoadAsync(
-            command.ModelId,
             command.MomentLoadId,
+            command.ModelId,
             ct
         );
     }

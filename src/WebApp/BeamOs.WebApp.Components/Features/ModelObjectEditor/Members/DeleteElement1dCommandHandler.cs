@@ -41,8 +41,8 @@ public sealed class DeleteElement1dCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.DeleteElement1dAsync(
-            command.ModelId,
             command.Element1dId,
+            command.ModelId,
             ct
         );
     }

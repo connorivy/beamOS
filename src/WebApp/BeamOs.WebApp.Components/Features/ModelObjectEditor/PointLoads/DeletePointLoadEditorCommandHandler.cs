@@ -37,8 +37,8 @@ public sealed class DeletePointLoadEditorCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.DeletePointLoadAsync(
-            command.ModelId,
             command.PointLoadId,
+            command.ModelId,
             ct
         );
     }

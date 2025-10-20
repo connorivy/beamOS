@@ -59,10 +59,12 @@ public record ModelResponseHydrated(
 public record ModelSettings
 {
     public required UnitSettings UnitSettings { get; init; }
-    public AnalysisSettings AnalysisSettings { get; init; }
-    public bool YAxisUp { get; init; }
+    public required AnalysisSettings AnalysisSettings { get; init; }
+    public required bool YAxisUp { get; init; }
 
-    [JsonConstructor]
+    public ModelSettings() { }
+
+    // [JsonConstructor]
     [SetsRequiredMembers]
     public ModelSettings(
         UnitSettings unitSettings,

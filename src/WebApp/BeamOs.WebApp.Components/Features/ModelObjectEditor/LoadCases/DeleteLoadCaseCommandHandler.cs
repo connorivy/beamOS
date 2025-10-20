@@ -24,8 +24,8 @@ public sealed class DeleteLoadCaseCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.DeleteLoadCaseAsync(
-            command.ModelId,
             command.LoadCaseId,
+            command.ModelId,
             ct
         );
     }

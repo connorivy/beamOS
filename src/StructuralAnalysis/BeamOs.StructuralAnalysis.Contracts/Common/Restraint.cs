@@ -1,9 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace BeamOs.StructuralAnalysis.Contracts.Common;
 
 public readonly record struct Restraint
 {
+    [JsonConstructor]
     public Restraint() { }
 
     [SetsRequiredMembers]

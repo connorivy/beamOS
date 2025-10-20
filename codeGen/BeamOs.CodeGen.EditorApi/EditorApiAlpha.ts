@@ -9,5913 +9,6535 @@
 // ReSharper disable InconsistentNaming
 
 export interface IEditorApiAlpha {
+  /**
+   * @return OK
+   */
+  createElement1d(body: Element1dResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createElement1d(body: Element1dResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createElement1ds(body: Element1dResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createElement1ds(body: Element1dResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  updateElement1d(body: Element1dResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    updateElement1d(body: Element1dResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  updateElement1ds(body: Element1dResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    updateElement1ds(body: Element1dResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  deleteElement1d(body: IModelEntity): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    deleteElement1d(body: IModelEntity): Promise<Result>;
+  /**
+   * @return OK
+   */
+  deleteElement1ds(body: IModelEntity[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    deleteElement1ds(body: IModelEntity[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createModel(body: ModelResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createModel(body: ModelResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createNode(body: NodeResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createNode(body: NodeResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createNodes(body: NodeResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createNodes(body: NodeResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  updateNode(body: NodeResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    updateNode(body: NodeResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  updateNodes(body: NodeResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    updateNodes(body: NodeResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  deleteNode(body: IModelEntity): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    deleteNode(body: IModelEntity): Promise<Result>;
+  /**
+   * @return OK
+   */
+  deleteNodes(body: IModelEntity[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    deleteNodes(body: IModelEntity[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createPointLoad(body: PointLoadResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createPointLoad(body: PointLoadResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createPointLoads(body: PointLoadResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createPointLoads(body: PointLoadResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  updatePointLoad(body: PointLoadResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    updatePointLoad(body: PointLoadResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  updatePointLoads(body: PointLoadResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    updatePointLoads(body: PointLoadResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  deletePointLoad(body: IModelEntity): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    deletePointLoad(body: IModelEntity): Promise<Result>;
+  /**
+   * @return OK
+   */
+  deletePointLoads(body: IModelEntity[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    deletePointLoads(body: IModelEntity[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createShearDiagram(body: ShearDiagramResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createShearDiagram(body: ShearDiagramResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createShearDiagrams(body: ShearDiagramResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createShearDiagrams(body: ShearDiagramResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createMomentDiagram(body: MomentDiagramResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createMomentDiagram(body: MomentDiagramResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createMomentDiagrams(body: MomentDiagramResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createMomentDiagrams(body: MomentDiagramResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createDeflectionDiagram(body: DeflectionDiagramResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createDeflectionDiagram(body: DeflectionDiagramResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  createDeflectionDiagrams(body: DeflectionDiagramResponse[]): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    createDeflectionDiagrams(body: DeflectionDiagramResponse[]): Promise<Result>;
+  /**
+   * @return OK
+   */
+  displayModelProposal(body: ModelProposalResponse): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    displayModelProposal(body: ModelProposalResponse): Promise<Result>;
+  /**
+   * @return OK
+   */
+  clearModelProposals(): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    clearModelProposals(): Promise<Result>;
+  /**
+   * @return OK
+   */
+  setSettings(body: ModelSettings): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    setSettings(body: ModelSettings): Promise<Result>;
+  /**
+   * @return OK
+   */
+  setGlobalStresses(body: GlobalStresses): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    setGlobalStresses(body: GlobalStresses): Promise<Result>;
+  /**
+   * @return OK
+   */
+  clear(): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    clear(): Promise<Result>;
+  /**
+   * @return OK
+   */
+  clearCurrentOverlay(): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    clearCurrentOverlay(): Promise<Result>;
+  /**
+   * @return OK
+   */
+  reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result>;
+  /**
+   * @return OK
+   */
+  reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result>;
 
-    /**
-     * @return OK
-     */
-    reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result>;
-
-    /**
-     * @return OK
-     */
-    reducePutNodeClientCommand(body: PutNodeClientCommand): Promise<Result>;
+  /**
+   * @return OK
+   */
+  reducePutNodeClientCommand(body: PutNodeClientCommand): Promise<Result>;
 }
 
 export class EditorApiAlpha implements IEditorApiAlpha {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "http://localhost:5079/";
-    }
-
-    /**
-     * @return OK
-     */
-    createElement1d(body: Element1dResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateElement1d";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateElement1d(_response);
-        });
-    }
-
-    protected processCreateElement1d(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createElement1ds(body: Element1dResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateElement1ds";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateElement1ds(_response);
-        });
-    }
-
-    protected processCreateElement1ds(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    updateElement1d(body: Element1dResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/UpdateElement1d";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateElement1d(_response);
-        });
-    }
-
-    protected processUpdateElement1d(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    updateElement1ds(body: Element1dResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/UpdateElement1ds";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateElement1ds(_response);
-        });
-    }
-
-    protected processUpdateElement1ds(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteElement1d(body: IModelEntity): Promise<Result> {
-        let url_ = this.baseUrl + "/DeleteElement1d";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteElement1d(_response);
-        });
-    }
-
-    protected processDeleteElement1d(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteElement1ds(body: IModelEntity[]): Promise<Result> {
-        let url_ = this.baseUrl + "/DeleteElement1ds";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteElement1ds(_response);
-        });
-    }
-
-    protected processDeleteElement1ds(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createModel(body: ModelResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateModel";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateModel(_response);
-        });
-    }
-
-    protected processCreateModel(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createNode(body: NodeResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateNode";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateNode(_response);
-        });
-    }
-
-    protected processCreateNode(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createNodes(body: NodeResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateNodes";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateNodes(_response);
-        });
-    }
-
-    protected processCreateNodes(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    updateNode(body: NodeResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/UpdateNode";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateNode(_response);
-        });
-    }
-
-    protected processUpdateNode(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    updateNodes(body: NodeResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/UpdateNodes";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateNodes(_response);
-        });
-    }
-
-    protected processUpdateNodes(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteNode(body: IModelEntity): Promise<Result> {
-        let url_ = this.baseUrl + "/DeleteNode";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteNode(_response);
-        });
-    }
-
-    protected processDeleteNode(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deleteNodes(body: IModelEntity[]): Promise<Result> {
-        let url_ = this.baseUrl + "/DeleteNodes";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteNodes(_response);
-        });
-    }
-
-    protected processDeleteNodes(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createPointLoad(body: PointLoadResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/CreatePointLoad";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreatePointLoad(_response);
-        });
-    }
-
-    protected processCreatePointLoad(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createPointLoads(body: PointLoadResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/CreatePointLoads";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreatePointLoads(_response);
-        });
-    }
-
-    protected processCreatePointLoads(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    updatePointLoad(body: PointLoadResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/UpdatePointLoad";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdatePointLoad(_response);
-        });
-    }
-
-    protected processUpdatePointLoad(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    updatePointLoads(body: PointLoadResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/UpdatePointLoads";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdatePointLoads(_response);
-        });
-    }
-
-    protected processUpdatePointLoads(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deletePointLoad(body: IModelEntity): Promise<Result> {
-        let url_ = this.baseUrl + "/DeletePointLoad";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeletePointLoad(_response);
-        });
-    }
-
-    protected processDeletePointLoad(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    deletePointLoads(body: IModelEntity[]): Promise<Result> {
-        let url_ = this.baseUrl + "/DeletePointLoads";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeletePointLoads(_response);
-        });
-    }
-
-    protected processDeletePointLoads(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createShearDiagram(body: ShearDiagramResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateShearDiagram";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateShearDiagram(_response);
-        });
-    }
-
-    protected processCreateShearDiagram(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createShearDiagrams(body: ShearDiagramResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateShearDiagrams";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateShearDiagrams(_response);
-        });
-    }
-
-    protected processCreateShearDiagrams(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createMomentDiagram(body: MomentDiagramResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateMomentDiagram";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateMomentDiagram(_response);
-        });
-    }
-
-    protected processCreateMomentDiagram(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createMomentDiagrams(body: MomentDiagramResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateMomentDiagrams";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateMomentDiagrams(_response);
-        });
-    }
-
-    protected processCreateMomentDiagrams(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createDeflectionDiagram(body: DeflectionDiagramResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateDeflectionDiagram";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateDeflectionDiagram(_response);
-        });
-    }
-
-    protected processCreateDeflectionDiagram(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createDeflectionDiagrams(body: DeflectionDiagramResponse[]): Promise<Result> {
-        let url_ = this.baseUrl + "/CreateDeflectionDiagrams";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateDeflectionDiagrams(_response);
-        });
-    }
-
-    protected processCreateDeflectionDiagrams(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    displayModelProposal(body: ModelProposalResponse): Promise<Result> {
-        let url_ = this.baseUrl + "/DisplayModelProposal";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDisplayModelProposal(_response);
-        });
-    }
-
-    protected processDisplayModelProposal(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    clearModelProposals(): Promise<Result> {
-        let url_ = this.baseUrl + "/ClearModelProposals";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processClearModelProposals(_response);
-        });
-    }
-
-    protected processClearModelProposals(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    setSettings(body: ModelSettings): Promise<Result> {
-        let url_ = this.baseUrl + "/SetSettings";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSetSettings(_response);
-        });
-    }
-
-    protected processSetSettings(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    setGlobalStresses(body: GlobalStresses): Promise<Result> {
-        let url_ = this.baseUrl + "/SetGlobalStresses";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSetGlobalStresses(_response);
-        });
-    }
-
-    protected processSetGlobalStresses(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    clear(): Promise<Result> {
-        let url_ = this.baseUrl + "/Clear";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processClear(_response);
-        });
-    }
-
-    protected processClear(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    clearCurrentOverlay(): Promise<Result> {
-        let url_ = this.baseUrl + "/ClearCurrentOverlay";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processClearCurrentOverlay(_response);
-        });
-    }
-
-    protected processClearCurrentOverlay(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/ReduceChangeSelectionCommand";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processReduceChangeSelectionCommand(_response);
-        });
-    }
-
-    protected processReduceChangeSelectionCommand(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/ReduceMoveNodeCommand";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processReduceMoveNodeCommand(_response);
-        });
-    }
-
-    protected processReduceMoveNodeCommand(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    reducePutNodeClientCommand(body: PutNodeClientCommand): Promise<Result> {
-        let url_ = this.baseUrl + "/ReducePutNodeClientCommand";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processReducePutNodeClientCommand(_response);
-        });
-    }
-
-    protected processReducePutNodeClientCommand(response: Response): Promise<Result> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Result.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Result>(null as any);
-    }
+  private http: {
+    fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
+  };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    baseUrl?: string,
+    http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
+  ) {
+    this.http = http ? http : (window as any);
+    this.baseUrl = baseUrl ?? "http://localhost:5079/";
+  }
+
+  /**
+   * @return OK
+   */
+  createElement1d(body: Element1dResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateElement1d";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateElement1d(_response);
+    });
+  }
+
+  protected processCreateElement1d(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createElement1ds(body: Element1dResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateElement1ds";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateElement1ds(_response);
+    });
+  }
+
+  protected processCreateElement1ds(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  updateElement1d(body: Element1dResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/UpdateElement1d";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdateElement1d(_response);
+    });
+  }
+
+  protected processUpdateElement1d(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  updateElement1ds(body: Element1dResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/UpdateElement1ds";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdateElement1ds(_response);
+    });
+  }
+
+  protected processUpdateElement1ds(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  deleteElement1d(body: IModelEntity): Promise<Result> {
+    let url_ = this.baseUrl + "/DeleteElement1d";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDeleteElement1d(_response);
+    });
+  }
+
+  protected processDeleteElement1d(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  deleteElement1ds(body: IModelEntity[]): Promise<Result> {
+    let url_ = this.baseUrl + "/DeleteElement1ds";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDeleteElement1ds(_response);
+    });
+  }
+
+  protected processDeleteElement1ds(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createModel(body: ModelResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateModel";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateModel(_response);
+    });
+  }
+
+  protected processCreateModel(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createNode(body: NodeResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateNode";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateNode(_response);
+    });
+  }
+
+  protected processCreateNode(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createNodes(body: NodeResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateNodes";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateNodes(_response);
+    });
+  }
+
+  protected processCreateNodes(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  updateNode(body: NodeResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/UpdateNode";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdateNode(_response);
+    });
+  }
+
+  protected processUpdateNode(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  updateNodes(body: NodeResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/UpdateNodes";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdateNodes(_response);
+    });
+  }
+
+  protected processUpdateNodes(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  deleteNode(body: IModelEntity): Promise<Result> {
+    let url_ = this.baseUrl + "/DeleteNode";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDeleteNode(_response);
+    });
+  }
+
+  protected processDeleteNode(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  deleteNodes(body: IModelEntity[]): Promise<Result> {
+    let url_ = this.baseUrl + "/DeleteNodes";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDeleteNodes(_response);
+    });
+  }
+
+  protected processDeleteNodes(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createPointLoad(body: PointLoadResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/CreatePointLoad";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreatePointLoad(_response);
+    });
+  }
+
+  protected processCreatePointLoad(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createPointLoads(body: PointLoadResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/CreatePointLoads";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreatePointLoads(_response);
+    });
+  }
+
+  protected processCreatePointLoads(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  updatePointLoad(body: PointLoadResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/UpdatePointLoad";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdatePointLoad(_response);
+    });
+  }
+
+  protected processUpdatePointLoad(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  updatePointLoads(body: PointLoadResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/UpdatePointLoads";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdatePointLoads(_response);
+    });
+  }
+
+  protected processUpdatePointLoads(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  deletePointLoad(body: IModelEntity): Promise<Result> {
+    let url_ = this.baseUrl + "/DeletePointLoad";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDeletePointLoad(_response);
+    });
+  }
+
+  protected processDeletePointLoad(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  deletePointLoads(body: IModelEntity[]): Promise<Result> {
+    let url_ = this.baseUrl + "/DeletePointLoads";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDeletePointLoads(_response);
+    });
+  }
+
+  protected processDeletePointLoads(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createShearDiagram(body: ShearDiagramResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateShearDiagram";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateShearDiagram(_response);
+    });
+  }
+
+  protected processCreateShearDiagram(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createShearDiagrams(body: ShearDiagramResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateShearDiagrams";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateShearDiagrams(_response);
+    });
+  }
+
+  protected processCreateShearDiagrams(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createMomentDiagram(body: MomentDiagramResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateMomentDiagram";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateMomentDiagram(_response);
+    });
+  }
+
+  protected processCreateMomentDiagram(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createMomentDiagrams(body: MomentDiagramResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateMomentDiagrams";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateMomentDiagrams(_response);
+    });
+  }
+
+  protected processCreateMomentDiagrams(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createDeflectionDiagram(body: DeflectionDiagramResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateDeflectionDiagram";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateDeflectionDiagram(_response);
+    });
+  }
+
+  protected processCreateDeflectionDiagram(
+    response: Response
+  ): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  createDeflectionDiagrams(body: DeflectionDiagramResponse[]): Promise<Result> {
+    let url_ = this.baseUrl + "/CreateDeflectionDiagrams";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreateDeflectionDiagrams(_response);
+    });
+  }
+
+  protected processCreateDeflectionDiagrams(
+    response: Response
+  ): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  displayModelProposal(body: ModelProposalResponse): Promise<Result> {
+    let url_ = this.baseUrl + "/DisplayModelProposal";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDisplayModelProposal(_response);
+    });
+  }
+
+  protected processDisplayModelProposal(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  clearModelProposals(): Promise<Result> {
+    let url_ = this.baseUrl + "/ClearModelProposals";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processClearModelProposals(_response);
+    });
+  }
+
+  protected processClearModelProposals(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  setSettings(body: ModelSettings): Promise<Result> {
+    let url_ = this.baseUrl + "/SetSettings";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processSetSettings(_response);
+    });
+  }
+
+  protected processSetSettings(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  setGlobalStresses(body: GlobalStresses): Promise<Result> {
+    let url_ = this.baseUrl + "/SetGlobalStresses";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processSetGlobalStresses(_response);
+    });
+  }
+
+  protected processSetGlobalStresses(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  clear(): Promise<Result> {
+    let url_ = this.baseUrl + "/Clear";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processClear(_response);
+    });
+  }
+
+  protected processClear(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  clearCurrentOverlay(): Promise<Result> {
+    let url_ = this.baseUrl + "/ClearCurrentOverlay";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processClearCurrentOverlay(_response);
+    });
+  }
+
+  protected processClearCurrentOverlay(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  reduceChangeSelectionCommand(body: ChangeSelectionCommand): Promise<Result> {
+    let url_ = this.baseUrl + "/ReduceChangeSelectionCommand";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processReduceChangeSelectionCommand(_response);
+    });
+  }
+
+  protected processReduceChangeSelectionCommand(
+    response: Response
+  ): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  reduceMoveNodeCommand(body: MoveNodeCommand): Promise<Result> {
+    let url_ = this.baseUrl + "/ReduceMoveNodeCommand";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processReduceMoveNodeCommand(_response);
+    });
+  }
+
+  protected processReduceMoveNodeCommand(response: Response): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  reducePutNodeClientCommand(body: PutNodeClientCommand): Promise<Result> {
+    let url_ = this.baseUrl + "/ReducePutNodeClientCommand";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processReducePutNodeClientCommand(_response);
+    });
+  }
+
+  protected processReducePutNodeClientCommand(
+    response: Response
+  ): Promise<Result> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 =
+          _responseText === ""
+            ? null
+            : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = Result.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          "An unexpected server error occurred.",
+          status,
+          _responseText,
+          _headers
+        );
+      });
+    }
+    return Promise.resolve<Result>(null as any);
+  }
 }
 
 export class AnalysisSettings implements IAnalysisSettings {
-    element1DAnalysisType?: number;
+  element1DAnalysisType?: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IAnalysisSettings) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IAnalysisSettings) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.element1DAnalysisType = _data["element1DAnalysisType"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.element1DAnalysisType = _data["element1DAnalysisType"];
     }
+  }
 
-    static fromJS(data: any): AnalysisSettings {
-        data = typeof data === 'object' ? data : {};
-        let result = new AnalysisSettings();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): AnalysisSettings {
+    data = typeof data === "object" ? data : {};
+    let result = new AnalysisSettings();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["element1DAnalysisType"] = this.element1DAnalysisType;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["element1DAnalysisType"] = this.element1DAnalysisType;
+    return data;
+  }
 }
 
 export interface IAnalysisSettings {
-    element1DAnalysisType?: number;
+  element1DAnalysisType?: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Angle implements IAngle {
-    value!: number;
-    unit!: number;
+  value!: number;
+  unit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IAngle) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IAngle) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.value = _data["value"];
+      this.unit = _data["unit"];
     }
+  }
 
-    static fromJS(data: any): Angle {
-        data = typeof data === 'object' ? data : {};
-        let result = new Angle();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Angle {
+    data = typeof data === "object" ? data : {};
+    let result = new Angle();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["value"] = this.value;
+    data["unit"] = this.unit;
+    return data;
+  }
 }
 
 export interface IAngle {
-    value: number;
-    unit: number;
+  value: number;
+  unit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class BeamOsError implements IBeamOsError {
-    code!: string;
-    description!: string;
-    type!: number;
-    numericType?: number;
-    metadata!: any | undefined;
+  code!: string;
+  description!: string;
+  type!: number;
+  numericType?: number;
+  metadata!: any | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IBeamOsError) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IBeamOsError) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.code = _data["code"];
-            this.description = _data["description"];
-            this.type = _data["type"];
-            this.numericType = _data["numericType"];
-            this.metadata = _data["metadata"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.code = _data["code"];
+      this.description = _data["description"];
+      this.type = _data["type"];
+      this.numericType = _data["numericType"];
+      this.metadata = _data["metadata"];
     }
+  }
 
-    static fromJS(data: any): BeamOsError {
-        data = typeof data === 'object' ? data : {};
-        let result = new BeamOsError();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): BeamOsError {
+    data = typeof data === "object" ? data : {};
+    let result = new BeamOsError();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["code"] = this.code;
-        data["description"] = this.description;
-        data["type"] = this.type;
-        data["numericType"] = this.numericType;
-        data["metadata"] = this.metadata;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["code"] = this.code;
+    data["description"] = this.description;
+    data["type"] = this.type;
+    data["numericType"] = this.numericType;
+    data["metadata"] = this.metadata;
+    return data;
+  }
 }
 
 export interface IBeamOsError {
-    code: string;
-    description: string;
-    type: number;
-    numericType?: number;
-    metadata: any | undefined;
+  code: string;
+  description: string;
+  type: number;
+  numericType?: number;
+  metadata: any | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ChangeSelectionCommand implements IChangeSelectionCommand {
-    canvasId?: string;
-    selectedObjects?: SelectedObject[];
+  canvasId?: string;
+  selectedObjects?: SelectedObject[];
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IChangeSelectionCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IChangeSelectionCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.canvasId = _data["canvasId"];
-            if (Array.isArray(_data["selectedObjects"])) {
-                this.selectedObjects = [] as any;
-                for (let item of _data["selectedObjects"])
-                    this.selectedObjects!.push(SelectedObject.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.canvasId = _data["canvasId"];
+      if (Array.isArray(_data["selectedObjects"])) {
+        this.selectedObjects = [] as any;
+        for (let item of _data["selectedObjects"])
+          this.selectedObjects!.push(SelectedObject.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): ChangeSelectionCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChangeSelectionCommand();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ChangeSelectionCommand {
+    data = typeof data === "object" ? data : {};
+    let result = new ChangeSelectionCommand();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["canvasId"] = this.canvasId;
-        if (Array.isArray(this.selectedObjects)) {
-            data["selectedObjects"] = [];
-            for (let item of this.selectedObjects)
-                data["selectedObjects"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["canvasId"] = this.canvasId;
+    if (Array.isArray(this.selectedObjects)) {
+      data["selectedObjects"] = [];
+      for (let item of this.selectedObjects)
+        data["selectedObjects"].push(item ? item.toJSON() : <any>undefined);
+    }
+    return data;
+  }
 }
 
 export interface IChangeSelectionCommand {
-    canvasId?: string;
-    selectedObjects?: SelectedObject[];
+  canvasId?: string;
+  selectedObjects?: SelectedObject[];
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Coordinate3D implements ICoordinate3D {
-    x?: number;
-    y?: number;
-    z?: number;
+  x!: number;
+  y!: number;
+  z!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ICoordinate3D) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICoordinate3D) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.x = _data["x"];
-            this.y = _data["y"];
-            this.z = _data["z"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.x = _data["x"];
+      this.y = _data["y"];
+      this.z = _data["z"];
     }
+  }
 
-    static fromJS(data: any): Coordinate3D {
-        data = typeof data === 'object' ? data : {};
-        let result = new Coordinate3D();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Coordinate3D {
+    data = typeof data === "object" ? data : {};
+    let result = new Coordinate3D();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["x"] = this.x;
-        data["y"] = this.y;
-        data["z"] = this.z;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["x"] = this.x;
+    data["y"] = this.y;
+    data["z"] = this.z;
+    return data;
+  }
 }
 
 export interface ICoordinate3D {
-    x?: number;
-    y?: number;
-    z?: number;
+  x: number;
+  y: number;
+  z: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
-export class CreateElement1dProposalResponse implements ICreateElement1dProposalResponse {
-    id?: number;
-    startNodeId!: ProposedID;
-    endNodeId!: ProposedID;
-    materialId!: ProposedID;
-    sectionProfileId!: ProposedID;
-    sectionProfileRotation?: NullableOfAngle | undefined;
-    metadata?: { [key: string]: string; } | undefined;
+export class CreateElement1dProposalResponse
+  implements ICreateElement1dProposalResponse
+{
+  id?: number;
+  startNodeId!: ProposedID;
+  endNodeId!: ProposedID;
+  materialId!: ProposedID;
+  sectionProfileId!: ProposedID;
+  sectionProfileRotation?: NullableOfAngle | undefined;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ICreateElement1dProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.startNodeId = new ProposedID();
-            this.endNodeId = new ProposedID();
-            this.materialId = new ProposedID();
-            this.sectionProfileId = new ProposedID();
-        }
+  constructor(data?: ICreateElement1dProposalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.startNodeId = _data["startNodeId"] ? ProposedID.fromJS(_data["startNodeId"]) : new ProposedID();
-            this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
-            this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
-            this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
+    if (!data) {
+      this.startNodeId = new ProposedID();
+      this.endNodeId = new ProposedID();
+      this.materialId = new ProposedID();
+      this.sectionProfileId = new ProposedID();
     }
+  }
 
-    static fromJS(data: any): CreateElement1dProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateElement1dProposalResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.startNodeId = _data["startNodeId"]
+        ? ProposedID.fromJS(_data["startNodeId"])
+        : new ProposedID();
+      this.endNodeId = _data["endNodeId"]
+        ? ProposedID.fromJS(_data["endNodeId"])
+        : new ProposedID();
+      this.materialId = _data["materialId"]
+        ? ProposedID.fromJS(_data["materialId"])
+        : new ProposedID();
+      this.sectionProfileId = _data["sectionProfileId"]
+        ? ProposedID.fromJS(_data["sectionProfileId"])
+        : new ProposedID();
+      this.sectionProfileRotation = _data["sectionProfileRotation"]
+        ? NullableOfAngle.fromJS(_data["sectionProfileRotation"])
+        : <any>undefined;
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["startNodeId"] = this.startNodeId ? this.startNodeId.toJSON() : <any>undefined;
-        data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
-        data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
-        data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
-        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
+  static fromJS(data: any): CreateElement1dProposalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new CreateElement1dProposalResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["startNodeId"] = this.startNodeId
+      ? this.startNodeId.toJSON()
+      : <any>undefined;
+    data["endNodeId"] = this.endNodeId
+      ? this.endNodeId.toJSON()
+      : <any>undefined;
+    data["materialId"] = this.materialId
+      ? this.materialId.toJSON()
+      : <any>undefined;
+    data["sectionProfileId"] = this.sectionProfileId
+      ? this.sectionProfileId.toJSON()
+      : <any>undefined;
+    data["sectionProfileRotation"] = this.sectionProfileRotation
+      ? this.sectionProfileRotation.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    return data;
+  }
 }
 
 export interface ICreateElement1dProposalResponse {
-    id?: number;
-    startNodeId: ProposedID;
-    endNodeId: ProposedID;
-    materialId: ProposedID;
-    sectionProfileId: ProposedID;
-    sectionProfileRotation?: NullableOfAngle | undefined;
-    metadata?: { [key: string]: string; } | undefined;
+  id?: number;
+  startNodeId: ProposedID;
+  endNodeId: ProposedID;
+  materialId: ProposedID;
+  sectionProfileId: ProposedID;
+  sectionProfileRotation?: NullableOfAngle | undefined;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
-export class CreateInternalNodeProposalResponse implements ICreateInternalNodeProposalResponse {
-    element1dId!: ProposedID;
-    ratioAlongElement1d!: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-    id?: number;
+export class CreateInternalNodeProposalResponse
+  implements ICreateInternalNodeProposalResponse
+{
+  element1dId!: ProposedID;
+  ratioAlongElement1d!: Ratio;
+  restraint?: NullableOfRestraint | undefined;
+  metadata?: { [key: string]: string } | undefined;
+  id?: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ICreateInternalNodeProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.element1dId = new ProposedID();
-            this.ratioAlongElement1d = new Ratio();
-        }
+  constructor(data?: ICreateInternalNodeProposalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.element1dId = _data["element1dId"] ? ProposedID.fromJS(_data["element1dId"]) : new ProposedID();
-            this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-            this.id = _data["id"];
-        }
+    if (!data) {
+      this.element1dId = new ProposedID();
+      this.ratioAlongElement1d = new Ratio();
     }
+  }
 
-    static fromJS(data: any): CreateInternalNodeProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateInternalNodeProposalResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.element1dId = _data["element1dId"]
+        ? ProposedID.fromJS(_data["element1dId"])
+        : new ProposedID();
+      this.ratioAlongElement1d = _data["ratioAlongElement1d"]
+        ? Ratio.fromJS(_data["ratioAlongElement1d"])
+        : new Ratio();
+      this.restraint = _data["restraint"]
+        ? NullableOfRestraint.fromJS(_data["restraint"])
+        : <any>undefined;
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
+      this.id = _data["id"];
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["element1dId"] = this.element1dId ? this.element1dId.toJSON() : <any>undefined;
-        data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        data["id"] = this.id;
-        return data;
+  static fromJS(data: any): CreateInternalNodeProposalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new CreateInternalNodeProposalResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["element1dId"] = this.element1dId
+      ? this.element1dId.toJSON()
+      : <any>undefined;
+    data["ratioAlongElement1d"] = this.ratioAlongElement1d
+      ? this.ratioAlongElement1d.toJSON()
+      : <any>undefined;
+    data["restraint"] = this.restraint
+      ? this.restraint.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface ICreateInternalNodeProposalResponse {
-    element1dId: ProposedID;
-    ratioAlongElement1d: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-    id?: number;
+  element1dId: ProposedID;
+  ratioAlongElement1d: Ratio;
+  restraint?: NullableOfRestraint | undefined;
+  metadata?: { [key: string]: string } | undefined;
+  id?: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class CreateNodeProposalResponse implements ICreateNodeProposalResponse {
-    id!: number;
-    locationPoint!: Point;
-    restraint!: Restraint;
-    metadata?: { [key: string]: string; } | undefined;
+  id!: number;
+  locationPoint!: Point;
+  restraint!: Restraint;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ICreateNodeProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.locationPoint = new Point();
-            this.restraint = new Restraint();
-        }
+  constructor(data?: ICreateNodeProposalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
+    if (!data) {
+      this.locationPoint = new Point();
+      this.restraint = new Restraint();
     }
+  }
 
-    static fromJS(data: any): CreateNodeProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateNodeProposalResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.locationPoint = _data["locationPoint"]
+        ? Point.fromJS(_data["locationPoint"])
+        : new Point();
+      this.restraint = _data["restraint"]
+        ? Restraint.fromJS(_data["restraint"])
+        : new Restraint();
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
+  static fromJS(data: any): CreateNodeProposalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new CreateNodeProposalResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["locationPoint"] = this.locationPoint
+      ? this.locationPoint.toJSON()
+      : <any>undefined;
+    data["restraint"] = this.restraint
+      ? this.restraint.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    return data;
+  }
 }
 
 export interface ICreateNodeProposalResponse {
-    id: number;
-    locationPoint: Point;
-    restraint: Restraint;
-    metadata?: { [key: string]: string; } | undefined;
+  id: number;
+  locationPoint: Point;
+  restraint: Restraint;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class DeflectionDiagramResponse implements IDeflectionDiagramResponse {
-    element1dId!: number;
-    numSteps!: number;
-    offsets!: number[];
+  element1dId!: number;
+  numSteps!: number;
+  offsets!: number[];
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IDeflectionDiagramResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.offsets = [];
-        }
+  constructor(data?: IDeflectionDiagramResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.element1dId = _data["element1dId"];
-            this.numSteps = _data["numSteps"];
-            if (Array.isArray(_data["offsets"])) {
-                this.offsets = [] as any;
-                for (let item of _data["offsets"])
-                    this.offsets!.push(item);
-            }
-        }
+    if (!data) {
+      this.offsets = [];
     }
+  }
 
-    static fromJS(data: any): DeflectionDiagramResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeflectionDiagramResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.element1dId = _data["element1dId"];
+      this.numSteps = _data["numSteps"];
+      if (Array.isArray(_data["offsets"])) {
+        this.offsets = [] as any;
+        for (let item of _data["offsets"]) this.offsets!.push(item);
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["element1dId"] = this.element1dId;
-        data["numSteps"] = this.numSteps;
-        if (Array.isArray(this.offsets)) {
-            data["offsets"] = [];
-            for (let item of this.offsets)
-                data["offsets"].push(item);
-        }
-        return data;
+  static fromJS(data: any): DeflectionDiagramResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new DeflectionDiagramResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["element1dId"] = this.element1dId;
+    data["numSteps"] = this.numSteps;
+    if (Array.isArray(this.offsets)) {
+      data["offsets"] = [];
+      for (let item of this.offsets) data["offsets"].push(item);
+    }
+    return data;
+  }
 }
 
 export interface IDeflectionDiagramResponse {
-    element1dId: number;
-    numSteps: number;
-    offsets: number[];
+  element1dId: number;
+  numSteps: number;
+  offsets: number[];
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class DeleteModelEntityProposal implements IDeleteModelEntityProposal {
-    proposalType?: number;
-    id!: number;
-    objectType!: number;
+  proposalType?: number;
+  id!: number;
+  objectType!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IDeleteModelEntityProposal) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IDeleteModelEntityProposal) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.proposalType = _data["proposalType"];
-            this.id = _data["id"];
-            this.objectType = _data["objectType"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.proposalType = _data["proposalType"];
+      this.id = _data["id"];
+      this.objectType = _data["objectType"];
     }
+  }
 
-    static fromJS(data: any): DeleteModelEntityProposal {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeleteModelEntityProposal();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): DeleteModelEntityProposal {
+    data = typeof data === "object" ? data : {};
+    let result = new DeleteModelEntityProposal();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["proposalType"] = this.proposalType;
-        data["id"] = this.id;
-        data["objectType"] = this.objectType;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["proposalType"] = this.proposalType;
+    data["id"] = this.id;
+    data["objectType"] = this.objectType;
+    return data;
+  }
 }
 
 export interface IDeleteModelEntityProposal {
-    proposalType?: number;
-    id: number;
-    objectType: number;
+  proposalType?: number;
+  id: number;
+  objectType: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
-export class DiagramConsistentIntervalResponse implements IDiagramConsistentIntervalResponse {
-    startLocation!: Length;
-    endLocation!: Length;
-    polynomialCoefficients!: number[];
+export class DiagramConsistentIntervalResponse
+  implements IDiagramConsistentIntervalResponse
+{
+  startLocation!: Length;
+  endLocation!: Length;
+  polynomialCoefficients!: number[];
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IDiagramConsistentIntervalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.startLocation = new Length();
-            this.endLocation = new Length();
-            this.polynomialCoefficients = [];
-        }
+  constructor(data?: IDiagramConsistentIntervalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.startLocation = _data["startLocation"] ? Length.fromJS(_data["startLocation"]) : new Length();
-            this.endLocation = _data["endLocation"] ? Length.fromJS(_data["endLocation"]) : new Length();
-            if (Array.isArray(_data["polynomialCoefficients"])) {
-                this.polynomialCoefficients = [] as any;
-                for (let item of _data["polynomialCoefficients"])
-                    this.polynomialCoefficients!.push(item);
-            }
-        }
+    if (!data) {
+      this.startLocation = new Length();
+      this.endLocation = new Length();
+      this.polynomialCoefficients = [];
     }
+  }
 
-    static fromJS(data: any): DiagramConsistentIntervalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new DiagramConsistentIntervalResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.startLocation = _data["startLocation"]
+        ? Length.fromJS(_data["startLocation"])
+        : new Length();
+      this.endLocation = _data["endLocation"]
+        ? Length.fromJS(_data["endLocation"])
+        : new Length();
+      if (Array.isArray(_data["polynomialCoefficients"])) {
+        this.polynomialCoefficients = [] as any;
+        for (let item of _data["polynomialCoefficients"])
+          this.polynomialCoefficients!.push(item);
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["startLocation"] = this.startLocation ? this.startLocation.toJSON() : <any>undefined;
-        data["endLocation"] = this.endLocation ? this.endLocation.toJSON() : <any>undefined;
-        if (Array.isArray(this.polynomialCoefficients)) {
-            data["polynomialCoefficients"] = [];
-            for (let item of this.polynomialCoefficients)
-                data["polynomialCoefficients"].push(item);
-        }
-        return data;
+  static fromJS(data: any): DiagramConsistentIntervalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new DiagramConsistentIntervalResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["startLocation"] = this.startLocation
+      ? this.startLocation.toJSON()
+      : <any>undefined;
+    data["endLocation"] = this.endLocation
+      ? this.endLocation.toJSON()
+      : <any>undefined;
+    if (Array.isArray(this.polynomialCoefficients)) {
+      data["polynomialCoefficients"] = [];
+      for (let item of this.polynomialCoefficients)
+        data["polynomialCoefficients"].push(item);
+    }
+    return data;
+  }
 }
 
 export interface IDiagramConsistentIntervalResponse {
-    startLocation: Length;
-    endLocation: Length;
-    polynomialCoefficients: number[];
+  startLocation: Length;
+  endLocation: Length;
+  polynomialCoefficients: number[];
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
-export class DiagramConsistentIntervalResponse2 implements IDiagramConsistentIntervalResponse2 {
-    startLocation!: Length;
-    endLocation!: Length;
-    polynomialCoefficients!: number[];
+export class DiagramConsistentIntervalResponse2
+  implements IDiagramConsistentIntervalResponse2
+{
+  startLocation!: Length;
+  endLocation!: Length;
+  polynomialCoefficients!: number[];
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IDiagramConsistentIntervalResponse2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.startLocation = new Length();
-            this.endLocation = new Length();
-            this.polynomialCoefficients = [];
-        }
+  constructor(data?: IDiagramConsistentIntervalResponse2) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.startLocation = _data["startLocation"] ? Length.fromJS(_data["startLocation"]) : new Length();
-            this.endLocation = _data["endLocation"] ? Length.fromJS(_data["endLocation"]) : new Length();
-            if (Array.isArray(_data["polynomialCoefficients"])) {
-                this.polynomialCoefficients = [] as any;
-                for (let item of _data["polynomialCoefficients"])
-                    this.polynomialCoefficients!.push(item);
-            }
-        }
+    if (!data) {
+      this.startLocation = new Length();
+      this.endLocation = new Length();
+      this.polynomialCoefficients = [];
     }
+  }
 
-    static fromJS(data: any): DiagramConsistentIntervalResponse2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new DiagramConsistentIntervalResponse2();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.startLocation = _data["startLocation"]
+        ? Length.fromJS(_data["startLocation"])
+        : new Length();
+      this.endLocation = _data["endLocation"]
+        ? Length.fromJS(_data["endLocation"])
+        : new Length();
+      if (Array.isArray(_data["polynomialCoefficients"])) {
+        this.polynomialCoefficients = [] as any;
+        for (let item of _data["polynomialCoefficients"])
+          this.polynomialCoefficients!.push(item);
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["startLocation"] = this.startLocation ? this.startLocation.toJSON() : <any>undefined;
-        data["endLocation"] = this.endLocation ? this.endLocation.toJSON() : <any>undefined;
-        if (Array.isArray(this.polynomialCoefficients)) {
-            data["polynomialCoefficients"] = [];
-            for (let item of this.polynomialCoefficients)
-                data["polynomialCoefficients"].push(item);
-        }
-        return data;
+  static fromJS(data: any): DiagramConsistentIntervalResponse2 {
+    data = typeof data === "object" ? data : {};
+    let result = new DiagramConsistentIntervalResponse2();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["startLocation"] = this.startLocation
+      ? this.startLocation.toJSON()
+      : <any>undefined;
+    data["endLocation"] = this.endLocation
+      ? this.endLocation.toJSON()
+      : <any>undefined;
+    if (Array.isArray(this.polynomialCoefficients)) {
+      data["polynomialCoefficients"] = [];
+      for (let item of this.polynomialCoefficients)
+        data["polynomialCoefficients"].push(item);
+    }
+    return data;
+  }
 }
 
 export interface IDiagramConsistentIntervalResponse2 {
-    startLocation: Length;
-    endLocation: Length;
-    polynomialCoefficients: number[];
+  startLocation: Length;
+  endLocation: Length;
+  polynomialCoefficients: number[];
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class DisplacementsResponse implements IDisplacementsResponse {
-    displacementAlongX!: Length;
-    displacementAlongY!: Length;
-    displacementAlongZ!: Length;
-    rotationAboutX!: Angle;
-    rotationAboutY!: Angle;
-    rotationAboutZ!: Angle;
+  displacementAlongX!: Length;
+  displacementAlongY!: Length;
+  displacementAlongZ!: Length;
+  rotationAboutX!: Angle;
+  rotationAboutY!: Angle;
+  rotationAboutZ!: Angle;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IDisplacementsResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.displacementAlongX = new Length();
-            this.displacementAlongY = new Length();
-            this.displacementAlongZ = new Length();
-            this.rotationAboutX = new Angle();
-            this.rotationAboutY = new Angle();
-            this.rotationAboutZ = new Angle();
-        }
+  constructor(data?: IDisplacementsResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.displacementAlongX = _data["displacementAlongX"] ? Length.fromJS(_data["displacementAlongX"]) : new Length();
-            this.displacementAlongY = _data["displacementAlongY"] ? Length.fromJS(_data["displacementAlongY"]) : new Length();
-            this.displacementAlongZ = _data["displacementAlongZ"] ? Length.fromJS(_data["displacementAlongZ"]) : new Length();
-            this.rotationAboutX = _data["rotationAboutX"] ? Angle.fromJS(_data["rotationAboutX"]) : new Angle();
-            this.rotationAboutY = _data["rotationAboutY"] ? Angle.fromJS(_data["rotationAboutY"]) : new Angle();
-            this.rotationAboutZ = _data["rotationAboutZ"] ? Angle.fromJS(_data["rotationAboutZ"]) : new Angle();
-        }
+    if (!data) {
+      this.displacementAlongX = new Length();
+      this.displacementAlongY = new Length();
+      this.displacementAlongZ = new Length();
+      this.rotationAboutX = new Angle();
+      this.rotationAboutY = new Angle();
+      this.rotationAboutZ = new Angle();
     }
+  }
 
-    static fromJS(data: any): DisplacementsResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new DisplacementsResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.displacementAlongX = _data["displacementAlongX"]
+        ? Length.fromJS(_data["displacementAlongX"])
+        : new Length();
+      this.displacementAlongY = _data["displacementAlongY"]
+        ? Length.fromJS(_data["displacementAlongY"])
+        : new Length();
+      this.displacementAlongZ = _data["displacementAlongZ"]
+        ? Length.fromJS(_data["displacementAlongZ"])
+        : new Length();
+      this.rotationAboutX = _data["rotationAboutX"]
+        ? Angle.fromJS(_data["rotationAboutX"])
+        : new Angle();
+      this.rotationAboutY = _data["rotationAboutY"]
+        ? Angle.fromJS(_data["rotationAboutY"])
+        : new Angle();
+      this.rotationAboutZ = _data["rotationAboutZ"]
+        ? Angle.fromJS(_data["rotationAboutZ"])
+        : new Angle();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["displacementAlongX"] = this.displacementAlongX ? this.displacementAlongX.toJSON() : <any>undefined;
-        data["displacementAlongY"] = this.displacementAlongY ? this.displacementAlongY.toJSON() : <any>undefined;
-        data["displacementAlongZ"] = this.displacementAlongZ ? this.displacementAlongZ.toJSON() : <any>undefined;
-        data["rotationAboutX"] = this.rotationAboutX ? this.rotationAboutX.toJSON() : <any>undefined;
-        data["rotationAboutY"] = this.rotationAboutY ? this.rotationAboutY.toJSON() : <any>undefined;
-        data["rotationAboutZ"] = this.rotationAboutZ ? this.rotationAboutZ.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): DisplacementsResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new DisplacementsResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["displacementAlongX"] = this.displacementAlongX
+      ? this.displacementAlongX.toJSON()
+      : <any>undefined;
+    data["displacementAlongY"] = this.displacementAlongY
+      ? this.displacementAlongY.toJSON()
+      : <any>undefined;
+    data["displacementAlongZ"] = this.displacementAlongZ
+      ? this.displacementAlongZ.toJSON()
+      : <any>undefined;
+    data["rotationAboutX"] = this.rotationAboutX
+      ? this.rotationAboutX.toJSON()
+      : <any>undefined;
+    data["rotationAboutY"] = this.rotationAboutY
+      ? this.rotationAboutY.toJSON()
+      : <any>undefined;
+    data["rotationAboutZ"] = this.rotationAboutZ
+      ? this.rotationAboutZ.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IDisplacementsResponse {
-    displacementAlongX: Length;
-    displacementAlongY: Length;
-    displacementAlongZ: Length;
-    rotationAboutX: Angle;
-    rotationAboutY: Angle;
-    rotationAboutZ: Angle;
+  displacementAlongX: Length;
+  displacementAlongY: Length;
+  displacementAlongZ: Length;
+  rotationAboutX: Angle;
+  rotationAboutY: Angle;
+  rotationAboutZ: Angle;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Element1dResponse implements IElement1dResponse {
-    id!: number;
-    modelId!: string;
-    startNodeId!: number;
-    endNodeId!: number;
-    materialId!: number;
-    sectionProfileId!: number;
-    sectionProfileRotation!: Angle;
-    metadata?: { [key: string]: string; } | undefined;
+  id!: number;
+  modelId!: string;
+  startNodeId!: number;
+  endNodeId!: number;
+  materialId!: number;
+  sectionProfileId!: number;
+  sectionProfileRotation!: Angle;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IElement1dResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.sectionProfileRotation = new Angle();
-        }
+  constructor(data?: IElement1dResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.startNodeId = _data["startNodeId"];
-            this.endNodeId = _data["endNodeId"];
-            this.materialId = _data["materialId"];
-            this.sectionProfileId = _data["sectionProfileId"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? Angle.fromJS(_data["sectionProfileRotation"]) : new Angle();
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
+    if (!data) {
+      this.sectionProfileRotation = new Angle();
     }
+  }
 
-    static fromJS(data: any): Element1dResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new Element1dResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modelId = _data["modelId"];
+      this.startNodeId = _data["startNodeId"];
+      this.endNodeId = _data["endNodeId"];
+      this.materialId = _data["materialId"];
+      this.sectionProfileId = _data["sectionProfileId"];
+      this.sectionProfileRotation = _data["sectionProfileRotation"]
+        ? Angle.fromJS(_data["sectionProfileRotation"])
+        : new Angle();
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["startNodeId"] = this.startNodeId;
-        data["endNodeId"] = this.endNodeId;
-        data["materialId"] = this.materialId;
-        data["sectionProfileId"] = this.sectionProfileId;
-        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
+  static fromJS(data: any): Element1dResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new Element1dResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modelId"] = this.modelId;
+    data["startNodeId"] = this.startNodeId;
+    data["endNodeId"] = this.endNodeId;
+    data["materialId"] = this.materialId;
+    data["sectionProfileId"] = this.sectionProfileId;
+    data["sectionProfileRotation"] = this.sectionProfileRotation
+      ? this.sectionProfileRotation.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    return data;
+  }
 }
 
 export interface IElement1dResponse {
-    id: number;
-    modelId: string;
-    startNodeId: number;
-    endNodeId: number;
-    materialId: number;
-    sectionProfileId: number;
-    sectionProfileRotation: Angle;
-    metadata?: { [key: string]: string; } | undefined;
+  id: number;
+  modelId: string;
+  startNodeId: number;
+  endNodeId: number;
+  materialId: number;
+  sectionProfileId: number;
+  sectionProfileRotation: Angle;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Element1dResultResponse implements IElement1dResultResponse {
-    modelId!: string;
-    resultSetId!: number;
-    element1dId!: number;
-    minShear!: Length;
-    maxShear!: Length;
-    minMoment!: Torque;
-    maxMoment!: Torque;
-    minDisplacement!: Length;
-    maxDisplacement!: Length;
+  modelId!: string;
+  resultSetId!: number;
+  element1dId!: number;
+  minShear!: Length;
+  maxShear!: Length;
+  minMoment!: Torque;
+  maxMoment!: Torque;
+  minDisplacement!: Length;
+  maxDisplacement!: Length;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IElement1dResultResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.minShear = new Length();
-            this.maxShear = new Length();
-            this.minMoment = new Torque();
-            this.maxMoment = new Torque();
-            this.minDisplacement = new Length();
-            this.maxDisplacement = new Length();
-        }
+  constructor(data?: IElement1dResultResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.modelId = _data["modelId"];
-            this.resultSetId = _data["resultSetId"];
-            this.element1dId = _data["element1dId"];
-            this.minShear = _data["minShear"] ? Length.fromJS(_data["minShear"]) : new Length();
-            this.maxShear = _data["maxShear"] ? Length.fromJS(_data["maxShear"]) : new Length();
-            this.minMoment = _data["minMoment"] ? Torque.fromJS(_data["minMoment"]) : new Torque();
-            this.maxMoment = _data["maxMoment"] ? Torque.fromJS(_data["maxMoment"]) : new Torque();
-            this.minDisplacement = _data["minDisplacement"] ? Length.fromJS(_data["minDisplacement"]) : new Length();
-            this.maxDisplacement = _data["maxDisplacement"] ? Length.fromJS(_data["maxDisplacement"]) : new Length();
-        }
+    if (!data) {
+      this.minShear = new Length();
+      this.maxShear = new Length();
+      this.minMoment = new Torque();
+      this.maxMoment = new Torque();
+      this.minDisplacement = new Length();
+      this.maxDisplacement = new Length();
     }
+  }
 
-    static fromJS(data: any): Element1dResultResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new Element1dResultResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.modelId = _data["modelId"];
+      this.resultSetId = _data["resultSetId"];
+      this.element1dId = _data["element1dId"];
+      this.minShear = _data["minShear"]
+        ? Length.fromJS(_data["minShear"])
+        : new Length();
+      this.maxShear = _data["maxShear"]
+        ? Length.fromJS(_data["maxShear"])
+        : new Length();
+      this.minMoment = _data["minMoment"]
+        ? Torque.fromJS(_data["minMoment"])
+        : new Torque();
+      this.maxMoment = _data["maxMoment"]
+        ? Torque.fromJS(_data["maxMoment"])
+        : new Torque();
+      this.minDisplacement = _data["minDisplacement"]
+        ? Length.fromJS(_data["minDisplacement"])
+        : new Length();
+      this.maxDisplacement = _data["maxDisplacement"]
+        ? Length.fromJS(_data["maxDisplacement"])
+        : new Length();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["modelId"] = this.modelId;
-        data["resultSetId"] = this.resultSetId;
-        data["element1dId"] = this.element1dId;
-        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
-        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
-        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
-        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
-        data["minDisplacement"] = this.minDisplacement ? this.minDisplacement.toJSON() : <any>undefined;
-        data["maxDisplacement"] = this.maxDisplacement ? this.maxDisplacement.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): Element1dResultResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new Element1dResultResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["modelId"] = this.modelId;
+    data["resultSetId"] = this.resultSetId;
+    data["element1dId"] = this.element1dId;
+    data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+    data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+    data["minMoment"] = this.minMoment
+      ? this.minMoment.toJSON()
+      : <any>undefined;
+    data["maxMoment"] = this.maxMoment
+      ? this.maxMoment.toJSON()
+      : <any>undefined;
+    data["minDisplacement"] = this.minDisplacement
+      ? this.minDisplacement.toJSON()
+      : <any>undefined;
+    data["maxDisplacement"] = this.maxDisplacement
+      ? this.maxDisplacement.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IElement1dResultResponse {
-    modelId: string;
-    resultSetId: number;
-    element1dId: number;
-    minShear: Length;
-    maxShear: Length;
-    minMoment: Torque;
-    maxMoment: Torque;
-    minDisplacement: Length;
-    maxDisplacement: Length;
+  modelId: string;
+  resultSetId: number;
+  element1dId: number;
+  minShear: Length;
+  maxShear: Length;
+  minMoment: Torque;
+  maxMoment: Torque;
+  minDisplacement: Length;
+  maxDisplacement: Length;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Force implements IForce {
-    value!: number;
-    unit!: number;
+  value!: number;
+  unit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IForce) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IForce) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.value = _data["value"];
+      this.unit = _data["unit"];
     }
+  }
 
-    static fromJS(data: any): Force {
-        data = typeof data === 'object' ? data : {};
-        let result = new Force();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Force {
+    data = typeof data === "object" ? data : {};
+    let result = new Force();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["value"] = this.value;
+    data["unit"] = this.unit;
+    return data;
+  }
 }
 
 export interface IForce {
-    value: number;
-    unit: number;
+  value: number;
+  unit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ForcesResponse implements IForcesResponse {
-    forceAlongX!: Force;
-    forceAlongY!: Force;
-    forceAlongZ!: Force;
-    momentAboutX!: Torque;
-    momentAboutY!: Torque;
-    momentAboutZ!: Torque;
+  forceAlongX!: Force;
+  forceAlongY!: Force;
+  forceAlongZ!: Force;
+  momentAboutX!: Torque;
+  momentAboutY!: Torque;
+  momentAboutZ!: Torque;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IForcesResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.forceAlongX = new Force();
-            this.forceAlongY = new Force();
-            this.forceAlongZ = new Force();
-            this.momentAboutX = new Torque();
-            this.momentAboutY = new Torque();
-            this.momentAboutZ = new Torque();
-        }
+  constructor(data?: IForcesResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.forceAlongX = _data["forceAlongX"] ? Force.fromJS(_data["forceAlongX"]) : new Force();
-            this.forceAlongY = _data["forceAlongY"] ? Force.fromJS(_data["forceAlongY"]) : new Force();
-            this.forceAlongZ = _data["forceAlongZ"] ? Force.fromJS(_data["forceAlongZ"]) : new Force();
-            this.momentAboutX = _data["momentAboutX"] ? Torque.fromJS(_data["momentAboutX"]) : new Torque();
-            this.momentAboutY = _data["momentAboutY"] ? Torque.fromJS(_data["momentAboutY"]) : new Torque();
-            this.momentAboutZ = _data["momentAboutZ"] ? Torque.fromJS(_data["momentAboutZ"]) : new Torque();
-        }
+    if (!data) {
+      this.forceAlongX = new Force();
+      this.forceAlongY = new Force();
+      this.forceAlongZ = new Force();
+      this.momentAboutX = new Torque();
+      this.momentAboutY = new Torque();
+      this.momentAboutZ = new Torque();
     }
+  }
 
-    static fromJS(data: any): ForcesResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ForcesResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.forceAlongX = _data["forceAlongX"]
+        ? Force.fromJS(_data["forceAlongX"])
+        : new Force();
+      this.forceAlongY = _data["forceAlongY"]
+        ? Force.fromJS(_data["forceAlongY"])
+        : new Force();
+      this.forceAlongZ = _data["forceAlongZ"]
+        ? Force.fromJS(_data["forceAlongZ"])
+        : new Force();
+      this.momentAboutX = _data["momentAboutX"]
+        ? Torque.fromJS(_data["momentAboutX"])
+        : new Torque();
+      this.momentAboutY = _data["momentAboutY"]
+        ? Torque.fromJS(_data["momentAboutY"])
+        : new Torque();
+      this.momentAboutZ = _data["momentAboutZ"]
+        ? Torque.fromJS(_data["momentAboutZ"])
+        : new Torque();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["forceAlongX"] = this.forceAlongX ? this.forceAlongX.toJSON() : <any>undefined;
-        data["forceAlongY"] = this.forceAlongY ? this.forceAlongY.toJSON() : <any>undefined;
-        data["forceAlongZ"] = this.forceAlongZ ? this.forceAlongZ.toJSON() : <any>undefined;
-        data["momentAboutX"] = this.momentAboutX ? this.momentAboutX.toJSON() : <any>undefined;
-        data["momentAboutY"] = this.momentAboutY ? this.momentAboutY.toJSON() : <any>undefined;
-        data["momentAboutZ"] = this.momentAboutZ ? this.momentAboutZ.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): ForcesResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ForcesResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["forceAlongX"] = this.forceAlongX
+      ? this.forceAlongX.toJSON()
+      : <any>undefined;
+    data["forceAlongY"] = this.forceAlongY
+      ? this.forceAlongY.toJSON()
+      : <any>undefined;
+    data["forceAlongZ"] = this.forceAlongZ
+      ? this.forceAlongZ.toJSON()
+      : <any>undefined;
+    data["momentAboutX"] = this.momentAboutX
+      ? this.momentAboutX.toJSON()
+      : <any>undefined;
+    data["momentAboutY"] = this.momentAboutY
+      ? this.momentAboutY.toJSON()
+      : <any>undefined;
+    data["momentAboutZ"] = this.momentAboutZ
+      ? this.momentAboutZ.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IForcesResponse {
-    forceAlongX: Force;
-    forceAlongY: Force;
-    forceAlongZ: Force;
-    momentAboutX: Torque;
-    momentAboutY: Torque;
-    momentAboutZ: Torque;
+  forceAlongX: Force;
+  forceAlongY: Force;
+  forceAlongZ: Force;
+  momentAboutX: Torque;
+  momentAboutY: Torque;
+  momentAboutZ: Torque;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class GlobalStresses implements IGlobalStresses {
-    maxShear!: Force;
-    minShear!: Force;
-    maxMoment!: Torque;
-    minMoment!: Torque;
+  maxShear!: Force;
+  minShear!: Force;
+  maxMoment!: Torque;
+  minMoment!: Torque;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IGlobalStresses) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.maxShear = new Force();
-            this.minShear = new Force();
-            this.maxMoment = new Torque();
-            this.minMoment = new Torque();
-        }
+  constructor(data?: IGlobalStresses) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.maxShear = _data["maxShear"] ? Force.fromJS(_data["maxShear"]) : new Force();
-            this.minShear = _data["minShear"] ? Force.fromJS(_data["minShear"]) : new Force();
-            this.maxMoment = _data["maxMoment"] ? Torque.fromJS(_data["maxMoment"]) : new Torque();
-            this.minMoment = _data["minMoment"] ? Torque.fromJS(_data["minMoment"]) : new Torque();
-        }
+    if (!data) {
+      this.maxShear = new Force();
+      this.minShear = new Force();
+      this.maxMoment = new Torque();
+      this.minMoment = new Torque();
     }
+  }
 
-    static fromJS(data: any): GlobalStresses {
-        data = typeof data === 'object' ? data : {};
-        let result = new GlobalStresses();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.maxShear = _data["maxShear"]
+        ? Force.fromJS(_data["maxShear"])
+        : new Force();
+      this.minShear = _data["minShear"]
+        ? Force.fromJS(_data["minShear"])
+        : new Force();
+      this.maxMoment = _data["maxMoment"]
+        ? Torque.fromJS(_data["maxMoment"])
+        : new Torque();
+      this.minMoment = _data["minMoment"]
+        ? Torque.fromJS(_data["minMoment"])
+        : new Torque();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
-        data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
-        data["maxMoment"] = this.maxMoment ? this.maxMoment.toJSON() : <any>undefined;
-        data["minMoment"] = this.minMoment ? this.minMoment.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): GlobalStresses {
+    data = typeof data === "object" ? data : {};
+    let result = new GlobalStresses();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["maxShear"] = this.maxShear ? this.maxShear.toJSON() : <any>undefined;
+    data["minShear"] = this.minShear ? this.minShear.toJSON() : <any>undefined;
+    data["maxMoment"] = this.maxMoment
+      ? this.maxMoment.toJSON()
+      : <any>undefined;
+    data["minMoment"] = this.minMoment
+      ? this.minMoment.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IGlobalStresses {
-    maxShear: Force;
-    minShear: Force;
-    maxMoment: Torque;
-    minMoment: Torque;
+  maxShear: Force;
+  minShear: Force;
+  maxMoment: Torque;
+  minMoment: Torque;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class IModelEntity implements IIModelEntity {
-    id?: number;
-    modelId?: string;
+  id?: number;
+  modelId?: string;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IIModelEntity) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IIModelEntity) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modelId = _data["modelId"];
     }
+  }
 
-    static fromJS(data: any): IModelEntity {
-        data = typeof data === 'object' ? data : {};
-        let result = new IModelEntity();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): IModelEntity {
+    data = typeof data === "object" ? data : {};
+    let result = new IModelEntity();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modelId"] = this.modelId;
+    return data;
+  }
 }
 
 export interface IIModelEntity {
-    id?: number;
-    modelId?: string;
+  id?: number;
+  modelId?: string;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class InternalNode implements IInternalNode {
-    id!: number;
-    element1dId!: number;
-    ratioAlongElement1d!: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
+  id!: number;
+  element1dId!: number;
+  ratioAlongElement1d!: Ratio;
+  restraint!: Restraint;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IInternalNode) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.ratioAlongElement1d = new Ratio();
-        }
+  constructor(data?: IInternalNode) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.element1dId = _data["element1dId"];
-            this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
+    if (!data) {
+      this.ratioAlongElement1d = new Ratio();
+      this.restraint = new Restraint();
     }
+  }
 
-    static fromJS(data: any): InternalNode {
-        data = typeof data === 'object' ? data : {};
-        let result = new InternalNode();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.element1dId = _data["element1dId"];
+      this.ratioAlongElement1d = _data["ratioAlongElement1d"]
+        ? Ratio.fromJS(_data["ratioAlongElement1d"])
+        : new Ratio();
+      this.restraint = _data["restraint"]
+        ? Restraint.fromJS(_data["restraint"])
+        : new Restraint();
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["element1dId"] = this.element1dId;
-        data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
+  static fromJS(data: any): InternalNode {
+    data = typeof data === "object" ? data : {};
+    let result = new InternalNode();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["element1dId"] = this.element1dId;
+    data["ratioAlongElement1d"] = this.ratioAlongElement1d
+      ? this.ratioAlongElement1d.toJSON()
+      : <any>undefined;
+    data["restraint"] = this.restraint
+      ? this.restraint.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    return data;
+  }
 }
 
 export interface IInternalNode {
-    id: number;
-    element1dId: number;
-    ratioAlongElement1d: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
+  id: number;
+  element1dId: number;
+  ratioAlongElement1d: Ratio;
+  restraint: Restraint;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Length implements ILength {
-    value!: number;
-    unit!: number;
+  value!: number;
+  unit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ILength) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ILength) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.value = _data["value"];
+      this.unit = _data["unit"];
     }
+  }
 
-    static fromJS(data: any): Length {
-        data = typeof data === 'object' ? data : {};
-        let result = new Length();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Length {
+    data = typeof data === "object" ? data : {};
+    let result = new Length();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["value"] = this.value;
+    data["unit"] = this.unit;
+    return data;
+  }
 }
 
 export interface ILength {
-    value: number;
-    unit: number;
+  value: number;
+  unit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class LoadCase implements ILoadCase {
-    id!: number;
-    name!: string;
+  id!: number;
+  name!: string;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ILoadCase) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ILoadCase) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.name = _data["name"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.name = _data["name"];
     }
+  }
 
-    static fromJS(data: any): LoadCase {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoadCase();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): LoadCase {
+    data = typeof data === "object" ? data : {};
+    let result = new LoadCase();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["name"] = this.name;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["name"] = this.name;
+    return data;
+  }
 }
 
 export interface ILoadCase {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class LoadCombination implements ILoadCombination {
-    id!: number;
-    loadCaseFactors!: { [key: string]: number; };
+  id!: number;
+  loadCaseFactors!: { [key: string]: number };
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ILoadCombination) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.loadCaseFactors = {};
-        }
+  constructor(data?: ILoadCombination) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            if (_data["loadCaseFactors"]) {
-                this.loadCaseFactors = {} as any;
-                for (let key in _data["loadCaseFactors"]) {
-                    if (_data["loadCaseFactors"].hasOwnProperty(key))
-                        (<any>this.loadCaseFactors)![key] = _data["loadCaseFactors"][key];
-                }
-            }
-        }
+    if (!data) {
+      this.loadCaseFactors = {};
     }
+  }
 
-    static fromJS(data: any): LoadCombination {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoadCombination();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      if (_data["loadCaseFactors"]) {
+        this.loadCaseFactors = {} as any;
+        for (let key in _data["loadCaseFactors"]) {
+          if (_data["loadCaseFactors"].hasOwnProperty(key))
+            (<any>this.loadCaseFactors)![key] = _data["loadCaseFactors"][key];
+        }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        if (this.loadCaseFactors) {
-            data["loadCaseFactors"] = {};
-            for (let key in this.loadCaseFactors) {
-                if (this.loadCaseFactors.hasOwnProperty(key))
-                    (<any>data["loadCaseFactors"])[key] = (<any>this.loadCaseFactors)[key];
-            }
-        }
-        return data;
+  static fromJS(data: any): LoadCombination {
+    data = typeof data === "object" ? data : {};
+    let result = new LoadCombination();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    if (this.loadCaseFactors) {
+      data["loadCaseFactors"] = {};
+      for (let key in this.loadCaseFactors) {
+        if (this.loadCaseFactors.hasOwnProperty(key))
+          (<any>data["loadCaseFactors"])[key] = (<any>this.loadCaseFactors)[
+            key
+          ];
+      }
+    }
+    return data;
+  }
 }
 
 export interface ILoadCombination {
-    id: number;
-    loadCaseFactors: { [key: string]: number; };
+  id: number;
+  loadCaseFactors: { [key: string]: number };
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class MaterialResponse implements IMaterialResponse {
-    id!: number;
-    modelId!: string;
-    modulusOfElasticity!: number;
-    modulusOfRigidity!: number;
-    pressureUnit!: number;
+  id!: number;
+  modelId!: string;
+  modulusOfElasticity!: number;
+  modulusOfRigidity!: number;
+  pressureUnit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IMaterialResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IMaterialResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"];
-            this.modulusOfRigidity = _data["modulusOfRigidity"];
-            this.pressureUnit = _data["pressureUnit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modelId = _data["modelId"];
+      this.modulusOfElasticity = _data["modulusOfElasticity"];
+      this.modulusOfRigidity = _data["modulusOfRigidity"];
+      this.pressureUnit = _data["pressureUnit"];
     }
+  }
 
-    static fromJS(data: any): MaterialResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new MaterialResponse();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): MaterialResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new MaterialResponse();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["modulusOfElasticity"] = this.modulusOfElasticity;
-        data["modulusOfRigidity"] = this.modulusOfRigidity;
-        data["pressureUnit"] = this.pressureUnit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modelId"] = this.modelId;
+    data["modulusOfElasticity"] = this.modulusOfElasticity;
+    data["modulusOfRigidity"] = this.modulusOfRigidity;
+    data["pressureUnit"] = this.pressureUnit;
+    return data;
+  }
 }
 
 export interface IMaterialResponse {
-    id: number;
-    modelId: string;
-    modulusOfElasticity: number;
-    modulusOfRigidity: number;
-    pressureUnit: number;
+  id: number;
+  modelId: string;
+  modulusOfElasticity: number;
+  modulusOfRigidity: number;
+  pressureUnit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ModelProposalInfo implements IModelProposalInfo {
-    id!: number;
-    lastModified!: Date;
-    description?: string | undefined;
+  id!: number;
+  lastModified!: Date;
+  description?: string | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IModelProposalInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IModelProposalInfo) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-            this.description = _data["description"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.lastModified = _data["lastModified"]
+        ? new Date(_data["lastModified"].toString())
+        : <any>undefined;
+      this.description = _data["description"];
     }
+  }
 
-    static fromJS(data: any): ModelProposalInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelProposalInfo();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ModelProposalInfo {
+    data = typeof data === "object" ? data : {};
+    let result = new ModelProposalInfo();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        data["description"] = this.description;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["lastModified"] = this.lastModified
+      ? this.lastModified.toISOString()
+      : <any>undefined;
+    data["description"] = this.description;
+    return data;
+  }
 }
 
 export interface IModelProposalInfo {
-    id: number;
-    lastModified: Date;
-    description?: string | undefined;
+  id: number;
+  lastModified: Date;
+  description?: string | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ModelProposalResponse implements IModelProposalResponse {
-    id!: number;
-    lastModified!: Date;
-    modelProposal?: ModelProposalInfo | undefined;
-    createNodeProposals?: CreateNodeProposalResponse[] | undefined;
-    modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
-    createInternalNodeProposals?: CreateInternalNodeProposalResponse[] | undefined;
-    modifyInternalNodeProposals?: ModifyInternalNodeProposalResponse[] | undefined;
-    createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
-    modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
-    element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
-    materialProposals?: PutMaterialRequest[] | undefined;
-    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
-    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
-    pointLoadProposals?: PointLoad[] | undefined;
-    momentLoadProposals?: MomentLoad[] | undefined;
-    resultSetProposals?: ResultSet[] | undefined;
-    loadCaseProposals?: LoadCase[] | undefined;
-    loadCombinationProposals?: LoadCombination[] | undefined;
-    proposalIssues?: ProposalIssue[] | undefined;
-    deleteModelEntityProposals?: DeleteModelEntityProposal[] | undefined;
+  id!: number;
+  lastModified!: Date;
+  modelProposal?: ModelProposalInfo | undefined;
+  createNodeProposals?: CreateNodeProposalResponse[] | undefined;
+  modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
+  createInternalNodeProposals?:
+    | CreateInternalNodeProposalResponse[]
+    | undefined;
+  modifyInternalNodeProposals?:
+    | ModifyInternalNodeProposalResponse[]
+    | undefined;
+  createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
+  modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+  element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
+  materialProposals?: PutMaterialRequest[] | undefined;
+  sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
+  sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
+  pointLoadProposals?: PointLoad[] | undefined;
+  momentLoadProposals?: MomentLoad[] | undefined;
+  resultSetProposals?: ResultSet[] | undefined;
+  loadCaseProposals?: LoadCase[] | undefined;
+  loadCombinationProposals?: LoadCombination[] | undefined;
+  proposalIssues?: ProposalIssue[] | undefined;
+  deleteModelEntityProposals?: DeleteModelEntityProposal[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IModelProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IModelProposalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-            this.modelProposal = _data["modelProposal"] ? ModelProposalInfo.fromJS(_data["modelProposal"]) : <any>undefined;
-            if (Array.isArray(_data["createNodeProposals"])) {
-                this.createNodeProposals = [] as any;
-                for (let item of _data["createNodeProposals"])
-                    this.createNodeProposals!.push(CreateNodeProposalResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["modifyNodeProposals"])) {
-                this.modifyNodeProposals = [] as any;
-                for (let item of _data["modifyNodeProposals"])
-                    this.modifyNodeProposals!.push(ModifyNodeProposalResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["createInternalNodeProposals"])) {
-                this.createInternalNodeProposals = [] as any;
-                for (let item of _data["createInternalNodeProposals"])
-                    this.createInternalNodeProposals!.push(CreateInternalNodeProposalResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["modifyInternalNodeProposals"])) {
-                this.modifyInternalNodeProposals = [] as any;
-                for (let item of _data["modifyInternalNodeProposals"])
-                    this.modifyInternalNodeProposals!.push(ModifyInternalNodeProposalResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["createElement1dProposals"])) {
-                this.createElement1dProposals = [] as any;
-                for (let item of _data["createElement1dProposals"])
-                    this.createElement1dProposals!.push(CreateElement1dProposalResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["modifyElement1dProposals"])) {
-                this.modifyElement1dProposals = [] as any;
-                for (let item of _data["modifyElement1dProposals"])
-                    this.modifyElement1dProposals!.push(ModifyElement1dProposalResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["element1dsModifiedBecauseOfNodeChange"])) {
-                this.element1dsModifiedBecauseOfNodeChange = [] as any;
-                for (let item of _data["element1dsModifiedBecauseOfNodeChange"])
-                    this.element1dsModifiedBecauseOfNodeChange!.push(item);
-            }
-            if (Array.isArray(_data["materialProposals"])) {
-                this.materialProposals = [] as any;
-                for (let item of _data["materialProposals"])
-                    this.materialProposals!.push(PutMaterialRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfileProposals"])) {
-                this.sectionProfileProposals = [] as any;
-                for (let item of _data["sectionProfileProposals"])
-                    this.sectionProfileProposals!.push(PutSectionProfileRequest.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfileFromLibraryProposals"])) {
-                this.sectionProfileFromLibraryProposals = [] as any;
-                for (let item of _data["sectionProfileFromLibraryProposals"])
-                    this.sectionProfileFromLibraryProposals!.push(SectionProfileFromLibrary.fromJS(item));
-            }
-            if (Array.isArray(_data["pointLoadProposals"])) {
-                this.pointLoadProposals = [] as any;
-                for (let item of _data["pointLoadProposals"])
-                    this.pointLoadProposals!.push(PointLoad.fromJS(item));
-            }
-            if (Array.isArray(_data["momentLoadProposals"])) {
-                this.momentLoadProposals = [] as any;
-                for (let item of _data["momentLoadProposals"])
-                    this.momentLoadProposals!.push(MomentLoad.fromJS(item));
-            }
-            if (Array.isArray(_data["resultSetProposals"])) {
-                this.resultSetProposals = [] as any;
-                for (let item of _data["resultSetProposals"])
-                    this.resultSetProposals!.push(ResultSet.fromJS(item));
-            }
-            if (Array.isArray(_data["loadCaseProposals"])) {
-                this.loadCaseProposals = [] as any;
-                for (let item of _data["loadCaseProposals"])
-                    this.loadCaseProposals!.push(LoadCase.fromJS(item));
-            }
-            if (Array.isArray(_data["loadCombinationProposals"])) {
-                this.loadCombinationProposals = [] as any;
-                for (let item of _data["loadCombinationProposals"])
-                    this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
-            }
-            if (Array.isArray(_data["proposalIssues"])) {
-                this.proposalIssues = [] as any;
-                for (let item of _data["proposalIssues"])
-                    this.proposalIssues!.push(ProposalIssue.fromJS(item));
-            }
-            if (Array.isArray(_data["deleteModelEntityProposals"])) {
-                this.deleteModelEntityProposals = [] as any;
-                for (let item of _data["deleteModelEntityProposals"])
-                    this.deleteModelEntityProposals!.push(DeleteModelEntityProposal.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.lastModified = _data["lastModified"]
+        ? new Date(_data["lastModified"].toString())
+        : <any>undefined;
+      this.modelProposal = _data["modelProposal"]
+        ? ModelProposalInfo.fromJS(_data["modelProposal"])
+        : <any>undefined;
+      if (Array.isArray(_data["createNodeProposals"])) {
+        this.createNodeProposals = [] as any;
+        for (let item of _data["createNodeProposals"])
+          this.createNodeProposals!.push(
+            CreateNodeProposalResponse.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["modifyNodeProposals"])) {
+        this.modifyNodeProposals = [] as any;
+        for (let item of _data["modifyNodeProposals"])
+          this.modifyNodeProposals!.push(
+            ModifyNodeProposalResponse.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["createInternalNodeProposals"])) {
+        this.createInternalNodeProposals = [] as any;
+        for (let item of _data["createInternalNodeProposals"])
+          this.createInternalNodeProposals!.push(
+            CreateInternalNodeProposalResponse.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["modifyInternalNodeProposals"])) {
+        this.modifyInternalNodeProposals = [] as any;
+        for (let item of _data["modifyInternalNodeProposals"])
+          this.modifyInternalNodeProposals!.push(
+            ModifyInternalNodeProposalResponse.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["createElement1dProposals"])) {
+        this.createElement1dProposals = [] as any;
+        for (let item of _data["createElement1dProposals"])
+          this.createElement1dProposals!.push(
+            CreateElement1dProposalResponse.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["modifyElement1dProposals"])) {
+        this.modifyElement1dProposals = [] as any;
+        for (let item of _data["modifyElement1dProposals"])
+          this.modifyElement1dProposals!.push(
+            ModifyElement1dProposalResponse.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["element1dsModifiedBecauseOfNodeChange"])) {
+        this.element1dsModifiedBecauseOfNodeChange = [] as any;
+        for (let item of _data["element1dsModifiedBecauseOfNodeChange"])
+          this.element1dsModifiedBecauseOfNodeChange!.push(item);
+      }
+      if (Array.isArray(_data["materialProposals"])) {
+        this.materialProposals = [] as any;
+        for (let item of _data["materialProposals"])
+          this.materialProposals!.push(PutMaterialRequest.fromJS(item));
+      }
+      if (Array.isArray(_data["sectionProfileProposals"])) {
+        this.sectionProfileProposals = [] as any;
+        for (let item of _data["sectionProfileProposals"])
+          this.sectionProfileProposals!.push(
+            PutSectionProfileRequest.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["sectionProfileFromLibraryProposals"])) {
+        this.sectionProfileFromLibraryProposals = [] as any;
+        for (let item of _data["sectionProfileFromLibraryProposals"])
+          this.sectionProfileFromLibraryProposals!.push(
+            SectionProfileFromLibrary.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["pointLoadProposals"])) {
+        this.pointLoadProposals = [] as any;
+        for (let item of _data["pointLoadProposals"])
+          this.pointLoadProposals!.push(PointLoad.fromJS(item));
+      }
+      if (Array.isArray(_data["momentLoadProposals"])) {
+        this.momentLoadProposals = [] as any;
+        for (let item of _data["momentLoadProposals"])
+          this.momentLoadProposals!.push(MomentLoad.fromJS(item));
+      }
+      if (Array.isArray(_data["resultSetProposals"])) {
+        this.resultSetProposals = [] as any;
+        for (let item of _data["resultSetProposals"])
+          this.resultSetProposals!.push(ResultSet.fromJS(item));
+      }
+      if (Array.isArray(_data["loadCaseProposals"])) {
+        this.loadCaseProposals = [] as any;
+        for (let item of _data["loadCaseProposals"])
+          this.loadCaseProposals!.push(LoadCase.fromJS(item));
+      }
+      if (Array.isArray(_data["loadCombinationProposals"])) {
+        this.loadCombinationProposals = [] as any;
+        for (let item of _data["loadCombinationProposals"])
+          this.loadCombinationProposals!.push(LoadCombination.fromJS(item));
+      }
+      if (Array.isArray(_data["proposalIssues"])) {
+        this.proposalIssues = [] as any;
+        for (let item of _data["proposalIssues"])
+          this.proposalIssues!.push(ProposalIssue.fromJS(item));
+      }
+      if (Array.isArray(_data["deleteModelEntityProposals"])) {
+        this.deleteModelEntityProposals = [] as any;
+        for (let item of _data["deleteModelEntityProposals"])
+          this.deleteModelEntityProposals!.push(
+            DeleteModelEntityProposal.fromJS(item)
+          );
+      }
     }
+  }
 
-    static fromJS(data: any): ModelProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelProposalResponse();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ModelProposalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ModelProposalResponse();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        data["modelProposal"] = this.modelProposal ? this.modelProposal.toJSON() : <any>undefined;
-        if (Array.isArray(this.createNodeProposals)) {
-            data["createNodeProposals"] = [];
-            for (let item of this.createNodeProposals)
-                data["createNodeProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.modifyNodeProposals)) {
-            data["modifyNodeProposals"] = [];
-            for (let item of this.modifyNodeProposals)
-                data["modifyNodeProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.createInternalNodeProposals)) {
-            data["createInternalNodeProposals"] = [];
-            for (let item of this.createInternalNodeProposals)
-                data["createInternalNodeProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.modifyInternalNodeProposals)) {
-            data["modifyInternalNodeProposals"] = [];
-            for (let item of this.modifyInternalNodeProposals)
-                data["modifyInternalNodeProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.createElement1dProposals)) {
-            data["createElement1dProposals"] = [];
-            for (let item of this.createElement1dProposals)
-                data["createElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.modifyElement1dProposals)) {
-            data["modifyElement1dProposals"] = [];
-            for (let item of this.modifyElement1dProposals)
-                data["modifyElement1dProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.element1dsModifiedBecauseOfNodeChange)) {
-            data["element1dsModifiedBecauseOfNodeChange"] = [];
-            for (let item of this.element1dsModifiedBecauseOfNodeChange)
-                data["element1dsModifiedBecauseOfNodeChange"].push(item);
-        }
-        if (Array.isArray(this.materialProposals)) {
-            data["materialProposals"] = [];
-            for (let item of this.materialProposals)
-                data["materialProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfileProposals)) {
-            data["sectionProfileProposals"] = [];
-            for (let item of this.sectionProfileProposals)
-                data["sectionProfileProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfileFromLibraryProposals)) {
-            data["sectionProfileFromLibraryProposals"] = [];
-            for (let item of this.sectionProfileFromLibraryProposals)
-                data["sectionProfileFromLibraryProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.pointLoadProposals)) {
-            data["pointLoadProposals"] = [];
-            for (let item of this.pointLoadProposals)
-                data["pointLoadProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.momentLoadProposals)) {
-            data["momentLoadProposals"] = [];
-            for (let item of this.momentLoadProposals)
-                data["momentLoadProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.resultSetProposals)) {
-            data["resultSetProposals"] = [];
-            for (let item of this.resultSetProposals)
-                data["resultSetProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.loadCaseProposals)) {
-            data["loadCaseProposals"] = [];
-            for (let item of this.loadCaseProposals)
-                data["loadCaseProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.loadCombinationProposals)) {
-            data["loadCombinationProposals"] = [];
-            for (let item of this.loadCombinationProposals)
-                data["loadCombinationProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.proposalIssues)) {
-            data["proposalIssues"] = [];
-            for (let item of this.proposalIssues)
-                data["proposalIssues"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.deleteModelEntityProposals)) {
-            data["deleteModelEntityProposals"] = [];
-            for (let item of this.deleteModelEntityProposals)
-                data["deleteModelEntityProposals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["lastModified"] = this.lastModified
+      ? this.lastModified.toISOString()
+      : <any>undefined;
+    data["modelProposal"] = this.modelProposal
+      ? this.modelProposal.toJSON()
+      : <any>undefined;
+    if (Array.isArray(this.createNodeProposals)) {
+      data["createNodeProposals"] = [];
+      for (let item of this.createNodeProposals)
+        data["createNodeProposals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.modifyNodeProposals)) {
+      data["modifyNodeProposals"] = [];
+      for (let item of this.modifyNodeProposals)
+        data["modifyNodeProposals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.createInternalNodeProposals)) {
+      data["createInternalNodeProposals"] = [];
+      for (let item of this.createInternalNodeProposals)
+        data["createInternalNodeProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.modifyInternalNodeProposals)) {
+      data["modifyInternalNodeProposals"] = [];
+      for (let item of this.modifyInternalNodeProposals)
+        data["modifyInternalNodeProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.createElement1dProposals)) {
+      data["createElement1dProposals"] = [];
+      for (let item of this.createElement1dProposals)
+        data["createElement1dProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.modifyElement1dProposals)) {
+      data["modifyElement1dProposals"] = [];
+      for (let item of this.modifyElement1dProposals)
+        data["modifyElement1dProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.element1dsModifiedBecauseOfNodeChange)) {
+      data["element1dsModifiedBecauseOfNodeChange"] = [];
+      for (let item of this.element1dsModifiedBecauseOfNodeChange)
+        data["element1dsModifiedBecauseOfNodeChange"].push(item);
+    }
+    if (Array.isArray(this.materialProposals)) {
+      data["materialProposals"] = [];
+      for (let item of this.materialProposals)
+        data["materialProposals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.sectionProfileProposals)) {
+      data["sectionProfileProposals"] = [];
+      for (let item of this.sectionProfileProposals)
+        data["sectionProfileProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.sectionProfileFromLibraryProposals)) {
+      data["sectionProfileFromLibraryProposals"] = [];
+      for (let item of this.sectionProfileFromLibraryProposals)
+        data["sectionProfileFromLibraryProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.pointLoadProposals)) {
+      data["pointLoadProposals"] = [];
+      for (let item of this.pointLoadProposals)
+        data["pointLoadProposals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.momentLoadProposals)) {
+      data["momentLoadProposals"] = [];
+      for (let item of this.momentLoadProposals)
+        data["momentLoadProposals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.resultSetProposals)) {
+      data["resultSetProposals"] = [];
+      for (let item of this.resultSetProposals)
+        data["resultSetProposals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.loadCaseProposals)) {
+      data["loadCaseProposals"] = [];
+      for (let item of this.loadCaseProposals)
+        data["loadCaseProposals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.loadCombinationProposals)) {
+      data["loadCombinationProposals"] = [];
+      for (let item of this.loadCombinationProposals)
+        data["loadCombinationProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.proposalIssues)) {
+      data["proposalIssues"] = [];
+      for (let item of this.proposalIssues)
+        data["proposalIssues"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.deleteModelEntityProposals)) {
+      data["deleteModelEntityProposals"] = [];
+      for (let item of this.deleteModelEntityProposals)
+        data["deleteModelEntityProposals"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    return data;
+  }
 }
 
 export interface IModelProposalResponse {
-    id: number;
-    lastModified: Date;
-    modelProposal?: ModelProposalInfo | undefined;
-    createNodeProposals?: CreateNodeProposalResponse[] | undefined;
-    modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
-    createInternalNodeProposals?: CreateInternalNodeProposalResponse[] | undefined;
-    modifyInternalNodeProposals?: ModifyInternalNodeProposalResponse[] | undefined;
-    createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
-    modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
-    element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
-    materialProposals?: PutMaterialRequest[] | undefined;
-    sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
-    sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
-    pointLoadProposals?: PointLoad[] | undefined;
-    momentLoadProposals?: MomentLoad[] | undefined;
-    resultSetProposals?: ResultSet[] | undefined;
-    loadCaseProposals?: LoadCase[] | undefined;
-    loadCombinationProposals?: LoadCombination[] | undefined;
-    proposalIssues?: ProposalIssue[] | undefined;
-    deleteModelEntityProposals?: DeleteModelEntityProposal[] | undefined;
+  id: number;
+  lastModified: Date;
+  modelProposal?: ModelProposalInfo | undefined;
+  createNodeProposals?: CreateNodeProposalResponse[] | undefined;
+  modifyNodeProposals?: ModifyNodeProposalResponse[] | undefined;
+  createInternalNodeProposals?:
+    | CreateInternalNodeProposalResponse[]
+    | undefined;
+  modifyInternalNodeProposals?:
+    | ModifyInternalNodeProposalResponse[]
+    | undefined;
+  createElement1dProposals?: CreateElement1dProposalResponse[] | undefined;
+  modifyElement1dProposals?: ModifyElement1dProposalResponse[] | undefined;
+  element1dsModifiedBecauseOfNodeChange?: number[] | undefined;
+  materialProposals?: PutMaterialRequest[] | undefined;
+  sectionProfileProposals?: PutSectionProfileRequest[] | undefined;
+  sectionProfileFromLibraryProposals?: SectionProfileFromLibrary[] | undefined;
+  pointLoadProposals?: PointLoad[] | undefined;
+  momentLoadProposals?: MomentLoad[] | undefined;
+  resultSetProposals?: ResultSet[] | undefined;
+  loadCaseProposals?: LoadCase[] | undefined;
+  loadCombinationProposals?: LoadCombination[] | undefined;
+  proposalIssues?: ProposalIssue[] | undefined;
+  deleteModelEntityProposals?: DeleteModelEntityProposal[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ModelResponse implements IModelResponse {
-    id!: string;
-    name!: string;
-    description!: string;
-    settings!: ModelSettings;
-    lastModified!: Date;
-    nodes?: NodeResponse[] | undefined;
-    internalNodes?: InternalNode[] | undefined;
-    element1ds?: Element1dResponse[] | undefined;
-    materials?: MaterialResponse[] | undefined;
-    sectionProfiles?: SectionProfileResponse[] | undefined;
-    sectionProfilesFromLibrary?: SectionProfileFromLibrary[] | undefined;
-    pointLoads?: PointLoadResponse[] | undefined;
-    momentLoads?: MomentLoadResponse[] | undefined;
-    resultSets?: ResultSetResponse[] | undefined;
-    loadCases?: LoadCase[] | undefined;
-    loadCombinations?: LoadCombination[] | undefined;
+  id!: string;
+  name!: string;
+  description!: string;
+  settings!: ModelSettings;
+  lastModified!: Date;
+  nodes?: NodeResponse[] | undefined;
+  internalNodes?: InternalNode[] | undefined;
+  element1ds?: Element1dResponse[] | undefined;
+  materials?: MaterialResponse[] | undefined;
+  sectionProfiles?: SectionProfileResponse[] | undefined;
+  sectionProfilesFromLibrary?: SectionProfileFromLibrary[] | undefined;
+  pointLoads?: PointLoadResponse[] | undefined;
+  momentLoads?: MomentLoadResponse[] | undefined;
+  resultSets?: ResultSetResponse[] | undefined;
+  loadCases?: LoadCase[] | undefined;
+  loadCombinations?: LoadCombination[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IModelResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.settings = new ModelSettings();
-        }
+  constructor(data?: IModelResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.settings = _data["settings"] ? ModelSettings.fromJS(_data["settings"]) : new ModelSettings();
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-            if (Array.isArray(_data["nodes"])) {
-                this.nodes = [] as any;
-                for (let item of _data["nodes"])
-                    this.nodes!.push(NodeResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["internalNodes"])) {
-                this.internalNodes = [] as any;
-                for (let item of _data["internalNodes"])
-                    this.internalNodes!.push(InternalNode.fromJS(item));
-            }
-            if (Array.isArray(_data["element1ds"])) {
-                this.element1ds = [] as any;
-                for (let item of _data["element1ds"])
-                    this.element1ds!.push(Element1dResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["materials"])) {
-                this.materials = [] as any;
-                for (let item of _data["materials"])
-                    this.materials!.push(MaterialResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfiles"])) {
-                this.sectionProfiles = [] as any;
-                for (let item of _data["sectionProfiles"])
-                    this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["sectionProfilesFromLibrary"])) {
-                this.sectionProfilesFromLibrary = [] as any;
-                for (let item of _data["sectionProfilesFromLibrary"])
-                    this.sectionProfilesFromLibrary!.push(SectionProfileFromLibrary.fromJS(item));
-            }
-            if (Array.isArray(_data["pointLoads"])) {
-                this.pointLoads = [] as any;
-                for (let item of _data["pointLoads"])
-                    this.pointLoads!.push(PointLoadResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["momentLoads"])) {
-                this.momentLoads = [] as any;
-                for (let item of _data["momentLoads"])
-                    this.momentLoads!.push(MomentLoadResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["resultSets"])) {
-                this.resultSets = [] as any;
-                for (let item of _data["resultSets"])
-                    this.resultSets!.push(ResultSetResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["loadCases"])) {
-                this.loadCases = [] as any;
-                for (let item of _data["loadCases"])
-                    this.loadCases!.push(LoadCase.fromJS(item));
-            }
-            if (Array.isArray(_data["loadCombinations"])) {
-                this.loadCombinations = [] as any;
-                for (let item of _data["loadCombinations"])
-                    this.loadCombinations!.push(LoadCombination.fromJS(item));
-            }
-        }
+    if (!data) {
+      this.settings = new ModelSettings();
     }
+  }
 
-    static fromJS(data: any): ModelResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.name = _data["name"];
+      this.description = _data["description"];
+      this.settings = _data["settings"]
+        ? ModelSettings.fromJS(_data["settings"])
+        : new ModelSettings();
+      this.lastModified = _data["lastModified"]
+        ? new Date(_data["lastModified"].toString())
+        : <any>undefined;
+      if (Array.isArray(_data["nodes"])) {
+        this.nodes = [] as any;
+        for (let item of _data["nodes"])
+          this.nodes!.push(NodeResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["internalNodes"])) {
+        this.internalNodes = [] as any;
+        for (let item of _data["internalNodes"])
+          this.internalNodes!.push(InternalNode.fromJS(item));
+      }
+      if (Array.isArray(_data["element1ds"])) {
+        this.element1ds = [] as any;
+        for (let item of _data["element1ds"])
+          this.element1ds!.push(Element1dResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["materials"])) {
+        this.materials = [] as any;
+        for (let item of _data["materials"])
+          this.materials!.push(MaterialResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["sectionProfiles"])) {
+        this.sectionProfiles = [] as any;
+        for (let item of _data["sectionProfiles"])
+          this.sectionProfiles!.push(SectionProfileResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["sectionProfilesFromLibrary"])) {
+        this.sectionProfilesFromLibrary = [] as any;
+        for (let item of _data["sectionProfilesFromLibrary"])
+          this.sectionProfilesFromLibrary!.push(
+            SectionProfileFromLibrary.fromJS(item)
+          );
+      }
+      if (Array.isArray(_data["pointLoads"])) {
+        this.pointLoads = [] as any;
+        for (let item of _data["pointLoads"])
+          this.pointLoads!.push(PointLoadResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["momentLoads"])) {
+        this.momentLoads = [] as any;
+        for (let item of _data["momentLoads"])
+          this.momentLoads!.push(MomentLoadResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["resultSets"])) {
+        this.resultSets = [] as any;
+        for (let item of _data["resultSets"])
+          this.resultSets!.push(ResultSetResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["loadCases"])) {
+        this.loadCases = [] as any;
+        for (let item of _data["loadCases"])
+          this.loadCases!.push(LoadCase.fromJS(item));
+      }
+      if (Array.isArray(_data["loadCombinations"])) {
+        this.loadCombinations = [] as any;
+        for (let item of _data["loadCombinations"])
+          this.loadCombinations!.push(LoadCombination.fromJS(item));
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        if (Array.isArray(this.nodes)) {
-            data["nodes"] = [];
-            for (let item of this.nodes)
-                data["nodes"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.internalNodes)) {
-            data["internalNodes"] = [];
-            for (let item of this.internalNodes)
-                data["internalNodes"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.element1ds)) {
-            data["element1ds"] = [];
-            for (let item of this.element1ds)
-                data["element1ds"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.materials)) {
-            data["materials"] = [];
-            for (let item of this.materials)
-                data["materials"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfiles)) {
-            data["sectionProfiles"] = [];
-            for (let item of this.sectionProfiles)
-                data["sectionProfiles"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.sectionProfilesFromLibrary)) {
-            data["sectionProfilesFromLibrary"] = [];
-            for (let item of this.sectionProfilesFromLibrary)
-                data["sectionProfilesFromLibrary"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.pointLoads)) {
-            data["pointLoads"] = [];
-            for (let item of this.pointLoads)
-                data["pointLoads"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.momentLoads)) {
-            data["momentLoads"] = [];
-            for (let item of this.momentLoads)
-                data["momentLoads"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.resultSets)) {
-            data["resultSets"] = [];
-            for (let item of this.resultSets)
-                data["resultSets"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.loadCases)) {
-            data["loadCases"] = [];
-            for (let item of this.loadCases)
-                data["loadCases"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.loadCombinations)) {
-            data["loadCombinations"] = [];
-            for (let item of this.loadCombinations)
-                data["loadCombinations"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
+  static fromJS(data: any): ModelResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ModelResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["name"] = this.name;
+    data["description"] = this.description;
+    data["settings"] = this.settings ? this.settings.toJSON() : <any>undefined;
+    data["lastModified"] = this.lastModified
+      ? this.lastModified.toISOString()
+      : <any>undefined;
+    if (Array.isArray(this.nodes)) {
+      data["nodes"] = [];
+      for (let item of this.nodes)
+        data["nodes"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.internalNodes)) {
+      data["internalNodes"] = [];
+      for (let item of this.internalNodes)
+        data["internalNodes"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.element1ds)) {
+      data["element1ds"] = [];
+      for (let item of this.element1ds)
+        data["element1ds"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.materials)) {
+      data["materials"] = [];
+      for (let item of this.materials)
+        data["materials"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.sectionProfiles)) {
+      data["sectionProfiles"] = [];
+      for (let item of this.sectionProfiles)
+        data["sectionProfiles"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.sectionProfilesFromLibrary)) {
+      data["sectionProfilesFromLibrary"] = [];
+      for (let item of this.sectionProfilesFromLibrary)
+        data["sectionProfilesFromLibrary"].push(
+          item ? item.toJSON() : <any>undefined
+        );
+    }
+    if (Array.isArray(this.pointLoads)) {
+      data["pointLoads"] = [];
+      for (let item of this.pointLoads)
+        data["pointLoads"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.momentLoads)) {
+      data["momentLoads"] = [];
+      for (let item of this.momentLoads)
+        data["momentLoads"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.resultSets)) {
+      data["resultSets"] = [];
+      for (let item of this.resultSets)
+        data["resultSets"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.loadCases)) {
+      data["loadCases"] = [];
+      for (let item of this.loadCases)
+        data["loadCases"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.loadCombinations)) {
+      data["loadCombinations"] = [];
+      for (let item of this.loadCombinations)
+        data["loadCombinations"].push(item ? item.toJSON() : <any>undefined);
+    }
+    return data;
+  }
 }
 
 export interface IModelResponse {
-    id: string;
-    name: string;
-    description: string;
-    settings: ModelSettings;
-    lastModified: Date;
-    nodes?: NodeResponse[] | undefined;
-    internalNodes?: InternalNode[] | undefined;
-    element1ds?: Element1dResponse[] | undefined;
-    materials?: MaterialResponse[] | undefined;
-    sectionProfiles?: SectionProfileResponse[] | undefined;
-    sectionProfilesFromLibrary?: SectionProfileFromLibrary[] | undefined;
-    pointLoads?: PointLoadResponse[] | undefined;
-    momentLoads?: MomentLoadResponse[] | undefined;
-    resultSets?: ResultSetResponse[] | undefined;
-    loadCases?: LoadCase[] | undefined;
-    loadCombinations?: LoadCombination[] | undefined;
+  id: string;
+  name: string;
+  description: string;
+  settings: ModelSettings;
+  lastModified: Date;
+  nodes?: NodeResponse[] | undefined;
+  internalNodes?: InternalNode[] | undefined;
+  element1ds?: Element1dResponse[] | undefined;
+  materials?: MaterialResponse[] | undefined;
+  sectionProfiles?: SectionProfileResponse[] | undefined;
+  sectionProfilesFromLibrary?: SectionProfileFromLibrary[] | undefined;
+  pointLoads?: PointLoadResponse[] | undefined;
+  momentLoads?: MomentLoadResponse[] | undefined;
+  resultSets?: ResultSetResponse[] | undefined;
+  loadCases?: LoadCase[] | undefined;
+  loadCombinations?: LoadCombination[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ModelSettings implements IModelSettings {
-    unitSettings!: UnitSettings;
-    analysisSettings?: AnalysisSettings | undefined;
-    yAxisUp?: boolean;
+  unitSettings!: UnitSettings;
+  analysisSettings!: AnalysisSettings;
+  yAxisUp!: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IModelSettings) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.unitSettings = new UnitSettings();
-            this.yAxisUp = true;
-        }
+  constructor(data?: IModelSettings) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.unitSettings = _data["unitSettings"] ? UnitSettings.fromJS(_data["unitSettings"]) : new UnitSettings();
-            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettings.fromJS(_data["analysisSettings"]) : <any>undefined;
-            this.yAxisUp = _data["yAxisUp"] !== undefined ? _data["yAxisUp"] : true;
-        }
+    if (!data) {
+      this.unitSettings = new UnitSettings();
+      this.analysisSettings = new AnalysisSettings();
     }
+  }
 
-    static fromJS(data: any): ModelSettings {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModelSettings();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.unitSettings = _data["unitSettings"]
+        ? UnitSettings.fromJS(_data["unitSettings"])
+        : new UnitSettings();
+      this.analysisSettings = _data["analysisSettings"]
+        ? AnalysisSettings.fromJS(_data["analysisSettings"])
+        : new AnalysisSettings();
+      this.yAxisUp = _data["yAxisUp"];
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["unitSettings"] = this.unitSettings ? this.unitSettings.toJSON() : <any>undefined;
-        data["analysisSettings"] = this.analysisSettings ? this.analysisSettings.toJSON() : <any>undefined;
-        data["yAxisUp"] = this.yAxisUp;
-        return data;
+  static fromJS(data: any): ModelSettings {
+    data = typeof data === "object" ? data : {};
+    let result = new ModelSettings();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["unitSettings"] = this.unitSettings
+      ? this.unitSettings.toJSON()
+      : <any>undefined;
+    data["analysisSettings"] = this.analysisSettings
+      ? this.analysisSettings.toJSON()
+      : <any>undefined;
+    data["yAxisUp"] = this.yAxisUp;
+    return data;
+  }
 }
 
 export interface IModelSettings {
-    unitSettings: UnitSettings;
-    analysisSettings?: AnalysisSettings | undefined;
-    yAxisUp?: boolean;
+  unitSettings: UnitSettings;
+  analysisSettings: AnalysisSettings;
+  yAxisUp: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
-export class ModifyElement1dProposalResponse implements IModifyElement1dProposalResponse {
-    id?: number;
-    existingElement1dId!: number;
-    startNodeId!: ProposedID;
-    endNodeId!: ProposedID;
-    materialId!: ProposedID;
-    sectionProfileId!: ProposedID;
-    existingId?: number;
-    objectType?: number;
-    sectionProfileRotation?: NullableOfAngle | undefined;
-    metadata?: { [key: string]: string; } | undefined;
+export class ModifyElement1dProposalResponse
+  implements IModifyElement1dProposalResponse
+{
+  id?: number;
+  existingElement1dId!: number;
+  startNodeId!: ProposedID;
+  endNodeId!: ProposedID;
+  materialId!: ProposedID;
+  sectionProfileId!: ProposedID;
+  existingId?: number;
+  objectType?: number;
+  sectionProfileRotation?: NullableOfAngle | undefined;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IModifyElement1dProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.startNodeId = new ProposedID();
-            this.endNodeId = new ProposedID();
-            this.materialId = new ProposedID();
-            this.sectionProfileId = new ProposedID();
-        }
+  constructor(data?: IModifyElement1dProposalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.existingElement1dId = _data["existingElement1dId"];
-            this.startNodeId = _data["startNodeId"] ? ProposedID.fromJS(_data["startNodeId"]) : new ProposedID();
-            this.endNodeId = _data["endNodeId"] ? ProposedID.fromJS(_data["endNodeId"]) : new ProposedID();
-            this.materialId = _data["materialId"] ? ProposedID.fromJS(_data["materialId"]) : new ProposedID();
-            this.sectionProfileId = _data["sectionProfileId"] ? ProposedID.fromJS(_data["sectionProfileId"]) : new ProposedID();
-            this.existingId = _data["existingId"];
-            this.objectType = _data["objectType"];
-            this.sectionProfileRotation = _data["sectionProfileRotation"] ? NullableOfAngle.fromJS(_data["sectionProfileRotation"]) : <any>undefined;
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
+    if (!data) {
+      this.startNodeId = new ProposedID();
+      this.endNodeId = new ProposedID();
+      this.materialId = new ProposedID();
+      this.sectionProfileId = new ProposedID();
     }
+  }
 
-    static fromJS(data: any): ModifyElement1dProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModifyElement1dProposalResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.existingElement1dId = _data["existingElement1dId"];
+      this.startNodeId = _data["startNodeId"]
+        ? ProposedID.fromJS(_data["startNodeId"])
+        : new ProposedID();
+      this.endNodeId = _data["endNodeId"]
+        ? ProposedID.fromJS(_data["endNodeId"])
+        : new ProposedID();
+      this.materialId = _data["materialId"]
+        ? ProposedID.fromJS(_data["materialId"])
+        : new ProposedID();
+      this.sectionProfileId = _data["sectionProfileId"]
+        ? ProposedID.fromJS(_data["sectionProfileId"])
+        : new ProposedID();
+      this.existingId = _data["existingId"];
+      this.objectType = _data["objectType"];
+      this.sectionProfileRotation = _data["sectionProfileRotation"]
+        ? NullableOfAngle.fromJS(_data["sectionProfileRotation"])
+        : <any>undefined;
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["existingElement1dId"] = this.existingElement1dId;
-        data["startNodeId"] = this.startNodeId ? this.startNodeId.toJSON() : <any>undefined;
-        data["endNodeId"] = this.endNodeId ? this.endNodeId.toJSON() : <any>undefined;
-        data["materialId"] = this.materialId ? this.materialId.toJSON() : <any>undefined;
-        data["sectionProfileId"] = this.sectionProfileId ? this.sectionProfileId.toJSON() : <any>undefined;
-        data["existingId"] = this.existingId;
-        data["objectType"] = this.objectType;
-        data["sectionProfileRotation"] = this.sectionProfileRotation ? this.sectionProfileRotation.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
+  static fromJS(data: any): ModifyElement1dProposalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ModifyElement1dProposalResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["existingElement1dId"] = this.existingElement1dId;
+    data["startNodeId"] = this.startNodeId
+      ? this.startNodeId.toJSON()
+      : <any>undefined;
+    data["endNodeId"] = this.endNodeId
+      ? this.endNodeId.toJSON()
+      : <any>undefined;
+    data["materialId"] = this.materialId
+      ? this.materialId.toJSON()
+      : <any>undefined;
+    data["sectionProfileId"] = this.sectionProfileId
+      ? this.sectionProfileId.toJSON()
+      : <any>undefined;
+    data["existingId"] = this.existingId;
+    data["objectType"] = this.objectType;
+    data["sectionProfileRotation"] = this.sectionProfileRotation
+      ? this.sectionProfileRotation.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    return data;
+  }
 }
 
 export interface IModifyElement1dProposalResponse {
-    id?: number;
-    existingElement1dId: number;
-    startNodeId: ProposedID;
-    endNodeId: ProposedID;
-    materialId: ProposedID;
-    sectionProfileId: ProposedID;
-    existingId?: number;
-    objectType?: number;
-    sectionProfileRotation?: NullableOfAngle | undefined;
-    metadata?: { [key: string]: string; } | undefined;
+  id?: number;
+  existingElement1dId: number;
+  startNodeId: ProposedID;
+  endNodeId: ProposedID;
+  materialId: ProposedID;
+  sectionProfileId: ProposedID;
+  existingId?: number;
+  objectType?: number;
+  sectionProfileRotation?: NullableOfAngle | undefined;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
-export class ModifyInternalNodeProposalResponse implements IModifyInternalNodeProposalResponse {
-    existingInternalNodeId!: number;
-    element1dId!: ProposedID;
-    ratioAlongElement1d!: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-    id!: number;
+export class ModifyInternalNodeProposalResponse
+  implements IModifyInternalNodeProposalResponse
+{
+  existingInternalNodeId!: number;
+  element1dId!: ProposedID;
+  ratioAlongElement1d!: Ratio;
+  restraint?: NullableOfRestraint | undefined;
+  metadata?: { [key: string]: string } | undefined;
+  id!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IModifyInternalNodeProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.element1dId = new ProposedID();
-            this.ratioAlongElement1d = new Ratio();
-        }
+  constructor(data?: IModifyInternalNodeProposalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.existingInternalNodeId = _data["existingInternalNodeId"];
-            this.element1dId = _data["element1dId"] ? ProposedID.fromJS(_data["element1dId"]) : new ProposedID();
-            this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-            this.id = _data["id"];
-        }
+    if (!data) {
+      this.element1dId = new ProposedID();
+      this.ratioAlongElement1d = new Ratio();
     }
+  }
 
-    static fromJS(data: any): ModifyInternalNodeProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModifyInternalNodeProposalResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.existingInternalNodeId = _data["existingInternalNodeId"];
+      this.element1dId = _data["element1dId"]
+        ? ProposedID.fromJS(_data["element1dId"])
+        : new ProposedID();
+      this.ratioAlongElement1d = _data["ratioAlongElement1d"]
+        ? Ratio.fromJS(_data["ratioAlongElement1d"])
+        : new Ratio();
+      this.restraint = _data["restraint"]
+        ? NullableOfRestraint.fromJS(_data["restraint"])
+        : <any>undefined;
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
+      this.id = _data["id"];
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["existingInternalNodeId"] = this.existingInternalNodeId;
-        data["element1dId"] = this.element1dId ? this.element1dId.toJSON() : <any>undefined;
-        data["ratioAlongElement1d"] = this.ratioAlongElement1d ? this.ratioAlongElement1d.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        data["id"] = this.id;
-        return data;
+  static fromJS(data: any): ModifyInternalNodeProposalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ModifyInternalNodeProposalResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["existingInternalNodeId"] = this.existingInternalNodeId;
+    data["element1dId"] = this.element1dId
+      ? this.element1dId.toJSON()
+      : <any>undefined;
+    data["ratioAlongElement1d"] = this.ratioAlongElement1d
+      ? this.ratioAlongElement1d.toJSON()
+      : <any>undefined;
+    data["restraint"] = this.restraint
+      ? this.restraint.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IModifyInternalNodeProposalResponse {
-    existingInternalNodeId: number;
-    element1dId: ProposedID;
-    ratioAlongElement1d: Ratio;
-    restraint?: NullableOfRestraint | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-    id: number;
+  existingInternalNodeId: number;
+  element1dId: ProposedID;
+  ratioAlongElement1d: Ratio;
+  restraint?: NullableOfRestraint | undefined;
+  metadata?: { [key: string]: string } | undefined;
+  id: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ModifyNodeProposalResponse implements IModifyNodeProposalResponse {
-    existingNodeId!: number;
-    id!: number;
-    locationPoint!: Point;
-    restraint!: Restraint;
-    metadata?: { [key: string]: string; } | undefined;
+  existingNodeId!: number;
+  id!: number;
+  locationPoint!: Point;
+  restraint!: Restraint;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IModifyNodeProposalResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.locationPoint = new Point();
-            this.restraint = new Restraint();
-        }
+  constructor(data?: IModifyNodeProposalResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.existingNodeId = _data["existingNodeId"];
-            this.id = _data["id"];
-            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
-            if (_data["metadata"]) {
-                this.metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>this.metadata)![key] = _data["metadata"][key];
-                }
-            }
-        }
+    if (!data) {
+      this.locationPoint = new Point();
+      this.restraint = new Restraint();
     }
+  }
 
-    static fromJS(data: any): ModifyNodeProposalResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModifyNodeProposalResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.existingNodeId = _data["existingNodeId"];
+      this.id = _data["id"];
+      this.locationPoint = _data["locationPoint"]
+        ? Point.fromJS(_data["locationPoint"])
+        : new Point();
+      this.restraint = _data["restraint"]
+        ? Restraint.fromJS(_data["restraint"])
+        : new Restraint();
+      if (_data["metadata"]) {
+        this.metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key))
+            (<any>this.metadata)![key] = _data["metadata"][key];
+        }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["existingNodeId"] = this.existingNodeId;
-        data["id"] = this.id;
-        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        return data;
+  static fromJS(data: any): ModifyNodeProposalResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ModifyNodeProposalResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["existingNodeId"] = this.existingNodeId;
+    data["id"] = this.id;
+    data["locationPoint"] = this.locationPoint
+      ? this.locationPoint.toJSON()
+      : <any>undefined;
+    data["restraint"] = this.restraint
+      ? this.restraint.toJSON()
+      : <any>undefined;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key))
+          (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
+    }
+    return data;
+  }
 }
 
 export interface IModifyNodeProposalResponse {
-    existingNodeId: number;
-    id: number;
-    locationPoint: Point;
-    restraint: Restraint;
-    metadata?: { [key: string]: string; } | undefined;
+  existingNodeId: number;
+  id: number;
+  locationPoint: Point;
+  restraint: Restraint;
+  metadata?: { [key: string]: string } | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class MomentDiagramResponse implements IMomentDiagramResponse {
-    modelId!: string;
-    resultSetId!: number;
-    element1dId!: number;
-    lengthUnit!: number;
-    torqueUnit!: number;
-    elementLength!: Length;
-    intervals!: DiagramConsistentIntervalResponse2[];
+  modelId!: string;
+  resultSetId!: number;
+  element1dId!: number;
+  lengthUnit!: number;
+  torqueUnit!: number;
+  elementLength!: Length;
+  intervals!: DiagramConsistentIntervalResponse2[];
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IMomentDiagramResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.elementLength = new Length();
-            this.intervals = [];
-        }
+  constructor(data?: IMomentDiagramResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.modelId = _data["modelId"];
-            this.resultSetId = _data["resultSetId"];
-            this.element1dId = _data["element1dId"];
-            this.lengthUnit = _data["lengthUnit"];
-            this.torqueUnit = _data["torqueUnit"];
-            this.elementLength = _data["elementLength"] ? Length.fromJS(_data["elementLength"]) : new Length();
-            if (Array.isArray(_data["intervals"])) {
-                this.intervals = [] as any;
-                for (let item of _data["intervals"])
-                    this.intervals!.push(DiagramConsistentIntervalResponse2.fromJS(item));
-            }
-        }
+    if (!data) {
+      this.elementLength = new Length();
+      this.intervals = [];
     }
+  }
 
-    static fromJS(data: any): MomentDiagramResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new MomentDiagramResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.modelId = _data["modelId"];
+      this.resultSetId = _data["resultSetId"];
+      this.element1dId = _data["element1dId"];
+      this.lengthUnit = _data["lengthUnit"];
+      this.torqueUnit = _data["torqueUnit"];
+      this.elementLength = _data["elementLength"]
+        ? Length.fromJS(_data["elementLength"])
+        : new Length();
+      if (Array.isArray(_data["intervals"])) {
+        this.intervals = [] as any;
+        for (let item of _data["intervals"])
+          this.intervals!.push(DiagramConsistentIntervalResponse2.fromJS(item));
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["modelId"] = this.modelId;
-        data["resultSetId"] = this.resultSetId;
-        data["element1dId"] = this.element1dId;
-        data["lengthUnit"] = this.lengthUnit;
-        data["torqueUnit"] = this.torqueUnit;
-        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
-        if (Array.isArray(this.intervals)) {
-            data["intervals"] = [];
-            for (let item of this.intervals)
-                data["intervals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
+  static fromJS(data: any): MomentDiagramResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new MomentDiagramResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["modelId"] = this.modelId;
+    data["resultSetId"] = this.resultSetId;
+    data["element1dId"] = this.element1dId;
+    data["lengthUnit"] = this.lengthUnit;
+    data["torqueUnit"] = this.torqueUnit;
+    data["elementLength"] = this.elementLength
+      ? this.elementLength.toJSON()
+      : <any>undefined;
+    if (Array.isArray(this.intervals)) {
+      data["intervals"] = [];
+      for (let item of this.intervals)
+        data["intervals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    return data;
+  }
 }
 
 export interface IMomentDiagramResponse {
-    modelId: string;
-    resultSetId: number;
-    element1dId: number;
-    lengthUnit: number;
-    torqueUnit: number;
-    elementLength: Length;
-    intervals: DiagramConsistentIntervalResponse2[];
+  modelId: string;
+  resultSetId: number;
+  element1dId: number;
+  lengthUnit: number;
+  torqueUnit: number;
+  elementLength: Length;
+  intervals: DiagramConsistentIntervalResponse2[];
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class MomentLoad implements IMomentLoad {
-    id?: number;
-    nodeId!: number;
-    loadCaseId!: number;
-    torque!: Torque;
-    axisDirection!: Vector3;
+  id?: number;
+  nodeId!: number;
+  loadCaseId!: number;
+  torque!: Torque;
+  axisDirection!: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IMomentLoad) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.torque = new Torque();
-            this.axisDirection = new Vector3();
-        }
+  constructor(data?: IMomentLoad) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.nodeId = _data["nodeId"];
-            this.loadCaseId = _data["loadCaseId"];
-            this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
-            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
-        }
+    if (!data) {
+      this.torque = new Torque();
+      this.axisDirection = new Vector3();
     }
+  }
 
-    static fromJS(data: any): MomentLoad {
-        data = typeof data === 'object' ? data : {};
-        let result = new MomentLoad();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.nodeId = _data["nodeId"];
+      this.loadCaseId = _data["loadCaseId"];
+      this.torque = _data["torque"]
+        ? Torque.fromJS(_data["torque"])
+        : new Torque();
+      this.axisDirection = _data["axisDirection"]
+        ? Vector3.fromJS(_data["axisDirection"])
+        : new Vector3();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["nodeId"] = this.nodeId;
-        data["loadCaseId"] = this.loadCaseId;
-        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
-        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): MomentLoad {
+    data = typeof data === "object" ? data : {};
+    let result = new MomentLoad();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["nodeId"] = this.nodeId;
+    data["loadCaseId"] = this.loadCaseId;
+    data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+    data["axisDirection"] = this.axisDirection
+      ? this.axisDirection.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IMomentLoad {
-    id?: number;
-    nodeId: number;
-    loadCaseId: number;
-    torque: Torque;
-    axisDirection: Vector3;
+  id?: number;
+  nodeId: number;
+  loadCaseId: number;
+  torque: Torque;
+  axisDirection: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class MomentLoadResponse implements IMomentLoadResponse {
-    id!: number;
-    nodeId!: number;
-    loadCaseId!: number;
-    modelId!: string;
-    torque!: Torque;
-    axisDirection!: Vector3;
+  id!: number;
+  nodeId!: number;
+  loadCaseId!: number;
+  modelId!: string;
+  torque!: Torque;
+  axisDirection!: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IMomentLoadResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.torque = new Torque();
-            this.axisDirection = new Vector3();
-        }
+  constructor(data?: IMomentLoadResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.nodeId = _data["nodeId"];
-            this.loadCaseId = _data["loadCaseId"];
-            this.modelId = _data["modelId"];
-            this.torque = _data["torque"] ? Torque.fromJS(_data["torque"]) : new Torque();
-            this.axisDirection = _data["axisDirection"] ? Vector3.fromJS(_data["axisDirection"]) : new Vector3();
-        }
+    if (!data) {
+      this.torque = new Torque();
+      this.axisDirection = new Vector3();
     }
+  }
 
-    static fromJS(data: any): MomentLoadResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new MomentLoadResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.nodeId = _data["nodeId"];
+      this.loadCaseId = _data["loadCaseId"];
+      this.modelId = _data["modelId"];
+      this.torque = _data["torque"]
+        ? Torque.fromJS(_data["torque"])
+        : new Torque();
+      this.axisDirection = _data["axisDirection"]
+        ? Vector3.fromJS(_data["axisDirection"])
+        : new Vector3();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["nodeId"] = this.nodeId;
-        data["loadCaseId"] = this.loadCaseId;
-        data["modelId"] = this.modelId;
-        data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
-        data["axisDirection"] = this.axisDirection ? this.axisDirection.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): MomentLoadResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new MomentLoadResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["nodeId"] = this.nodeId;
+    data["loadCaseId"] = this.loadCaseId;
+    data["modelId"] = this.modelId;
+    data["torque"] = this.torque ? this.torque.toJSON() : <any>undefined;
+    data["axisDirection"] = this.axisDirection
+      ? this.axisDirection.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IMomentLoadResponse {
-    id: number;
-    nodeId: number;
-    loadCaseId: number;
-    modelId: string;
-    torque: Torque;
-    axisDirection: Vector3;
+  id: number;
+  nodeId: number;
+  loadCaseId: number;
+  modelId: string;
+  torque: Torque;
+  axisDirection: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class MoveNodeCommand implements IMoveNodeCommand {
-    canvasId!: string;
-    nodeId!: number;
-    previousLocation!: Coordinate3D;
-    newLocation!: Coordinate3D;
-    handledByEditor?: boolean;
-    handledByBlazor?: boolean;
-    handledByServer?: boolean;
+  canvasId!: string;
+  nodeId!: number;
+  previousLocation!: Coordinate3D;
+  newLocation!: Coordinate3D;
+  handledByEditor?: boolean;
+  handledByBlazor?: boolean;
+  handledByServer?: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IMoveNodeCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.previousLocation = new Coordinate3D();
-            this.newLocation = new Coordinate3D();
-        }
+  constructor(data?: IMoveNodeCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.canvasId = _data["canvasId"];
-            this.nodeId = _data["nodeId"];
-            this.previousLocation = _data["previousLocation"] ? Coordinate3D.fromJS(_data["previousLocation"]) : new Coordinate3D();
-            this.newLocation = _data["newLocation"] ? Coordinate3D.fromJS(_data["newLocation"]) : new Coordinate3D();
-            this.handledByEditor = _data["handledByEditor"];
-            this.handledByBlazor = _data["handledByBlazor"];
-            this.handledByServer = _data["handledByServer"];
-        }
+    if (!data) {
+      this.previousLocation = new Coordinate3D();
+      this.newLocation = new Coordinate3D();
     }
+  }
 
-    static fromJS(data: any): MoveNodeCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new MoveNodeCommand();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.canvasId = _data["canvasId"];
+      this.nodeId = _data["nodeId"];
+      this.previousLocation = _data["previousLocation"]
+        ? Coordinate3D.fromJS(_data["previousLocation"])
+        : new Coordinate3D();
+      this.newLocation = _data["newLocation"]
+        ? Coordinate3D.fromJS(_data["newLocation"])
+        : new Coordinate3D();
+      this.handledByEditor = _data["handledByEditor"];
+      this.handledByBlazor = _data["handledByBlazor"];
+      this.handledByServer = _data["handledByServer"];
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["canvasId"] = this.canvasId;
-        data["nodeId"] = this.nodeId;
-        data["previousLocation"] = this.previousLocation ? this.previousLocation.toJSON() : <any>undefined;
-        data["newLocation"] = this.newLocation ? this.newLocation.toJSON() : <any>undefined;
-        data["handledByEditor"] = this.handledByEditor;
-        data["handledByBlazor"] = this.handledByBlazor;
-        data["handledByServer"] = this.handledByServer;
-        return data;
+  static fromJS(data: any): MoveNodeCommand {
+    data = typeof data === "object" ? data : {};
+    let result = new MoveNodeCommand();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["canvasId"] = this.canvasId;
+    data["nodeId"] = this.nodeId;
+    data["previousLocation"] = this.previousLocation
+      ? this.previousLocation.toJSON()
+      : <any>undefined;
+    data["newLocation"] = this.newLocation
+      ? this.newLocation.toJSON()
+      : <any>undefined;
+    data["handledByEditor"] = this.handledByEditor;
+    data["handledByBlazor"] = this.handledByBlazor;
+    data["handledByServer"] = this.handledByServer;
+    return data;
+  }
 }
 
 export interface IMoveNodeCommand {
-    canvasId: string;
-    nodeId: number;
-    previousLocation: Coordinate3D;
-    newLocation: Coordinate3D;
-    handledByEditor?: boolean;
-    handledByBlazor?: boolean;
-    handledByServer?: boolean;
+  canvasId: string;
+  nodeId: number;
+  previousLocation: Coordinate3D;
+  newLocation: Coordinate3D;
+  handledByEditor?: boolean;
+  handledByBlazor?: boolean;
+  handledByServer?: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class NodeResponse implements INodeResponse {
-    id!: number;
-    modelId!: string;
-    locationPoint!: Point;
-    restraint!: Restraint;
+  id!: number;
+  modelId!: string;
+  locationPoint!: Point;
+  restraint!: Restraint;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: INodeResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.locationPoint = new Point();
-            this.restraint = new Restraint();
-        }
+  constructor(data?: INodeResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.locationPoint = _data["locationPoint"] ? Point.fromJS(_data["locationPoint"]) : new Point();
-            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
-        }
+    if (!data) {
+      this.locationPoint = new Point();
+      this.restraint = new Restraint();
     }
+  }
 
-    static fromJS(data: any): NodeResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new NodeResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modelId = _data["modelId"];
+      this.locationPoint = _data["locationPoint"]
+        ? Point.fromJS(_data["locationPoint"])
+        : new Point();
+      this.restraint = _data["restraint"]
+        ? Restraint.fromJS(_data["restraint"])
+        : new Restraint();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["locationPoint"] = this.locationPoint ? this.locationPoint.toJSON() : <any>undefined;
-        data["restraint"] = this.restraint ? this.restraint.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): NodeResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new NodeResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modelId"] = this.modelId;
+    data["locationPoint"] = this.locationPoint
+      ? this.locationPoint.toJSON()
+      : <any>undefined;
+    data["restraint"] = this.restraint
+      ? this.restraint.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface INodeResponse {
-    id: number;
-    modelId: string;
-    locationPoint: Point;
-    restraint: Restraint;
+  id: number;
+  modelId: string;
+  locationPoint: Point;
+  restraint: Restraint;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class NodeResultResponse implements INodeResultResponse {
-    modelId!: string;
-    resultSetId!: number;
-    nodeId!: number;
-    forces!: ForcesResponse;
-    displacements!: DisplacementsResponse;
+  modelId!: string;
+  resultSetId!: number;
+  nodeId!: number;
+  forces!: ForcesResponse;
+  displacements!: DisplacementsResponse;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: INodeResultResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.forces = new ForcesResponse();
-            this.displacements = new DisplacementsResponse();
-        }
+  constructor(data?: INodeResultResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.modelId = _data["modelId"];
-            this.resultSetId = _data["resultSetId"];
-            this.nodeId = _data["nodeId"];
-            this.forces = _data["forces"] ? ForcesResponse.fromJS(_data["forces"]) : new ForcesResponse();
-            this.displacements = _data["displacements"] ? DisplacementsResponse.fromJS(_data["displacements"]) : new DisplacementsResponse();
-        }
+    if (!data) {
+      this.forces = new ForcesResponse();
+      this.displacements = new DisplacementsResponse();
     }
+  }
 
-    static fromJS(data: any): NodeResultResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new NodeResultResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.modelId = _data["modelId"];
+      this.resultSetId = _data["resultSetId"];
+      this.nodeId = _data["nodeId"];
+      this.forces = _data["forces"]
+        ? ForcesResponse.fromJS(_data["forces"])
+        : new ForcesResponse();
+      this.displacements = _data["displacements"]
+        ? DisplacementsResponse.fromJS(_data["displacements"])
+        : new DisplacementsResponse();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["modelId"] = this.modelId;
-        data["resultSetId"] = this.resultSetId;
-        data["nodeId"] = this.nodeId;
-        data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
-        data["displacements"] = this.displacements ? this.displacements.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): NodeResultResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new NodeResultResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["modelId"] = this.modelId;
+    data["resultSetId"] = this.resultSetId;
+    data["nodeId"] = this.nodeId;
+    data["forces"] = this.forces ? this.forces.toJSON() : <any>undefined;
+    data["displacements"] = this.displacements
+      ? this.displacements.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface INodeResultResponse {
-    modelId: string;
-    resultSetId: number;
-    nodeId: number;
-    forces: ForcesResponse;
-    displacements: DisplacementsResponse;
+  modelId: string;
+  resultSetId: number;
+  nodeId: number;
+  forces: ForcesResponse;
+  displacements: DisplacementsResponse;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class NullableOfAngle implements INullableOfAngle {
-    value!: number;
-    unit!: number;
+  value!: number;
+  unit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: INullableOfAngle) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: INullableOfAngle) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.value = _data["value"];
+      this.unit = _data["unit"];
     }
+  }
 
-    static fromJS(data: any): NullableOfAngle {
-        data = typeof data === 'object' ? data : {};
-        let result = new NullableOfAngle();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): NullableOfAngle {
+    data = typeof data === "object" ? data : {};
+    let result = new NullableOfAngle();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["value"] = this.value;
+    data["unit"] = this.unit;
+    return data;
+  }
 }
 
 export interface INullableOfAngle {
-    value: number;
-    unit: number;
+  value: number;
+  unit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class NullableOfRestraint implements INullableOfRestraint {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
+  canTranslateAlongX!: boolean;
+  canTranslateAlongY!: boolean;
+  canTranslateAlongZ!: boolean;
+  canRotateAboutX!: boolean;
+  canRotateAboutY!: boolean;
+  canRotateAboutZ!: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: INullableOfRestraint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: INullableOfRestraint) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.canTranslateAlongX = _data["canTranslateAlongX"];
+      this.canTranslateAlongY = _data["canTranslateAlongY"];
+      this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+      this.canRotateAboutX = _data["canRotateAboutX"];
+      this.canRotateAboutY = _data["canRotateAboutY"];
+      this.canRotateAboutZ = _data["canRotateAboutZ"];
     }
+  }
 
-    static fromJS(data: any): NullableOfRestraint {
-        data = typeof data === 'object' ? data : {};
-        let result = new NullableOfRestraint();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): NullableOfRestraint {
+    data = typeof data === "object" ? data : {};
+    let result = new NullableOfRestraint();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["canTranslateAlongX"] = this.canTranslateAlongX;
+    data["canTranslateAlongY"] = this.canTranslateAlongY;
+    data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+    data["canRotateAboutX"] = this.canRotateAboutX;
+    data["canRotateAboutY"] = this.canRotateAboutY;
+    data["canRotateAboutZ"] = this.canRotateAboutZ;
+    return data;
+  }
 }
 
 export interface INullableOfRestraint {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
+  canTranslateAlongX: boolean;
+  canTranslateAlongY: boolean;
+  canTranslateAlongZ: boolean;
+  canRotateAboutX: boolean;
+  canRotateAboutY: boolean;
+  canRotateAboutZ: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Point implements IPoint {
-    x!: number;
-    y!: number;
-    z!: number;
-    lengthUnit!: number;
+  x!: number;
+  y!: number;
+  z!: number;
+  lengthUnit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IPoint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPoint) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.x = _data["x"];
-            this.y = _data["y"];
-            this.z = _data["z"];
-            this.lengthUnit = _data["lengthUnit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.x = _data["x"];
+      this.y = _data["y"];
+      this.z = _data["z"];
+      this.lengthUnit = _data["lengthUnit"];
     }
+  }
 
-    static fromJS(data: any): Point {
-        data = typeof data === 'object' ? data : {};
-        let result = new Point();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Point {
+    data = typeof data === "object" ? data : {};
+    let result = new Point();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["x"] = this.x;
-        data["y"] = this.y;
-        data["z"] = this.z;
-        data["lengthUnit"] = this.lengthUnit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["x"] = this.x;
+    data["y"] = this.y;
+    data["z"] = this.z;
+    data["lengthUnit"] = this.lengthUnit;
+    return data;
+  }
 }
 
 export interface IPoint {
-    x: number;
-    y: number;
-    z: number;
-    lengthUnit: number;
+  x: number;
+  y: number;
+  z: number;
+  lengthUnit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class PointLoad implements IPointLoad {
-    id!: number;
-    nodeId!: number;
-    loadCaseId!: number;
-    force!: Force;
-    direction!: Vector3;
+  id!: number;
+  nodeId!: number;
+  loadCaseId!: number;
+  force!: Force;
+  direction!: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IPointLoad) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.force = new Force();
-            this.direction = new Vector3();
-        }
+  constructor(data?: IPointLoad) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.nodeId = _data["nodeId"];
-            this.loadCaseId = _data["loadCaseId"];
-            this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
-            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
-        }
+    if (!data) {
+      this.force = new Force();
+      this.direction = new Vector3();
     }
+  }
 
-    static fromJS(data: any): PointLoad {
-        data = typeof data === 'object' ? data : {};
-        let result = new PointLoad();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.nodeId = _data["nodeId"];
+      this.loadCaseId = _data["loadCaseId"];
+      this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
+      this.direction = _data["direction"]
+        ? Vector3.fromJS(_data["direction"])
+        : new Vector3();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["nodeId"] = this.nodeId;
-        data["loadCaseId"] = this.loadCaseId;
-        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
-        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): PointLoad {
+    data = typeof data === "object" ? data : {};
+    let result = new PointLoad();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["nodeId"] = this.nodeId;
+    data["loadCaseId"] = this.loadCaseId;
+    data["force"] = this.force ? this.force.toJSON() : <any>undefined;
+    data["direction"] = this.direction
+      ? this.direction.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IPointLoad {
-    id: number;
-    nodeId: number;
-    loadCaseId: number;
-    force: Force;
-    direction: Vector3;
+  id: number;
+  nodeId: number;
+  loadCaseId: number;
+  force: Force;
+  direction: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class PointLoadResponse implements IPointLoadResponse {
-    modelId!: string;
-    id!: number;
-    nodeId!: number;
-    loadCaseId!: number;
-    force!: Force;
-    direction!: Vector3;
+  modelId!: string;
+  id!: number;
+  nodeId!: number;
+  loadCaseId!: number;
+  force!: Force;
+  direction!: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IPointLoadResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.force = new Force();
-            this.direction = new Vector3();
-        }
+  constructor(data?: IPointLoadResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.modelId = _data["modelId"];
-            this.id = _data["id"];
-            this.nodeId = _data["nodeId"];
-            this.loadCaseId = _data["loadCaseId"];
-            this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
-            this.direction = _data["direction"] ? Vector3.fromJS(_data["direction"]) : new Vector3();
-        }
+    if (!data) {
+      this.force = new Force();
+      this.direction = new Vector3();
     }
+  }
 
-    static fromJS(data: any): PointLoadResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new PointLoadResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.modelId = _data["modelId"];
+      this.id = _data["id"];
+      this.nodeId = _data["nodeId"];
+      this.loadCaseId = _data["loadCaseId"];
+      this.force = _data["force"] ? Force.fromJS(_data["force"]) : new Force();
+      this.direction = _data["direction"]
+        ? Vector3.fromJS(_data["direction"])
+        : new Vector3();
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["modelId"] = this.modelId;
-        data["id"] = this.id;
-        data["nodeId"] = this.nodeId;
-        data["loadCaseId"] = this.loadCaseId;
-        data["force"] = this.force ? this.force.toJSON() : <any>undefined;
-        data["direction"] = this.direction ? this.direction.toJSON() : <any>undefined;
-        return data;
+  static fromJS(data: any): PointLoadResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new PointLoadResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["modelId"] = this.modelId;
+    data["id"] = this.id;
+    data["nodeId"] = this.nodeId;
+    data["loadCaseId"] = this.loadCaseId;
+    data["force"] = this.force ? this.force.toJSON() : <any>undefined;
+    data["direction"] = this.direction
+      ? this.direction.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IPointLoadResponse {
-    modelId: string;
-    id: number;
-    nodeId: number;
-    loadCaseId: number;
-    force: Force;
-    direction: Vector3;
+  modelId: string;
+  id: number;
+  nodeId: number;
+  loadCaseId: number;
+  force: Force;
+  direction: Vector3;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ProposalIssue implements IProposalIssue {
-    id!: number;
-    proposedId!: ProposedID;
-    objectType!: number;
-    message!: string;
-    severity!: number;
-    code!: number;
+  id!: number;
+  proposedId!: ProposedID;
+  objectType!: number;
+  message!: string;
+  severity!: number;
+  code!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IProposalIssue) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.proposedId = new ProposedID();
-        }
+  constructor(data?: IProposalIssue) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.proposedId = _data["proposedId"] ? ProposedID.fromJS(_data["proposedId"]) : new ProposedID();
-            this.objectType = _data["objectType"];
-            this.message = _data["message"];
-            this.severity = _data["severity"];
-            this.code = _data["code"];
-        }
+    if (!data) {
+      this.proposedId = new ProposedID();
     }
+  }
 
-    static fromJS(data: any): ProposalIssue {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProposalIssue();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.proposedId = _data["proposedId"]
+        ? ProposedID.fromJS(_data["proposedId"])
+        : new ProposedID();
+      this.objectType = _data["objectType"];
+      this.message = _data["message"];
+      this.severity = _data["severity"];
+      this.code = _data["code"];
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["proposedId"] = this.proposedId ? this.proposedId.toJSON() : <any>undefined;
-        data["objectType"] = this.objectType;
-        data["message"] = this.message;
-        data["severity"] = this.severity;
-        data["code"] = this.code;
-        return data;
+  static fromJS(data: any): ProposalIssue {
+    data = typeof data === "object" ? data : {};
+    let result = new ProposalIssue();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["proposedId"] = this.proposedId
+      ? this.proposedId.toJSON()
+      : <any>undefined;
+    data["objectType"] = this.objectType;
+    data["message"] = this.message;
+    data["severity"] = this.severity;
+    data["code"] = this.code;
+    return data;
+  }
 }
 
 export interface IProposalIssue {
-    id: number;
-    proposedId: ProposedID;
-    objectType: number;
-    message: string;
-    severity: number;
-    code: number;
+  id: number;
+  proposedId: ProposedID;
+  objectType: number;
+  message: string;
+  severity: number;
+  code: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ProposedID implements IProposedID {
-    existingId!: number | undefined;
-    proposedId!: number | undefined;
+  existingId!: number | undefined;
+  proposedId!: number | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IProposedID) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IProposedID) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.existingId = _data["existingId"];
-            this.proposedId = _data["proposedId"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.existingId = _data["existingId"];
+      this.proposedId = _data["proposedId"];
     }
+  }
 
-    static fromJS(data: any): ProposedID {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProposedID();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ProposedID {
+    data = typeof data === "object" ? data : {};
+    let result = new ProposedID();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["existingId"] = this.existingId;
-        data["proposedId"] = this.proposedId;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["existingId"] = this.existingId;
+    data["proposedId"] = this.proposedId;
+    return data;
+  }
 }
 
 export interface IProposedID {
-    existingId: number | undefined;
-    proposedId: number | undefined;
+  existingId: number | undefined;
+  proposedId: number | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class PutMaterialRequest implements IPutMaterialRequest {
-    id?: number;
-    modulusOfElasticity!: number;
-    modulusOfRigidity!: number;
-    pressureUnit!: number;
+  id?: number;
+  modulusOfElasticity!: number;
+  modulusOfRigidity!: number;
+  pressureUnit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IPutMaterialRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPutMaterialRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modulusOfElasticity = _data["modulusOfElasticity"];
-            this.modulusOfRigidity = _data["modulusOfRigidity"];
-            this.pressureUnit = _data["pressureUnit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modulusOfElasticity = _data["modulusOfElasticity"];
+      this.modulusOfRigidity = _data["modulusOfRigidity"];
+      this.pressureUnit = _data["pressureUnit"];
     }
+  }
 
-    static fromJS(data: any): PutMaterialRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new PutMaterialRequest();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PutMaterialRequest {
+    data = typeof data === "object" ? data : {};
+    let result = new PutMaterialRequest();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modulusOfElasticity"] = this.modulusOfElasticity;
-        data["modulusOfRigidity"] = this.modulusOfRigidity;
-        data["pressureUnit"] = this.pressureUnit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modulusOfElasticity"] = this.modulusOfElasticity;
+    data["modulusOfRigidity"] = this.modulusOfRigidity;
+    data["pressureUnit"] = this.pressureUnit;
+    return data;
+  }
 }
 
 export interface IPutMaterialRequest {
-    id?: number;
-    modulusOfElasticity: number;
-    modulusOfRigidity: number;
-    pressureUnit: number;
+  id?: number;
+  modulusOfElasticity: number;
+  modulusOfRigidity: number;
+  pressureUnit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class PutNodeClientCommand implements IPutNodeClientCommand {
-    previous!: NodeResponse;
-    new!: NodeResponse;
-    id?: string;
-    handledByEditor?: boolean;
-    handledByBlazor?: boolean;
-    handledByServer?: boolean;
+  previous!: NodeResponse;
+  new!: NodeResponse;
+  id?: string;
+  handledByEditor?: boolean;
+  handledByBlazor?: boolean;
+  handledByServer?: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IPutNodeClientCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.previous = new NodeResponse();
-            this.new = new NodeResponse();
-        }
+  constructor(data?: IPutNodeClientCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.previous = _data["previous"] ? NodeResponse.fromJS(_data["previous"]) : new NodeResponse();
-            this.new = _data["new"] ? NodeResponse.fromJS(_data["new"]) : new NodeResponse();
-            this.id = _data["id"];
-            this.handledByEditor = _data["handledByEditor"];
-            this.handledByBlazor = _data["handledByBlazor"];
-            this.handledByServer = _data["handledByServer"];
-        }
+    if (!data) {
+      this.previous = new NodeResponse();
+      this.new = new NodeResponse();
     }
+  }
 
-    static fromJS(data: any): PutNodeClientCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new PutNodeClientCommand();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.previous = _data["previous"]
+        ? NodeResponse.fromJS(_data["previous"])
+        : new NodeResponse();
+      this.new = _data["new"]
+        ? NodeResponse.fromJS(_data["new"])
+        : new NodeResponse();
+      this.id = _data["id"];
+      this.handledByEditor = _data["handledByEditor"];
+      this.handledByBlazor = _data["handledByBlazor"];
+      this.handledByServer = _data["handledByServer"];
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["previous"] = this.previous ? this.previous.toJSON() : <any>undefined;
-        data["new"] = this.new ? this.new.toJSON() : <any>undefined;
-        data["id"] = this.id;
-        data["handledByEditor"] = this.handledByEditor;
-        data["handledByBlazor"] = this.handledByBlazor;
-        data["handledByServer"] = this.handledByServer;
-        return data;
+  static fromJS(data: any): PutNodeClientCommand {
+    data = typeof data === "object" ? data : {};
+    let result = new PutNodeClientCommand();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["previous"] = this.previous ? this.previous.toJSON() : <any>undefined;
+    data["new"] = this.new ? this.new.toJSON() : <any>undefined;
+    data["id"] = this.id;
+    data["handledByEditor"] = this.handledByEditor;
+    data["handledByBlazor"] = this.handledByBlazor;
+    data["handledByServer"] = this.handledByServer;
+    return data;
+  }
 }
 
 export interface IPutNodeClientCommand {
-    previous: NodeResponse;
-    new: NodeResponse;
-    id?: string;
-    handledByEditor?: boolean;
-    handledByBlazor?: boolean;
-    handledByServer?: boolean;
+  previous: NodeResponse;
+  new: NodeResponse;
+  id?: string;
+  handledByEditor?: boolean;
+  handledByBlazor?: boolean;
+  handledByServer?: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class PutSectionProfileRequest implements IPutSectionProfileRequest {
-    id!: number;
-    area!: number;
-    strongAxisMomentOfInertia!: number;
-    weakAxisMomentOfInertia!: number;
-    polarMomentOfInertia!: number;
-    strongAxisPlasticSectionModulus!: number;
-    weakAxisPlasticSectionModulus!: number;
-    strongAxisShearArea?: number | undefined;
-    weakAxisShearArea?: number | undefined;
-    lengthUnit!: number;
-    name!: string;
+  id!: number;
+  area!: number;
+  strongAxisMomentOfInertia!: number;
+  weakAxisMomentOfInertia!: number;
+  polarMomentOfInertia!: number;
+  strongAxisPlasticSectionModulus!: number;
+  weakAxisPlasticSectionModulus!: number;
+  strongAxisShearArea?: number | undefined;
+  weakAxisShearArea?: number | undefined;
+  lengthUnit!: number;
+  name!: string;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IPutSectionProfileRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPutSectionProfileRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.area = _data["area"];
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"];
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"];
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"];
-            this.strongAxisPlasticSectionModulus = _data["strongAxisPlasticSectionModulus"];
-            this.weakAxisPlasticSectionModulus = _data["weakAxisPlasticSectionModulus"];
-            this.strongAxisShearArea = _data["strongAxisShearArea"];
-            this.weakAxisShearArea = _data["weakAxisShearArea"];
-            this.lengthUnit = _data["lengthUnit"];
-            this.name = _data["name"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.area = _data["area"];
+      this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"];
+      this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"];
+      this.polarMomentOfInertia = _data["polarMomentOfInertia"];
+      this.strongAxisPlasticSectionModulus =
+        _data["strongAxisPlasticSectionModulus"];
+      this.weakAxisPlasticSectionModulus =
+        _data["weakAxisPlasticSectionModulus"];
+      this.strongAxisShearArea = _data["strongAxisShearArea"];
+      this.weakAxisShearArea = _data["weakAxisShearArea"];
+      this.lengthUnit = _data["lengthUnit"];
+      this.name = _data["name"];
     }
+  }
 
-    static fromJS(data: any): PutSectionProfileRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new PutSectionProfileRequest();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PutSectionProfileRequest {
+    data = typeof data === "object" ? data : {};
+    let result = new PutSectionProfileRequest();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["area"] = this.area;
-        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia;
-        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia;
-        data["polarMomentOfInertia"] = this.polarMomentOfInertia;
-        data["strongAxisPlasticSectionModulus"] = this.strongAxisPlasticSectionModulus;
-        data["weakAxisPlasticSectionModulus"] = this.weakAxisPlasticSectionModulus;
-        data["strongAxisShearArea"] = this.strongAxisShearArea;
-        data["weakAxisShearArea"] = this.weakAxisShearArea;
-        data["lengthUnit"] = this.lengthUnit;
-        data["name"] = this.name;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["area"] = this.area;
+    data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia;
+    data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia;
+    data["polarMomentOfInertia"] = this.polarMomentOfInertia;
+    data["strongAxisPlasticSectionModulus"] =
+      this.strongAxisPlasticSectionModulus;
+    data["weakAxisPlasticSectionModulus"] = this.weakAxisPlasticSectionModulus;
+    data["strongAxisShearArea"] = this.strongAxisShearArea;
+    data["weakAxisShearArea"] = this.weakAxisShearArea;
+    data["lengthUnit"] = this.lengthUnit;
+    data["name"] = this.name;
+    return data;
+  }
 }
 
 export interface IPutSectionProfileRequest {
-    id: number;
-    area: number;
-    strongAxisMomentOfInertia: number;
-    weakAxisMomentOfInertia: number;
-    polarMomentOfInertia: number;
-    strongAxisPlasticSectionModulus: number;
-    weakAxisPlasticSectionModulus: number;
-    strongAxisShearArea?: number | undefined;
-    weakAxisShearArea?: number | undefined;
-    lengthUnit: number;
-    name: string;
+  id: number;
+  area: number;
+  strongAxisMomentOfInertia: number;
+  weakAxisMomentOfInertia: number;
+  polarMomentOfInertia: number;
+  strongAxisPlasticSectionModulus: number;
+  weakAxisPlasticSectionModulus: number;
+  strongAxisShearArea?: number | undefined;
+  weakAxisShearArea?: number | undefined;
+  lengthUnit: number;
+  name: string;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Ratio implements IRatio {
-    value!: number;
-    unit!: number;
+  value!: number;
+  unit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IRatio) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IRatio) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.value = _data["value"];
+      this.unit = _data["unit"];
     }
+  }
 
-    static fromJS(data: any): Ratio {
-        data = typeof data === 'object' ? data : {};
-        let result = new Ratio();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Ratio {
+    data = typeof data === "object" ? data : {};
+    let result = new Ratio();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["value"] = this.value;
+    data["unit"] = this.unit;
+    return data;
+  }
 }
 
 export interface IRatio {
-    value: number;
-    unit: number;
+  value: number;
+  unit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Restraint implements IRestraint {
-    canTranslateAlongX!: boolean;
-    canTranslateAlongY!: boolean;
-    canTranslateAlongZ!: boolean;
-    canRotateAboutX!: boolean;
-    canRotateAboutY!: boolean;
-    canRotateAboutZ!: boolean;
+  canTranslateAlongX!: boolean;
+  canTranslateAlongY!: boolean;
+  canTranslateAlongZ!: boolean;
+  canRotateAboutX!: boolean;
+  canRotateAboutY!: boolean;
+  canRotateAboutZ!: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IRestraint) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IRestraint) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.canTranslateAlongX = _data["canTranslateAlongX"];
-            this.canTranslateAlongY = _data["canTranslateAlongY"];
-            this.canTranslateAlongZ = _data["canTranslateAlongZ"];
-            this.canRotateAboutX = _data["canRotateAboutX"];
-            this.canRotateAboutY = _data["canRotateAboutY"];
-            this.canRotateAboutZ = _data["canRotateAboutZ"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.canTranslateAlongX = _data["canTranslateAlongX"];
+      this.canTranslateAlongY = _data["canTranslateAlongY"];
+      this.canTranslateAlongZ = _data["canTranslateAlongZ"];
+      this.canRotateAboutX = _data["canRotateAboutX"];
+      this.canRotateAboutY = _data["canRotateAboutY"];
+      this.canRotateAboutZ = _data["canRotateAboutZ"];
     }
+  }
 
-    static fromJS(data: any): Restraint {
-        data = typeof data === 'object' ? data : {};
-        let result = new Restraint();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Restraint {
+    data = typeof data === "object" ? data : {};
+    let result = new Restraint();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["canTranslateAlongX"] = this.canTranslateAlongX;
-        data["canTranslateAlongY"] = this.canTranslateAlongY;
-        data["canTranslateAlongZ"] = this.canTranslateAlongZ;
-        data["canRotateAboutX"] = this.canRotateAboutX;
-        data["canRotateAboutY"] = this.canRotateAboutY;
-        data["canRotateAboutZ"] = this.canRotateAboutZ;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["canTranslateAlongX"] = this.canTranslateAlongX;
+    data["canTranslateAlongY"] = this.canTranslateAlongY;
+    data["canTranslateAlongZ"] = this.canTranslateAlongZ;
+    data["canRotateAboutX"] = this.canRotateAboutX;
+    data["canRotateAboutY"] = this.canRotateAboutY;
+    data["canRotateAboutZ"] = this.canRotateAboutZ;
+    return data;
+  }
 }
 
 export interface IRestraint {
-    canTranslateAlongX: boolean;
-    canTranslateAlongY: boolean;
-    canTranslateAlongZ: boolean;
-    canRotateAboutX: boolean;
-    canRotateAboutY: boolean;
-    canRotateAboutZ: boolean;
+  canTranslateAlongX: boolean;
+  canTranslateAlongY: boolean;
+  canTranslateAlongZ: boolean;
+  canRotateAboutX: boolean;
+  canRotateAboutY: boolean;
+  canRotateAboutZ: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Result implements IResult {
-    error!: BeamOsError | undefined;
-    isError!: boolean;
+  error!: BeamOsError | undefined;
+  isError!: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.error = _data["error"] ? BeamOsError.fromJS(_data["error"]) : <any>undefined;
-            this.isError = _data["isError"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.error = _data["error"]
+        ? BeamOsError.fromJS(_data["error"])
+        : <any>undefined;
+      this.isError = _data["isError"];
     }
+  }
 
-    static fromJS(data: any): Result {
-        data = typeof data === 'object' ? data : {};
-        let result = new Result();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Result {
+    data = typeof data === "object" ? data : {};
+    let result = new Result();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["error"] = this.error ? this.error.toJSON() : <any>undefined;
-        data["isError"] = this.isError;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["error"] = this.error ? this.error.toJSON() : <any>undefined;
+    data["isError"] = this.isError;
+    return data;
+  }
 }
 
 export interface IResult {
-    error: BeamOsError | undefined;
-    isError: boolean;
+  error: BeamOsError | undefined;
+  isError: boolean;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ResultSet implements IResultSet {
-    id!: number;
-    modelId!: string;
-    nodeResults?: NodeResultResponse[] | undefined;
-    element1dResults?: Element1dResultResponse[] | undefined;
+  id!: number;
+  modelId!: string;
+  nodeResults?: NodeResultResponse[] | undefined;
+  element1dResults?: Element1dResultResponse[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IResultSet) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IResultSet) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            if (Array.isArray(_data["nodeResults"])) {
-                this.nodeResults = [] as any;
-                for (let item of _data["nodeResults"])
-                    this.nodeResults!.push(NodeResultResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["element1dResults"])) {
-                this.element1dResults = [] as any;
-                for (let item of _data["element1dResults"])
-                    this.element1dResults!.push(Element1dResultResponse.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modelId = _data["modelId"];
+      if (Array.isArray(_data["nodeResults"])) {
+        this.nodeResults = [] as any;
+        for (let item of _data["nodeResults"])
+          this.nodeResults!.push(NodeResultResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["element1dResults"])) {
+        this.element1dResults = [] as any;
+        for (let item of _data["element1dResults"])
+          this.element1dResults!.push(Element1dResultResponse.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): ResultSet {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultSet();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ResultSet {
+    data = typeof data === "object" ? data : {};
+    let result = new ResultSet();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        if (Array.isArray(this.nodeResults)) {
-            data["nodeResults"] = [];
-            for (let item of this.nodeResults)
-                data["nodeResults"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.element1dResults)) {
-            data["element1dResults"] = [];
-            for (let item of this.element1dResults)
-                data["element1dResults"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modelId"] = this.modelId;
+    if (Array.isArray(this.nodeResults)) {
+      data["nodeResults"] = [];
+      for (let item of this.nodeResults)
+        data["nodeResults"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.element1dResults)) {
+      data["element1dResults"] = [];
+      for (let item of this.element1dResults)
+        data["element1dResults"].push(item ? item.toJSON() : <any>undefined);
+    }
+    return data;
+  }
 }
 
 export interface IResultSet {
-    id: number;
-    modelId: string;
-    nodeResults?: NodeResultResponse[] | undefined;
-    element1dResults?: Element1dResultResponse[] | undefined;
+  id: number;
+  modelId: string;
+  nodeResults?: NodeResultResponse[] | undefined;
+  element1dResults?: Element1dResultResponse[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ResultSetResponse implements IResultSetResponse {
-    id!: number;
-    modelId!: string;
-    nodeResults?: NodeResultResponse[] | undefined;
-    element1dResults?: Element1dResultResponse[] | undefined;
+  id!: number;
+  modelId!: string;
+  nodeResults?: NodeResultResponse[] | undefined;
+  element1dResults?: Element1dResultResponse[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IResultSetResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IResultSetResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            if (Array.isArray(_data["nodeResults"])) {
-                this.nodeResults = [] as any;
-                for (let item of _data["nodeResults"])
-                    this.nodeResults!.push(NodeResultResponse.fromJS(item));
-            }
-            if (Array.isArray(_data["element1dResults"])) {
-                this.element1dResults = [] as any;
-                for (let item of _data["element1dResults"])
-                    this.element1dResults!.push(Element1dResultResponse.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modelId = _data["modelId"];
+      if (Array.isArray(_data["nodeResults"])) {
+        this.nodeResults = [] as any;
+        for (let item of _data["nodeResults"])
+          this.nodeResults!.push(NodeResultResponse.fromJS(item));
+      }
+      if (Array.isArray(_data["element1dResults"])) {
+        this.element1dResults = [] as any;
+        for (let item of _data["element1dResults"])
+          this.element1dResults!.push(Element1dResultResponse.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): ResultSetResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ResultSetResponse();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ResultSetResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ResultSetResponse();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        if (Array.isArray(this.nodeResults)) {
-            data["nodeResults"] = [];
-            for (let item of this.nodeResults)
-                data["nodeResults"].push(item ? item.toJSON() : <any>undefined);
-        }
-        if (Array.isArray(this.element1dResults)) {
-            data["element1dResults"] = [];
-            for (let item of this.element1dResults)
-                data["element1dResults"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modelId"] = this.modelId;
+    if (Array.isArray(this.nodeResults)) {
+      data["nodeResults"] = [];
+      for (let item of this.nodeResults)
+        data["nodeResults"].push(item ? item.toJSON() : <any>undefined);
+    }
+    if (Array.isArray(this.element1dResults)) {
+      data["element1dResults"] = [];
+      for (let item of this.element1dResults)
+        data["element1dResults"].push(item ? item.toJSON() : <any>undefined);
+    }
+    return data;
+  }
 }
 
 export interface IResultSetResponse {
-    id: number;
-    modelId: string;
-    nodeResults?: NodeResultResponse[] | undefined;
-    element1dResults?: Element1dResultResponse[] | undefined;
+  id: number;
+  modelId: string;
+  nodeResults?: NodeResultResponse[] | undefined;
+  element1dResults?: Element1dResultResponse[] | undefined;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class SectionProfileFromLibrary implements ISectionProfileFromLibrary {
-    id!: number;
-    library!: number;
-    name!: string;
+  id!: number;
+  library!: number;
+  name!: string;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ISectionProfileFromLibrary) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISectionProfileFromLibrary) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.library = _data["library"];
-            this.name = _data["name"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.library = _data["library"];
+      this.name = _data["name"];
     }
+  }
 
-    static fromJS(data: any): SectionProfileFromLibrary {
-        data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileFromLibrary();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SectionProfileFromLibrary {
+    data = typeof data === "object" ? data : {};
+    let result = new SectionProfileFromLibrary();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["library"] = this.library;
-        data["name"] = this.name;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["library"] = this.library;
+    data["name"] = this.name;
+    return data;
+  }
 }
 
 export interface ISectionProfileFromLibrary {
-    id: number;
-    library: number;
-    name: string;
+  id: number;
+  library: number;
+  name: string;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class SectionProfileResponse implements ISectionProfileResponse {
-    id!: number;
-    modelId!: string;
-    name!: string;
-    area!: number;
-    strongAxisMomentOfInertia!: number;
-    weakAxisMomentOfInertia!: number;
-    polarMomentOfInertia!: number;
-    strongAxisPlasticSectionModulus!: number;
-    weakAxisPlasticSectionModulus!: number;
-    strongAxisShearArea!: number | undefined;
-    weakAxisShearArea!: number | undefined;
-    lengthUnit!: number;
+  id!: number;
+  modelId!: string;
+  name!: string;
+  area!: number;
+  strongAxisMomentOfInertia!: number;
+  weakAxisMomentOfInertia!: number;
+  polarMomentOfInertia!: number;
+  strongAxisPlasticSectionModulus!: number;
+  weakAxisPlasticSectionModulus!: number;
+  strongAxisShearArea!: number | undefined;
+  weakAxisShearArea!: number | undefined;
+  lengthUnit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ISectionProfileResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISectionProfileResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.modelId = _data["modelId"];
-            this.name = _data["name"];
-            this.area = _data["area"];
-            this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"];
-            this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"];
-            this.polarMomentOfInertia = _data["polarMomentOfInertia"];
-            this.strongAxisPlasticSectionModulus = _data["strongAxisPlasticSectionModulus"];
-            this.weakAxisPlasticSectionModulus = _data["weakAxisPlasticSectionModulus"];
-            this.strongAxisShearArea = _data["strongAxisShearArea"];
-            this.weakAxisShearArea = _data["weakAxisShearArea"];
-            this.lengthUnit = _data["lengthUnit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.modelId = _data["modelId"];
+      this.name = _data["name"];
+      this.area = _data["area"];
+      this.strongAxisMomentOfInertia = _data["strongAxisMomentOfInertia"];
+      this.weakAxisMomentOfInertia = _data["weakAxisMomentOfInertia"];
+      this.polarMomentOfInertia = _data["polarMomentOfInertia"];
+      this.strongAxisPlasticSectionModulus =
+        _data["strongAxisPlasticSectionModulus"];
+      this.weakAxisPlasticSectionModulus =
+        _data["weakAxisPlasticSectionModulus"];
+      this.strongAxisShearArea = _data["strongAxisShearArea"];
+      this.weakAxisShearArea = _data["weakAxisShearArea"];
+      this.lengthUnit = _data["lengthUnit"];
     }
+  }
 
-    static fromJS(data: any): SectionProfileResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new SectionProfileResponse();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SectionProfileResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new SectionProfileResponse();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["modelId"] = this.modelId;
-        data["name"] = this.name;
-        data["area"] = this.area;
-        data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia;
-        data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia;
-        data["polarMomentOfInertia"] = this.polarMomentOfInertia;
-        data["strongAxisPlasticSectionModulus"] = this.strongAxisPlasticSectionModulus;
-        data["weakAxisPlasticSectionModulus"] = this.weakAxisPlasticSectionModulus;
-        data["strongAxisShearArea"] = this.strongAxisShearArea;
-        data["weakAxisShearArea"] = this.weakAxisShearArea;
-        data["lengthUnit"] = this.lengthUnit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["modelId"] = this.modelId;
+    data["name"] = this.name;
+    data["area"] = this.area;
+    data["strongAxisMomentOfInertia"] = this.strongAxisMomentOfInertia;
+    data["weakAxisMomentOfInertia"] = this.weakAxisMomentOfInertia;
+    data["polarMomentOfInertia"] = this.polarMomentOfInertia;
+    data["strongAxisPlasticSectionModulus"] =
+      this.strongAxisPlasticSectionModulus;
+    data["weakAxisPlasticSectionModulus"] = this.weakAxisPlasticSectionModulus;
+    data["strongAxisShearArea"] = this.strongAxisShearArea;
+    data["weakAxisShearArea"] = this.weakAxisShearArea;
+    data["lengthUnit"] = this.lengthUnit;
+    return data;
+  }
 }
 
 export interface ISectionProfileResponse {
-    id: number;
-    modelId: string;
-    name: string;
-    area: number;
-    strongAxisMomentOfInertia: number;
-    weakAxisMomentOfInertia: number;
-    polarMomentOfInertia: number;
-    strongAxisPlasticSectionModulus: number;
-    weakAxisPlasticSectionModulus: number;
-    strongAxisShearArea: number | undefined;
-    weakAxisShearArea: number | undefined;
-    lengthUnit: number;
+  id: number;
+  modelId: string;
+  name: string;
+  area: number;
+  strongAxisMomentOfInertia: number;
+  weakAxisMomentOfInertia: number;
+  polarMomentOfInertia: number;
+  strongAxisPlasticSectionModulus: number;
+  weakAxisPlasticSectionModulus: number;
+  strongAxisShearArea: number | undefined;
+  weakAxisShearArea: number | undefined;
+  lengthUnit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class SelectedObject implements ISelectedObject {
-    id!: number;
-    objectType!: number;
+  id!: number;
+  objectType!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ISelectedObject) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISelectedObject) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.objectType = _data["objectType"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.id = _data["id"];
+      this.objectType = _data["objectType"];
     }
+  }
 
-    static fromJS(data: any): SelectedObject {
-        data = typeof data === 'object' ? data : {};
-        let result = new SelectedObject();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SelectedObject {
+    data = typeof data === "object" ? data : {};
+    let result = new SelectedObject();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["objectType"] = this.objectType;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["id"] = this.id;
+    data["objectType"] = this.objectType;
+    return data;
+  }
 }
 
 export interface ISelectedObject {
-    id: number;
-    objectType: number;
+  id: number;
+  objectType: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ShearDiagramResponse implements IShearDiagramResponse {
-    globalShearDirection!: Vector3;
-    lengthUnit!: number;
-    forceUnit!: number;
-    elementLength!: Length;
-    modelId!: string;
-    resultSetId!: number;
-    element1dId!: number;
-    intervals!: DiagramConsistentIntervalResponse[];
+  globalShearDirection!: Vector3;
+  lengthUnit!: number;
+  forceUnit!: number;
+  elementLength!: Length;
+  modelId!: string;
+  resultSetId!: number;
+  element1dId!: number;
+  intervals!: DiagramConsistentIntervalResponse[];
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IShearDiagramResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.globalShearDirection = new Vector3();
-            this.elementLength = new Length();
-            this.intervals = [];
-        }
+  constructor(data?: IShearDiagramResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.globalShearDirection = _data["globalShearDirection"] ? Vector3.fromJS(_data["globalShearDirection"]) : new Vector3();
-            this.lengthUnit = _data["lengthUnit"];
-            this.forceUnit = _data["forceUnit"];
-            this.elementLength = _data["elementLength"] ? Length.fromJS(_data["elementLength"]) : new Length();
-            this.modelId = _data["modelId"];
-            this.resultSetId = _data["resultSetId"];
-            this.element1dId = _data["element1dId"];
-            if (Array.isArray(_data["intervals"])) {
-                this.intervals = [] as any;
-                for (let item of _data["intervals"])
-                    this.intervals!.push(DiagramConsistentIntervalResponse.fromJS(item));
-            }
-        }
+    if (!data) {
+      this.globalShearDirection = new Vector3();
+      this.elementLength = new Length();
+      this.intervals = [];
     }
+  }
 
-    static fromJS(data: any): ShearDiagramResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ShearDiagramResponse();
-        result.init(data);
-        return result;
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.globalShearDirection = _data["globalShearDirection"]
+        ? Vector3.fromJS(_data["globalShearDirection"])
+        : new Vector3();
+      this.lengthUnit = _data["lengthUnit"];
+      this.forceUnit = _data["forceUnit"];
+      this.elementLength = _data["elementLength"]
+        ? Length.fromJS(_data["elementLength"])
+        : new Length();
+      this.modelId = _data["modelId"];
+      this.resultSetId = _data["resultSetId"];
+      this.element1dId = _data["element1dId"];
+      if (Array.isArray(_data["intervals"])) {
+        this.intervals = [] as any;
+        for (let item of _data["intervals"])
+          this.intervals!.push(DiagramConsistentIntervalResponse.fromJS(item));
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["globalShearDirection"] = this.globalShearDirection ? this.globalShearDirection.toJSON() : <any>undefined;
-        data["lengthUnit"] = this.lengthUnit;
-        data["forceUnit"] = this.forceUnit;
-        data["elementLength"] = this.elementLength ? this.elementLength.toJSON() : <any>undefined;
-        data["modelId"] = this.modelId;
-        data["resultSetId"] = this.resultSetId;
-        data["element1dId"] = this.element1dId;
-        if (Array.isArray(this.intervals)) {
-            data["intervals"] = [];
-            for (let item of this.intervals)
-                data["intervals"].push(item ? item.toJSON() : <any>undefined);
-        }
-        return data;
+  static fromJS(data: any): ShearDiagramResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ShearDiagramResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["globalShearDirection"] = this.globalShearDirection
+      ? this.globalShearDirection.toJSON()
+      : <any>undefined;
+    data["lengthUnit"] = this.lengthUnit;
+    data["forceUnit"] = this.forceUnit;
+    data["elementLength"] = this.elementLength
+      ? this.elementLength.toJSON()
+      : <any>undefined;
+    data["modelId"] = this.modelId;
+    data["resultSetId"] = this.resultSetId;
+    data["element1dId"] = this.element1dId;
+    if (Array.isArray(this.intervals)) {
+      data["intervals"] = [];
+      for (let item of this.intervals)
+        data["intervals"].push(item ? item.toJSON() : <any>undefined);
+    }
+    return data;
+  }
 }
 
 export interface IShearDiagramResponse {
-    globalShearDirection: Vector3;
-    lengthUnit: number;
-    forceUnit: number;
-    elementLength: Length;
-    modelId: string;
-    resultSetId: number;
-    element1dId: number;
-    intervals: DiagramConsistentIntervalResponse[];
+  globalShearDirection: Vector3;
+  lengthUnit: number;
+  forceUnit: number;
+  elementLength: Length;
+  modelId: string;
+  resultSetId: number;
+  element1dId: number;
+  intervals: DiagramConsistentIntervalResponse[];
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Torque implements ITorque {
-    value!: number;
-    unit!: number;
+  value!: number;
+  unit!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: ITorque) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ITorque) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.value = _data["value"];
-            this.unit = _data["unit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.value = _data["value"];
+      this.unit = _data["unit"];
     }
+  }
 
-    static fromJS(data: any): Torque {
-        data = typeof data === 'object' ? data : {};
-        let result = new Torque();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Torque {
+    data = typeof data === "object" ? data : {};
+    let result = new Torque();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["value"] = this.value;
-        data["unit"] = this.unit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["value"] = this.value;
+    data["unit"] = this.unit;
+    return data;
+  }
 }
 
 export interface ITorque {
-    value: number;
-    unit: number;
+  value: number;
+  unit: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class UnitSettings implements IUnitSettings {
-    lengthUnit!: number;
-    forceUnit!: number;
-    angleUnit?: number;
+  lengthUnit!: number;
+  forceUnit!: number;
+  angleUnit?: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IUnitSettings) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IUnitSettings) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.lengthUnit = _data["lengthUnit"];
-            this.forceUnit = _data["forceUnit"];
-            this.angleUnit = _data["angleUnit"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.lengthUnit = _data["lengthUnit"];
+      this.forceUnit = _data["forceUnit"];
+      this.angleUnit = _data["angleUnit"];
     }
+  }
 
-    static fromJS(data: any): UnitSettings {
-        data = typeof data === 'object' ? data : {};
-        let result = new UnitSettings();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): UnitSettings {
+    data = typeof data === "object" ? data : {};
+    let result = new UnitSettings();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["lengthUnit"] = this.lengthUnit;
-        data["forceUnit"] = this.forceUnit;
-        data["angleUnit"] = this.angleUnit;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["lengthUnit"] = this.lengthUnit;
+    data["forceUnit"] = this.forceUnit;
+    data["angleUnit"] = this.angleUnit;
+    return data;
+  }
 }
 
 export interface IUnitSettings {
-    lengthUnit: number;
-    forceUnit: number;
-    angleUnit?: number;
+  lengthUnit: number;
+  forceUnit: number;
+  angleUnit?: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class Vector3 implements IVector3 {
-    x!: number;
-    y!: number;
-    z!: number;
+  x!: number;
+  y!: number;
+  z!: number;
 
-    [key: string]: any;
+  [key: string]: any;
 
-    constructor(data?: IVector3) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IVector3) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.x = _data["x"];
-            this.y = _data["y"];
-            this.z = _data["z"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      this.x = _data["x"];
+      this.y = _data["y"];
+      this.z = _data["z"];
     }
+  }
 
-    static fromJS(data: any): Vector3 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Vector3();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Vector3 {
+    data = typeof data === "object" ? data : {};
+    let result = new Vector3();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["x"] = this.x;
-        data["y"] = this.y;
-        data["z"] = this.z;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
     }
+    data["x"] = this.x;
+    data["y"] = this.y;
+    data["z"] = this.z;
+    return data;
+  }
 }
 
 export interface IVector3 {
-    x: number;
-    y: number;
-    z: number;
+  x: number;
+  y: number;
+  z: number;
 
-    [key: string]: any;
+  [key: string]: any;
 }
 
 export class ApiException extends Error {
-    message: string;
-    status: number;
-    response: string;
-    headers: { [key: string]: any; };
-    result: any;
+  message: string;
+  status: number;
+  response: string;
+  headers: { [key: string]: any };
+  result: any;
 
-    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
-        super();
+  constructor(
+    message: string,
+    status: number,
+    response: string,
+    headers: { [key: string]: any },
+    result: any
+  ) {
+    super();
 
-        this.message = message;
-        this.status = status;
-        this.response = response;
-        this.headers = headers;
-        this.result = result;
-    }
+    this.message = message;
+    this.status = status;
+    this.response = response;
+    this.headers = headers;
+    this.result = result;
+  }
 
-    protected isApiException = true;
+  protected isApiException = true;
 
-    static isApiException(obj: any): obj is ApiException {
-        return obj.isApiException === true;
-    }
+  static isApiException(obj: any): obj is ApiException {
+    return obj.isApiException === true;
+  }
 }
 
-function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
-    if (result !== null && result !== undefined)
-        throw result;
-    else
-        throw new ApiException(message, status, response, headers, null);
+function throwException(
+  message: string,
+  status: number,
+  response: string,
+  headers: { [key: string]: any },
+  result?: any
+): any {
+  if (result !== null && result !== undefined) throw result;
+  else throw new ApiException(message, status, response, headers, null);
 }

@@ -42,7 +42,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ResultSetResponse>> GetResultSetAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ResultSetResponse>> GetResultSetAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -77,12 +77,12 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteElement1dAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> GetElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> GetElement1dAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -102,12 +102,12 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCaseAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<LoadCase>> GetLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCase>> GetLoadCaseAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -127,12 +127,12 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCombinationAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<LoadCombination>> GetLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<LoadCombination>> GetLoadCombinationAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -177,7 +177,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> GetModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> GetModelProposalAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -187,7 +187,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<bool>> RejectModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<bool>> RejectModelProposalAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -227,7 +227,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteMomentLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteMomentLoadAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -252,7 +252,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<InternalNode>> GetInternalNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<InternalNode>> GetInternalNodeAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -272,7 +272,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteNodeAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -292,7 +292,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeletePointLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeletePointLoadAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -322,7 +322,7 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteSectionProfileAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteSectionProfileAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
@@ -535,13 +535,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ResultSetResponse>> GetResultSetAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ResultSetResponse>> GetResultSetAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1087,13 +1087,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteElement1dAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1165,13 +1165,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> GetElement1dAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<Element1dResponse>> GetElement1dAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1481,13 +1481,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCaseAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1559,13 +1559,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCase>> GetLoadCaseAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCase>> GetLoadCaseAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1875,13 +1875,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteLoadCombinationAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1953,13 +1953,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCombination>> GetLoadCombinationAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<LoadCombination>> GetLoadCombinationAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2645,13 +2645,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> GetModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelProposalResponse>> GetModelProposalAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2806,13 +2806,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<bool>> RejectModelProposalAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<bool>> RejectModelProposalAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -3416,13 +3416,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteMomentLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteMomentLoadAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -3810,13 +3810,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<InternalNode>> GetInternalNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<InternalNode>> GetInternalNodeAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -4128,13 +4128,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteNodeAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteNodeAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -4444,13 +4444,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeletePointLoadAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeletePointLoadAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -4916,13 +4916,13 @@ namespace BeamOs.CodeGen.StructuralAnalysisApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="StructuralAnalysisApiClientV1Exception">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteSectionProfileAsync(System.Guid modelId, int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<ApiResponse<ModelEntityResponse>> DeleteSectionProfileAsync(int id, System.Guid modelId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (modelId == null)
-                throw new System.ArgumentNullException("modelId");
-
             if (id == null)
                 throw new System.ArgumentNullException("id");
+
+            if (modelId == null)
+                throw new System.ArgumentNullException("modelId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;

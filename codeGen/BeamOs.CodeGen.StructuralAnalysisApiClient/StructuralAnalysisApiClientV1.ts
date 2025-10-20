@@ -24,7 +24,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultSetResponse>;
+    getResultSet(id: number, modelId: string): Promise<ResultSetResponse>;
 
     /**
      * @return OK
@@ -63,12 +63,12 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteElement1d(id: number, modelId: string): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    getElement1d(modelId: string, id: number): Promise<Element1dResponse>;
+    getElement1d(id: number, modelId: string): Promise<Element1dResponse>;
 
     /**
      * @param body (optional) 
@@ -91,12 +91,12 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteLoadCase(id: number, modelId: string): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    getLoadCase(modelId: string, id: number): Promise<LoadCase>;
+    getLoadCase(id: number, modelId: string): Promise<LoadCase>;
 
     /**
      * @param body (optional) 
@@ -119,12 +119,12 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteLoadCombination(id: number, modelId: string): Promise<ModelEntityResponse>;
 
     /**
      * @return OK
      */
-    getLoadCombination(modelId: string, id: number): Promise<LoadCombination>;
+    getLoadCombination(id: number, modelId: string): Promise<LoadCombination>;
 
     /**
      * @param body (optional) 
@@ -175,7 +175,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    getModelProposal(modelId: string, id: number): Promise<ModelProposalResponse>;
+    getModelProposal(id: number, modelId: string): Promise<ModelProposalResponse>;
 
     /**
      * @param body (optional) 
@@ -186,7 +186,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    rejectModelProposal(modelId: string, id: number): Promise<boolean>;
+    rejectModelProposal(id: number, modelId: string): Promise<boolean>;
 
     /**
      * @param body (optional) 
@@ -231,7 +231,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteMomentLoad(id: number, modelId: string): Promise<ModelEntityResponse>;
 
     /**
      * @param body (optional) 
@@ -260,7 +260,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    getInternalNode(modelId: string, id: number): Promise<InternalNode>;
+    getInternalNode(id: number, modelId: string): Promise<InternalNode>;
 
     /**
      * @param body (optional) 
@@ -283,7 +283,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteNode(id: number, modelId: string): Promise<ModelEntityResponse>;
 
     /**
      * @param body (optional) 
@@ -306,7 +306,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deletePointLoad(id: number, modelId: string): Promise<ModelEntityResponse>;
 
     /**
      * @param body (optional) 
@@ -341,7 +341,7 @@ export interface IStructuralAnalysisApiClientV1 {
     /**
      * @return OK
      */
-    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse>;
+    deleteSectionProfile(id: number, modelId: string): Promise<ModelEntityResponse>;
 
     /**
      * @param body (optional) 
@@ -463,14 +463,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getResultSet(modelId: string, id: number): Promise<ResultSetResponse> {
+    getResultSet(id: number, modelId: string): Promise<ResultSetResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/result-sets/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -784,14 +784,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteElement1d(modelId: string, id: number): Promise<ModelEntityResponse> {
+    deleteElement1d(id: number, modelId: string): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -827,14 +827,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getElement1d(modelId: string, id: number): Promise<Element1dResponse> {
+    getElement1d(id: number, modelId: string): Promise<Element1dResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/element1ds/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1008,14 +1008,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteLoadCase(modelId: string, id: number): Promise<ModelEntityResponse> {
+    deleteLoadCase(id: number, modelId: string): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1051,14 +1051,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getLoadCase(modelId: string, id: number): Promise<LoadCase> {
+    getLoadCase(id: number, modelId: string): Promise<LoadCase> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-cases/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1232,14 +1232,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteLoadCombination(modelId: string, id: number): Promise<ModelEntityResponse> {
+    deleteLoadCombination(id: number, modelId: string): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1275,14 +1275,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getLoadCombination(modelId: string, id: number): Promise<LoadCombination> {
+    getLoadCombination(id: number, modelId: string): Promise<LoadCombination> {
         let url_ = this.baseUrl + "/api/models/{modelId}/load-combinations/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1682,14 +1682,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getModelProposal(modelId: string, id: number): Promise<ModelProposalResponse> {
+    getModelProposal(id: number, modelId: string): Promise<ModelProposalResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1773,14 +1773,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    rejectModelProposal(modelId: string, id: number): Promise<boolean> {
+    rejectModelProposal(id: number, modelId: string): Promise<boolean> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals/{id}/reject";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2120,14 +2120,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteMomentLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
+    deleteMomentLoad(id: number, modelId: string): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2346,14 +2346,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    getInternalNode(modelId: string, id: number): Promise<InternalNode> {
+    getInternalNode(id: number, modelId: string): Promise<InternalNode> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}/internal";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2527,14 +2527,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteNode(modelId: string, id: number): Promise<ModelEntityResponse> {
+    deleteNode(id: number, modelId: string): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2708,14 +2708,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deletePointLoad(modelId: string, id: number): Promise<ModelEntityResponse> {
+    deletePointLoad(id: number, modelId: string): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -2979,14 +2979,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     /**
      * @return OK
      */
-    deleteSectionProfile(modelId: string, id: number): Promise<ModelEntityResponse> {
+    deleteSectionProfile(id: number, modelId: string): Promise<ModelEntityResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
-        if (modelId === undefined || modelId === null)
-            throw new Error("The parameter 'modelId' must be defined.");
-        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -3772,7 +3772,7 @@ export class CreateInternalNodeRequest implements ICreateInternalNodeRequest {
     id?: number | undefined;
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
-    restraint?: NullableOfRestraint | undefined;
+    restraint!: Restraint;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -3786,6 +3786,7 @@ export class CreateInternalNodeRequest implements ICreateInternalNodeRequest {
         }
         if (!data) {
             this.ratioAlongElement1d = new Ratio();
+            this.restraint = new Restraint();
         }
     }
 
@@ -3798,7 +3799,7 @@ export class CreateInternalNodeRequest implements ICreateInternalNodeRequest {
             this.id = _data["id"];
             this.element1dId = _data["element1dId"];
             this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -3841,7 +3842,7 @@ export interface ICreateInternalNodeRequest {
     id?: number | undefined;
     element1dId: number;
     ratioAlongElement1d: Ratio;
-    restraint?: NullableOfRestraint | undefined;
+    restraint: Restraint;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5584,7 +5585,7 @@ export class InternalNode implements IInternalNode {
     id!: number;
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
-    restraint?: NullableOfRestraint | undefined;
+    restraint!: Restraint;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5598,6 +5599,7 @@ export class InternalNode implements IInternalNode {
         }
         if (!data) {
             this.ratioAlongElement1d = new Ratio();
+            this.restraint = new Restraint();
         }
     }
 
@@ -5610,7 +5612,7 @@ export class InternalNode implements IInternalNode {
             this.id = _data["id"];
             this.element1dId = _data["element1dId"];
             this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -5653,7 +5655,7 @@ export interface IInternalNode {
     id: number;
     element1dId: number;
     ratioAlongElement1d: Ratio;
-    restraint?: NullableOfRestraint | undefined;
+    restraint: Restraint;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5662,7 +5664,7 @@ export interface IInternalNode {
 export class InternalNodeData implements IInternalNodeData {
     element1dId!: number;
     ratioAlongElement1d!: Ratio;
-    restraint?: NullableOfRestraint | undefined;
+    restraint!: Restraint;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -5676,6 +5678,7 @@ export class InternalNodeData implements IInternalNodeData {
         }
         if (!data) {
             this.ratioAlongElement1d = new Ratio();
+            this.restraint = new Restraint();
         }
     }
 
@@ -5687,7 +5690,7 @@ export class InternalNodeData implements IInternalNodeData {
             }
             this.element1dId = _data["element1dId"];
             this.ratioAlongElement1d = _data["ratioAlongElement1d"] ? Ratio.fromJS(_data["ratioAlongElement1d"]) : new Ratio();
-            this.restraint = _data["restraint"] ? NullableOfRestraint.fromJS(_data["restraint"]) : <any>undefined;
+            this.restraint = _data["restraint"] ? Restraint.fromJS(_data["restraint"]) : new Restraint();
             if (_data["metadata"]) {
                 this.metadata = {} as any;
                 for (let key in _data["metadata"]) {
@@ -5728,7 +5731,7 @@ export class InternalNodeData implements IInternalNodeData {
 export interface IInternalNodeData {
     element1dId: number;
     ratioAlongElement1d: Ratio;
-    restraint?: NullableOfRestraint | undefined;
+    restraint: Restraint;
     metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
@@ -7139,8 +7142,8 @@ export interface IModelResponse {
 
 export class ModelSettings implements IModelSettings {
     unitSettings!: UnitSettings;
-    analysisSettings?: AnalysisSettings | undefined;
-    yAxisUp?: boolean;
+    analysisSettings!: AnalysisSettings;
+    yAxisUp!: boolean;
 
     [key: string]: any;
 
@@ -7153,7 +7156,7 @@ export class ModelSettings implements IModelSettings {
         }
         if (!data) {
             this.unitSettings = new UnitSettings();
-            this.yAxisUp = true;
+            this.analysisSettings = new AnalysisSettings();
         }
     }
 
@@ -7164,8 +7167,8 @@ export class ModelSettings implements IModelSettings {
                     this[property] = _data[property];
             }
             this.unitSettings = _data["unitSettings"] ? UnitSettings.fromJS(_data["unitSettings"]) : new UnitSettings();
-            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettings.fromJS(_data["analysisSettings"]) : <any>undefined;
-            this.yAxisUp = _data["yAxisUp"] !== undefined ? _data["yAxisUp"] : true;
+            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettings.fromJS(_data["analysisSettings"]) : new AnalysisSettings();
+            this.yAxisUp = _data["yAxisUp"];
         }
     }
 
@@ -7191,16 +7194,16 @@ export class ModelSettings implements IModelSettings {
 
 export interface IModelSettings {
     unitSettings: UnitSettings;
-    analysisSettings?: AnalysisSettings | undefined;
-    yAxisUp?: boolean;
+    analysisSettings: AnalysisSettings;
+    yAxisUp: boolean;
 
     [key: string]: any;
 }
 
 export class ModelSettings2 implements IModelSettings2 {
     unitSettings!: UnitSettings;
-    analysisSettings?: AnalysisSettings | undefined;
-    yAxisUp?: boolean;
+    analysisSettings!: AnalysisSettings;
+    yAxisUp!: boolean;
 
     [key: string]: any;
 
@@ -7213,7 +7216,7 @@ export class ModelSettings2 implements IModelSettings2 {
         }
         if (!data) {
             this.unitSettings = new UnitSettings();
-            this.yAxisUp = true;
+            this.analysisSettings = new AnalysisSettings();
         }
     }
 
@@ -7224,8 +7227,8 @@ export class ModelSettings2 implements IModelSettings2 {
                     this[property] = _data[property];
             }
             this.unitSettings = _data["unitSettings"] ? UnitSettings.fromJS(_data["unitSettings"]) : new UnitSettings();
-            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettings.fromJS(_data["analysisSettings"]) : <any>undefined;
-            this.yAxisUp = _data["yAxisUp"] !== undefined ? _data["yAxisUp"] : true;
+            this.analysisSettings = _data["analysisSettings"] ? AnalysisSettings.fromJS(_data["analysisSettings"]) : new AnalysisSettings();
+            this.yAxisUp = _data["yAxisUp"];
         }
     }
 
@@ -7251,8 +7254,8 @@ export class ModelSettings2 implements IModelSettings2 {
 
 export interface IModelSettings2 {
     unitSettings: UnitSettings;
-    analysisSettings?: AnalysisSettings | undefined;
-    yAxisUp?: boolean;
+    analysisSettings: AnalysisSettings;
+    yAxisUp: boolean;
 
     [key: string]: any;
 }

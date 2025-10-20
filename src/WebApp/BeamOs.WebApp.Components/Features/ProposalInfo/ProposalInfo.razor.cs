@@ -68,8 +68,8 @@ public partial class ProposalInfo(
     private async Task LoadProposal(int proposalId)
     {
         var response = await this.StructuralAnalysisApiClient.GetModelProposalAsync(
-            this.ModelId,
-            proposalId
+            proposalId,
+            this.ModelId
         );
         if (response.IsSuccess)
         {
@@ -111,8 +111,8 @@ public partial class ProposalInfo(
     private async Task RejectProposal(int proposalId)
     {
         var response = await this.StructuralAnalysisApiClient.RejectModelProposalAsync(
-            this.ModelId,
-            proposalId
+            proposalId,
+            this.ModelId
         );
         if (response.IsSuccess)
         {

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
@@ -22,12 +23,16 @@ public record InternalNodeData
 
         this.RatioAlongElement1d = ratioAlongElement1d;
         this.Metadata = metadata;
-        this.Restraint = restraint;
+        this.Restraint = restraint ?? Restraint.Free;
     }
+
+    public InternalNodeData() { }
 
     public required int Element1dId { get; init; }
     public required Ratio RatioAlongElement1d { get; init; }
-    public Restraint? Restraint { get; init; }
+
+    [Required]
+    public Restraint Restraint { get; init; } = Restraint.Free;
 
     // public InternalNodeData() { }
 

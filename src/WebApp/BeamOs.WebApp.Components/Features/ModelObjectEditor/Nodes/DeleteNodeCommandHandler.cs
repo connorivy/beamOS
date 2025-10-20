@@ -40,8 +40,8 @@ public sealed class DeleteNodeCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.DeleteNodeAsync(
-            command.ModelId,
             command.NodeId,
+            command.ModelId,
             ct
         );
     }

@@ -185,6 +185,9 @@ export class EditorApi implements IEditorApiAlpha {
   }
 
   deleteElement1d(body: IModelEntity): Promise<Result> {
+    if (!body.id) {
+      throw new Error("Element1d ID is required for deletion")
+    }
     const el = this.getObjectByBeamOsUniqueId<BeamOsElement1d>(
       BeamOsElement1d.beamOsObjectType,
       body.id,
@@ -193,10 +196,12 @@ export class EditorApi implements IEditorApiAlpha {
     this.removeObject3D(el)
     return Promise.resolve(ResultFactory.Success())
   }
-  deleteElement1ds(body: IModelEntity[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.deleteElement1d(el)
-    })
+  async deleteElement1ds(body: IModelEntity[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.deleteElement1d(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
@@ -213,10 +218,12 @@ export class EditorApi implements IEditorApiAlpha {
   //     return ResultFactory.Success();
   // }
 
-  createNodes(body: NodeResponse[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.createNode(el)
-    })
+  async createNodes(body: NodeResponse[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.createNode(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
@@ -268,15 +275,20 @@ export class EditorApi implements IEditorApiAlpha {
     return Promise.resolve(ResultFactory.Success())
   }
 
-  updateNodes(body: NodeResponse[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.updateNode(el)
-    })
+  async updateNodes(body: NodeResponse[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.updateNode(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
 
   deleteNode(body: IModelEntity): Promise<Result> {
+    if (!body.id) {
+      throw new Error("Node ID is required for deletion")
+    }
     const el = this.getObjectByBeamOsUniqueId<BeamOsNode>(
       BeamOsNode.beamOsObjectType,
       body.id,
@@ -285,18 +297,22 @@ export class EditorApi implements IEditorApiAlpha {
     this.removeObject3D(el)
     return Promise.resolve(ResultFactory.Success())
   }
-  deleteNodes(body: IModelEntity[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.deleteNode(el)
-    })
+  async deleteNodes(body: IModelEntity[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.deleteNode(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
 
-  createInternalNodes(body: InternalNode[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.createInternalNode(el)
-    })
+  async createInternalNodes(body: InternalNode[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.createInternalNode(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
@@ -306,6 +322,10 @@ export class EditorApi implements IEditorApiAlpha {
       BeamOsElement1d.beamOsObjectType,
       nodeResponse.element1dId,
     )
+    if (!nodeResponse.restraint) {
+      throw new Error("Internal node must have restraint defined")
+    }
+
     const node = new BeamOsInternalNode(
       nodeResponse.id,
       element1d,
@@ -323,6 +343,9 @@ export class EditorApi implements IEditorApiAlpha {
       BeamOsInternalNode.beamOsObjectType,
       body.id,
     )
+    if (!body.restraint) {
+      throw new Error("Internal node must have restraint defined")
+    }
 
     node.ratioAlongElement1d = body.ratioAlongElement1d.value
     node.restraint = body.restraint
@@ -330,15 +353,20 @@ export class EditorApi implements IEditorApiAlpha {
     return Promise.resolve(ResultFactory.Success())
   }
 
-  updateInternalNodes(body: InternalNode[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.updateInternalNode(el)
-    })
+  async updateInternalNodes(body: InternalNode[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.updateInternalNode(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
 
   deleteInternalNode(body: IModelEntity): Promise<Result> {
+    if (!body.id) {
+      throw new Error("Internal node ID is required for deletion")
+    }
     const el = this.getObjectByBeamOsUniqueId<BeamOsInternalNode>(
       BeamOsInternalNode.beamOsObjectType,
       body.id,
@@ -347,18 +375,22 @@ export class EditorApi implements IEditorApiAlpha {
     this.removeObject3D(el)
     return Promise.resolve(ResultFactory.Success())
   }
-  deleteInternalNodes(body: IModelEntity[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.deleteInternalNode(el)
-    })
+  async deleteInternalNodes(body: IModelEntity[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.deleteInternalNode(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
 
-  createPointLoads(body: PointLoadResponse[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.createPointLoad(el)
-    })
+  async createPointLoads(body: PointLoadResponse[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.createPointLoad(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
@@ -380,6 +412,9 @@ export class EditorApi implements IEditorApiAlpha {
   }
 
   deletePointLoad(body: IModelEntity): Promise<Result> {
+    if (!body.id) {
+      throw new Error("Point load ID is required for deletion")
+    }
     const el = this.getObjectByBeamOsUniqueId<BeamOsPointLoad>(
       BeamOsPointLoad.beamOsObjectType,
       body.id,
@@ -388,19 +423,23 @@ export class EditorApi implements IEditorApiAlpha {
     this.removeObject3D(el)
     return Promise.resolve(ResultFactory.Success())
   }
-  deletePointLoads(body: IModelEntity[]): Promise<Result> {
-    body.forEach(async el => {
-      await this.deletePointLoad(el)
-    })
+  async deletePointLoads(body: IModelEntity[]): Promise<Result> {
+    await Promise.all(
+      body.map(async el => {
+        await this.deletePointLoad(el)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
 
-  createShearDiagrams(body: ShearDiagramResponse[]): Promise<Result> {
+  async createShearDiagrams(body: ShearDiagramResponse[]): Promise<Result> {
     this.currentOverlay.clear()
-    body.forEach(async diagram => {
-      await this.createShearDiagram(diagram)
-    })
+    await Promise.all(
+      body.map(async diagram => {
+        await this.createShearDiagram(diagram)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
@@ -422,11 +461,13 @@ export class EditorApi implements IEditorApiAlpha {
     return Promise.resolve(ResultFactory.Success())
   }
 
-  createMomentDiagrams(body: MomentDiagramResponse[]): Promise<Result> {
+  async createMomentDiagrams(body: MomentDiagramResponse[]): Promise<Result> {
     this.currentOverlay.clear()
-    body.forEach(async diagram => {
-      await this.createMomentDiagram(diagram)
-    })
+    await Promise.all(
+      body.map(async diagram => {
+        await this.createMomentDiagram(diagram)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
@@ -463,11 +504,15 @@ export class EditorApi implements IEditorApiAlpha {
     this.currentOverlay.add(diagramResponse)
     return Promise.resolve(ResultFactory.Success())
   }
-  createDeflectionDiagrams(body: DeflectionDiagramResponse[]): Promise<Result> {
+  async createDeflectionDiagrams(
+    body: DeflectionDiagramResponse[],
+  ): Promise<Result> {
     this.currentOverlay.clear()
-    body.forEach(async diagram => {
-      await this.createDeflectionDiagram(diagram)
-    })
+    await Promise.all(
+      body.map(async diagram => {
+        await this.createDeflectionDiagram(diagram)
+      }),
+    )
 
     return Promise.resolve(ResultFactory.Success())
   }
@@ -575,6 +620,7 @@ export class EditorApi implements IEditorApiAlpha {
     return Promise.resolve(ResultFactory.Success())
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   reduceChangeSelectionCommand(_body: ChangeSelectionCommand): Promise<Result> {
     throw new Error("Method not implemented.")
   }
@@ -601,8 +647,9 @@ export class EditorApi implements IEditorApiAlpha {
     this.currentProposal.add(mesh)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   getObjectByBeamOsUniqueId<TObject>(
-    beamOsObjectType: BeamOsObjectType,
+    beamOsObjectType: number,
     entityId: number,
   ): TObject {
     const beamOsUniqueId =
@@ -618,6 +665,7 @@ export class EditorApi implements IEditorApiAlpha {
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   getProposalObjectByBeamOsUniqueId<TObject>(beamOsUniqueId: string): TObject {
     return (
       (this.currentProposal.getObjectByProperty(
@@ -630,8 +678,9 @@ export class EditorApi implements IEditorApiAlpha {
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   tryGetObjectByBeamOsUniqueId<TObject>(
-    beamOsObjectType: BeamOsObjectType,
+    beamOsObjectType: number,
     entityId: number,
   ): TObject | null {
     const beamOsUniqueId =
@@ -650,16 +699,16 @@ export class EditorApi implements IEditorApiAlpha {
     // if (!(object3D instanceof THREE.Mesh)) return false;
 
     // for better memory management and performance
-    if (object3D.geometry) object3D.geometry.dispose()
+    object3D.geometry.dispose()
 
-    if (object3D.material) {
-      if (object3D.material instanceof Array) {
-        // for better memory management and performance
-        object3D.material.forEach(material => material.dispose())
-      } else {
-        // for better memory management and performance
-        object3D.material.dispose()
-      }
+    if (object3D.material instanceof Array) {
+      // for better memory management and performance
+      object3D.material.forEach(material => {
+        material.dispose()
+      })
+    } else {
+      // for better memory management and performance
+      object3D.material.dispose()
     }
     object3D.removeFromParent() // the parent might be the scene or another Object3D, but it is sure to be removed this way
     object3D.geometry.attributes.position.needsUpdate = true

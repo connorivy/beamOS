@@ -28,8 +28,8 @@ public sealed class DeleteSectionProfileCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.DeleteSectionProfileAsync(
-            command.ModelId,
             command.SectionProfileId,
+            command.ModelId,
             ct
         );
     }

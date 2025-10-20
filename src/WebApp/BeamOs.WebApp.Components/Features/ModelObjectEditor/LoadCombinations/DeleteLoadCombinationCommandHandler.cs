@@ -28,8 +28,8 @@ public sealed class DeleteLoadCombinationCommandHandler(
     )
     {
         return await structuralAnalysisApiClientV1.DeleteLoadCombinationAsync(
-            command.ModelId,
             command.LoadCombinationId,
+            command.ModelId,
             ct
         );
     }
