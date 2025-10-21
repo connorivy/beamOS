@@ -15,7 +15,7 @@ test("user-profile menu shows Settings option", async ({ page }) => {
   await page.goto("/")
   // Click the user-profile icon button (assuming it has aria-label or title 'User Profile' or similar)
   // Adjust selector as needed for your app
-  await page.locator('header button').last().click();
+  await page.locator("header button").last().click()
   // Assert that the 'Settings' option is visible
   await expect(page.getByRole("menuitem", { name: /settings/i })).toBeVisible()
 })

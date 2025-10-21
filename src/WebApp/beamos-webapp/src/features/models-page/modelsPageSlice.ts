@@ -43,6 +43,24 @@ const initialState: ModelsPageState = {
   models: [],
   sampleModels: [
     {
+      id: "tutorial",
+      name: "Tutorial",
+      description: "Learn the basics of BeamOS with this interactive tutorial",
+      settings: {
+        unitSettings: {
+          lengthUnit: 1,
+          forceUnit: 2,
+          angleUnit: 1,
+        },
+        analysisSettings: {
+          element1DAnalysisType: 1,
+        },
+        yAxisUp: true,
+      },
+      lastModified: "2024-01-01T12:00:00Z",
+      role: "Sample",
+    },
+    {
       id: "4ce66084-4ac1-40bc-99ae-3d0f334c66fa",
       name: "Twisty Bowl Framing",
       description:
