@@ -54,7 +54,6 @@ export const EditorComponent = ({ isReadOnly = false, onEditorReady }: EditorCom
             ref={canvasRef}
             id={idRef.current}
             style={{ width: "100%", height: "100%", display: "block" }}
-            tabIndex={0}
         />
     )
 }

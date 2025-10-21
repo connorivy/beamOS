@@ -8,10 +8,7 @@ import { Line2 } from "three/examples/jsm/lines/Line2.js"
 import type { Controls } from "./Controls"
 import { BeamOsElement1d } from "./SceneObjects/BeamOsElement1d"
 import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
-import {
-  ChangeSelectionCommand,
-  SelectedObject,
-} from "./EditorApi/EditorEventsApi"
+import { ChangeSelectionCommand } from "./EditorApi/EditorEventsApi"
 
 export class Selector {
   private onDownPosition: THREE.Vector2 = new THREE.Vector2(0, 0)
