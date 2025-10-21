@@ -25,6 +25,9 @@ public sealed class CreateNodeClientCommandHandler(
             editorState.Value.EditorApi
             ?? throw new InvalidOperationException("Editor API is not initialized");
 
+        // Dispatch the command with TempNodeId for optimistic update
+        dispatcher.Dispatch(command);
+
         return await editorApi.CreateNodeAsync(
             new NodeResponse(command.TempNodeId, command.ModelId, command.Data).ToEditorUnits()
         );

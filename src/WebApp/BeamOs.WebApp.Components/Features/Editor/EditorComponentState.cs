@@ -159,21 +159,21 @@ public static class EditorComponentStateReducers
             return state;
         }
 
-        if (action.NodeId is null)
+        // Use either the real NodeId or TempNodeId for optimistic updates
+        int nodeId = action.NodeId ?? action.TempNodeId;
+
+        // If we're replacing a temp node with a real one, remove the temp first
+        var nodes = state.CachedModelResponse.Nodes;
+        if (action.NodeId.HasValue && nodes.ContainsKey(action.TempNodeId))
         {
-            throw new InvalidOperationException(
-                "CreateNodeClientCommand does not have a valid NodeId"
-            );
+            nodes = nodes.Remove(action.TempNodeId);
         }
 
         return state with
         {
             CachedModelResponse = state.CachedModelResponse with
             {
-                Nodes = state.CachedModelResponse.Nodes.Add(
-                    action.NodeId.Value,
-                    new(action.NodeId.Value, action.ModelId, action.Data)
-                ),
+                Nodes = nodes.Add(nodeId, new(nodeId, action.ModelId, action.Data)),
             },
         };
     }
