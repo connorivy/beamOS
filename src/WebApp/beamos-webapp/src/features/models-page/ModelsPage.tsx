@@ -147,7 +147,17 @@ const ModelsPage: React.FC = () => {
                         <Grid columns={12} spacing={3} maxWidth="lg">
                             <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                                 {sampleModels.map((model) => (
-                                    <ModelInfoCard model={model} onView={(id) => { void navigate(`/models/${id}`); }} />
+                                    <ModelInfoCard 
+                                        key={model.id}
+                                        model={model} 
+                                        onView={(id) => { 
+                                            if (id === 'tutorial') {
+                                                void navigate('/tutorial');
+                                            } else {
+                                                void navigate(`/models/${id}`);
+                                            }
+                                        }} 
+                                    />
                                 ))}
                             </Grid>
                         </Grid>
