@@ -53,10 +53,6 @@ jobs:
       - name: npm ci
         run: npm ci --prefix ./src/WebApp/BeamOs.WebApp.Components
 
-      - name: build web app components
-        run: dotnet build ./src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj
-        continue-on-error: true
-
       - name: build webapp tests
         run: dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
 
@@ -67,5 +63,5 @@ jobs:
         run: |
           cd src/WebApp/beamos-webapp/
           npm install
-          nohup npm run dev &
+          nohup npm run dev:e2e &
   
