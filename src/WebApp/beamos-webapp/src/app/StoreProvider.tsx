@@ -11,42 +11,45 @@ import { editorsSlice } from "../features/editors/editorsSlice"
 import { combineSlices } from "@reduxjs/toolkit"
 
 const rootReducer = combineSlices(
-    counterSlice,
-    quotesApiSlice,
-    modelsPageSlice,
-    editorsSlice,
+  counterSlice,
+  quotesApiSlice,
+  modelsPageSlice,
+  editorsSlice,
 )
 
 export type RootState = ReturnType<typeof rootReducer>
 export type AppStore = ReturnType<typeof configureStore>
 export type AppDispatch = AppStore["dispatch"]
 export type AppThunk<ThunkReturnType = void> = ThunkAction<
-    ThunkReturnType,
-    RootState,
-    unknown,
-    Action
+  ThunkReturnType,
+  RootState,
+  unknown,
+  Action
 >
 
 type StoreProviderProps = {
-    children: ReactNode
+  children: ReactNode
 }
 
 export const StoreProvider = ({ children }: StoreProviderProps) => {
-    const apiClient = useApiClient()
-    const middleware = useMemo(
-        () => [quotesApiSlice.middleware, moveNodeListenerMiddleware(apiClient).middleware],
-        [apiClient]
-    )
+  const apiClient = useApiClient()
+  const middleware = useMemo(
+    () => [
+      quotesApiSlice.middleware,
+      moveNodeListenerMiddleware(apiClient).middleware,
+    ],
+    [apiClient],
+  )
 
-    const store = useMemo(
-        () =>
-            configureStore({
-                reducer: rootReducer,
-                middleware: getDefaultMiddleware =>
-                    getDefaultMiddleware().concat(middleware),
-            }),
-        [middleware]
-    )
+  const store = useMemo(
+    () =>
+      configureStore({
+        reducer: rootReducer,
+        middleware: getDefaultMiddleware =>
+          getDefaultMiddleware().concat(middleware),
+      }),
+    [middleware],
+  )
 
-    return <Provider store={store}>{children}</Provider>
+  return <Provider store={store}>{children}</Provider>
 }

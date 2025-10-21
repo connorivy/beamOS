@@ -1,27 +1,28 @@
-import { useState } from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import { useState } from "react"
+import Dialog from "@mui/material/Dialog"
+import DialogContent from "@mui/material/DialogContent"
+import DialogActions from "@mui/material/DialogActions"
+import Button from "@mui/material/Button"
+import Stepper from "@mui/material/Stepper"
+import Step from "@mui/material/Step"
+import StepLabel from "@mui/material/StepLabel"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
 
-interface TutorialWelcomeDialogProps {
-  open: boolean;
-  onClose: () => void;
+type TutorialWelcomeDialogProps = {
+  open: boolean
+  onClose: () => void
 }
 
 const steps = [
   {
-    label: 'Welcome',
-    title: 'Welcome to BeamOS!',
+    label: "Welcome",
+    title: "Welcome to BeamOS!",
     content: (
       <>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          This interactive tutorial will help you learn the basics of structural analysis with BeamOS.
+          This interactive tutorial will help you learn the basics of structural
+          analysis with BeamOS.
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
           You'll learn how to:
@@ -36,8 +37,8 @@ const steps = [
     ),
   },
   {
-    label: 'Creating Nodes',
-    title: 'Creating Nodes',
+    label: "Creating Nodes",
+    title: "Creating Nodes",
     content: (
       <Typography variant="body1">
         Learn how to create structural nodes in your model.
@@ -45,8 +46,8 @@ const steps = [
     ),
   },
   {
-    label: 'Adding Elements',
-    title: 'Adding Elements',
+    label: "Adding Elements",
+    title: "Adding Elements",
     content: (
       <Typography variant="body1">
         Connect nodes with structural elements.
@@ -54,8 +55,8 @@ const steps = [
     ),
   },
   {
-    label: 'Applying Loads',
-    title: 'Applying Loads',
+    label: "Applying Loads",
+    title: "Applying Loads",
     content: (
       <Typography variant="body1">
         Add loads and constraints to your structure.
@@ -63,8 +64,8 @@ const steps = [
     ),
   },
   {
-    label: 'Running Analysis',
-    title: 'Running Analysis',
+    label: "Running Analysis",
+    title: "Running Analysis",
     content: (
       <Typography variant="body1">
         Execute structural analysis on your model.
@@ -72,37 +73,40 @@ const steps = [
     ),
   },
   {
-    label: 'Viewing Results',
-    title: 'Viewing Results',
+    label: "Viewing Results",
+    title: "Viewing Results",
     content: (
       <Typography variant="body1">
         Interpret and visualize the analysis results.
       </Typography>
     ),
   },
-];
+]
 
-const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({ open, onClose }) => {
-  const [activeStep, setActiveStep] = useState(0);
+const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
+  open,
+  onClose,
+}) => {
+  const [activeStep, setActiveStep] = useState(0)
 
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
-      setActiveStep((prevStep) => prevStep + 1);
+      setActiveStep(prevStep => prevStep + 1)
     }
-  };
+  }
 
   const handleBack = () => {
     if (activeStep > 0) {
-      setActiveStep((prevStep) => prevStep - 1);
+      setActiveStep(prevStep => prevStep - 1)
     }
-  };
+  }
 
   const handleClose = () => {
-    setActiveStep(0);
-    onClose();
-  };
+    setActiveStep(0)
+    onClose()
+  }
 
-  const currentStep = steps[activeStep];
+  const currentStep = steps[activeStep]
 
   return (
     <Dialog
@@ -110,18 +114,20 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({ open, onC
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          minHeight: '400px',
+      slotProps={{
+        paper: {
+          sx: {
+            minHeight: "400px",
+          },
         },
       }}
     >
       <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Typography variant="h6">{currentStep.title}</Typography>
           <Box>{currentStep.content}</Box>
           <Stepper activeStep={activeStep} alternativeLabel>
-            {steps.map((step) => (
+            {steps.map(step => (
               <Step key={step.label}>
                 <StepLabel>{step.label}</StepLabel>
               </Step>
@@ -145,7 +151,7 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({ open, onC
         )}
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default TutorialWelcomeDialog;
+export default TutorialWelcomeDialog

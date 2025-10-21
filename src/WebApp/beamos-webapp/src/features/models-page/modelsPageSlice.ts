@@ -45,8 +45,7 @@ const initialState: ModelsPageState = {
     {
       id: "tutorial",
       name: "Tutorial",
-      description:
-        "Learn the basics of BeamOS with this interactive tutorial",
+      description: "Learn the basics of BeamOS with this interactive tutorial",
       settings: {
         unitSettings: {
           lengthUnit: 1,
