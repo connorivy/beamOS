@@ -22,6 +22,7 @@ export type EditorState = {
   remoteModelId?: string
   isReadOnly: boolean
   selection: SelectedObject[] | null
+  nodes?: Record<number, { id: number; x: number; y: number; z: number }>
 }
 
 // The state is a map of id -> EditorState
@@ -113,6 +114,23 @@ export const editorsSlice = createAppSlice({
       //     },
       //   },
     ),
+    createNode: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          node: { id: number; x: number; y: number; z: number }
+        }>,
+      ) => {
+        const editor = state[action.payload.canvasId]
+        if (editor) {
+          if (!editor.nodes) {
+            editor.nodes = {}
+          }
+          editor.nodes[action.payload.node.id] = action.payload.node
+        }
+      },
+    ),
   }),
 })
 
@@ -122,6 +140,7 @@ export const {
   removeEditor,
   objectSelectionChanged,
   moveNode,
+  createNode,
 } = editorsSlice.actions
 
 // Selector to get editor state by id
