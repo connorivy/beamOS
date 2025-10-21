@@ -51,7 +51,7 @@ jobs:
         run: dotnet restore
 
       - name: npm ci
-        run: npm ci --prefix ./src/WebApp/BeamOs.WebApp.Components
+        run: npm ci --prefix ./src/WebApp/beamos-webapp
 
       - name: build webapp tests
         run: dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
@@ -62,6 +62,5 @@ jobs:
       - name: Start beamos-webapp frontend
         run: |
           cd src/WebApp/beamos-webapp/
-          npm install
           nohup npm run dev:e2e &
   
