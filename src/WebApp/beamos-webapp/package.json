@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc -b && vite build",
     "dev": "vite",
+    "dev:e2e": "VITE_STRUCTURALBACKEND_URL=http://localhost:7071 vite --port 3000",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "lint:fix": "eslint --fix .",
@@ -14,7 +15,6 @@
     "start": "vite",
     "start:backend": "dotnet run --project ../../StructuralAnalysis/BeamOs.StructuralAnalysis.Api/BeamOs.StructuralAnalysis.Api.csproj -- USE_TEMP_DB",
     "test": "vitest --run",
-    "test:e2e": "VITE_IDENTITY_BACKEND_URL=http://localhost:7071 start-server-and-test start:backend tcp:7071 test:playwright",
     "test:e2e:report": "python3 -m http.server 8080 -d playwright-report",
     "test:playwright": "playwright test",
     "type-check": "tsc -b --noEmit"

@@ -1,5 +1,3 @@
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.Tests.Common;
@@ -8,7 +6,6 @@ using BeamOs.WebApp;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
@@ -70,7 +67,7 @@ public class AssemblySetup
         // });
         // await WebAppFactory.StartAsync();
         // FrontendAddress = WebAppFactory.ServerAddress;
-        FrontendAddress = "http://localhost:5173";
+        FrontendAddress = "http://localhost:3000";
         Initialized = true;
     }
 

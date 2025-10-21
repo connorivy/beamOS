@@ -60,6 +60,13 @@
                 "stopAtEntry": false,
                 "requireExactSource": false
         },
+        {
+            "name": "beamos-webapp",
+            "request": "launch",
+            "type" : "msedge",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}/src/WebApp/beamos-webapp",
+        }
     ],
     "compounds": [
         {

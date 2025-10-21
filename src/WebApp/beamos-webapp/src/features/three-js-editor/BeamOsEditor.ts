@@ -139,7 +139,7 @@ export class BeamOsEditor {
     grid2.material.vertexColors = false
     grid.add(grid2)
 
-    //this.scene.add(grid);
+    this.scene.add(grid)
   }
 
   resizeCanvasToDisplaySize(width: number, height: number) {

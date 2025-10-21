@@ -11,7 +11,7 @@ import WindowIcon from '@mui/icons-material/Window';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import TitleIcon from '@mui/icons-material/Title';
-import InfoIcon from '@mui/icons-material/Info';
+// import InfoIcon from '@mui/icons-material/Info';
 import CircleIcon from '@mui/icons-material/Circle';
 import ReplayIcon from '@mui/icons-material/Replay';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -94,13 +94,13 @@ export default function SelectionInfo() {
             </Box>
 
             {/* Bottom section */}
-            <Box sx={{ px: 2, py: 2, bgcolor: 'grey.900', borderRadius: 2, m: 2 }}>
+            {/* <Box sx={{ px: 2, py: 2, bgcolor: 'grey.900', borderRadius: 2, m: 2 }}>
                 <Typography variant="caption" sx={{ color: 'grey.400' }}>What's new</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
                     <InfoIcon sx={{ color: 'grey.400', fontSize: 18, mr: 1 }} />
                     <Typography variant="body2" sx={{ color: 'grey.100' }}>Mobile app redesign</Typography>
                 </Box>
-            </Box>
+            </Box> */}
         </>
     );
 }
