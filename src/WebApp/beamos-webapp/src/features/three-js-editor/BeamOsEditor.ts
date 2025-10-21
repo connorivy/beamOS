@@ -11,6 +11,7 @@ import { EditorConfigurations } from "./EditorConfigurations"
 // import { DotnetApiFactory } from "./EditorApi/DotnetApiFactory"
 import { Controls } from "./Controls"
 import { Camera } from "./Camera"
+import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
 
 export class BeamOsEditor {
   public scene: THREE.Scene
@@ -29,7 +30,7 @@ export class BeamOsEditor {
 
   constructor(
     public domElement: HTMLElement,
-    // public dotnetDispatcherApi: IEditorEventsApi,
+    public eventsApi: IEditorEventsApi,
     private editorConfigurations: EditorConfigurations,
   ) {
     this.scene = new THREE.Scene()
@@ -51,8 +52,7 @@ export class BeamOsEditor {
     })
     editorConfigurations.yAxisUp = false
 
-    // const selectorInfo = new SelectorInfo(dotnetDispatcherApi, domElement.id)
-    const selectorInfo = new SelectorInfo(domElement.id)
+    const selectorInfo = new SelectorInfo(this.eventsApi, domElement.id)
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: domElement,
@@ -108,7 +108,11 @@ export class BeamOsEditor {
     this.animate()
   }
 
-  static createFromId(domElementId: string, isReadOnly: boolean): BeamOsEditor {
+  static createFromId(
+    domElementId: string,
+    isReadOnly: boolean,
+    eventsApi: IEditorEventsApi,
+  ): BeamOsEditor {
     const domElement = document.getElementById(domElementId)
     if (!domElement) {
       throw new Error(`Unable to find dom element with id ${domElementId}`)
@@ -116,7 +120,7 @@ export class BeamOsEditor {
 
     const editorConfigurations = new EditorConfigurations(isReadOnly)
 
-    return new this(domElement, editorConfigurations)
+    return new this(domElement, eventsApi, editorConfigurations)
   }
 
   initCanvas() {
@@ -224,10 +228,7 @@ export class BeamOsEditor {
     )
 
     // Recreate selector with the new camera, controls, and transformController
-    const selectorInfo = new SelectorInfo(
-      // this.dotnetDispatcherApi,
-      this.domElement.id,
-    )
+    const selectorInfo = new SelectorInfo(this.eventsApi, this.domElement.id)
 
     // Recreate raycaster with the new camera
     this.raycaster = new Raycaster(

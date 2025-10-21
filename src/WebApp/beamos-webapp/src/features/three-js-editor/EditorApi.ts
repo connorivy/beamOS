@@ -322,9 +322,6 @@ export class EditorApi implements IEditorApiAlpha {
       BeamOsElement1d.beamOsObjectType,
       nodeResponse.element1dId,
     )
-    if (!nodeResponse.restraint) {
-      throw new Error("Internal node must have restraint defined")
-    }
 
     const node = new BeamOsInternalNode(
       nodeResponse.id,
@@ -343,9 +340,6 @@ export class EditorApi implements IEditorApiAlpha {
       BeamOsInternalNode.beamOsObjectType,
       body.id,
     )
-    if (!body.restraint) {
-      throw new Error("Internal node must have restraint defined")
-    }
 
     node.ratioAlongElement1d = body.ratioAlongElement1d.value
     node.restraint = body.restraint

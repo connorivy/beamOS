@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react"
-import { BeamOsEditor } from "./BeamOsEditor"
+import { useAppDispatch } from "../../app/hooks"
+import { addEditor, updateEditor, removeEditor } from "./editorsSlice"
+import { BeamOsEditor } from "../three-js-editor/BeamOsEditor"
+import { EventsApi } from "./EventsApi"
 import { useApiClient } from "../api-client/ApiClientContext"
 
 // Generates a unique id for the canvas element
@@ -16,10 +19,31 @@ export const EditorComponent = ({ isReadOnly = false, onEditorReady }: EditorCom
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const idRef = useRef<string>(generateUniqueId())
     const editorRef = useRef<BeamOsEditor | null>(null)
+    const dispatch = useAppDispatch()
+    const eventsApiRef = useRef<EventsApi | null>(null)
+    eventsApiRef.current ??= new EventsApi(dispatch)
+
+    // Register editor in Redux on mount, update on prop change, remove on unmount
+    useEffect(() => {
+        const id = idRef.current
+        dispatch(addEditor({ canvasId: id, isReadOnly, selection: null }))
+        return () => {
+            dispatch(removeEditor(id))
+        }
+    }, [dispatch, isReadOnly])
 
     useEffect(() => {
-        if (canvasRef.current) {
-            const editor = BeamOsEditor.createFromId(idRef.current, isReadOnly)
+        const id = idRef.current
+        dispatch(updateEditor({ canvasId: id, changes: { isReadOnly } }))
+    }, [dispatch, isReadOnly])
+
+    useEffect(() => {
+        if (canvasRef.current && eventsApiRef.current) {
+            const editor = BeamOsEditor.createFromId(
+                idRef.current,
+                isReadOnly,
+                eventsApiRef.current
+            )
             editorRef.current = editor
             onEditorReady?.(editor)
         }

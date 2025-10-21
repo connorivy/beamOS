@@ -1,9 +1,8 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 import {
-  AnalysisSettings,
-  ModelSettings,
-  UnitSettings,
+  type IUnitSettings,
+  type IAnalysisSettings,
   type ModelInfoResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
@@ -19,7 +18,11 @@ export type ModelInfoResponseSerializable = {
   id: string
   name: string
   description: string
-  settings: ModelSettings
+  settings: {
+    unitSettings: IUnitSettings
+    analysisSettings: IAnalysisSettings
+    yAxisUp: boolean
+  }
   lastModified: string
   role: string
 }
@@ -44,15 +47,17 @@ const initialState: ModelsPageState = {
       name: "Twisty Bowl Framing",
       description:
         "A crazy twisting bowl type structure. Made by Bjorn Steinhagen in grasshopper and then sent to beamOS using Speckle",
-      settings: new ModelSettings({
-        unitSettings: new UnitSettings({
+      settings: {
+        unitSettings: {
           lengthUnit: 1,
           forceUnit: 2,
           angleUnit: 1,
-        }),
-        analysisSettings: new AnalysisSettings({ element1DAnalysisType: 1 }),
+        },
+        analysisSettings: {
+          element1DAnalysisType: 1,
+        },
         yAxisUp: true,
-      }),
+      },
       lastModified: "2023-11-01T12:00:00Z",
       role: "Sample",
     },

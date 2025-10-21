@@ -3,15 +3,15 @@ import type { RaycastInfo } from "./Raycaster"
 import { isBeamOsMesh } from "./Raycaster"
 import type { TransformController } from "./TransformController"
 import type { IBeamOsMesh } from "./BeamOsMesh"
-// import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
-// import {
-//   ChangeSelectionCommand,
-//   SelectedObject,
-// } from "./EditorApi/EditorEventsApi"
 import type { EditorConfigurations } from "./EditorConfigurations"
 import { Line2 } from "three/examples/jsm/lines/Line2.js"
 import type { Controls } from "./Controls"
 import { BeamOsElement1d } from "./SceneObjects/BeamOsElement1d"
+import type { IEditorEventsApi } from "./EditorApi/EditorEventsApi"
+import {
+  ChangeSelectionCommand,
+  SelectedObject,
+} from "./EditorApi/EditorEventsApi"
 
 export class Selector {
   private onDownPosition: THREE.Vector2 = new THREE.Vector2(0, 0)
@@ -333,7 +333,7 @@ export class SelectorInfo {
   private _currentSelection: IBeamOsMesh[] = []
 
   constructor(
-    // private dotnetDispatcherApi: IEditorEventsApi,
+    private eventsApi: IEditorEventsApi,
     private canvasId: string,
   ) {}
 
@@ -341,18 +341,12 @@ export class SelectorInfo {
     return this._currentSelection
   }
   public set currentSelection(value: IBeamOsMesh[]) {
-    // this.dotnetDispatcherApi.dispatchChangeSelectionCommand(
-    //   new ChangeSelectionCommand({
-    //     canvasId: this.canvasId,
-    //     selectedObjects: value.map(
-    //       m =>
-    //         new SelectedObject({
-    //           id: m.beamOsId,
-    //           objectType: m.beamOsObjectType,
-    //         }),
-    //     ),
-    //   }),
-    // )
+    void this.eventsApi.dispatchChangeSelectionCommand(
+      new ChangeSelectionCommand(
+        this.canvasId,
+        value.map(m => ({ id: m.beamOsId, objectType: m.beamOsObjectType })),
+      ),
+    )
     this._currentSelection = value
   }
 }

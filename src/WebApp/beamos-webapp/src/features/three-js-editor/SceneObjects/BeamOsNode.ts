@@ -14,7 +14,6 @@ export type NodeEventMap = {
 
 export class BeamOsNode extends BeamOsNodeBase {
   public static beamOsObjectType: BeamOsObjectType = BeamOsObjectTypes.Node
-  // public beamOsObjectType: string = BeamOsNode.beamOsObjectType;
   public static nodeHex = 0x00ff00
   public static nodeRadius = 0.1
 

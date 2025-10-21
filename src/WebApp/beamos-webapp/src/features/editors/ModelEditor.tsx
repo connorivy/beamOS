@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { RemoteEditorComponent } from "../three-js-editor/EditorComponent";
+import { RemoteEditorComponent } from "./EditorComponent";
 import { useParams } from "react-router-dom";
+import AppBarMain from "../../components/AppBarMain";
 
 // Types for panel content
 export enum PanelContent {
@@ -33,6 +34,7 @@ const ModelEditor = () => {
     // modelId will be used for child components and logic (see Blazor version)
     return (
         <div className="relative h-full w-full">
+            <AppBarMain />
             <RemoteEditorComponent modelId={modelId} isReadOnly={false} />
             {/* Example toolbar rendering, replace with actual components. modelId will be passed as needed. */}
             {/* <div className="flex items-center justify-center absolute left-4 right-4 top-4">
