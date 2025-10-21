@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
-public class TutorialTests : BlazorPageTest
+public class TutorialTests : ReactPageTest
 {
     [Test]
     public async Task WalkthroughTutorial_ShouldWorkCorrectly()
