@@ -386,4 +386,4 @@ DotWrap/
 # /tests/BeamOs.Tests.Common/SolvedProblems/**/*.g.cs
 
 *.user.props
-*.user.cs
+*.user.cssrc/WebApp/BeamOs.WebApp.Components/Features/ResultCharts/ResultChartsComponent.razor.js
