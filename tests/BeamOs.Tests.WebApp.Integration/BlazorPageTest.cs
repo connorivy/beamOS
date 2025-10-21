@@ -30,8 +30,7 @@ public class WebContextTest(BrowserTypeLaunchOptions options) : BrowserTest(opti
     protected virtual Task BeforeContextCreate() => Task.CompletedTask;
 }
 
-public class BlazorPageTestBase<TBlazorApp> : WebContextTest
-    where TBlazorApp : class
+public class BlazorPageTestBase : WebContextTest
 {
     public BlazorPageTestBase()
         : base(new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 15_000 }) { }
@@ -94,4 +93,4 @@ public class BlazorPageTestBase<TBlazorApp> : WebContextTest
     // public void Dispose() => this.factory.Dispose();
 }
 
-public class BlazorPageTest : BlazorPageTestBase<BeamOs.WebApp._Imports> { }
+public class BlazorPageTest : BlazorPageTestBase { }

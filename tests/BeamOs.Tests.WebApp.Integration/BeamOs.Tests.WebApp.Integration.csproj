@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/StructuralAnalysis/BeamOs.StructuralAnalysis.Api/BeamOs.StructuralAnalysis.Api.csproj" />
-    <ProjectReference Include="../../src/WebApp/BeamOs.WebApp/BeamOs.WebApp.csproj" />
+    <!-- <ProjectReference Include="../../src/WebApp/BeamOs.WebApp/BeamOs.WebApp.csproj" /> -->
     <ProjectReference Include="../BeamOs.Tests.Common.Integration/BeamOs.Tests.Common.Integration.csproj" />
   </ItemGroup>
 

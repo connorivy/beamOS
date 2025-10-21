@@ -2,7 +2,6 @@ using BeamOs.StructuralAnalysis.Api;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.Common.Integration;
-using BeamOs.WebApp;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +11,6 @@ namespace BeamOs.Tests.WebApp.Integration;
 public class AssemblySetup
 {
     private static WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>? backendFactory;
-    public static BlazorApplicationFactory<_Imports> WebAppFactory { get; private set; } = null!;
     public static string FrontendAddress { get; set; }
     private static HttpClient? client;
     public static bool Initialized { get; set; }
@@ -75,7 +73,6 @@ public class AssemblySetup
     public static async Task TearDown()
     {
         client?.Dispose();
-        WebAppFactory?.Dispose();
     }
 
     public static Func<PageContext, Task> CreateAuthenticatedUser { get; set; } =
