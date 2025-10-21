@@ -14,7 +14,10 @@ export type AppDependencies = {
   }
   // Add undoManager or other dependencies here as needed
 }
-import type { UpdateNodeRequest } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import type {
+  ModelResponse,
+  UpdateNodeRequest,
+} from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 // Define the shape of the editor state for a single editor
 export type EditorState = {
@@ -22,6 +25,7 @@ export type EditorState = {
   remoteModelId?: string
   isReadOnly: boolean
   selection: SelectedObject[] | null
+  model: ModelResponse | null
 }
 
 // The state is a map of id -> EditorState
@@ -78,42 +82,64 @@ export const editorsSlice = createAppSlice({
       ) => {
         // This reducer can be empty if the actual node movement is handled elsewhere
       },
-      // moveNode: create.asyncThunk(
-      //   async (command: MoveNodeCommand, thunkAPI) => {
-      //     // Use injected dependencies from extra
-      //     const { apiClient } = thunkAPI.extra as AppDependencies
-      //     const state = thunkAPI.getState() as { editors: EditorsState }
-      //     const editorState = state.editors[command.canvasId]
-      //     if (!editorState || !editorState.remoteModelId) {
-      //       return
-      //     }
-      //     // Ensure required properties for UpdateNodeRequest
-      //     // Convert Coordinate3D to NullableOfPartialPoint
-      //     const locationPoint = new NullableOfPartialPoint({
-      //       x: command.newLocation.x,
-      //       y: command.newLocation.y,
-      //       z: command.newLocation.z,
-      //       lengthUnit: LengthUnit._0, // Set to desired unit, e.g. meters
-      //     })
-      //     await apiClient.patchNode(
-      //       editorState.remoteModelId,
-      //       new UpdateNodeRequest({
-      //         id: command.nodeId,
-      //         locationPoint,
-      //       }),
-      //     )
-      //     // Here you would typically make an API call to move the node
-      //     // For this example, we'll just log the command
-      //     await Promise.resolve() // Simulate async operation
-      //     console.log("Node moved:", command)
-      //   },
-      //   {
-      //     rejected: (_state, action) => {
-      //       console.error("Failed to move node:", action.error)
-      //     },
-      //   },
     ),
+    modelLoaded: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          model: ModelResponse
+          remoteModelId?: string
+        }>,
+      ) => {
+        const editor = state[action.payload.canvasId]
+        editor.model = action.payload.model
+        if (action.payload.remoteModelId) {
+          editor.remoteModelId = action.payload.remoteModelId
+        }
+      },
+    ),
+    // moveNode: create.asyncThunk(
+    //   async (command: MoveNodeCommand, thunkAPI) => {
+    //     // Use injected dependencies from extra
+    //     const { apiClient } = thunkAPI.extra as AppDependencies
+    //     const state = thunkAPI.getState() as { editors: EditorsState }
+    //     const editorState = state.editors[command.canvasId]
+    //     if (!editorState || !editorState.remoteModelId) {
+    //       return
+    //     }
+    //     // Ensure required properties for UpdateNodeRequest
+    //     // Convert Coordinate3D to NullableOfPartialPoint
+    //     const locationPoint = new NullableOfPartialPoint({
+    //       x: command.newLocation.x,
+    //       y: command.newLocation.y,
+    //       z: command.newLocation.z,
+    //       lengthUnit: LengthUnit._0, // Set to desired unit, e.g. meters
+    //     })
+    //     await apiClient.patchNode(
+    //       editorState.remoteModelId,
+    //       new UpdateNodeRequest({
+    //         id: command.nodeId,
+    //         locationPoint,
+    //       }),
+    //     )
+    //     // Here you would typically make an API call to move the node
+    //     // For this example, we'll just log the command
+    //     await Promise.resolve() // Simulate async operation
+    //     console.log("Node moved:", command)
+    //   },
+    //   {
+    //     rejected: (_state, action) => {
+    //       console.error("Failed to move node:", action.error)
+    //     },
+    //   },
   }),
+  selectors: {
+    selectEditorByCanvasId: (state: EditorsState, canvasId: string) =>
+      state[canvasId],
+    selectModelResponseByCanvasId: (state: EditorsState, canvasId: string) =>
+      state[canvasId].model,
+  },
 })
 
 export const {
@@ -122,10 +148,8 @@ export const {
   removeEditor,
   objectSelectionChanged,
   moveNode,
+  modelLoaded,
 } = editorsSlice.actions
 
-// Selector to get editor state by id
-export const selectEditorById = (
-  state: { editors: EditorsState },
-  id: string,
-) => state.editors[id]
+export const { selectEditorByCanvasId, selectModelResponseByCanvasId } =
+  editorsSlice.selectors

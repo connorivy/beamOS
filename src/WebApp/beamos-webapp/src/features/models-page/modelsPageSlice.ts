@@ -1,9 +1,9 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
-import {
-  type IUnitSettings,
-  type IAnalysisSettings,
-  type ModelInfoResponse,
+import type {
+  AnalysisSettings,
+  UnitSettings,
+  ModelInfoResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 // Types
@@ -19,8 +19,8 @@ export type ModelInfoResponseSerializable = {
   name: string
   description: string
   settings: {
-    unitSettings: IUnitSettings
-    analysisSettings: IAnalysisSettings
+    unitSettings: UnitSettings
+    analysisSettings: AnalysisSettings
     yAxisUp: boolean
   }
   lastModified: string
@@ -105,7 +105,7 @@ export const modelsPageSlice = createAppSlice({
           name: m.name,
           description: m.description,
           settings: m.settings,
-          lastModified: m.lastModified.toDateString(),
+          lastModified: new Date(m.lastModified).toDateString(),
           role: m.role,
         }))
         state.isLoading = false

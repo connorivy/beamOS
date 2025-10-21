@@ -1,6 +1,7 @@
 //using Microsoft.OpenApi.Models;
 using BeamOs.StructuralAnalysis.Api;
 using NJsonSchema.CodeGeneration.CSharp;
+using NJsonSchema.CodeGeneration.TypeScript;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.TypeScript;
@@ -96,7 +97,12 @@ public abstract class AbstractGenerator2 : IApiGenerator
             {
                 ClassName = this.ClientName,
                 GenerateClientInterfaces = true,
-                TypeScriptGeneratorSettings = { Namespace = "" }, // needed to not generate a namespace
+                GenerateClientClasses = true,
+                TypeScriptGeneratorSettings =
+                {
+                    Namespace = "", // needed to not generate a namespace
+                    TypeStyle = TypeScriptTypeStyle.Interface,
+                },
             };
 
             var source = new TypeScriptClientGenerator(doc, tsGenSettings).GenerateFile();

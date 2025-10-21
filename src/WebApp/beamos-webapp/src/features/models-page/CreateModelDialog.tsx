@@ -14,12 +14,9 @@ import Select from "@mui/material/Select"
 import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
-import {
-  AnalysisSettings,
-  CreateModelRequest,
-  ModelSettings,
-  UnitSettings,
-} from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import type {
+  CreateModelRequest
+} from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1";
 import { Element1dAnalysisType } from "../../utils/type-extensions/EnumContracts"
 
 type UnitSelectProps = {
@@ -114,21 +111,21 @@ const CreateModelDialog: React.FC<CreateModelDialogProps> = ({
     setSubmitting(true)
     try {
       await onCreate(
-        new CreateModelRequest({
+        {
           name: modelName,
           description: modelDescription,
-          settings: new ModelSettings({
-            unitSettings: new UnitSettings({
+          settings: {
+            unitSettings: {
               lengthUnit: unitSettings.lengthUnit ?? 1,
               forceUnit: unitSettings.forceUnit ?? 2,
               angleUnit: unitSettings.angleUnit ?? 1,
-            }),
+            },
             yAxisUp,
-            analysisSettings: new AnalysisSettings({
+            analysisSettings: {
               element1DAnalysisType: analysisType,
-            }),
-          }),
-        }),
+            },
+          },
+        },
       )
       handleClose()
     } catch (err) {

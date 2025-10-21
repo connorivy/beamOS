@@ -15,12 +15,8 @@ import CircleIcon from "@mui/icons-material/Circle"
 import ReplayIcon from "@mui/icons-material/Replay"
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
 
-// Empty placeholder components for each type
-const Nodes = () => (
-  <Typography variant="body1" color="grey.300">
-    Nodes Component (empty)
-  </Typography>
-)
+import { NodeSelectionInfo } from "./NodeSelectionInfo"
+
 const Element1Ds = () => (
   <Typography variant="body1" color="grey.300">
     Element1Ds Component (empty)
@@ -62,7 +58,7 @@ const elementTypes = [
     key: "nodes",
     label: "Nodes",
     icon: <CircleIcon sx={{ mr: 1 }} />,
-    component: Nodes,
+    component: NodeSelectionInfo,
   },
   {
     key: "element1ds",
@@ -111,7 +107,7 @@ const loadTypes = [
   },
 ]
 
-export default function SelectionInfo() {
+export default function SelectionInfo({ canvasId }: { canvasId: string }) {
   const [selectedType, setSelectedType] = useState<string | null>(null)
 
   if (selectedType) {
@@ -140,7 +136,7 @@ export default function SelectionInfo() {
         <Box sx={{ flex: 1, px: 2 }}>
           {SelectedComponent ? (
             <Box mt={2}>
-              <SelectedComponent />
+              <SelectedComponent canvasId={canvasId} />
             </Box>
           ) : null}
         </Box>

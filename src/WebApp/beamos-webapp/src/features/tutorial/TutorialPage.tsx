@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { RemoteEditorComponent } from "../editors/EditorComponent"
 import AppBarMain from "../../components/AppBarMain"
 import SidebarMain from "../../components/SidebarMain"
 import SelectionInfo from "../editors/selection-info/SelectionInfo"
 import TutorialWelcomeDialog from "./TutorialWelcomeDialog"
 import { useApiClient } from "../api-client/ApiClientContext"
-import {
+import type {
   CreateModelRequest,
-  ModelSettings,
-  UnitSettings,
-  AnalysisSettings,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 const TutorialPage = () => {
@@ -17,29 +14,28 @@ const TutorialPage = () => {
   const [modelId, setModelId] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const canvasId = useRef<string>("tutorial-canvas")
 
   useEffect(() => {
     // Create a temporary model when the tutorial page loads
     const createTutorialModel = async () => {
       try {
-        const unitSettings = new UnitSettings()
-        unitSettings.lengthUnit = 1 // K_IN
-        unitSettings.forceUnit = 2
-        unitSettings.angleUnit = 1
-
-        const analysisSettings = new AnalysisSettings()
-        analysisSettings.element1DAnalysisType = 1
-
-        const modelSettings = new ModelSettings()
-        modelSettings.unitSettings = unitSettings
-        modelSettings.analysisSettings = analysisSettings
-        modelSettings.yAxisUp = true
-
-        const request = new CreateModelRequest()
-        request.name = "Tutorial Model"
-        request.description =
-          "This model was created as part of the BeamOS tutorial."
-        request.settings = modelSettings
+        const request: CreateModelRequest = {
+          name: "Tutorial Model",
+          description:
+            "This model was created as part of the BeamOS tutorial.",
+          settings: {
+            unitSettings: {
+              lengthUnit: 1, // K_IN
+              forceUnit: 2,
+              angleUnit: 1,
+            },
+            yAxisUp: true,
+            analysisSettings: {
+              element1DAnalysisType: 1,
+            },
+          }
+        }
 
         const response = await apiClient.createTempModel(request)
         if (response.id) {
@@ -77,11 +73,11 @@ const TutorialPage = () => {
           }}
           drawerWidth={320}
         >
-          <SelectionInfo />
+          <SelectionInfo canvasId={canvasId.current} />
         </SidebarMain>
         <div style={{ flex: 1, position: "relative" }}>
           {modelId ? (
-            <RemoteEditorComponent modelId={modelId} isReadOnly={false} />
+            <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId.current} />
           ) : (
             <div>Loading tutorial...</div>
           )}

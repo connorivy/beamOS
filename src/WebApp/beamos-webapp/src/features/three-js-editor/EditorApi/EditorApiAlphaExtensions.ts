@@ -1,5 +1,5 @@
 import type { Restraint } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
-import {
+import type {
   BeamOsError,
   Result,
 } from "../../../../../../../codeGen/BeamOs.CodeGen.EditorApi/EditorApiAlpha"
@@ -7,30 +7,30 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class BeamOsErrorFactory {
   static None(): BeamOsError {
-    return new BeamOsError({
+    return {
       code: "",
       description: "",
       type: ErrorType.None,
       numericType: 0,
       metadata: null,
-    })
+    }
   }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ResultFactory {
   static Success(): Result {
-    return new Result({
+    return {
       isError: false,
       error: BeamOsErrorFactory.None(),
-    })
+    }
   }
 
   static Failure(error: BeamOsError): Result {
-    return new Result({
+    return {
       isError: true,
       error: error,
-    })
+    }
   }
 }
 

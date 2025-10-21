@@ -1,9 +1,14 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { RemoteEditorComponent } from "./EditorComponent"
 import { useParams } from "react-router-dom"
 import AppBarMain from "../../components/AppBarMain"
 import SidebarMain from "../../components/SidebarMain"
 import SelectionInfo from "./selection-info/SelectionInfo"
+
+// Generates a unique id for the canvas element
+function generateUniqueId(prefix = "editor-canvas-") {
+  return prefix + Math.random().toString(36).substring(2, 11)
+}
 
 // Types for panel content
 export enum PanelContent {
@@ -14,6 +19,7 @@ export enum PanelContent {
 }
 
 const ModelEditor = () => {
+  const canvasId = useRef(generateUniqueId()).current
   // Get modelId from route params
   const { modelId } = useParams<{ modelId: string }>()
   // (Panel content stack and lock state removed as unused)
@@ -55,10 +61,10 @@ const ModelEditor = () => {
           }}
           drawerWidth={320}
         >
-          <SelectionInfo />
+          <SelectionInfo canvasId={canvasId} />
         </SidebarMain>
         <div style={{ flex: 1, position: "relative" }}>
-          <RemoteEditorComponent modelId={modelId} isReadOnly={false} />
+          <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
         </div>
       </div>
     </div>
