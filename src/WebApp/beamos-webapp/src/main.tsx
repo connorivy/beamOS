@@ -12,6 +12,7 @@ import { BrowserRouter } from "react-router"
 import { AuthProvider } from "./auth/AuthContext"
 import { ApiClientProvider } from "./features/api-client/ApiClientContext"
 import { StoreProvider } from "./app/StoreProvider"
+import { EditorProvider } from "./features/editors/EditorContext"
 
 const container = document.getElementById("root")
 
@@ -24,13 +25,13 @@ if (container) {
         <CssBaseline />
         <ApiClientProvider>
           <StoreProvider>
-            {/* <Provider store={store}> */}
             <BrowserRouter>
               <AuthProvider>
-                <App />
+                <EditorProvider>
+                  <App />
+                </EditorProvider>
               </AuthProvider>
             </BrowserRouter>
-            {/* </Provider> */}
           </StoreProvider>
         </ApiClientProvider>
       </ThemeProvider>

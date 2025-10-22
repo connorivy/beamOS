@@ -5,7 +5,6 @@ import {
   RestraintContractUtils,
   RestraintType,
 } from "../EditorApi/EditorApiAlphaExtensions"
-import type { BeamOsObjectType } from "../EditorApi/EditorEventsApi"
 import { BeamOsNodeBase } from "./BeamOsNodeBase"
 
 export type NodeEventMap = {
@@ -13,7 +12,7 @@ export type NodeEventMap = {
 } & THREE.Object3DEventMap
 
 export class BeamOsNode extends BeamOsNodeBase {
-  public static beamOsObjectType: BeamOsObjectType = BeamOsObjectTypes.Node
+  public static beamOsObjectType = BeamOsObjectTypes.Node
   public static nodeHex = 0x00ff00
   public static nodeRadius = 0.1
 
@@ -26,7 +25,7 @@ export class BeamOsNode extends BeamOsNodeBase {
     public zCoordinate: number,
     restraint: Restraint,
     yAxisUp: boolean,
-    objectType: BeamOsObjectType = BeamOsNode.beamOsObjectType,
+    objectType = BeamOsNode.beamOsObjectType,
   ) {
     const restraintType = RestraintContractUtils.GetRestraintType(restraint)
     super(
@@ -98,8 +97,7 @@ export class BeamOsNode extends BeamOsNodeBase {
 }
 
 export class BeamOsNodeProposal extends BeamOsNode {
-  public static beamOsObjectType: BeamOsObjectType =
-    BeamOsObjectTypes.NodeProposal
+  public static beamOsObjectType = BeamOsObjectTypes.NodeProposal
   constructor(
     public existingNodeId: number | undefined,
     beamOsid: number,

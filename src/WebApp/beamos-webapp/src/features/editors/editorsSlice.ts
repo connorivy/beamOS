@@ -16,6 +16,7 @@ export type AppDependencies = {
 }
 import type {
   ModelResponse,
+  NodeResponse,
   UpdateNodeRequest,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
@@ -99,6 +100,43 @@ export const editorsSlice = createAppSlice({
         }
       },
     ),
+    createNode: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          node: NodeResponse
+        }>,
+      ) => {
+        const editor = state[action.payload.canvasId]
+        if (!editor.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.nodes ??= []
+        editor.model.nodes.push(action.payload.node)
+      },
+    ),
+    removeNodeById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          nodeId: number
+        }>,
+      ) => {
+        const editor = state[action.payload.canvasId]
+        if (!editor.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.nodes = editor.model.nodes?.filter(
+          n => n.id !== action.payload.nodeId,
+        )
+      },
+    ),
     // moveNode: create.asyncThunk(
     //   async (command: MoveNodeCommand, thunkAPI) => {
     //     // Use injected dependencies from extra
@@ -147,6 +185,8 @@ export const {
   updateEditor,
   removeEditor,
   objectSelectionChanged,
+  createNode,
+  removeNodeById,
   moveNode,
   modelLoaded,
 } = editorsSlice.actions

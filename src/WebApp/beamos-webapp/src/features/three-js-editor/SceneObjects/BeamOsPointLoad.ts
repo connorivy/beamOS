@@ -3,7 +3,6 @@ import { BeamOsMesh } from "../BeamOsMesh"
 import { BufferGeometryUtils } from "three/examples/jsm/Addons.js"
 import { BeamOsNode } from "./BeamOsNode"
 import type { Vector3 } from "../../../../../../../codeGen/BeamOs.CodeGen.EditorApi/EditorApiAlpha"
-import type { BeamOsObjectType } from "../EditorApi/EditorEventsApi"
 import { BeamOsObjectTypes } from "../EditorApi/EditorApiAlphaExtensions"
 import type { BeamOsNodeBase } from "./BeamOsNodeBase"
 
@@ -16,7 +15,7 @@ export class BeamOsPointLoad extends BeamOsMesh<
   THREE.Material,
   PointLoadEventMap
 > {
-  public static beamOsObjectType: BeamOsObjectType = BeamOsObjectTypes.PointLoad
+  public static beamOsObjectType = BeamOsObjectTypes.PointLoad
   // public beamOsObjectType: string = "PointLoad";
   private onNodeMovedFunc: (_event: unknown) => void
 

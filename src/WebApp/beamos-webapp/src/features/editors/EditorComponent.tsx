@@ -4,23 +4,21 @@ import { addEditor, updateEditor, removeEditor, modelLoaded } from "./editorsSli
 import { BeamOsEditor } from "../three-js-editor/BeamOsEditor"
 import { EventsApi } from "./EventsApi"
 import { useApiClient } from "../api-client/ApiClientContext"
-import { userModelsLoaded } from "../models-page/modelsPageSlice"
+import { useEditors } from "./EditorContext"
 
 type EditorComponentProps = {
   isReadOnly?: boolean
   canvasId: string
-  onEditorReady?: (editor: BeamOsEditor) => void
 }
 
 export const EditorComponent = ({
   isReadOnly = false,
   canvasId,
-  onEditorReady,
 }: EditorComponentProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const editorRef = useRef<BeamOsEditor | null>(null)
   const dispatch = useAppDispatch()
   const eventsApiRef = useRef<EventsApi | null>(null)
+  const editors = useEditors()
   eventsApiRef.current ??= new EventsApi(dispatch)
 
   // Register editor in Redux on mount, update on prop change, remove on unmount
@@ -43,10 +41,9 @@ export const EditorComponent = ({
         isReadOnly,
         eventsApiRef.current,
       )
-      editorRef.current = editor
-      onEditorReady?.(editor)
+      editors[canvasId] = editor
     }
-  }, [canvasId, isReadOnly, onEditorReady])
+  }, [canvasId, editors, isReadOnly])
 
   return (
     <canvas
@@ -62,7 +59,7 @@ type RemoteEditorComponentProps = {
   isReadOnly?: boolean
   canvasId: string
 }
-// remoteEditorComponent that inhertits from EditorComponent
+
 export const RemoteEditorComponent = ({
   modelId,
   canvasId,
@@ -70,26 +67,21 @@ export const RemoteEditorComponent = ({
 }: RemoteEditorComponentProps) => {
   const apiClient = useApiClient()
   const dispatch = useAppDispatch()
-  const editorRef = useRef<BeamOsEditor | null>(null)
+  const editors = useEditors()
 
   useEffect(() => {
     const fetchModel = async () => {
       const modelResponse = await apiClient.getModel(modelId)
       dispatch(modelLoaded({ canvasId, model: modelResponse, remoteModelId: modelId }))
-      await editorRef.current?.api.createModel(modelResponse)
+      await editors[canvasId].api.createModel(modelResponse)
     }
     fetchModel().catch(console.error)
-  }, [apiClient, canvasId, dispatch, modelId])
-
-  const handleEditorReady = (editor: BeamOsEditor) => {
-    editorRef.current = editor
-  }
+  }, [apiClient, canvasId, dispatch, editors, modelId])
 
   return (
     <EditorComponent
       canvasId={canvasId}
       isReadOnly={isReadOnly}
-      onEditorReady={handleEditorReady}
     />
   )
 }

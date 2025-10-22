@@ -3,7 +3,6 @@ import { Line2 } from "three/examples/jsm/lines/Line2.js"
 import { LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js"
 import type { BeamOsNode } from "./BeamOsNode"
 import type { IBeamOsMesh } from "../BeamOsMesh"
-import type { BeamOsObjectType } from "../EditorApi/EditorEventsApi"
 import {
   BeamOsObjectTypes,
   objectTypeToString,
@@ -16,8 +15,8 @@ export type Element1dEventMap = {
 
 export class BeamOsElement1d extends Line2 implements IBeamOsMesh {
   public static lineThickness = 0.1
-  public static beamOsObjectType: BeamOsObjectType = BeamOsObjectTypes.Element1d
-  public beamOsObjectType: BeamOsObjectType
+  public static beamOsObjectType = BeamOsObjectTypes.Element1d
+  public beamOsObjectType: number
   private onNodeMovedFunc: (_event: unknown) => void
   private previousMaterial: LineMaterial | undefined
   public beamOsUniqueId: string
@@ -27,7 +26,7 @@ export class BeamOsElement1d extends Line2 implements IBeamOsMesh {
     public startNode: BeamOsNodeBase,
     public endNode: BeamOsNodeBase,
     lineMaterial: LineMaterial,
-    objectType: BeamOsObjectType = BeamOsElement1d.beamOsObjectType,
+    objectType = BeamOsElement1d.beamOsObjectType,
   ) {
     super(new LineGeometry(), lineMaterial)
 
@@ -136,8 +135,7 @@ export class BeamOsElement1d extends Line2 implements IBeamOsMesh {
 }
 
 export class BeamOsElement1dProposal extends BeamOsElement1d {
-  public static beamOsObjectType: BeamOsObjectType =
-    BeamOsObjectTypes.Element1dProposal
+  public static beamOsObjectType = BeamOsObjectTypes.Element1dProposal
   constructor(
     public existingElementId: number | undefined,
     beamOsId: number,
