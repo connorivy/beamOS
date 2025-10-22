@@ -46,6 +46,10 @@ const restraintOptions: { key: keyof Restraints; label: string }[] = [
     { key: "CanRotateAboutZ", label: "Can Rotate About Z" },
 ]
 
+// Precision for rounding coordinate values to avoid floating point precision issues
+// Using 1e10 allows for 10 decimal places of precision, which is more than sufficient for engineering applications
+const COORDINATE_PRECISION_MULTIPLIER = 1e10
+
 
 export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     const dispatch = useAppDispatch()
@@ -94,9 +98,9 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 const z = convertLength(node.locationPoint.z, node.locationPoint.lengthUnit, modelLengthUnit)
                 
                 // Round to avoid floating point precision issues (e.g., 1.0999999999999999 -> 1.1)
-                const roundedX = Math.round(x * 1e10) / 1e10
-                const roundedY = Math.round(y * 1e10) / 1e10
-                const roundedZ = Math.round(z * 1e10) / 1e10
+                const roundedX = Math.round(x * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+                const roundedY = Math.round(y * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+                const roundedZ = Math.round(z * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
                 
                 dispatch(setNodeIdInput(nodeId.toString()))
                 dispatch(setCoord({ key: "x", value: roundedX.toString() }))
