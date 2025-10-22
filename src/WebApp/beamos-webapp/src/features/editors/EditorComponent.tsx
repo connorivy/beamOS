@@ -43,11 +43,9 @@ export const EditorComponent = ({
         eventsApiRef.current,
       )
       editorRef.current = editor
-      // Store editor reference in Redux
-      dispatch(updateEditor({ canvasId, changes: { editorRef: editor } }))
       onEditorReady?.(editor)
     }
-  }, [canvasId, isReadOnly, onEditorReady, dispatch])
+  }, [canvasId, isReadOnly, onEditorReady])
 
   return (
     <canvas
@@ -62,12 +60,14 @@ type RemoteEditorComponentProps = {
   modelId: string
   isReadOnly?: boolean
   canvasId: string
+  onEditorReady?: (editor: BeamOsEditor) => void
 }
 // remoteEditorComponent that inhertits from EditorComponent
 export const RemoteEditorComponent = ({
   modelId,
   canvasId,
   isReadOnly = false,
+  onEditorReady,
 }: RemoteEditorComponentProps) => {
   const apiClient = useApiClient()
   const dispatch = useAppDispatch()
@@ -84,6 +84,7 @@ export const RemoteEditorComponent = ({
 
   const handleEditorReady = (editor: BeamOsEditor) => {
     editorRef.current = editor
+    onEditorReady?.(editor)
   }
 
   return (

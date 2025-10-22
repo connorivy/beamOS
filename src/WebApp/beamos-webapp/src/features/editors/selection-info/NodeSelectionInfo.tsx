@@ -24,6 +24,7 @@ import {
 } from "@mui/material"
 import { selectModelResponseByCanvasId, selectEditorByCanvasId, nodeAdded } from "../editorsSlice"
 import { useApiClient } from "../../api-client/ApiClientContext"
+import { useEditor } from "../EditorContext"
 import type { CreateNodeRequest2 } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 type NodeIdOption = {
@@ -57,6 +58,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         selectEditorByCanvasId(state, canvasId)
     )
     const apiClient = useApiClient()
+    const editor = useEditor(canvasId)
     const nodeIds: (string | NodeIdOption)[] = [
         { label: "New Node", value: null },
         ...modelResponse?.nodes?.map(n => ({ label: n.id.toString(), value: n.id })).sort() ?? []
@@ -119,8 +121,8 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
 
         try {
             // 1. Optimistically create node in the BeamOsEditor (UI)
-            if (editorState.editorRef) {
-                await editorState.editorRef.api.createNode({
+            if (editor) {
+                await editor.api.createNode({
                     id: nodeIdNumber,
                     locationPoint: createNodeRequest.locationPoint,
                     restraint: createNodeRequest.restraint,
@@ -141,7 +143,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
             console.error("Failed to create node:", error)
             // TODO: Handle error - potentially remove optimistically added node
         }
-    }, [nodeIdInput, coords, restraints, editorState, apiClient, dispatch, canvasId])
+    }, [nodeIdInput, coords, restraints, editorState.remoteModelId, apiClient, dispatch, canvasId, editor])
 
     return (
         <MuiBox sx={{ px: 2, py: 2 }}>

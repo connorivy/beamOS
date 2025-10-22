@@ -27,7 +27,6 @@ export type EditorState = {
   isReadOnly: boolean
   selection: SelectedObject[] | null
   model: ModelResponse | null
-  editorRef?: any // Reference to BeamOsEditor instance
 }
 
 // The state is a map of id -> EditorState
