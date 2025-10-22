@@ -17,6 +17,7 @@ export type AppDependencies = {
 import type {
   ModelResponse,
   UpdateNodeRequest,
+  NodeResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 // Define the shape of the editor state for a single editor
@@ -26,6 +27,7 @@ export type EditorState = {
   isReadOnly: boolean
   selection: SelectedObject[] | null
   model: ModelResponse | null
+  editorRef?: any // Reference to BeamOsEditor instance
 }
 
 // The state is a map of id -> EditorState
@@ -99,6 +101,24 @@ export const editorsSlice = createAppSlice({
         }
       },
     ),
+    nodeAdded: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          node: NodeResponse
+        }>,
+      ) => {
+        const editor = state[action.payload.canvasId]
+        if (editor.model) {
+          // Add the node to the model's nodes array
+          if (!editor.model.nodes) {
+            editor.model.nodes = []
+          }
+          editor.model.nodes.push(action.payload.node)
+        }
+      },
+    ),
     // moveNode: create.asyncThunk(
     //   async (command: MoveNodeCommand, thunkAPI) => {
     //     // Use injected dependencies from extra
@@ -149,6 +169,7 @@ export const {
   objectSelectionChanged,
   moveNode,
   modelLoaded,
+  nodeAdded,
 } = editorsSlice.actions
 
 export const { selectEditorByCanvasId, selectModelResponseByCanvasId } =

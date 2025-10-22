@@ -4,7 +4,6 @@ import { addEditor, updateEditor, removeEditor, modelLoaded } from "./editorsSli
 import { BeamOsEditor } from "../three-js-editor/BeamOsEditor"
 import { EventsApi } from "./EventsApi"
 import { useApiClient } from "../api-client/ApiClientContext"
-import { userModelsLoaded } from "../models-page/modelsPageSlice"
 
 type EditorComponentProps = {
   isReadOnly?: boolean
@@ -44,9 +43,11 @@ export const EditorComponent = ({
         eventsApiRef.current,
       )
       editorRef.current = editor
+      // Store editor reference in Redux
+      dispatch(updateEditor({ canvasId, changes: { editorRef: editor } }))
       onEditorReady?.(editor)
     }
-  }, [canvasId, isReadOnly, onEditorReady])
+  }, [canvasId, isReadOnly, onEditorReady, dispatch])
 
   return (
     <canvas

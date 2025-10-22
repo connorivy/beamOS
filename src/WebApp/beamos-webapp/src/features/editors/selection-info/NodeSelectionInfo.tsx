@@ -22,7 +22,9 @@ import {
     Typography,
     Button,
 } from "@mui/material"
-import { selectModelResponseByCanvasId } from "../editorsSlice"
+import { selectModelResponseByCanvasId, selectEditorByCanvasId, nodeAdded } from "../editorsSlice"
+import { useApiClient } from "../../api-client/ApiClientContext"
+import type { CreateNodeRequest2 } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 type NodeIdOption = {
     label: string;
@@ -33,12 +35,12 @@ function isWholeNumber(val: string) {
 }
 
 const restraintOptions: { key: keyof Restraints; label: string }[] = [
-    { key: "CanTranslateAlongX", label: "Can Translate Along X" },
-    { key: "CanTranslateAlongY", label: "Can Translate Along Y" },
-    { key: "CanTranslateAlongZ", label: "Can Translate Along Z" },
-    { key: "CanRotateAboutX", label: "Can Rotate About X" },
-    { key: "CanRotateAboutY", label: "Can Rotate About Y" },
-    { key: "CanRotateAboutZ", label: "Can Rotate About Z" },
+    { key: "CanTranslateAlongX", label: "can translate along x" },
+    { key: "CanTranslateAlongY", label: "can translate along y" },
+    { key: "CanTranslateAlongZ", label: "can translate along z" },
+    { key: "CanRotateAboutX", label: "can rotate about x" },
+    { key: "CanRotateAboutY", label: "can rotate about y" },
+    { key: "CanRotateAboutZ", label: "can rotate about z" },
 ]
 
 
@@ -51,6 +53,10 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     const modelResponse = useAppSelector(state =>
         selectModelResponseByCanvasId(state, canvasId)
     )
+    const editorState = useAppSelector(state =>
+        selectEditorByCanvasId(state, canvasId)
+    )
+    const apiClient = useApiClient()
     const nodeIds: (string | NodeIdOption)[] = [
         { label: "New Node", value: null },
         ...modelResponse?.nodes?.map(n => ({ label: n.id.toString(), value: n.id })).sort() ?? []
@@ -74,6 +80,68 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     const handleRestraintChange = useCallback((key: keyof Restraints) => (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setRestraint({ key, value: event.target.checked }))
     }, [dispatch])
+
+    const handleCreateNode = useCallback(async () => {
+        // Validate input
+        if (!nodeIdInput || nodeIdInput === "") {
+            console.error("Node ID is required")
+            return
+        }
+        if (!coords.x || !coords.y || !coords.z) {
+            console.error("All coordinates are required")
+            return
+        }
+        if (!editorState.remoteModelId) {
+            console.error("Remote model ID is not available")
+            return
+        }
+
+        const nodeIdNumber = parseInt(nodeIdInput, 10)
+        
+        // Create the node request
+        const createNodeRequest: CreateNodeRequest2 = {
+            id: nodeIdNumber,
+            locationPoint: {
+                x: parseFloat(coords.x),
+                y: parseFloat(coords.y),
+                z: parseFloat(coords.z),
+                lengthUnit: 0, // Assuming 0 is the default unit (inches based on UI)
+            },
+            restraint: {
+                canTranslateAlongX: restraints.CanTranslateAlongX,
+                canTranslateAlongY: restraints.CanTranslateAlongY,
+                canTranslateAlongZ: restraints.CanTranslateAlongZ,
+                canRotateAboutX: restraints.CanRotateAboutX,
+                canRotateAboutY: restraints.CanRotateAboutY,
+                canRotateAboutZ: restraints.CanRotateAboutZ,
+            },
+        }
+
+        try {
+            // 1. Optimistically create node in the BeamOsEditor (UI)
+            if (editorState.editorRef) {
+                await editorState.editorRef.api.createNode({
+                    id: nodeIdNumber,
+                    locationPoint: createNodeRequest.locationPoint,
+                    restraint: createNodeRequest.restraint,
+                })
+            }
+
+            // 2. Call the backend API to persist the node
+            const nodeResponse = await apiClient.createNode(
+                editorState.remoteModelId,
+                createNodeRequest
+            )
+
+            // 3. Update Redux store with the new node
+            dispatch(nodeAdded({ canvasId, node: nodeResponse }))
+
+            console.log("Node created successfully:", nodeResponse)
+        } catch (error) {
+            console.error("Failed to create node:", error)
+            // TODO: Handle error - potentially remove optimistically added node
+        }
+    }, [nodeIdInput, coords, restraints, editorState, apiClient, dispatch, canvasId])
 
     return (
         <MuiBox sx={{ px: 2, py: 2 }}>
@@ -107,7 +175,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 renderInput={params => (
                     <TextField
                         {...params}
-                        label="Node Id"
+                        label="node id"
                         variant="outlined"
                         size="small"
                     />
@@ -121,7 +189,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                     LocationPoint
                 </Typography>
                 <TextField
-                    label="X*"
+                    label="x"
                     value={coords.x}
                     onChange={handleCoordChange("x")}
                     variant="outlined"
@@ -130,7 +198,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                     slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>Inch</Typography> } }}
                 />
                 <TextField
-                    label="Y*"
+                    label="y"
                     value={coords.y}
                     onChange={handleCoordChange("y")}
                     variant="outlined"
@@ -139,7 +207,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                     slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>Inch</Typography> } }}
                 />
                 <TextField
-                    label="Z*"
+                    label="z"
                     value={coords.z}
                     onChange={handleCoordChange("z")}
                     variant="outlined"
@@ -169,8 +237,8 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 </FormGroup>
             </Collapse>
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }}>
-                CREATE
+            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={handleCreateNode}>
+                create
             </Button>
         </MuiBox>
     )

@@ -5,6 +5,7 @@ import { counterSlice } from "../features/counter/counterSlice"
 import { modelsPageSlice } from "../features/models-page/modelsPageSlice"
 import { quotesApiSlice } from "../features/quotes/quotesApiSlice"
 import { editorsSlice } from "../features/editors/editorsSlice"
+import { nodeSelectionSlice } from "../features/editors/selection-info/nodeSelectionSlice"
 // import { useApiClient } from "../features/api-client/ApiClientContext"
 
 // Add modelsPageReducer manually to rootReducer
@@ -19,6 +20,7 @@ const rootReducer = combineSlices(
   quotesApiSlice,
   modelsPageSlice,
   editorsSlice,
+  nodeSelectionSlice,
 )
 
 // Infer the `RootState` type from the root reducer
