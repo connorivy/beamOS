@@ -40,3 +40,5 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
   setupListeners(store.dispatch)
   return store
 }
+
+export type AppStore = ReturnType<typeof makeStore>
