@@ -95,3 +95,10 @@ export const RatioUnit = {
   DecimalFraction: 1,
   Percent: 2,
 }
+
+export function getUnitName(
+  unitObj: Record<string, number>,
+  value: number,
+): string | undefined {
+  return Object.keys(unitObj).find(key => unitObj[key] === value)
+}

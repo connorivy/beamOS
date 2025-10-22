@@ -26,6 +26,7 @@ import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { useEditors } from "../../EditorContext"
 import { handleCreateNode } from "./handleCreateNode"
+import { getUnitName, LengthUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
 
 type NodeIdOption = {
     label: string;
@@ -61,6 +62,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         { label: "New Node", value: null },
         ...Object.keys(modelResponse?.nodes ?? {}).map(id => ({ label: id, value: Number(id) }))
     ]
+    const lengthUnit = getUnitName(LengthUnit, modelResponse?.settings.unitSettings.lengthUnit ?? LengthUnit.Inch)
 
     const resetInput = useCallback(() => {
         dispatch(setNodeIdInput(""))
@@ -181,7 +183,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                     variant="outlined"
                     size="small"
                     sx={{ mb: 1 }}
-                    slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>Inch</Typography> } }}
+                    slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>{lengthUnit}</Typography> } }}
                 />
                 <TextField
                     label="Y*"
@@ -190,7 +192,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                     variant="outlined"
                     size="small"
                     sx={{ mb: 1 }}
-                    slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>Inch</Typography> } }}
+                    slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>{lengthUnit}</Typography> } }}
                 />
                 <TextField
                     label="Z*"
@@ -199,7 +201,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                     variant="outlined"
                     size="small"
                     sx={{ mb: 2 }}
-                    slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>Inch</Typography> } }}
+                    slotProps={{ input: { endAdornment: <Typography sx={{ ml: 1 }}>{lengthUnit}</Typography> } }}
                 />
             </Collapse>
 
