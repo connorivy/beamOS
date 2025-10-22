@@ -27,6 +27,7 @@ import { useApiClient } from "../../../api-client/ApiClientContext"
 import { useEditors } from "../../EditorContext"
 import { handleCreateNode } from "./handleCreateNode"
 import { getUnitName, LengthUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
+import { convertLength } from "../../../../utils/unitConversion"
 
 type NodeIdOption = {
     label: string;
@@ -85,10 +86,17 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         else {
             const node = modelResponse?.nodes[nodeId]
             if (node) {
+                const modelLengthUnit = modelResponse?.settings.unitSettings.lengthUnit ?? LengthUnit.Inch
+                
+                // Convert node coordinates from their unit to the model's unit for display
+                const x = convertLength(node.locationPoint.x, node.locationPoint.lengthUnit, modelLengthUnit)
+                const y = convertLength(node.locationPoint.y, node.locationPoint.lengthUnit, modelLengthUnit)
+                const z = convertLength(node.locationPoint.z, node.locationPoint.lengthUnit, modelLengthUnit)
+                
                 dispatch(setNodeIdInput(nodeId.toString()))
-                dispatch(setCoord({ key: "x", value: node.locationPoint.x.toString() }))
-                dispatch(setCoord({ key: "y", value: node.locationPoint.y.toString() }))
-                dispatch(setCoord({ key: "z", value: node.locationPoint.z.toString() }))
+                dispatch(setCoord({ key: "x", value: x.toString() }))
+                dispatch(setCoord({ key: "y", value: y.toString() }))
+                dispatch(setCoord({ key: "z", value: z.toString() }))
                 dispatch(setRestraint({ key: "CanTranslateAlongX", value: node.restraint.canTranslateAlongX }))
                 dispatch(setRestraint({ key: "CanTranslateAlongY", value: node.restraint.canTranslateAlongY }))
                 dispatch(setRestraint({ key: "CanTranslateAlongZ", value: node.restraint.canTranslateAlongZ }))
@@ -97,7 +105,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 dispatch(setRestraint({ key: "CanRotateAboutZ", value: node.restraint.canRotateAboutZ }))
             }
         }
-    }, [nodeId, dispatch, modelResponse?.nodes, resetInput])
+    }, [nodeId, dispatch, modelResponse?.nodes, modelResponse?.settings.unitSettings.lengthUnit, resetInput])
 
     // Only allow whole numbers for nodeId input
     const handleNodeIdInputChange = useCallback((_event: React.SyntheticEvent, value: string) => {
