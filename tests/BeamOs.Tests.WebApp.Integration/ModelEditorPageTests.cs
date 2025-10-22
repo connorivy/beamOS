@@ -26,7 +26,6 @@ public class ModelEditorPageTests : ReactPageTest
             new PageGetByRoleOptions { Name = "node id" }
         );
         await nodeIdCombobox.ClickAsync();
-        // await nodeIdCombobox.FillAsync("1");
 
         // there should not be any results in the dropdown
         var dropdownOptions = this.Page.GetByRole(
@@ -88,5 +87,13 @@ public class ModelEditorPageTests : ReactPageTest
             new PageGetByRoleOptions { Name = "1" }
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
+
+        // select the node from the dropdown
+        await dropdownOptions.First.ClickAsync();
+
+        // verify that the x, y, and z inputs have the correct values
+        await this.Expect(xInput).ToHaveValueAsync("1.1");
+        await this.Expect(yInput).ToHaveValueAsync("2.2");
+        await this.Expect(zInput).ToHaveValueAsync("3.3");
     }
 }

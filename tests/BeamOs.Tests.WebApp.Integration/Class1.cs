@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
-public partial class Class1 : BlazorPageTest
+public partial class Class1 : ReactPageTest
 {
     [Test]
     public async Task HomePage_ShouldLoadSuccessfully()
