@@ -9,7 +9,7 @@ import { modelsPageSlice } from "../features/models-page/modelsPageSlice"
 import { quotesApiSlice } from "../features/quotes/quotesApiSlice"
 import { editorsSlice } from "../features/editors/editorsSlice"
 import { combineSlices } from "@reduxjs/toolkit"
-import { nodeSelectionSlice } from "../features/editors/selection-info/nodeSelectionSlice"
+import { nodeSelectionSlice } from "../features/editors/selection-info/node/nodeSelectionSlice"
 
 const rootReducer = combineSlices(
   counterSlice,

@@ -10,16 +10,15 @@ import WindowIcon from "@mui/icons-material/Window"
 import AssignmentIcon from "@mui/icons-material/Assignment"
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered"
 import TitleIcon from "@mui/icons-material/Title"
-// import InfoIcon from '@mui/icons-material/Info';
 import CircleIcon from "@mui/icons-material/Circle"
 import ReplayIcon from "@mui/icons-material/Replay"
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
 
-import { NodeSelectionInfo } from "./NodeSelectionInfo"
+import { NodeSelectionInfo } from "./node/NodeSelectionInfo"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 import { selectEditorByCanvasId } from "../editorsSlice"
-import { setNodeId } from "./nodeSelectionSlice"
+import { setNodeId } from "./node/nodeSelectionSlice"
 
 const Element1Ds = () => (
   <Typography variant="body1" color="grey.300">

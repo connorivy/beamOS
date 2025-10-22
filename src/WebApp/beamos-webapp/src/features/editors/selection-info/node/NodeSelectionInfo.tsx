@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react"
-import { useAppSelector, useAppDispatch } from "../../../app/hooks"
+import { useAppSelector, useAppDispatch } from "../../../../app/hooks"
 import type { Coords, Restraints } from "./nodeSelectionSlice"
 import {
     setNodeId,
@@ -22,11 +22,10 @@ import {
     Typography,
     Button,
 } from "@mui/material"
-import { createNode, removeNodeById, selectModelResponseByCanvasId } from "../editorsSlice"
-import type { CreateNodeRequest2, NodeResponse } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
-import { useApiClient } from "../../api-client/ApiClientContext"
-import { useEditors } from "../EditorContext"
-// import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
+import { selectModelResponseByCanvasId } from "../../editorsSlice"
+import { useApiClient } from "../../../api-client/ApiClientContext"
+import { useEditors } from "../../EditorContext"
+import { handleCreateNode } from "./handleCreateNode"
 
 type NodeIdOption = {
     label: string;
@@ -76,12 +75,6 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         dispatch(setRestraint({ key: "CanRotateAboutZ", value: false }))
     }, [dispatch])
 
-    // useEffect(() => {
-    //     if (editorState.selection?.length === 1 && editorState.selection[0].objectType === BeamOsObjectTypes.Node) {
-    //         dispatch(setNodeId(editorState.selection[0].id))
-    //     }
-    // }, [dispatch, editorState.selection])
-
     useEffect(() => {
         // Reset input fields when switching to "New Node"
         if (nodeId === null) {
@@ -123,80 +116,18 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         dispatch(setRestraint({ key, value: event.target.checked }))
     }, [dispatch])
 
-    const handleCreateNode = useCallback(async () => {
-        // Validate input
-        if (nodeIdInput || nodeIdInput !== "") {
-            console.error("Node ID cannot be specified for new node")
-            return
-        }
-        if (!coords.x || !coords.y || !coords.z) {
-            console.error("All coordinates are required")
-            return
-        }
-        if (!editorState.remoteModelId) {
-            console.error("Remote model ID is not available")
-            return
-        }
-        if (!editorState.model) {
-            console.error("Editor model is not loaded")
-            return
-        }
-
-        const lengthUnit = editorState.model.settings.unitSettings.lengthUnit;
-
-        // Create the node request
-        const createNodeRequest: CreateNodeRequest2 = {
-            id: undefined,
-            locationPoint: {
-                x: parseFloat(coords.x),
-                y: parseFloat(coords.y),
-                z: parseFloat(coords.z),
-                lengthUnit: lengthUnit,
-            },
-            restraint: {
-                canTranslateAlongX: restraints.CanTranslateAlongX,
-                canTranslateAlongY: restraints.CanTranslateAlongY,
-                canTranslateAlongZ: restraints.CanTranslateAlongZ,
-                canRotateAboutX: restraints.CanRotateAboutX,
-                canRotateAboutY: restraints.CanRotateAboutY,
-                canRotateAboutZ: restraints.CanRotateAboutZ,
-            },
-        }
-
-        // Call the API to create the node
-        const createNodePromise = apiClient.createNode(
-            editorState.remoteModelId,
-            createNodeRequest)
-
-        // get a unique temporary id as a number from the current time
-        const uniqueTempId = -1 * Date.now();
-        const nodeResponse: NodeResponse = { id: uniqueTempId, modelId: editorState.remoteModelId, locationPoint: createNodeRequest.locationPoint, restraint: createNodeRequest.restraint }
-
-        // Optimistically update the ui
-        const editor = editors[canvasId];
-        await editor.api.createNode(nodeResponse);
-
-        // Optimistically update the store
-        dispatch(createNode({ canvasId, node: nodeResponse }));
-
-
-        try {
-            const realNodeResponse = await createNodePromise;
-
-            // remove the optimistically created node and replace with real one
-            console.log(`Real node response received: ${JSON.stringify(realNodeResponse)}`);
-            await editor.api.createNode(realNodeResponse);
-            await editor.api.deleteNode({ id: uniqueTempId, modelId: editorState.remoteModelId });
-            dispatch(removeNodeById({ canvasId, nodeId: uniqueTempId }));
-            dispatch(createNode({ canvasId, node: realNodeResponse }));
-        }
-        catch (error) {
-            console.error("Failed to create node:", error);
-            // Optionally, you might want to implement rollback logic here
-        }
-
-
-    }, [apiClient, canvasId, coords.x, coords.y, coords.z, dispatch, editorState.model, editorState.remoteModelId, editors, nodeIdInput, restraints.CanRotateAboutX, restraints.CanRotateAboutY, restraints.CanRotateAboutZ, restraints.CanTranslateAlongX, restraints.CanTranslateAlongY, restraints.CanTranslateAlongZ])
+    const handleCreateNodeFunc = useCallback(async () => {
+        await handleCreateNode(
+            apiClient,
+            dispatch,
+            nodeIdInput,
+            coords,
+            editorState,
+            editors[canvasId],
+            restraints,
+            canvasId
+        );
+    }, [apiClient, canvasId, coords, dispatch, editorState, editors, nodeIdInput, restraints])
 
     return (
         <MuiBox sx={{ px: 2, py: 2 }}>
@@ -292,7 +223,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 </FormGroup>
             </Collapse>
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateNode(); }}>
+            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateNodeFunc(); }}>
                 CREATE
             </Button>
         </MuiBox>
