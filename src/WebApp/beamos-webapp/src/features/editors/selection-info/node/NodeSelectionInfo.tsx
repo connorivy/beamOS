@@ -93,10 +93,15 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 const y = convertLength(node.locationPoint.y, node.locationPoint.lengthUnit, modelLengthUnit)
                 const z = convertLength(node.locationPoint.z, node.locationPoint.lengthUnit, modelLengthUnit)
                 
+                // Round to avoid floating point precision issues (e.g., 1.0999999999999999 -> 1.1)
+                const roundedX = Math.round(x * 1e10) / 1e10
+                const roundedY = Math.round(y * 1e10) / 1e10
+                const roundedZ = Math.round(z * 1e10) / 1e10
+                
                 dispatch(setNodeIdInput(nodeId.toString()))
-                dispatch(setCoord({ key: "x", value: x.toString() }))
-                dispatch(setCoord({ key: "y", value: y.toString() }))
-                dispatch(setCoord({ key: "z", value: z.toString() }))
+                dispatch(setCoord({ key: "x", value: roundedX.toString() }))
+                dispatch(setCoord({ key: "y", value: roundedY.toString() }))
+                dispatch(setCoord({ key: "z", value: roundedZ.toString() }))
                 dispatch(setRestraint({ key: "CanTranslateAlongX", value: node.restraint.canTranslateAlongX }))
                 dispatch(setRestraint({ key: "CanTranslateAlongY", value: node.restraint.canTranslateAlongY }))
                 dispatch(setRestraint({ key: "CanTranslateAlongZ", value: node.restraint.canTranslateAlongZ }))
