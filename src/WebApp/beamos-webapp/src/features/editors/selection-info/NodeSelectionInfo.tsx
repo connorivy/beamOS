@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { useAppSelector, useAppDispatch } from "../../../app/hooks"
 import type { Coords, Restraints } from "./nodeSelectionSlice"
 import {
@@ -26,6 +26,7 @@ import { createNode, removeNodeById, selectModelResponseByCanvasId } from "../ed
 import type { CreateNodeRequest2, NodeResponse } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { useApiClient } from "../../api-client/ApiClientContext"
 import { useEditors } from "../EditorContext"
+import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 
 type NodeIdOption = {
     label: string;
@@ -61,6 +62,47 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         { label: "New Node", value: null },
         ...modelResponse?.nodes?.map(n => ({ label: n.id.toString(), value: n.id })).sort() ?? []
     ]
+
+    const resetInput = useCallback(() => {
+        dispatch(setNodeIdInput(""))
+        dispatch(setCoord({ key: "x", value: "" }))
+        dispatch(setCoord({ key: "y", value: "" }))
+        dispatch(setCoord({ key: "z", value: "" }))
+        dispatch(setRestraint({ key: "CanTranslateAlongX", value: false }))
+        dispatch(setRestraint({ key: "CanTranslateAlongY", value: false }))
+        dispatch(setRestraint({ key: "CanTranslateAlongZ", value: false }))
+        dispatch(setRestraint({ key: "CanRotateAboutX", value: false }))
+        dispatch(setRestraint({ key: "CanRotateAboutY", value: false }))
+        dispatch(setRestraint({ key: "CanRotateAboutZ", value: false }))
+    }, [dispatch])
+
+    useEffect(() => {
+        if (editorState.selection?.length === 1 && editorState.selection[0].objectType === BeamOsObjectTypes.Node) {
+            dispatch(setNodeId(editorState.selection[0].id))
+        }
+    }, [dispatch, editorState.selection])
+
+    useEffect(() => {
+        // Reset input fields when switching to "New Node"
+        if (nodeId === null) {
+            resetInput()
+        }
+        else {
+            const node = modelResponse?.nodes?.find(n => n.id === nodeId)
+            if (node) {
+                dispatch(setNodeIdInput(node.id.toString()))
+                dispatch(setCoord({ key: "x", value: node.locationPoint.x.toString() }))
+                dispatch(setCoord({ key: "y", value: node.locationPoint.y.toString() }))
+                dispatch(setCoord({ key: "z", value: node.locationPoint.z.toString() }))
+                dispatch(setRestraint({ key: "CanTranslateAlongX", value: node.restraint.canTranslateAlongX }))
+                dispatch(setRestraint({ key: "CanTranslateAlongY", value: node.restraint.canTranslateAlongY }))
+                dispatch(setRestraint({ key: "CanTranslateAlongZ", value: node.restraint.canTranslateAlongZ }))
+                dispatch(setRestraint({ key: "CanRotateAboutX", value: node.restraint.canRotateAboutX }))
+                dispatch(setRestraint({ key: "CanRotateAboutY", value: node.restraint.canRotateAboutY }))
+                dispatch(setRestraint({ key: "CanRotateAboutZ", value: node.restraint.canRotateAboutZ }))
+            }
+        }
+    }, [nodeId, dispatch, modelResponse?.nodes, resetInput])
 
     // Only allow whole numbers for nodeId input
     const handleNodeIdInputChange = useCallback((_event: React.SyntheticEvent, value: string) => {

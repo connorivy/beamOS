@@ -19,6 +19,7 @@ import type {
   NodeResponse,
   UpdateNodeRequest,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import { stat } from "fs"
 
 // Define the shape of the editor state for a single editor
 export type EditorState = {
@@ -93,7 +94,23 @@ export const editorsSlice = createAppSlice({
           remoteModelId?: string
         }>,
       ) => {
-        const editor = state[action.payload.canvasId]
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor) {
+          state[action.payload.canvasId] = {
+            canvasId: action.payload.canvasId,
+            isReadOnly: false,
+            selection: null,
+            model: action.payload.model,
+            remoteModelId: action.payload.remoteModelId,
+          }
+          return
+          // throw new Error(
+          //   `Editor for canvasId ${action.payload.canvasId} does not exist. Ensure addEditor is dispatched before modelLoaded.`,
+          // )
+        }
         editor.model = action.payload.model
         if (action.payload.remoteModelId) {
           editor.remoteModelId = action.payload.remoteModelId
@@ -108,8 +125,11 @@ export const editorsSlice = createAppSlice({
           node: NodeResponse
         }>,
       ) => {
-        const editor = state[action.payload.canvasId]
-        if (!editor.model) {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
           throw new Error(
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
@@ -126,8 +146,11 @@ export const editorsSlice = createAppSlice({
           nodeId: number
         }>,
       ) => {
-        const editor = state[action.payload.canvasId]
-        if (!editor.model) {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
           throw new Error(
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
@@ -174,9 +197,13 @@ export const editorsSlice = createAppSlice({
   }),
   selectors: {
     selectEditorByCanvasId: (state: EditorsState, canvasId: string) =>
-      state[canvasId],
+      canvasId in state ? state[canvasId] : null,
     selectModelResponseByCanvasId: (state: EditorsState, canvasId: string) =>
-      state[canvasId].model,
+      (canvasId in state ? state[canvasId] : null)?.model,
+    selectNodeById: (state: EditorsState, canvasId: string, nodeId: number) => {
+      const editor = state[canvasId]
+      return editor.model?.nodes?.find(n => n.id === nodeId) ?? null
+    },
   },
 })
 
@@ -191,5 +218,8 @@ export const {
   modelLoaded,
 } = editorsSlice.actions
 
-export const { selectEditorByCanvasId, selectModelResponseByCanvasId } =
-  editorsSlice.selectors
+export const {
+  selectEditorByCanvasId,
+  selectModelResponseByCanvasId,
+  selectNodeById,
+} = editorsSlice.selectors

@@ -25,7 +25,8 @@ public class ModelEditorPageTests : ReactPageTest
             AriaRole.Combobox,
             new PageGetByRoleOptions { Name = "node id" }
         );
-        await nodeIdCombobox.FillAsync("1");
+        await nodeIdCombobox.ClickAsync();
+        // await nodeIdCombobox.FillAsync("1");
 
         // there should not be any results in the dropdown
         var dropdownOptions = this.Page.GetByRole(
@@ -79,6 +80,7 @@ public class ModelEditorPageTests : ReactPageTest
 
         // insert 1 into the node id combobox again
         await nodeIdCombobox.FillAsync("1");
+        await nodeIdCombobox.ClickAsync();
 
         // now there should be one result in the dropdown
         dropdownOptions = this.Page.GetByRole(

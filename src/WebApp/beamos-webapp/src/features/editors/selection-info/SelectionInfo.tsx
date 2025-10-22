@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import List from "@mui/material/List"
@@ -16,6 +16,10 @@ import ReplayIcon from "@mui/icons-material/Replay"
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
 
 import { NodeSelectionInfo } from "./NodeSelectionInfo"
+import { useAppDispatch, useAppSelector } from "../../../app/hooks"
+import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
+import { selectEditorByCanvasId } from "../editorsSlice"
+import { setNodeId } from "./nodeSelectionSlice"
 
 const Element1Ds = () => (
   <Typography variant="body1" color="grey.300">
@@ -109,6 +113,18 @@ const loadTypes = [
 
 export default function SelectionInfo({ canvasId }: { canvasId: string }) {
   const [selectedType, setSelectedType] = useState<string | null>(null)
+  const editorState = useAppSelector(state => selectEditorByCanvasId(state, canvasId))
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (editorState?.selection === null || editorState?.selection.length === 0) {
+      setSelectedType(null)
+      dispatch(setNodeId(null))
+    }
+    else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Node) {
+      setSelectedType("nodes")
+    }
+  }, [canvasId, dispatch, editorState?.selection])
 
   if (selectedType) {
     const SelectedComponent = elementTypes.find(

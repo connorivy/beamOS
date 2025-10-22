@@ -43,6 +43,18 @@ export const nodeSelectionSlice = createSlice({
   reducers: {
     setNodeId(state, action: PayloadAction<number | null>) {
       state.nodeId = action.payload
+      if (action.payload === null) {
+        state.nodeIdInput = ""
+        state.coords = { x: "", y: "", z: "" }
+        state.restraints = {
+          CanTranslateAlongX: false,
+          CanTranslateAlongY: false,
+          CanTranslateAlongZ: false,
+          CanRotateAboutX: false,
+          CanRotateAboutY: false,
+          CanRotateAboutZ: false,
+        }
+      }
     },
     setNodeIdInput(state, action: PayloadAction<string>) {
       state.nodeIdInput = action.payload
