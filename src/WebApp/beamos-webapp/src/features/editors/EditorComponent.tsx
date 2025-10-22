@@ -45,6 +45,14 @@ export const EditorComponent = ({
     }
   }, [canvasId, editors, isReadOnly])
 
+  // Dispose editor on unmount
+  useEffect(() => {
+    return () => {
+      const editor = editors[canvasId]
+      editor.dispose()
+    }
+  }, [canvasId, editors])
+
   return (
     <canvas
       ref={canvasRef}

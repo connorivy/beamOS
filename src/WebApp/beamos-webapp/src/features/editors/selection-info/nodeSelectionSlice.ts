@@ -42,6 +42,7 @@ export const nodeSelectionSlice = createSlice({
   initialState,
   reducers: {
     setNodeId(state, action: PayloadAction<number | null>) {
+      console.log("Setting node ID to:", action.payload)
       state.nodeId = action.payload
       if (action.payload === null) {
         state.nodeIdInput = ""

@@ -26,7 +26,7 @@ import { createNode, removeNodeById, selectModelResponseByCanvasId } from "../ed
 import type { CreateNodeRequest2, NodeResponse } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { useApiClient } from "../../api-client/ApiClientContext"
 import { useEditors } from "../EditorContext"
-import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
+// import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 
 type NodeIdOption = {
     label: string;
@@ -58,9 +58,9 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     const apiClient = useApiClient()
     const editors = useEditors()
     const editorState = useAppSelector(state => state.editors[canvasId])
-    const nodeIds: (string | NodeIdOption)[] = [
+    const nodeIds: NodeIdOption[] = [
         { label: "New Node", value: null },
-        ...modelResponse?.nodes?.map(n => ({ label: n.id.toString(), value: n.id })).sort() ?? []
+        ...Object.keys(modelResponse?.nodes ?? {}).map(id => ({ label: id, value: Number(id) }))
     ]
 
     const resetInput = useCallback(() => {
@@ -76,11 +76,11 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         dispatch(setRestraint({ key: "CanRotateAboutZ", value: false }))
     }, [dispatch])
 
-    useEffect(() => {
-        if (editorState.selection?.length === 1 && editorState.selection[0].objectType === BeamOsObjectTypes.Node) {
-            dispatch(setNodeId(editorState.selection[0].id))
-        }
-    }, [dispatch, editorState.selection])
+    // useEffect(() => {
+    //     if (editorState.selection?.length === 1 && editorState.selection[0].objectType === BeamOsObjectTypes.Node) {
+    //         dispatch(setNodeId(editorState.selection[0].id))
+    //     }
+    // }, [dispatch, editorState.selection])
 
     useEffect(() => {
         // Reset input fields when switching to "New Node"
@@ -88,9 +88,9 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
             resetInput()
         }
         else {
-            const node = modelResponse?.nodes?.find(n => n.id === nodeId)
+            const node = modelResponse?.nodes[nodeId]
             if (node) {
-                dispatch(setNodeIdInput(node.id.toString()))
+                dispatch(setNodeIdInput(nodeId.toString()))
                 dispatch(setCoord({ key: "x", value: node.locationPoint.x.toString() }))
                 dispatch(setCoord({ key: "y", value: node.locationPoint.y.toString() }))
                 dispatch(setCoord({ key: "z", value: node.locationPoint.z.toString() }))

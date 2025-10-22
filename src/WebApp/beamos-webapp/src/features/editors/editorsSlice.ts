@@ -19,7 +19,7 @@ import type {
   NodeResponse,
   UpdateNodeRequest,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
-import { stat } from "fs"
+import { ToModelState, type ModelState } from "./ModelState"
 
 // Define the shape of the editor state for a single editor
 export type EditorState = {
@@ -27,7 +27,7 @@ export type EditorState = {
   remoteModelId?: string
   isReadOnly: boolean
   selection: SelectedObject[] | null
-  model: ModelResponse | null
+  model: ModelState | null
 }
 
 // The state is a map of id -> EditorState
@@ -99,19 +99,11 @@ export const editorsSlice = createAppSlice({
             ? state[action.payload.canvasId]
             : null
         if (!editor) {
-          state[action.payload.canvasId] = {
-            canvasId: action.payload.canvasId,
-            isReadOnly: false,
-            selection: null,
-            model: action.payload.model,
-            remoteModelId: action.payload.remoteModelId,
-          }
-          return
-          // throw new Error(
-          //   `Editor for canvasId ${action.payload.canvasId} does not exist. Ensure addEditor is dispatched before modelLoaded.`,
-          // )
+          throw new Error(
+            `Editor for canvasId ${action.payload.canvasId} does not exist. Ensure addEditor is dispatched before modelLoaded.`,
+          )
         }
-        editor.model = action.payload.model
+        editor.model = ToModelState(action.payload.model)
         if (action.payload.remoteModelId) {
           editor.remoteModelId = action.payload.remoteModelId
         }
@@ -134,8 +126,10 @@ export const editorsSlice = createAppSlice({
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
         }
-        editor.model.nodes ??= []
-        editor.model.nodes.push(action.payload.node)
+        editor.model.nodes[action.payload.node.id] = {
+          locationPoint: action.payload.node.locationPoint,
+          restraint: action.payload.node.restraint,
+        }
       },
     ),
     removeNodeById: create.reducer(
@@ -155,9 +149,9 @@ export const editorsSlice = createAppSlice({
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
         }
-        editor.model.nodes = editor.model.nodes?.filter(
-          n => n.id !== action.payload.nodeId,
-        )
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.nodeId]: _, ...restNodes } = editor.model.nodes
+        editor.model.nodes = restNodes
       },
     ),
     // moveNode: create.asyncThunk(
@@ -202,7 +196,7 @@ export const editorsSlice = createAppSlice({
       (canvasId in state ? state[canvasId] : null)?.model,
     selectNodeById: (state: EditorsState, canvasId: string, nodeId: number) => {
       const editor = state[canvasId]
-      return editor.model?.nodes?.find(n => n.id === nodeId) ?? null
+      return editor.model?.nodes[nodeId] ?? null
     },
   },
 })

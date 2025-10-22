@@ -123,6 +123,7 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
     }
     else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Node) {
       setSelectedType("nodes")
+      dispatch(setNodeId(editorState.selection[0].id))
     }
   }, [canvasId, dispatch, editorState?.selection])
 

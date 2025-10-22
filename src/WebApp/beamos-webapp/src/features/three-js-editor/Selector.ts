@@ -131,13 +131,12 @@ export class Selector {
   }
 
   private setSelection(raycastedMeshes: (THREE.Object3D & IBeamOsMesh)[]) {
-    this.DeselectAll()
     if (raycastedMeshes.length === 1) {
       const raycastedMesh = raycastedMeshes[0]
       const position = raycastedMesh.GetPosition()
       this.controls.setOrbitPoint(position.x, position.y, position.z)
     }
-
+    this.ClearCurrentSelectionMesh()
     this.selectorInfo.currentSelection = raycastedMeshes
 
     // if (!this.editorConfigurations.isReadOnly) {
@@ -157,12 +156,16 @@ export class Selector {
     })
   }
 
-  private DeselectAll() {
+  private ClearCurrentSelectionMesh() {
     if (!this.editorConfigurations.isReadOnly) {
       this.transformController.transformControl.detach()
     }
-    this.selectorInfo.currentSelection = []
     this.selectionGroup.clear()
+  }
+
+  private DeselectAll() {
+    this.ClearCurrentSelectionMesh()
+    this.selectorInfo.currentSelection = []
   }
 
   setSelectionBoxFromLine(element: BeamOsElement1d, padding = 0.1) {

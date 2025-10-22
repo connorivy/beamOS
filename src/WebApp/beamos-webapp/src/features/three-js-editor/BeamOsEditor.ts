@@ -181,6 +181,7 @@ export class BeamOsEditor {
   public dispose() {
     this.observer.disconnect()
     this.observer.unobserve(this.domElement)
+    this.selector.dispose()
 
     // very important to cancel the animation loop
     // or else the model will not be freed up and garbage collected which will lead to a huge memory leak
