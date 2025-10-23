@@ -160,17 +160,17 @@ public class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
-        // refresh the page and ensure the created node persists
+        // refresh the page and ensure the created material persists
         await this.Page.ReloadAsync();
 
-        // click the nodes tab in the sidebar again
+        // click the materials tab in the sidebar again
         nodesTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "nodes" }
+            new PageGetByRoleOptions { Name = "materials" }
         );
         await nodesTab.ClickAsync();
 
-        // insert 1 into the node id combobox again
+        // insert 1 into the material id combobox again
         await idCombobox.FillAsync("1");
         await idCombobox.ClickAsync();
 

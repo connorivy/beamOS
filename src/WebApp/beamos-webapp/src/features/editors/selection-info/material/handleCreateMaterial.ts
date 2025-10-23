@@ -20,7 +20,7 @@ export async function handleCreateMaterial(
   canvasId: string,
 ) {
   // Validate input
-  if (materialIdInput || materialIdInput !== "") {
+  if (materialIdInput && materialIdInput !== "") {
     console.error("Material ID cannot be specified for new material")
     return
   }
