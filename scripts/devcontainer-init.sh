@@ -20,15 +20,13 @@ npm ci --prefix ./src/WebApp/beamos-webapp
 mkdir -p /workspaces/beamOS/.nuget-local
 dotnet nuget add source /workspaces/beamOS/.nuget-local --name local
 
-# # build webapp integration tests
-# dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
+# build webapp integration tests
+dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
 
-# # install powershell
-# ./scripts/installPwsh.sh
+# install powershell
+./scripts/installPwsh.sh
 
-# pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install
-
-npx playwright install
+pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install --with-deps --only-shell
 
 python3 -m venv venv
 source venv/bin/activate
