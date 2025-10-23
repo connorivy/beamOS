@@ -29,6 +29,14 @@ function isWholeNumber(val: string) {
     return /^\d+$/.test(val)
 }
 
+function formatNumber(value: number): string {
+    // Ensure at least one decimal place
+    if (value === Math.floor(value)) {
+        return value.toFixed(1)
+    }
+    return value.toString()
+}
+
 export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     const dispatch = useAppDispatch()
     const sectionProfileId = useAppSelector(sectionProfileIdSelector)
@@ -67,14 +75,14 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
             if (sectionProfile) {
                 dispatch(setSectionProfileIdInput(sectionProfileId.toString()))
                 dispatch(setProperty({ key: "name", value: sectionProfile.name }))
-                dispatch(setProperty({ key: "area", value: sectionProfile.area.toString() }))
-                dispatch(setProperty({ key: "strongAxisMomentOfInertia", value: sectionProfile.strongAxisMomentOfInertia.toString() }))
-                dispatch(setProperty({ key: "weakAxisMomentOfInertia", value: sectionProfile.weakAxisMomentOfInertia.toString() }))
-                dispatch(setProperty({ key: "polarMomentOfInertia", value: sectionProfile.polarMomentOfInertia.toString() }))
-                dispatch(setProperty({ key: "strongAxisPlasticSectionModulus", value: sectionProfile.strongAxisPlasticSectionModulus.toString() }))
-                dispatch(setProperty({ key: "weakAxisPlasticSectionModulus", value: sectionProfile.weakAxisPlasticSectionModulus.toString() }))
-                dispatch(setProperty({ key: "strongAxisShearArea", value: (sectionProfile.strongAxisShearArea ?? "").toString() }))
-                dispatch(setProperty({ key: "weakAxisShearArea", value: (sectionProfile.weakAxisShearArea ?? "").toString() }))
+                dispatch(setProperty({ key: "area", value: formatNumber(sectionProfile.area) }))
+                dispatch(setProperty({ key: "strongAxisMomentOfInertia", value: formatNumber(sectionProfile.strongAxisMomentOfInertia) }))
+                dispatch(setProperty({ key: "weakAxisMomentOfInertia", value: formatNumber(sectionProfile.weakAxisMomentOfInertia) }))
+                dispatch(setProperty({ key: "polarMomentOfInertia", value: formatNumber(sectionProfile.polarMomentOfInertia) }))
+                dispatch(setProperty({ key: "strongAxisPlasticSectionModulus", value: formatNumber(sectionProfile.strongAxisPlasticSectionModulus) }))
+                dispatch(setProperty({ key: "weakAxisPlasticSectionModulus", value: formatNumber(sectionProfile.weakAxisPlasticSectionModulus) }))
+                dispatch(setProperty({ key: "strongAxisShearArea", value: formatNumber(sectionProfile.strongAxisShearArea ?? 0) }))
+                dispatch(setProperty({ key: "weakAxisShearArea", value: formatNumber(sectionProfile.weakAxisShearArea ?? 0) }))
             }
         }
     }, [sectionProfileId, dispatch, modelResponse?.sectionProfiles, resetInput])
@@ -161,6 +169,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "name" } }}
             />
             <TextField
                 label="Area*"
@@ -170,6 +179,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "cross-section-area" } }}
             />
             <TextField
                 label="Strong Axis Moment of Inertia*"
@@ -179,6 +189,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "strong axis moment of inertia" } }}
             />
             <TextField
                 label="Weak Axis Moment of Inertia*"
@@ -188,6 +199,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "weak axis moment of inertia" } }}
             />
             <TextField
                 label="Polar Moment of Inertia*"
@@ -197,6 +209,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "polar moment of inertia" } }}
             />
             <TextField
                 label="Strong Axis Plastic Section Modulus*"
@@ -206,6 +219,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "strong axis plastic section modulus" } }}
             />
             <TextField
                 label="Weak Axis Plastic Section Modulus*"
@@ -215,6 +229,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "weak axis plastic section modulus" } }}
             />
             <TextField
                 label="Weak Axis Shear Area*"
@@ -224,6 +239,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 1 }}
+                slotProps={{ htmlInput: { "aria-label": "weak axis shear region" } }}
             />
             <TextField
                 label="Strong Axis Shear Area*"
@@ -233,6 +249,7 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 size="small"
                 fullWidth
                 sx={{ mb: 2 }}
+                slotProps={{ htmlInput: { "aria-label": "strong axis shear region" } }}
             />
 
             <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateSectionProfileFunc(); }}>

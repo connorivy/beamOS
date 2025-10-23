@@ -217,7 +217,7 @@ public class ModelEditorPageTests : ReactPageTest
         await nameInput.FillAsync("Test Section Profile");
 
         // fill in area
-        var areaInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "area" });
+        var areaInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "cross-section-area" });
         await areaInput.FillAsync("10.5");
 
         // fill in strong axis moment of inertia
@@ -258,14 +258,14 @@ public class ModelEditorPageTests : ReactPageTest
         // fill in weak axis shear area
         var shearAreaInput = this.Page.GetByRole(
             AriaRole.Textbox,
-            new() { Name = "weak axis shear area" }
+            new() { Name = "weak axis shear region" }
         );
         await shearAreaInput.FillAsync("8.0");
 
         // fill in strong axis shear area
         var strongShearAreaInput = this.Page.GetByRole(
             AriaRole.Textbox,
-            new() { Name = "strong axis shear area" }
+            new() { Name = "strong axis shear region" }
         );
         await strongShearAreaInput.FillAsync("9.0");
 
