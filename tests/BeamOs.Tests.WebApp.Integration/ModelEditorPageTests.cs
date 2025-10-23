@@ -1,18 +1,33 @@
+using BeamOs.Tests.Common;
 using Microsoft.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;
 
 public class ModelEditorPageTests : ReactPageTest
 {
-    [Test]
-    public async Task ModelEditorPage_CreateNodeDialog_ShouldWork()
+    private static Guid? modelId;
+
+    [Before(TUnit.Core.HookType.Test)]
+    public async Task ModelEditorPage_ShouldLoadSuccessfully()
     {
         // Create a new model and navigate to its editor page
-        _ = await this.PageContext.NavigateToNewModelPage(
-            modelName: "Model for Node Dialog Test",
-            description: "Testing the create node dialog functionality."
-        );
+        if (modelId == null)
+        {
+            modelId = await this.PageContext.NavigateToNewModelPage(
+                modelName: "Test Model",
+                description: "This is a test model for integration testing."
+            );
+        }
+        else
+        {
+            await this.Page.GotoAsync($"/models/{modelId}");
+        }
+    }
 
+    [Test]
+    [DependsOn(nameof(ModelEditorPage_ShouldLoadSuccessfully))]
+    public async Task ModelEditorPage_CreateNodeDialog_ShouldWork()
+    {
         // click the nodes tab in the sidebar
         var nodesTab = this.Page.GetByRole(
             AriaRole.Button,

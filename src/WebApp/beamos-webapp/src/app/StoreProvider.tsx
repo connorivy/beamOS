@@ -10,13 +10,15 @@ import { quotesApiSlice } from "../features/quotes/quotesApiSlice"
 import { editorsSlice } from "../features/editors/editorsSlice"
 import { combineSlices } from "@reduxjs/toolkit"
 import { nodeSelectionSlice } from "../features/editors/selection-info/node/nodeSelectionSlice"
+import { element1DSelectionSlice } from "../features/editors/selection-info/element1D/element1DSelectionSlice"
 
 const rootReducer = combineSlices(
   counterSlice,
   quotesApiSlice,
   modelsPageSlice,
   editorsSlice,
-  nodeSelectionSlice
+  nodeSelectionSlice,
+  element1DSelectionSlice
 )
 
 export type RootState = ReturnType<typeof rootReducer>
