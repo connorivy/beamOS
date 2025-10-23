@@ -22,6 +22,7 @@ import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
 import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
+import { LoadCombinationSelectionInfo } from "./loadCombination/LoadCombinationSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
 
 const PointLoads = () => (
@@ -32,11 +33,6 @@ const PointLoads = () => (
 const MomentLoads = () => (
   <Typography variant="body1" color="grey.300">
     MomentLoads Component (empty)
-  </Typography>
-)
-const LoadCombinations = () => (
-  <Typography variant="body1" color="grey.300">
-    LoadCombinations Component (empty)
   </Typography>
 )
 
@@ -90,7 +86,7 @@ const loadTypes = [
     key: "loadcombinations",
     label: "Load Combinations",
     icon: <FormatListNumberedIcon sx={{ mr: 1 }} />,
-    component: LoadCombinations,
+    component: LoadCombinationSelectionInfo,
   },
 ]
 

@@ -13,6 +13,7 @@ import { nodeSelectionSlice } from "../features/editors/selection-info/node/node
 import { element1DSelectionSlice } from "../features/editors/selection-info/element1D/element1DSelectionSlice"
 import { materialSelectionSlice } from "../features/editors/selection-info/material/materialSelectionSlice"
 import { loadCaseSelectionSlice } from "../features/editors/selection-info/loadCase/loadCaseSelectionSlice"
+import { loadCombinationSelectionSlice } from "../features/editors/selection-info/loadCombination/loadCombinationSelectionSlice"
 import { sectionProfileSelectionSlice } from "../features/editors/selection-info/sectionProfile/sectionProfileSelectionSlice"
 
 const rootReducer = combineSlices(
@@ -24,6 +25,7 @@ const rootReducer = combineSlices(
   element1DSelectionSlice,
   materialSelectionSlice,
   loadCaseSelectionSlice,
+  loadCombinationSelectionSlice,
   sectionProfileSelectionSlice
 )
 

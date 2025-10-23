@@ -16,6 +16,7 @@ export type AppDependencies = {
 }
 import type {
   LoadCase,
+  LoadCombination,
   MaterialResponse,
   ModelResponse,
   NodeResponse,
@@ -261,6 +262,50 @@ export const editorsSlice = createAppSlice({
         editor.model.loadCases = restLoadCases
       },
     ),
+    createLoadCombination: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCombination: LoadCombination
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.loadCombinations[action.payload.loadCombination.id] =
+          action.payload.loadCombination
+      },
+    ),
+    removeLoadCombinationById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCombinationId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.loadCombinationId]: _, ...restLoadCombinations } =
+          editor.model.loadCombinations
+        editor.model.loadCombinations = restLoadCombinations
+      },
+    ),
     createMaterial: create.reducer(
       (
         state,
@@ -364,6 +409,8 @@ export const {
   removeNodeById,
   createLoadCase,
   removeLoadCaseById,
+  createLoadCombination,
+  removeLoadCombinationById,
   createSectionProfile,
   removeSectionProfileById,
   createMaterial,
