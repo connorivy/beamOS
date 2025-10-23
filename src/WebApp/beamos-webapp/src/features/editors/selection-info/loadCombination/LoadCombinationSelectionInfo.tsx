@@ -3,6 +3,7 @@ import { useAppSelector, useAppDispatch } from "../../../../app/hooks"
 import {
     setLoadCombinationId,
     setLoadCombinationIdInput,
+    setLoadCaseFactorPairs,
     setLoadCaseId,
     setFactor,
     addLoadCaseFactorPair,
@@ -76,8 +77,6 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
                     loadCaseId: loadCaseId,
                     factor: factor.toString(),
                 }))
-                // Add one empty pair at the end for adding new entries
-                pairs.push({ loadCaseId: "", factor: "" })
                 // Update all pairs at once
                 dispatch(setLoadCaseFactorPairs(pairs))
             }
