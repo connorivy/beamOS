@@ -29,7 +29,10 @@ function isWholeNumber(val: string) {
     return /^\d+$/.test(val)
 }
 
-function formatNumber(value: number): string {
+function formatNumber(value: number | undefined): string {
+    if (value === undefined || value === null) {
+        return ""
+    }
     // Ensure at least one decimal place
     if (value === Math.floor(value)) {
         return value.toFixed(1)
@@ -81,8 +84,8 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 dispatch(setProperty({ key: "polarMomentOfInertia", value: formatNumber(sectionProfile.polarMomentOfInertia) }))
                 dispatch(setProperty({ key: "strongAxisPlasticSectionModulus", value: formatNumber(sectionProfile.strongAxisPlasticSectionModulus) }))
                 dispatch(setProperty({ key: "weakAxisPlasticSectionModulus", value: formatNumber(sectionProfile.weakAxisPlasticSectionModulus) }))
-                dispatch(setProperty({ key: "strongAxisShearArea", value: formatNumber(sectionProfile.strongAxisShearArea ?? 0) }))
-                dispatch(setProperty({ key: "weakAxisShearArea", value: formatNumber(sectionProfile.weakAxisShearArea ?? 0) }))
+                dispatch(setProperty({ key: "strongAxisShearArea", value: formatNumber(sectionProfile.strongAxisShearArea) }))
+                dispatch(setProperty({ key: "weakAxisShearArea", value: formatNumber(sectionProfile.weakAxisShearArea) }))
             }
         }
     }, [sectionProfileId, dispatch, modelResponse?.sectionProfiles, resetInput])
