@@ -479,17 +479,17 @@ public class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
-        // refresh the page and ensure the created node persists
+        // refresh the page and ensure the created element1d persists
         await this.Page.ReloadAsync();
 
-        // click the nodes tab in the sidebar again
+        // click the element1ds tab in the sidebar again
         entityTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "load cases" }
+            new PageGetByRoleOptions { Name = "element1ds" }
         );
         await entityTab.ClickAsync();
 
-        // insert 1 into the node id combobox again
+        // insert 1 into the element1d id combobox again
         await idCombobox.FillAsync("1");
         await idCombobox.ClickAsync();
 
@@ -500,7 +500,7 @@ public class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
-        // select the node from the dropdown
+        // select the element1d from the dropdown
         await dropdownOptions.First.ClickAsync();
 
         // verify that the entity inputs have the correct value
