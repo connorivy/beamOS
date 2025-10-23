@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { useAppSelector, useAppDispatch } from "../../../../app/hooks"
 import {
     setLoadCombinationId,
@@ -46,6 +46,9 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
     const apiClient = useApiClient()
     const editorState = useAppSelector(state => state.editors[canvasId])
     
+    // Use a ref to track if we've already added a pair in this render cycle
+    const isAddingPairRef = useRef(false)
+    
     const loadCombinationIds: LoadCombinationIdOption[] = [
         { label: "New Load Combination", value: null },
         ...Object.keys(modelResponse?.loadCombinations ?? {}).map(id => ({ label: id, value: Number(id) }))
@@ -56,8 +59,7 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
     const resetInput = useCallback(() => {
         dispatch(setLoadCombinationIdInput(""))
         // Reset to a single empty pair
-        dispatch(setLoadCaseId({ index: 0, value: "" }))
-        dispatch(setFactor({ index: 0, value: "" }))
+        dispatch(setLoadCaseFactorPairs([{ loadCaseId: "", factor: "" }]))
     }, [dispatch])
 
     useEffect(() => {
@@ -74,18 +76,15 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
                     loadCaseId: loadCaseId,
                     factor: factor.toString(),
                 }))
-                // Ensure at least one pair exists
-                if (pairs.length === 0) {
-                    pairs.push({ loadCaseId: "", factor: "" })
-                }
-                // Update the pairs in state
-                for (let i = 0; i < pairs.length; i++) {
-                    dispatch(setLoadCaseId({ index: i, value: pairs[i].loadCaseId }))
-                    dispatch(setFactor({ index: i, value: pairs[i].factor }))
-                }
+                // Add one empty pair at the end for adding new entries
+                pairs.push({ loadCaseId: "", factor: "" })
+                // Update all pairs at once
+                dispatch(setLoadCaseFactorPairs(pairs))
             }
         }
     }, [loadCombinationId, dispatch, modelResponse?.loadCombinations, resetInput])
+
+
 
     // Only allow whole numbers for loadCombinationId input
     const handleLoadCombinationIdInputChange = useCallback((_event: React.SyntheticEvent, value: string) => {
@@ -98,10 +97,12 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
         const newValue = typeof value === "string" ? value : (value?.value?.toString() ?? "")
         dispatch(setLoadCaseId({ index, value: newValue }))
         
-        // If this is the last pair and both fields have values, add a new empty pair
-        if (index === loadCaseFactorPairs.length - 1 && newValue && loadCaseFactorPairs[index].factor) {
-            dispatch(addLoadCaseFactorPair())
-        }
+        // If this is the last pair and both fields will have values, add a new pair
+        setTimeout(() => {
+            if (index === loadCaseFactorPairs.length - 1 && newValue && loadCaseFactorPairs[index].factor) {
+                dispatch(addLoadCaseFactorPair())
+            }
+        }, 0)
     }, [dispatch, loadCaseFactorPairs])
 
     const handleFactorChange = useCallback((index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,10 +110,12 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
         if (val === "" || /^-?\d*(\.\d*)?$/.test(val)) {
             dispatch(setFactor({ index, value: val }))
             
-            // If this is the last pair and both fields have values, add a new empty pair
-            if (index === loadCaseFactorPairs.length - 1 && val && loadCaseFactorPairs[index].loadCaseId) {
-                dispatch(addLoadCaseFactorPair())
-            }
+            // If this is the last pair and both fields will have values, add a new pair
+            setTimeout(() => {
+                if (index === loadCaseFactorPairs.length - 1 && val && loadCaseFactorPairs[index].loadCaseId) {
+                    dispatch(addLoadCaseFactorPair())
+                }
+            }, 0)
         }
     }, [dispatch, loadCaseFactorPairs])
 
@@ -200,11 +203,6 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
                         ) => {
                             const value = typeof newValue === "string" ? newValue : (newValue?.value?.toString() ?? "")
                             dispatch(setLoadCaseId({ index, value }))
-                            
-                            // If this is the last pair and both fields have values, add a new empty pair
-                            if (index === loadCaseFactorPairs.length - 1 && value && pair.factor) {
-                                dispatch(addLoadCaseFactorPair())
-                            }
                         }}
                         renderInput={params => (
                             <TextField

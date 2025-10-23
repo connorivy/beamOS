@@ -448,17 +448,17 @@ public class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
-        // refresh the page and ensure the created node persists
+        // refresh the page and ensure the created load combination persists
         await this.Page.ReloadAsync();
 
-        // click the nodes tab in the sidebar again
+        // click the load combinations tab in the sidebar again
         entityTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "load cases" }
+            new PageGetByRoleOptions { Name = "load combinations" }
         );
         await entityTab.ClickAsync();
 
-        // insert 1 into the node id combobox again
+        // insert 1 into the load combination id combobox again
         await idCombobox.FillAsync("1");
         await idCombobox.ClickAsync();
 
@@ -469,10 +469,10 @@ public class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
-        // select the node from the dropdown
+        // select the load combination from the dropdown
         await dropdownOptions.First.ClickAsync();
 
-        // verify that the load case name input has the correct value
+        // verify that the load case factors have the correct values
         loadCaseInputs = this.Page.GetByRole(AriaRole.Combobox, new() { Name = "load case" });
         await this.Expect(loadCaseInputs).ToHaveCountAsync(2);
         await this.Expect(loadCaseInputs.First).ToHaveValueAsync("1");
