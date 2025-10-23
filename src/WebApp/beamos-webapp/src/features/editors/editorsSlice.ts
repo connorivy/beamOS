@@ -15,6 +15,7 @@ export type AppDependencies = {
   // Add undoManager or other dependencies here as needed
 }
 import type {
+  LoadCase,
   ModelResponse,
   NodeResponse,
   UpdateNodeRequest,
@@ -154,6 +155,48 @@ export const editorsSlice = createAppSlice({
         editor.model.nodes = restNodes
       },
     ),
+    createLoadCase: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCase: LoadCase
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.loadCases[action.payload.loadCase.id] = action.payload.loadCase
+      },
+    ),
+    removeLoadCaseById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCaseId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.loadCaseId]: _, ...restLoadCases } = editor.model.loadCases
+        editor.model.loadCases = restLoadCases
+      },
+    ),
     // moveNode: create.asyncThunk(
     //   async (command: MoveNodeCommand, thunkAPI) => {
     //     // Use injected dependencies from extra
@@ -208,6 +251,8 @@ export const {
   objectSelectionChanged,
   createNode,
   removeNodeById,
+  createLoadCase,
+  removeLoadCaseById,
   moveNode,
   modelLoaded,
 } = editorsSlice.actions
