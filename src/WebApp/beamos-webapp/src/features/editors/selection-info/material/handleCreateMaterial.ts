@@ -10,6 +10,7 @@ import {
   type EditorState,
 } from "../../editorsSlice"
 import type { MaterialProperties } from "./materialSelectionSlice"
+import { getPressureUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
 
 export async function handleCreateMaterial(
   apiClient: IStructuralAnalysisApiClientV1,
@@ -37,7 +38,10 @@ export async function handleCreateMaterial(
     return
   }
 
-  const pressureUnit = editorState.model.settings.unitSettings.pressureUnit
+  const pressureUnit = getPressureUnit(
+    editorState.model.settings.unitSettings.forceUnit,
+    editorState.model.settings.unitSettings.lengthUnit,
+  )
 
   // Create the material request
   const createMaterialRequest: CreateMaterialRequest2 = {

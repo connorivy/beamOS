@@ -102,3 +102,70 @@ export function getUnitName(
 ): string | undefined {
   return Object.keys(unitObj).find(key => unitObj[key] === value)
 }
+
+export function getAreaUnit(lengthUnit: number): number {
+  const mapping: Record<number, number> = {
+    [LengthUnit.Centimeter]: AreaUnit.SquareCentimeter,
+    [LengthUnit.Foot]: AreaUnit.SquareFoot,
+    [LengthUnit.Inch]: AreaUnit.SquareInch,
+    [LengthUnit.Meter]: AreaUnit.SquareMeter,
+    [LengthUnit.Millimeter]: AreaUnit.SquareMillimeter,
+  }
+
+  const areaUnit = mapping[lengthUnit]
+  if (!areaUnit) {
+    throw new Error(`Unsupported length unit: ${lengthUnit.toString()}`)
+  }
+  return areaUnit
+}
+
+export function getPressureUnit(forceUnit: number, lengthUnit: number): number {
+  switch (forceUnit) {
+    case ForceUnit.Kilonewton:
+      switch (lengthUnit) {
+        case LengthUnit.Centimeter:
+          return PressureUnit.KilonewtonPerSquareCentimeter
+        case LengthUnit.Meter:
+          return PressureUnit.KilonewtonPerSquareMeter
+        case LengthUnit.Millimeter:
+          return PressureUnit.KilonewtonPerSquareMillimeter
+        default:
+          throw new Error(`Unsupported area unit: ${lengthUnit.toString()}`)
+      }
+    case ForceUnit.KilopoundForce:
+      switch (lengthUnit) {
+        case LengthUnit.Foot:
+          return PressureUnit.KilopoundForcePerSquareFoot
+        case LengthUnit.Inch:
+          return PressureUnit.KilopoundForcePerSquareInch
+        default:
+          throw new Error(`Unsupported area unit: ${lengthUnit.toString()}`)
+      }
+    case ForceUnit.Newton:
+      switch (lengthUnit) {
+        case LengthUnit.Centimeter:
+          return PressureUnit.NewtonPerSquareCentimeter
+        case LengthUnit.Meter:
+          return PressureUnit.NewtonPerSquareMeter
+        case LengthUnit.Millimeter:
+          return PressureUnit.NewtonPerSquareMillimeter
+        case LengthUnit.Foot:
+          return PressureUnit.PoundForcePerSquareFoot
+        case LengthUnit.Inch:
+          return PressureUnit.PoundForcePerSquareInch
+        default:
+          throw new Error(`Unsupported area unit: ${lengthUnit.toString()}`)
+      }
+    case ForceUnit.PoundForce:
+      switch (lengthUnit) {
+        case LengthUnit.Foot:
+          return PressureUnit.PoundForcePerSquareFoot
+        case LengthUnit.Inch:
+          return PressureUnit.PoundForcePerSquareInch
+        default:
+          throw new Error(`Unsupported area unit: ${lengthUnit.toString()}`)
+      }
+    default:
+      throw new Error(`Unsupported force unit: ${forceUnit.toString()}`)
+  }
+}
