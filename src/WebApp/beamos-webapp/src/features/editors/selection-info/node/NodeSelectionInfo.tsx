@@ -27,6 +27,7 @@ import { useApiClient } from "../../../api-client/ApiClientContext"
 import { useEditors } from "../../EditorContext"
 import { handleCreateNode } from "./handleCreateNode"
 import { getUnitName, LengthUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
+import { convertLength } from "../../../../utils/unitConversion"
 
 type NodeIdOption = {
     label: string;
@@ -44,6 +45,10 @@ const restraintOptions: { key: keyof Restraints; label: string }[] = [
     { key: "CanRotateAboutY", label: "Can Rotate About Y" },
     { key: "CanRotateAboutZ", label: "Can Rotate About Z" },
 ]
+
+// Precision for rounding coordinate values to avoid floating point precision issues
+// Using 1e10 allows for 10 decimal places of precision, which is more than sufficient for engineering applications
+const COORDINATE_PRECISION_MULTIPLIER = 1e10
 
 
 export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
@@ -85,10 +90,22 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         else {
             const node = modelResponse?.nodes[nodeId]
             if (node) {
+                const modelLengthUnit = modelResponse?.settings.unitSettings.lengthUnit ?? LengthUnit.Inch
+                
+                // Convert node coordinates from their unit to the model's unit for display
+                const x = convertLength(node.locationPoint.x, node.locationPoint.lengthUnit, modelLengthUnit)
+                const y = convertLength(node.locationPoint.y, node.locationPoint.lengthUnit, modelLengthUnit)
+                const z = convertLength(node.locationPoint.z, node.locationPoint.lengthUnit, modelLengthUnit)
+                
+                // Round to avoid floating point precision issues (e.g., 1.0999999999999999 -> 1.1)
+                const roundedX = Math.round(x * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+                const roundedY = Math.round(y * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+                const roundedZ = Math.round(z * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+                
                 dispatch(setNodeIdInput(nodeId.toString()))
-                dispatch(setCoord({ key: "x", value: node.locationPoint.x.toString() }))
-                dispatch(setCoord({ key: "y", value: node.locationPoint.y.toString() }))
-                dispatch(setCoord({ key: "z", value: node.locationPoint.z.toString() }))
+                dispatch(setCoord({ key: "x", value: roundedX.toString() }))
+                dispatch(setCoord({ key: "y", value: roundedY.toString() }))
+                dispatch(setCoord({ key: "z", value: roundedZ.toString() }))
                 dispatch(setRestraint({ key: "CanTranslateAlongX", value: node.restraint.canTranslateAlongX }))
                 dispatch(setRestraint({ key: "CanTranslateAlongY", value: node.restraint.canTranslateAlongY }))
                 dispatch(setRestraint({ key: "CanTranslateAlongZ", value: node.restraint.canTranslateAlongZ }))
@@ -97,7 +114,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 dispatch(setRestraint({ key: "CanRotateAboutZ", value: node.restraint.canRotateAboutZ }))
             }
         }
-    }, [nodeId, dispatch, modelResponse?.nodes, resetInput])
+    }, [nodeId, dispatch, modelResponse?.nodes, modelResponse?.settings.unitSettings.lengthUnit, resetInput])
 
     // Only allow whole numbers for nodeId input
     const handleNodeIdInputChange = useCallback((_event: React.SyntheticEvent, value: string) => {

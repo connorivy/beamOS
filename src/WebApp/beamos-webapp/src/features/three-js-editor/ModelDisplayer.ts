@@ -16,14 +16,22 @@ import { BeamOsInternalNode } from "./SceneObjects/BeamOsInternalNode"
 import { BeamOsNode } from "./SceneObjects/BeamOsNode"
 import type { BeamOsNodeBase } from "./SceneObjects/BeamOsNodeBase"
 import { BeamOsPointLoad } from "./SceneObjects/BeamOsPointLoad"
+import { convertLength } from "../../utils/unitConversion"
+import { LengthUnit } from "../../utils/type-extensions/UnitTypeContracts"
 
 export class ModelDisplayer {
+  private modelLengthUnit: number = LengthUnit.Meter // Default to meters (SI unit)
+
   constructor(
     private config: EditorConfigurations,
     private modelGroup: THREE.Group,
   ) {}
 
   public async displayModel(modelResponse: ModelResponse): Promise<Result> {
+    // Store the model's length unit for conversions
+    // The 3D editor works in SI units (meters), so we'll convert all coordinates to meters
+    this.modelLengthUnit = LengthUnit.Meter
+
     // Create all nodes first (they have no dependencies)
     if (modelResponse.nodes) {
       for (const node of modelResponse.nodes) {
@@ -142,10 +150,27 @@ export class ModelDisplayer {
       nodeResponse.id,
     )
 
+    // Convert coordinates from the node's unit to meters (SI unit) for the 3D editor
+    const x = convertLength(
+      nodeResponse.locationPoint.x,
+      nodeResponse.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+    const y = convertLength(
+      nodeResponse.locationPoint.y,
+      nodeResponse.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+    const z = convertLength(
+      nodeResponse.locationPoint.z,
+      nodeResponse.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+
     if (node != null) {
-      node.xCoordinate = nodeResponse.locationPoint.x
-      node.yCoordinate = nodeResponse.locationPoint.y
-      node.zCoordinate = nodeResponse.locationPoint.z
+      node.xCoordinate = x
+      node.yCoordinate = y
+      node.zCoordinate = z
       node.setMeshPositionFromCoordinates()
       node.firePositionChangedEvent()
 
@@ -153,9 +178,9 @@ export class ModelDisplayer {
     } else {
       node = new BeamOsNode(
         nodeResponse.id,
-        nodeResponse.locationPoint.x,
-        nodeResponse.locationPoint.y,
-        nodeResponse.locationPoint.z,
+        x,
+        y,
+        z,
         nodeResponse.restraint,
         this.config.yAxisUp,
       )

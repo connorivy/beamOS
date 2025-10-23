@@ -40,6 +40,8 @@ import type { Controls } from "./Controls"
 import { BeamOsInternalNode } from "./SceneObjects/BeamOsInternalNode"
 import type { BeamOsNodeBase } from "./SceneObjects/BeamOsNodeBase"
 import { ModelDisplayer } from "./ModelDisplayer"
+import { convertLength } from "../../utils/unitConversion"
+import { LengthUnit } from "../../utils/type-extensions/UnitTypeContracts"
 // import { BeamOsDiagram } from "./SceneObjects/BeamOsDiagram";
 // import { IBeamOsMesh } from "./BeamOsMesh";
 
@@ -50,6 +52,7 @@ export class EditorApi implements IEditorApiAlpha {
   private gridGroup: THREE.Group | undefined
   // private currentFilterer: ColorFilterBuilder | undefined;
   private filterStack: FilterStack = new FilterStack()
+  private modelLengthUnit: number = LengthUnit.Meter // Default to meters (SI unit)
 
   constructor(
     private camera: THREE.Camera,
@@ -233,10 +236,27 @@ export class EditorApi implements IEditorApiAlpha {
       nodeResponse.id,
     )
 
+    // Convert coordinates from the node's unit to meters (SI unit) for the 3D editor
+    const x = convertLength(
+      nodeResponse.locationPoint.x,
+      nodeResponse.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+    const y = convertLength(
+      nodeResponse.locationPoint.y,
+      nodeResponse.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+    const z = convertLength(
+      nodeResponse.locationPoint.z,
+      nodeResponse.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+
     if (node != null) {
-      node.xCoordinate = nodeResponse.locationPoint.x
-      node.yCoordinate = nodeResponse.locationPoint.y
-      node.zCoordinate = nodeResponse.locationPoint.z
+      node.xCoordinate = x
+      node.yCoordinate = y
+      node.zCoordinate = z
       node.setMeshPositionFromCoordinates()
       node.firePositionChangedEvent()
 
@@ -244,9 +264,9 @@ export class EditorApi implements IEditorApiAlpha {
     } else {
       node = new BeamOsNode(
         nodeResponse.id,
-        nodeResponse.locationPoint.x,
-        nodeResponse.locationPoint.y,
-        nodeResponse.locationPoint.z,
+        x,
+        y,
+        z,
         nodeResponse.restraint,
         this.config.yAxisUp,
       )
@@ -262,10 +282,27 @@ export class EditorApi implements IEditorApiAlpha {
       body.id,
     )
 
+    // Convert coordinates from the node's unit to meters (SI unit) for the 3D editor
+    const x = convertLength(
+      body.locationPoint.x,
+      body.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+    const y = convertLength(
+      body.locationPoint.y,
+      body.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+    const z = convertLength(
+      body.locationPoint.z,
+      body.locationPoint.lengthUnit,
+      this.modelLengthUnit,
+    )
+
     // Update existing node - position
-    node.xCoordinate = body.locationPoint.x
-    node.yCoordinate = body.locationPoint.y
-    node.zCoordinate = body.locationPoint.z
+    node.xCoordinate = x
+    node.yCoordinate = y
+    node.zCoordinate = z
     node.setMeshPositionFromCoordinates()
     node.firePositionChangedEvent()
 
