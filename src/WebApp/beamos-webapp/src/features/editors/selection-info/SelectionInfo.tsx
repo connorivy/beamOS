@@ -20,10 +20,14 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
-import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
 
+const Element1ds = () => (
+  <Typography variant="body1" color="grey.300">
+    Element1Ds Component (empty)
+  </Typography>
+)
 const PointLoads = () => (
   <Typography variant="body1" color="grey.300">
     PointLoads Component (empty)
@@ -51,7 +55,7 @@ const elementTypes = [
     key: "element1ds",
     label: "Element1Ds",
     icon: <LinearScaleIcon sx={{ mr: 1 }} />,
-    component: Element1DSelectionInfo,
+    component: Element1ds,
   },
   {
     key: "materials",
