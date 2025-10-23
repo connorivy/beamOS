@@ -21,6 +21,7 @@ import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlph
 import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
 import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
+import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 
 const Sections = () => (
   <Typography variant="body1" color="grey.300">
@@ -35,11 +36,6 @@ const PointLoads = () => (
 const MomentLoads = () => (
   <Typography variant="body1" color="grey.300">
     MomentLoads Component (empty)
-  </Typography>
-)
-const LoadCases = () => (
-  <Typography variant="body1" color="grey.300">
-    LoadCases Component (empty)
   </Typography>
 )
 const LoadCombinations = () => (
@@ -92,7 +88,7 @@ const loadTypes = [
     key: "loadcases",
     label: "Load Cases",
     icon: <AssignmentIcon sx={{ mr: 1 }} />,
-    component: LoadCases,
+    component: LoadCaseSelectionInfo,
   },
   {
     key: "loadcombinations",
@@ -119,7 +115,7 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
   }, [canvasId, dispatch, editorState?.selection])
 
   if (selectedType) {
-    const SelectedComponent = elementTypes.find(
+    const SelectedComponent = [...elementTypes, ...loadTypes].find(
       e => e.key === selectedType,
     )?.component
     return (

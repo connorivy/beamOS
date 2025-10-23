@@ -2,6 +2,7 @@ import type {
   Element1dData,
   Element1dResponse,
   InternalNodeData,
+  LoadCase,
   MaterialData,
   MaterialResponse,
   ModelResponse,
@@ -23,6 +24,7 @@ export type ModelState = {
   element1ds: Record<number, Element1dData>
   materials: Record<number, MaterialData>
   sectionProfiles: Record<number, SectionProfileData>
+  loadCases: Record<number, LoadCase>
 }
 
 export function NodeResponsesToDataMap(
@@ -90,6 +92,16 @@ export function sectionProfileResponsesToDataMap(
   return sectionProfileMap
 }
 
+export function LoadCasesToMap(
+  loadCases: LoadCase[],
+): Record<number, LoadCase> {
+  const loadCaseMap: Record<number, LoadCase> = {}
+  for (const loadCase of loadCases) {
+    loadCaseMap[loadCase.id] = loadCase
+  }
+  return loadCaseMap
+}
+
 export function ToModelState(model: ModelResponse): ModelState {
   return {
     id: model.id,
@@ -104,5 +116,6 @@ export function ToModelState(model: ModelResponse): ModelState {
     sectionProfiles: sectionProfileResponsesToDataMap(
       model.sectionProfiles ?? [],
     ),
+    loadCases: LoadCasesToMap(model.loadCases ?? []),
   }
 }

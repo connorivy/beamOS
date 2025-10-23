@@ -15,7 +15,11 @@ export type AppDependencies = {
   // Add undoManager or other dependencies here as needed
 }
 import type {
+<<<<<<< HEAD
   MaterialResponse,
+=======
+  LoadCase,
+>>>>>>> react-load-case-dialog
   ModelResponse,
   NodeResponse,
   UpdateNodeRequest,
@@ -155,12 +159,20 @@ export const editorsSlice = createAppSlice({
         editor.model.nodes = restNodes
       },
     ),
+<<<<<<< HEAD
     createMaterial: create.reducer(
+=======
+    createLoadCase: create.reducer(
+>>>>>>> react-load-case-dialog
       (
         state,
         action: PayloadAction<{
           canvasId: string
+<<<<<<< HEAD
           material: MaterialResponse
+=======
+          loadCase: LoadCase
+>>>>>>> react-load-case-dialog
         }>,
       ) => {
         const editor =
@@ -172,6 +184,7 @@ export const editorsSlice = createAppSlice({
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
         }
+<<<<<<< HEAD
         editor.model.materials[action.payload.material.id] = {
           modulusOfElasticity: action.payload.material.modulusOfElasticity,
           modulusOfRigidity: action.payload.material.modulusOfRigidity,
@@ -180,11 +193,21 @@ export const editorsSlice = createAppSlice({
       },
     ),
     removeMaterialById: create.reducer(
+=======
+        editor.model.loadCases[action.payload.loadCase.id] = action.payload.loadCase
+      },
+    ),
+    removeLoadCaseById: create.reducer(
+>>>>>>> react-load-case-dialog
       (
         state,
         action: PayloadAction<{
           canvasId: string
+<<<<<<< HEAD
           materialId: number
+=======
+          loadCaseId: number
+>>>>>>> react-load-case-dialog
         }>,
       ) => {
         const editor =
@@ -197,9 +220,14 @@ export const editorsSlice = createAppSlice({
           )
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+<<<<<<< HEAD
         const { [action.payload.materialId]: _, ...restMaterials } =
           editor.model.materials
         editor.model.materials = restMaterials
+=======
+        const { [action.payload.loadCaseId]: _, ...restLoadCases } = editor.model.loadCases
+        editor.model.loadCases = restLoadCases
+>>>>>>> react-load-case-dialog
       },
     ),
     // moveNode: create.asyncThunk(
@@ -256,8 +284,13 @@ export const {
   objectSelectionChanged,
   createNode,
   removeNodeById,
+<<<<<<< HEAD
   createMaterial,
   removeMaterialById,
+=======
+  createLoadCase,
+  removeLoadCaseById,
+>>>>>>> react-load-case-dialog
   moveNode,
   modelLoaded,
 } = editorsSlice.actions
