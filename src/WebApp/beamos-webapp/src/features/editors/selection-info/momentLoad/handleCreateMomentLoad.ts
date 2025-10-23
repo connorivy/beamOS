@@ -44,7 +44,9 @@ export async function handleCreateMomentLoad(
     return
   }
 
-  const torqueUnit = editorState.model.settings.unitSettings.forceUnit
+  // Use NewtonMeter (18) as default torque unit
+  // TODO: Calculate proper torque unit based on force and length units
+  const torqueUnit = 18 // TorqueUnit.NewtonMeter
 
   // Create the moment load request
   const createMomentLoadRequest: CreateMomentLoadRequest = {
