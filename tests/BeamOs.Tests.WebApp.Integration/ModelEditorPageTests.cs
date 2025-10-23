@@ -452,10 +452,10 @@ public class ModelEditorPageTests : ReactPageTest
         // refresh the page and ensure the created node persists
         await this.Page.ReloadAsync();
 
-        // click the nodes tab in the sidebar again
+        // click the point loads tab in the sidebar again
         entityTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "load cases" }
+            new PageGetByRoleOptions { Name = "point loads" }
         );
         await entityTab.ClickAsync();
 

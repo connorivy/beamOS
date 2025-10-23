@@ -14,6 +14,7 @@ import { element1DSelectionSlice } from "../features/editors/selection-info/elem
 import { materialSelectionSlice } from "../features/editors/selection-info/material/materialSelectionSlice"
 import { loadCaseSelectionSlice } from "../features/editors/selection-info/loadCase/loadCaseSelectionSlice"
 import { sectionProfileSelectionSlice } from "../features/editors/selection-info/sectionProfile/sectionProfileSelectionSlice"
+import { pointLoadSelectionSlice } from "../features/editors/selection-info/pointLoad/pointLoadSelectionSlice"
 
 const rootReducer = combineSlices(
   counterSlice,
@@ -24,7 +25,8 @@ const rootReducer = combineSlices(
   element1DSelectionSlice,
   materialSelectionSlice,
   loadCaseSelectionSlice,
-  sectionProfileSelectionSlice
+  sectionProfileSelectionSlice,
+  pointLoadSelectionSlice
 )
 
 export type RootState = ReturnType<typeof rootReducer>
