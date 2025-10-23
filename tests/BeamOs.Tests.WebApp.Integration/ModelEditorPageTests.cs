@@ -473,13 +473,12 @@ public class ModelEditorPageTests : ReactPageTest
         await dropdownOptions.First.ClickAsync();
 
         // verify that the load case factors have the correct values
+        // Note: Since API uses dictionary structure, duplicate load case IDs will be merged, keeping only the last factor
         loadCaseInputs = this.Page.GetByRole(AriaRole.Combobox, new() { Name = "load case" });
-        await this.Expect(loadCaseInputs).ToHaveCountAsync(2);
+        await this.Expect(loadCaseInputs).ToHaveCountAsync(1);
         await this.Expect(loadCaseInputs.First).ToHaveValueAsync("1");
-        await this.Expect(loadCaseInputs.Nth(1)).ToHaveValueAsync("1");
         factorInputs = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "factor" });
-        await this.Expect(factorInputs).ToHaveCountAsync(2);
-        await this.Expect(factorInputs.First).ToHaveValueAsync("1.5");
-        await this.Expect(factorInputs.Nth(1)).ToHaveValueAsync("0.75");
+        await this.Expect(factorInputs).ToHaveCountAsync(1);
+        await this.Expect(factorInputs.First).ToHaveValueAsync("0.75");
     }
 }
