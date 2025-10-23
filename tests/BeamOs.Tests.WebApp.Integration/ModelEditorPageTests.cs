@@ -390,4 +390,96 @@ public class ModelEditorPageTests : ReactPageTest
         // verify that the load case name input has the correct value
         await this.Expect(nameInput).ToHaveValueAsync("Test Load Case");
     }
+
+    [Test]
+    [DependsOn(nameof(ModelEditorPage_CreateNodeDialog_ShouldWork))]
+    public async Task ModelEditorPage_MomentLoadDialog_ShouldWork()
+    {
+        var entityTab = this.Page.GetByRole(
+            AriaRole.Button,
+            new PageGetByRoleOptions { Name = "moment loads" }
+        );
+        await entityTab.ClickAsync();
+
+        // insert 1 into the load case id combobox
+        var idCombobox = this.Page.GetByRole(
+            AriaRole.Combobox,
+            new PageGetByRoleOptions { Name = "id" }
+        );
+        await idCombobox.ClickAsync();
+        // there should not be any results in the dropdown
+        var dropdownOptions = this.Page.GetByRole(
+            AriaRole.Option,
+            new PageGetByRoleOptions { Name = "1" }
+        );
+        await this.Expect(dropdownOptions).ToHaveCountAsync(0);
+
+        // fill in value for load case id
+        var loadCaseInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "load case" });
+        await loadCaseInput.FillAsync("1");
+
+        // fill in value for node id
+        var nodeIdInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "node id" });
+        await nodeIdInput.FillAsync("1");
+
+        // fill in value for magnitude
+        var magnitudeInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "magnitude" });
+        await magnitudeInput.FillAsync("500.0");
+
+        // fill in value for direction
+        var directionInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
+        await directionInput.FillAsync("1.0");
+
+        var directionYInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
+        await directionYInput.FillAsync("0.0");
+
+        var directionZInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
+        await directionZInput.FillAsync("0.0");
+
+        // click the create button
+        var createButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "create" });
+        await createButton.ClickAsync();
+
+        // insert 1 into the load case id combobox again
+        await idCombobox.FillAsync("1");
+
+        // now there should be one result in the dropdown
+        dropdownOptions = this.Page.GetByRole(
+            AriaRole.Option,
+            new PageGetByRoleOptions { Name = "1" }
+        );
+        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
+
+        // refresh the page and ensure the created node persists
+        await this.Page.ReloadAsync();
+
+        // click the nodes tab in the sidebar again
+        entityTab = this.Page.GetByRole(
+            AriaRole.Button,
+            new PageGetByRoleOptions { Name = "load cases" }
+        );
+        await entityTab.ClickAsync();
+
+        // insert 1 into the node id combobox again
+        await idCombobox.FillAsync("1");
+        await idCombobox.ClickAsync();
+
+        // now there should be one result in the dropdown
+        dropdownOptions = this.Page.GetByRole(
+            AriaRole.Option,
+            new PageGetByRoleOptions { Name = "1" }
+        );
+        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
+
+        // select the node from the dropdown
+        await dropdownOptions.First.ClickAsync();
+
+        // verify that the load case name input has the correct value
+        await this.Expect(loadCaseInput).ToHaveValueAsync("1");
+        await this.Expect(nodeIdInput).ToHaveValueAsync("1");
+        await this.Expect(magnitudeInput).ToHaveValueAsync("500.0");
+        await this.Expect(directionInput).ToHaveValueAsync("1.0");
+        await this.Expect(directionYInput).ToHaveValueAsync("0.0");
+        await this.Expect(directionZInput).ToHaveValueAsync("0.0");
+    }
 }
