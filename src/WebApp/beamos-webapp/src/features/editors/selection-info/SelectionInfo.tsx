@@ -22,12 +22,7 @@ import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
-
-const Element1ds = () => (
-  <Typography variant="body1" color="grey.300">
-    Element1Ds Component (empty)
-  </Typography>
-)
+import { Element1dSelectionInfo } from "./element1d/Element1dSelectionInfo"
 const PointLoads = () => (
   <Typography variant="body1" color="grey.300">
     PointLoads Component (empty)
@@ -55,7 +50,7 @@ const elementTypes = [
     key: "element1ds",
     label: "Element1Ds",
     icon: <LinearScaleIcon sx={{ mr: 1 }} />,
-    component: Element1ds,
+    component: Element1dSelectionInfo,
   },
   {
     key: "materials",
