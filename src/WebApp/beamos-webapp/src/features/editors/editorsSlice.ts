@@ -15,6 +15,7 @@ export type AppDependencies = {
   // Add undoManager or other dependencies here as needed
 }
 import type {
+  MaterialResponse,
   ModelResponse,
   NodeResponse,
   UpdateNodeRequest,
@@ -154,6 +155,53 @@ export const editorsSlice = createAppSlice({
         editor.model.nodes = restNodes
       },
     ),
+    createMaterial: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          material: MaterialResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.materials[action.payload.material.id] = {
+          modulusOfElasticity: action.payload.material.modulusOfElasticity,
+          modulusOfRigidity: action.payload.material.modulusOfRigidity,
+          pressureUnit: action.payload.material.pressureUnit,
+        }
+      },
+    ),
+    removeMaterialById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          materialId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.materialId]: _, ...restMaterials } =
+          editor.model.materials
+        editor.model.materials = restMaterials
+      },
+    ),
     // moveNode: create.asyncThunk(
     //   async (command: MoveNodeCommand, thunkAPI) => {
     //     // Use injected dependencies from extra
@@ -208,6 +256,8 @@ export const {
   objectSelectionChanged,
   createNode,
   removeNodeById,
+  createMaterial,
+  removeMaterialById,
   moveNode,
   modelLoaded,
 } = editorsSlice.actions

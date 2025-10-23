@@ -15,17 +15,13 @@ import ReplayIcon from "@mui/icons-material/Replay"
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
 
 import { NodeSelectionInfo } from "./node/NodeSelectionInfo"
+import { MaterialSelectionInfo } from "./material/MaterialSelectionInfo"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
 import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 
-const Materials = () => (
-  <Typography variant="body1" color="grey.300">
-    Materials Component (empty)
-  </Typography>
-)
 const Sections = () => (
   <Typography variant="body1" color="grey.300">
     Sections Component (empty)
@@ -69,7 +65,7 @@ const elementTypes = [
     key: "materials",
     label: "Materials",
     icon: <WindowIcon sx={{ mr: 1 }} />,
-    component: Materials,
+    component: MaterialSelectionInfo,
   },
   {
     key: "sections",
