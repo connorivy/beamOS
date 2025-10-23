@@ -217,7 +217,7 @@ public class ModelEditorPageTests : ReactPageTest
         await nameInput.FillAsync("Test Section Profile");
 
         // fill in area
-        var areaInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "area" });
+        var areaInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "area", Exact = true });
         await areaInput.FillAsync("10.5");
 
         // fill in strong axis moment of inertia

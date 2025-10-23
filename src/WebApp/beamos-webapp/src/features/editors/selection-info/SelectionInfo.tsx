@@ -20,15 +20,11 @@ import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlph
 import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
 import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
+import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
 
 const Materials = () => (
   <Typography variant="body1" color="grey.300">
     Materials Component (empty)
-  </Typography>
-)
-const Sections = () => (
-  <Typography variant="body1" color="grey.300">
-    Sections Component (empty)
   </Typography>
 )
 const PointLoads = () => (
@@ -75,7 +71,7 @@ const elementTypes = [
     key: "sections",
     label: "Sections",
     icon: <TitleIcon sx={{ mr: 1 }} />,
-    component: Sections,
+    component: SectionProfileSelectionInfo,
   },
 ]
 
