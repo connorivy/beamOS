@@ -39,75 +39,12 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     git
 
+# Install Node.js 20 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
 # install dependencies for playwright
-RUN apt-get install -y \
-    libglib2.0-0t64 \
-    libnspr4 \
-    libnss3 \
-    libdbus-1-3 \
-    libatk1.0-0t64 \
-    libatk-bridge2.0-0t64 \
-    libcups2t64 \
-    libxcb1 \
-    libxkbcommon0 \
-    libatspi2.0-0t64 \
-    libx11-6 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libcairo2 \
-    libpango-1.0-0 \
-    libasound2t64 \
-    libxcursor1 \
-    libgtk-3-0t64 \
-    libpangocairo-1.0-0 \
-    libcairo-gobject2 \
-    libgdk-pixbuf-2.0-0
-    libgstreamer-1.0.so.0 \
-    libgtk-4.so.1 \
-    libvulkan.so.1 \
-    libgraphene-1.0.so.0 \
-    libxslt.so.1 \
-    libwoff2dec.so.1.0.2 \
-    libvpx.so.9 \
-    libevent-2.1.so.7 \
-    libopus.so.0 \
-    libgstallocators-1.0.so.0 \
-    libgstapp-1.0.so.0 \
-    libgstbase-1.0.so.0 \
-    libgstpbutils-1.0.so.0 \
-    libgstaudio-1.0.so.0 \
-    libgsttag-1.0.so.0 \
-    libgstvideo-1.0.so.0 \
-    libgstgl-1.0.so.0 \
-    libgstcodecparsers-1.0.so.0 \
-    libgstfft-1.0.so.0 \
-    libflite.so.1 \
-    libflite_usenglish.so.1 \
-    libflite_cmu_grapheme_lang.so.1 \
-    libflite_cmu_grapheme_lex.so.1 \
-    libflite_cmu_indic_lang.so.1 \
-    libflite_cmu_indic_lex.so.1 \
-    libflite_cmulex.so.1 \
-    libflite_cmu_time_awb.so.1 \
-    libflite_cmu_us_awb.so.1 \
-    libflite_cmu_us_kal16.so.1 \
-    libflite_cmu_us_kal.so.1 \
-    libflite_cmu_us_rms.so.1 \
-    libflite_cmu_us_slt.so.1 \
-    libwebpdemux.so.2 \
-    libavif.so.16 \
-    libharfbuzz-icu.so.0 \
-    libwebpmux.so.3 \
-    libenchant-2.so.2 \
-    libsecret-1.so.0 \
-    libhyphen.so.0 \
-    libmanette-0.2.so.0 \
-    libGLESv2.so.2 \
-    libx264.so
+RUN npx playwright install --with-deps
 
 # # Install k6
 # RUN gpg -k

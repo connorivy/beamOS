@@ -14,7 +14,7 @@ dotnet tool restore
 # Restore .NET dependencies
 dotnet restore
 
-npm ci --prefix ./src/WebApp/BeamOs.WebApp.Components
+npm ci --prefix ./src/WebApp/beamos-webapp
 
 # Set up local NuGet feed
 mkdir -p /workspaces/beamOS/.nuget-local
