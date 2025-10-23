@@ -11,6 +11,7 @@ import { editorsSlice } from "../features/editors/editorsSlice"
 import { combineSlices } from "@reduxjs/toolkit"
 import { nodeSelectionSlice } from "../features/editors/selection-info/node/nodeSelectionSlice"
 import { element1DSelectionSlice } from "../features/editors/selection-info/element1D/element1DSelectionSlice"
+import { sectionProfileSelectionSlice } from "../features/editors/selection-info/sectionProfile/sectionProfileSelectionSlice"
 
 const rootReducer = combineSlices(
   counterSlice,
@@ -18,7 +19,8 @@ const rootReducer = combineSlices(
   modelsPageSlice,
   editorsSlice,
   nodeSelectionSlice,
-  element1DSelectionSlice
+  element1DSelectionSlice,
+  sectionProfileSelectionSlice
 )
 
 export type RootState = ReturnType<typeof rootReducer>
