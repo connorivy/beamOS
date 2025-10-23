@@ -17,6 +17,7 @@ export type AppDependencies = {
 import type {
   LoadCase,
   MaterialResponse,
+  MomentLoadResponse,
   ModelResponse,
   NodeResponse,
   SectionProfileResponse,
@@ -308,6 +309,50 @@ export const editorsSlice = createAppSlice({
         editor.model.materials = restMaterials
       },
     ),
+    createMomentLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoad: MomentLoadResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.momentLoads[action.payload.momentLoad.id] =
+          action.payload.momentLoad
+      },
+    ),
+    removeMomentLoadById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoadId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.momentLoadId]: _, ...restMomentLoads } =
+          editor.model.momentLoads
+        editor.model.momentLoads = restMomentLoads
+      },
+    ),
     // moveNode: create.asyncThunk(
     //   async (command: MoveNodeCommand, thunkAPI) => {
     //     // Use injected dependencies from extra
@@ -368,6 +413,8 @@ export const {
   removeSectionProfileById,
   createMaterial,
   removeMaterialById,
+  createMomentLoad,
+  removeMomentLoadById,
   moveNode,
   modelLoaded,
 } = editorsSlice.actions

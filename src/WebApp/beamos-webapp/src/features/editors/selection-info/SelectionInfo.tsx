@@ -23,15 +23,11 @@ import { setNodeId } from "./node/nodeSelectionSlice"
 import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
+import { MomentLoadSelectionInfo } from "./momentLoad/MomentLoadSelectionInfo"
 
 const PointLoads = () => (
   <Typography variant="body1" color="grey.300">
     PointLoads Component (empty)
-  </Typography>
-)
-const MomentLoads = () => (
-  <Typography variant="body1" color="grey.300">
-    MomentLoads Component (empty)
   </Typography>
 )
 const LoadCombinations = () => (
@@ -78,7 +74,7 @@ const loadTypes = [
     key: "momentloads",
     label: "Moment Loads",
     icon: <ReplayIcon sx={{ mr: 1 }} />,
-    component: MomentLoads,
+    component: MomentLoadSelectionInfo,
   },
   {
     key: "loadcases",

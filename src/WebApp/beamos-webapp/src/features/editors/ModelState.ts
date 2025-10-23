@@ -5,6 +5,7 @@ import type {
   LoadCase,
   MaterialData,
   MaterialResponse,
+  MomentLoadResponse,
   ModelResponse,
   ModelSettings,
   NodeData,
@@ -25,6 +26,7 @@ export type ModelState = {
   materials: Record<number, MaterialData>
   sectionProfiles: Record<number, SectionProfileData>
   loadCases: Record<number, LoadCase>
+  momentLoads: Record<number, MomentLoadResponse>
 }
 
 export function NodeResponsesToDataMap(
@@ -102,6 +104,16 @@ export function LoadCasesToMap(
   return loadCaseMap
 }
 
+export function MomentLoadsToMap(
+  momentLoads: MomentLoadResponse[],
+): Record<number, MomentLoadResponse> {
+  const momentLoadMap: Record<number, MomentLoadResponse> = {}
+  for (const momentLoad of momentLoads) {
+    momentLoadMap[momentLoad.id] = momentLoad
+  }
+  return momentLoadMap
+}
+
 export function ToModelState(model: ModelResponse): ModelState {
   return {
     id: model.id,
@@ -117,5 +129,6 @@ export function ToModelState(model: ModelResponse): ModelState {
       model.sectionProfiles ?? [],
     ),
     loadCases: LoadCasesToMap(model.loadCases ?? []),
+    momentLoads: MomentLoadsToMap(model.momentLoads ?? []),
   }
 }
