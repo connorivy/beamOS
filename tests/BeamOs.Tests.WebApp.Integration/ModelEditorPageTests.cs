@@ -393,6 +393,7 @@ public class ModelEditorPageTests : ReactPageTest
 
     [Test]
     [DependsOn(nameof(ModelEditorPage_CreateNodeDialog_ShouldWork))]
+    [DependsOn(nameof(ModelEditorPage_LoadCaseDialog_ShouldWork))]
     public async Task ModelEditorPage_MomentLoadDialog_ShouldWork()
     {
         var entityTab = this.Page.GetByRole(
@@ -450,17 +451,17 @@ public class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
-        // refresh the page and ensure the created node persists
+        // refresh the page and ensure the created moment load persists
         await this.Page.ReloadAsync();
 
-        // click the nodes tab in the sidebar again
+        // click the moment loads tab in the sidebar again
         entityTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "load cases" }
+            new PageGetByRoleOptions { Name = "moment loads" }
         );
         await entityTab.ClickAsync();
 
-        // insert 1 into the node id combobox again
+        // insert 1 into the moment load id combobox again
         await idCombobox.FillAsync("1");
         await idCombobox.ClickAsync();
 
@@ -471,10 +472,10 @@ public class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
-        // select the node from the dropdown
+        // select the moment load from the dropdown
         await dropdownOptions.First.ClickAsync();
 
-        // verify that the load case name input has the correct value
+        // verify that the moment load inputs have the correct values
         await this.Expect(loadCaseInput).ToHaveValueAsync("1");
         await this.Expect(nodeIdInput).ToHaveValueAsync("1");
         await this.Expect(magnitudeInput).ToHaveValueAsync("500.0");
