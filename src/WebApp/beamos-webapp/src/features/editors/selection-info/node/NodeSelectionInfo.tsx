@@ -91,17 +91,17 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
             const node = modelResponse?.nodes[nodeId]
             if (node) {
                 const modelLengthUnit = modelResponse?.settings.unitSettings.lengthUnit ?? LengthUnit.Inch
-                
+
                 // Convert node coordinates from their unit to the model's unit for display
                 const x = convertLength(node.locationPoint.x, node.locationPoint.lengthUnit, modelLengthUnit)
                 const y = convertLength(node.locationPoint.y, node.locationPoint.lengthUnit, modelLengthUnit)
                 const z = convertLength(node.locationPoint.z, node.locationPoint.lengthUnit, modelLengthUnit)
-                
+
                 // Round to avoid floating point precision issues (e.g., 1.0999999999999999 -> 1.1)
                 const roundedX = Math.round(x * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
                 const roundedY = Math.round(y * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
                 const roundedZ = Math.round(z * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
-                
+
                 dispatch(setNodeIdInput(nodeId.toString()))
                 dispatch(setCoord({ key: "x", value: roundedX.toString() }))
                 dispatch(setCoord({ key: "y", value: roundedY.toString() }))
