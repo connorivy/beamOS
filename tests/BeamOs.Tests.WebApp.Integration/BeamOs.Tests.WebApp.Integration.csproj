@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.Playwright" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="TUnit" />
+    <PackageReference Include="TUnit.Playwright" />
+    <PackageReference Include="Verify.TUnit" />
+    <PackageReference Include="Verify.AngleSharp" />
+    <PackageReference Include="FluentAssertions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/StructuralAnalysis/BeamOs.StructuralAnalysis.Api/BeamOs.StructuralAnalysis.Api.csproj" />
+    <!-- <ProjectReference Include="../../src/WebApp/BeamOs.WebApp/BeamOs.WebApp.csproj" /> -->
+    <ProjectReference Include="../BeamOs.Tests.Common.Integration/BeamOs.Tests.Common.Integration.csproj" />
+  </ItemGroup>
+
+</Project>

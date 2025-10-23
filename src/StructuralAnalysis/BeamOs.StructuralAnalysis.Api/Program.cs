@@ -1,4 +1,5 @@
 using BeamOs.Ai;
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.SpeckleConnector;
@@ -12,18 +13,25 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var testConnectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
-bool isTestContainer = testConnectionString is not null;
+string connectionString;
+bool isTestContainer;
+if (Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING") is string testConnectionString)
+{
+    connectionString = testConnectionString;
+    isTestContainer = true;
+}
+else
+{
+    connectionString =
+        builder.Configuration.GetConnectionString("BeamOsDb")
+        ?? throw new InvalidOperationException("Connection string 'BeamOsDb' not found.");
+    isTestContainer = false;
+}
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     BeamOsSerializerOptions.DefaultConfig(options.SerializerOptions);
 });
-
-var connectionString =
-    testConnectionString
-    ?? builder.Configuration.GetConnectionString("BeamOsDb")
-    ?? throw new InvalidOperationException("Connection string 'BeamOsDb' not found.");
 
 builder
     .Services.AddStructuralAnalysisRequired()
@@ -115,4 +123,17 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 #endif
 
-app.Run();
+try
+{
+    app.Logger.LogInformation("Starting application");
+    app.Run();
+}
+catch (Exception ex)
+{
+    app.Logger.LogCritical(ex, "Application terminated unexpectedly");
+    throw;
+}
+finally
+{
+    app.Logger.LogInformation("Shutting down application");
+}

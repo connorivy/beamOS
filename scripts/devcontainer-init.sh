@@ -14,22 +14,19 @@ dotnet tool restore
 # Restore .NET dependencies
 dotnet restore
 
-npm ci --prefix ./src/WebApp/BeamOs.WebApp.Components
+npm ci --prefix ./src/WebApp/beamos-webapp
 
 # Set up local NuGet feed
 mkdir -p /workspaces/beamOS/.nuget-local
 dotnet nuget add source /workspaces/beamOS/.nuget-local --name local
 
-# build web app components
-dotnet build ./src/WebApp/BeamOs.WebApp.Components/BeamOs.WebApp.Components.csproj || true
+# build webapp integration tests
+dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
 
-# # build webapp integration tests
-# dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
+# install powershell
+./scripts/installPwsh.sh
 
-# # install powershell
-# ./scripts/installPwsh.sh
-
-# pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install
+pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install --with-deps --only-shell
 
 python3 -m venv venv
 source venv/bin/activate

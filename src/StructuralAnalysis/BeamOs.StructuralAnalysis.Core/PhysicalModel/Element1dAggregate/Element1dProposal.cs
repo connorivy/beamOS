@@ -7,7 +7,8 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
-internal sealed class Element1dProposal : BeamOsModelProposalEntity<Element1dProposalId, Element1dId>
+internal sealed class Element1dProposal
+    : BeamOsModelProposalEntity<Element1dProposalId, Element1dId>
 {
     public Element1dProposal(
         ModelId modelId,

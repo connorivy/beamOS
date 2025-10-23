@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using BeamOs.WebApp.EditorCommands.Interfaces;
 
@@ -44,4 +45,19 @@ public readonly record struct MoveNodeCommand : IBeamOsUndoableClientCommand
         };
 }
 
-public readonly record struct Coordinate3D(double X, double Y, double Z);
+public record Coordinate3D
+{
+    public Coordinate3D() { }
+
+    [SetsRequiredMembers]
+    public Coordinate3D(double x, double y, double z)
+    {
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+    }
+
+    public required double X { get; init; }
+    public required double Y { get; init; }
+    public required double Z { get; init; }
+}

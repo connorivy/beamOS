@@ -1,0 +1,38 @@
+{
+  "solution": {
+    "path": "BeamOs.slnx",
+    "projects": [
+      "benchmarks\\BeamOs.Benchmarks\\BeamOs.Benchmarks.csproj",
+      "codeGen\\BeamOs.CodeGen.ApiGenerator\\BeamOs.CodeGen.ApiGenerator.csproj",
+      "codeGen\\BeamOs.CodeGen.EditorApi\\BeamOs.CodeGen.EditorApi.csproj",
+      "codeGen\\BeamOs.CodeGen.StructuralAnalysisApiClient\\BeamOs.CodeGen.StructuralAnalysisApiClient.csproj",
+      "codeGen\\BeamOs.CodeGen.TestModelBuilderGenerator\\BeamOs.CodeGen.TestModelBuilderGenerator.csproj",
+      "src\\Ai\\BeamOs.Ai\\BeamOs.Ai.csproj",
+      "src\\Common\\BeamOs.Common.Api\\BeamOs.Common.Api.csproj",
+      "src\\Common\\BeamOs.Common.Application\\BeamOs.Common.Application.csproj",
+      "src\\Common\\BeamOs.Common.Contracts\\BeamOs.Common.Contracts.csproj",
+      "src\\Common\\BeamOs.Common.Domain\\BeamOs.Common.Domain.csproj",
+      "src\\Common\\BeamOs.Common\\BeamOs.Common.csproj",
+      "src\\Identity\\BeamOs.Identity\\BeamOs.Identity.csproj",
+      "src\\SpeckleConnector\\BeamOs.SpeckleConnector\\BeamOs.SpeckleConnector.csproj",
+      "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.Api\\BeamOs.StructuralAnalysis.Api.csproj",
+      "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.ApiClient\\BeamOs.StructuralAnalysis.ApiClient.csproj",
+      "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.Contracts\\BeamOs.StructuralAnalysis.Contracts.csproj",
+      "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.Core\\BeamOs.StructuralAnalysis.Core.csproj",
+      "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.Infrastructure\\BeamOs.StructuralAnalysis.Infrastructure.csproj",
+      "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.SourceGenerator\\BeamOs.StructuralAnalysis.SourceGenerator.csproj",
+      "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis\\BeamOs.StructuralAnalysis.csproj",
+      "src\\WebApp\\BeamOs.WebApp.EditorCommands\\BeamOs.WebApp.EditorCommands.csproj",
+      "tests\\BeamOs.Tests.Architecture\\BeamOs.Tests.Architecture.csproj",
+      "tests\\BeamOs.Tests.Common.Integration\\BeamOs.Tests.Common.Integration.csproj",
+      "tests\\BeamOs.Tests.Common\\BeamOs.Tests.Common.csproj",
+      "tests\\StructuralAnalysis\\BeamOs.Tests.StructuralAnalysis.Integration\\BeamOs.Tests.StructuralAnalysis.Integration.csproj",
+      "tests\\StructuralAnalysis\\BeamOs.Tests.StructuralAnalysis.Unit.Shared\\BeamOs.Tests.StructuralAnalysis.Unit.Shared.shproj",
+      "tests\\StructuralAnalysis\\BeamOs.Tests.StructuralAnalysis.Unit\\BeamOs.Tests.StructuralAnalysis.Unit.csproj",
+      "tests\\Runtime\\BeamOs.Tests.Runtime.TestRunner\\BeamOs.Tests.Runtime.TestRunner.csproj",
+      "tests\\Runtime\\BeamOs.Tests.StructuralAnalysis.Integration.Runtime\\BeamOs.Tests.StructuralAnalysis.Integration.Runtime.csproj",
+      "tests\\Runtime\\BeamOs.Tests.StructuralAnalysis.Unit.Runtime\\BeamOs.Tests.StructuralAnalysis.Unit.Runtime.csproj",
+      "tests\\SourceGen\\BeamOs.Tests.SourceGen\\BeamOs.Tests.SourceGen.csproj"
+    ]
+  }
+}

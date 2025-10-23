@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace BeamOs.Common.Contracts;
 
 public interface IModelResourceRequest<TBody> : IHasModelId
@@ -30,10 +32,19 @@ public readonly struct ModelResourceRequest<TBody> : IModelResourceRequest<TBody
     }
 }
 
-public readonly struct ModelResourceWithIntIdRequest(Guid modelId, int id) : IModelEntity
+public readonly record struct ModelResourceWithIntIdRequest : IModelEntity
 {
-    public int Id { get; init; } = id;
-    public Guid ModelId { get; init; } = modelId;
+    [SetsRequiredMembers]
+    public ModelResourceWithIntIdRequest(Guid modelId, int id)
+    {
+        this.ModelId = modelId;
+        this.Id = id;
+    }
+
+    public ModelResourceWithIntIdRequest() { }
+
+    public required int Id { get; init; }
+    public required Guid ModelId { get; init; }
 }
 
 public readonly struct ModelResourceWithIntIdRequest<TBody> : IModelResourceWithIntIdRequest<TBody>

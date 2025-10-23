@@ -17,11 +17,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 
-// internal class ModelIdConverter : ValueConverter<ModelId, Guid>
-// {
-//     public ModelIdConverter()
-//         : base(x => x.Id, x => new(x), null) { }
-// }
+internal class ModelIdConverter : ValueConverter<ModelId, Guid>
+{
+    public ModelIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
 
 internal class ModelIdProposalConverter : ValueConverter<ModelProposalId, int>
 {

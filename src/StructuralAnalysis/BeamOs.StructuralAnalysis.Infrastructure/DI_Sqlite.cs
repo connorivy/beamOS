@@ -29,7 +29,7 @@ public static class DI_Sqlite
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
-                .LogTo(Console.WriteLine, LogLevel.Information)
+                .LogTo(Console.WriteLine, LogLevel.Error)
 #else
                 .UseLoggerFactory(
                     LoggerFactory.Create(builder =>

@@ -17,6 +17,12 @@ internal sealed class ModelRepository(
         base.Add(aggregate);
     }
 
+    public void AddTempModel(Model aggregate)
+    {
+        aggregate.AddEvent(new TempModelCreatedEvent(aggregate.Id));
+        base.Add(aggregate);
+    }
+
     public async Task<Model?> GetSingle(
         ModelId modelId,
         Func<IQueryable<Model>, IQueryable<Model>>? includeNavigationProperties = null,

@@ -5,11 +5,6 @@ using BeamOs.Common.Contracts;
 
 namespace BeamOs.Common.Api;
 
-public abstract partial class BeamOsActualBaseEndpoint<TRequest, TResponse>
-{
-    public abstract TResponse ExecuteRequestAsync(TRequest req, CancellationToken ct = default);
-}
-
 public abstract partial class BeamOsBaseEndpoint<TRequest, TResponse>
 {
     public abstract Task<Result<TResponse>> ExecuteRequestAsync(

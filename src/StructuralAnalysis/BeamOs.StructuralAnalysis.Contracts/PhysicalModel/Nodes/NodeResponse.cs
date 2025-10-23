@@ -31,6 +31,25 @@ public record NodeResponse : IModelEntity
     public NodeData ToNodeData() => new(this.LocationPoint, this.Restraint);
 }
 
+// public record NodeModelResponse : NodeData, IHasIntId
+// {
+//     public NodeModelResponse() { }
+
+//     [SetsRequiredMembers]
+//     public NodeModelResponse(int id, Point locationPoint, Restraint restraint)
+//     {
+//         this.Id = id;
+//         this.LocationPoint = locationPoint;
+//         this.Restraint = restraint;
+//     }
+
+//     [SetsRequiredMembers]
+//     public NodeModelResponse(int id, NodeData data)
+//         : this(id, data.LocationPoint, data.Restraint) { }
+
+//     public required int Id { get; init; }
+// }
+
 public record BatchResponse
 {
     public int Created { get; init; }
