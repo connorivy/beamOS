@@ -392,6 +392,7 @@ public class ModelEditorPageTests : ReactPageTest
     }
 
     [Test]
+    [DependsOn(nameof(ModelEditorPage_CreateNodeDialog_ShouldWork))]
     public async Task ModelEditorPage_PointLoadDialog_ShouldWork()
     {
         var entityTab = this.Page.GetByRole(
