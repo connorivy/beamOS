@@ -314,6 +314,10 @@ export const {
   objectSelectionChanged,
   createNode,
   removeNodeById,
+  createLoadCase,
+  removeLoadCaseById,
+  createSectionProfile,
+  removeSectionProfileById,
   moveNode,
   modelLoaded,
 } = editorsSlice.actions
