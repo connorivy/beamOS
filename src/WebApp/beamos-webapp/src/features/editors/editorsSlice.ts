@@ -15,9 +15,11 @@ export type AppDependencies = {
   // Add undoManager or other dependencies here as needed
 }
 import type {
+  LoadCase,
   MaterialResponse,
   ModelResponse,
   NodeResponse,
+  SectionProfileResponse,
   UpdateNodeRequest,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { ToModelState, type ModelState } from "./ModelState"
@@ -155,6 +157,110 @@ export const editorsSlice = createAppSlice({
         editor.model.nodes = restNodes
       },
     ),
+    createSectionProfile: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          sectionProfile: SectionProfileResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.sectionProfiles[action.payload.sectionProfile.id] = {
+          name: action.payload.sectionProfile.name,
+          area: action.payload.sectionProfile.area,
+          strongAxisMomentOfInertia:
+            action.payload.sectionProfile.strongAxisMomentOfInertia,
+          weakAxisMomentOfInertia:
+            action.payload.sectionProfile.weakAxisMomentOfInertia,
+          polarMomentOfInertia:
+            action.payload.sectionProfile.polarMomentOfInertia,
+          strongAxisPlasticSectionModulus:
+            action.payload.sectionProfile.strongAxisPlasticSectionModulus,
+          weakAxisPlasticSectionModulus:
+            action.payload.sectionProfile.weakAxisPlasticSectionModulus,
+          strongAxisShearArea:
+            action.payload.sectionProfile.strongAxisShearArea,
+          weakAxisShearArea: action.payload.sectionProfile.weakAxisShearArea,
+          lengthUnit: action.payload.sectionProfile.lengthUnit,
+        }
+      },
+    ),
+    removeSectionProfileById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          sectionProfileId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.sectionProfileId]: _, ...restSectionProfiles } =
+          editor.model.sectionProfiles
+        editor.model.sectionProfiles = restSectionProfiles
+      },
+    ),
+    createLoadCase: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCase: LoadCase
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.loadCases[action.payload.loadCase.id] =
+          action.payload.loadCase
+      },
+    ),
+    removeLoadCaseById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCaseId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.loadCaseId]: _, ...restLoadCases } =
+          editor.model.loadCases
+        editor.model.loadCases = restLoadCases
+      },
+    ),
     createMaterial: create.reducer(
       (
         state,
@@ -256,6 +362,10 @@ export const {
   objectSelectionChanged,
   createNode,
   removeNodeById,
+  createLoadCase,
+  removeLoadCaseById,
+  createSectionProfile,
+  removeSectionProfileById,
   createMaterial,
   removeMaterialById,
   moveNode,
