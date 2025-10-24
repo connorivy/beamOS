@@ -379,6 +379,39 @@ export const editorsSlice = createAppSlice({
           action.payload.pointLoad
       },
     ),
+    modifyPointLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          pointLoadId: number
+          pointLoad: PointLoadResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const pl =
+          action.payload.pointLoadId in editor.model.pointLoads
+            ? editor.model.pointLoads[action.payload.pointLoadId]
+            : null
+        if (!pl) {
+          throw new Error(
+            `PointLoad with id ${action.payload.pointLoadId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        pl.nodeId = action.payload.pointLoad.nodeId
+        pl.loadCaseId = action.payload.pointLoad.loadCaseId
+        pl.force = action.payload.pointLoad.force
+        pl.direction = action.payload.pointLoad.direction
+      },
+    ),
     removePointLoadById: create.reducer(
       (
         state,
@@ -677,6 +710,7 @@ export const {
   createLoadCase,
   removeLoadCaseById,
   createPointLoad,
+  modifyPointLoad,
   removePointLoadById,
   createLoadCombination,
   removeLoadCombinationById,

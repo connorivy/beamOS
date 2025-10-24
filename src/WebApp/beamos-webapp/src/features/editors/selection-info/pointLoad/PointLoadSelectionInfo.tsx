@@ -28,6 +28,8 @@ import {
 import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { handleCreatePointLoad } from "./handleCreatePointLoad"
+import { handleModifyPointLoad } from "./handleModifyPointLoad"
+import { useEditors } from "../../EditorContext"
 
 type PointLoadIdOption = {
     label: string;
@@ -51,6 +53,7 @@ export const PointLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         selectModelResponseByCanvasId(state, canvasId)
     )
     const apiClient = useApiClient()
+    const editor = useEditors()[canvasId]
     const editorState = useAppSelector(state => state.editors[canvasId])
     const pointLoadIds: PointLoadIdOption[] = [
         { label: "New Point Load", value: null },
@@ -149,6 +152,23 @@ export const PointLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
             canvasId
         );
     }, [apiClient, canvasId, dispatch, editorState, pointLoadIdInput, loadCaseId, nodeId, magnitude, directionX, directionY, directionZ])
+
+    const handleModifyPointLoadFunc = useCallback(async () => {
+        await handleModifyPointLoad(
+            apiClient,
+            dispatch,
+            pointLoadIdInput,
+            loadCaseId,
+            nodeId,
+            magnitude,
+            directionX,
+            directionY,
+            directionZ,
+            editorState,
+            editor,
+            canvasId
+        );
+    }, [apiClient, dispatch, pointLoadIdInput, loadCaseId, nodeId, magnitude, directionX, directionY, directionZ, editorState, editor, canvasId])
 
     return (
         <MuiBox sx={{ px: 2, py: 2 }}>
@@ -295,9 +315,15 @@ export const PointLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 sx={{ mb: 2 }}
             />
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreatePointLoadFunc(); }}>
-                CREATE
-            </Button>
+            {pointLoadId === null ? (
+                <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreatePointLoadFunc(); }}>
+                    CREATE
+                </Button>
+            ) : (
+                <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleModifyPointLoadFunc(); }}>
+                    APPLY
+                </Button>
+            )}
         </MuiBox>
     )
 }
