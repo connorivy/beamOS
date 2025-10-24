@@ -28,6 +28,7 @@ import { useEditors } from "../../EditorContext"
 import { handleCreateNode } from "./handleCreateNode"
 import { getUnitName, LengthUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
 import { convertLength } from "../../../../utils/unitConversion"
+import { COORDINATE_PRECISION_MULTIPLIER } from "../SelectionInfo"
 
 type NodeIdOption = {
     label: string;
@@ -45,11 +46,6 @@ const restraintOptions: { key: keyof Restraints; label: string }[] = [
     { key: "CanRotateAboutY", label: "Can Rotate About Y" },
     { key: "CanRotateAboutZ", label: "Can Rotate About Z" },
 ]
-
-// Precision for rounding coordinate values to avoid floating point precision issues
-// Using 1e10 allows for 10 decimal places of precision, which is more than sufficient for engineering applications
-const COORDINATE_PRECISION_MULTIPLIER = 1e10
-
 
 export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     const dispatch = useAppDispatch()
@@ -90,7 +86,7 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         else {
             const node = modelResponse?.nodes[nodeId]
             if (node) {
-                const modelLengthUnit = modelResponse?.settings.unitSettings.lengthUnit ?? LengthUnit.Inch
+                const modelLengthUnit = modelResponse.settings.unitSettings.lengthUnit
 
                 // Convert node coordinates from their unit to the model's unit for display
                 const x = convertLength(node.locationPoint.x, node.locationPoint.lengthUnit, modelLengthUnit)
