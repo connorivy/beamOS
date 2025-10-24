@@ -26,6 +26,11 @@ import { MomentLoadSelectionInfo } from "./momentLoad/MomentLoadSelectionInfo"
 import { Element1dSelectionInfo } from "./element1d/Element1dSelectionInfo"
 import { PointLoadSelectionInfo } from "./pointLoad/PointLoadSelectionInfo"
 
+// Precision for rounding coordinate values to avoid floating point precision issues
+// Using 1e4 allows for 4 decimal places of precision
+export const COORDINATE_PRECISION_MULTIPLIER = 1e4
+
+
 const LoadCombinations = () => (
   <Typography variant="body1" color="grey.300">
     LoadCombinations Component (empty)

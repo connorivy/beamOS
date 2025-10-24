@@ -10,6 +10,7 @@ import {
   type EditorState,
 } from "../../editorsSlice"
 import type { Direction } from "./momentLoadSelectionSlice"
+import { getTorqueUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
 
 export async function handleCreateMomentLoad(
   apiClient: IStructuralAnalysisApiClientV1,
@@ -44,9 +45,7 @@ export async function handleCreateMomentLoad(
     return
   }
 
-  // Use NewtonMeter (18) as default torque unit
-  // TODO: Calculate proper torque unit based on force and length units
-  const torqueUnit = 18 // TorqueUnit.NewtonMeter
+  const torqueUnit = getTorqueUnit(editorState.model.settings.unitSettings.lengthUnit, editorState.model.settings.unitSettings.forceUnit)
 
   // Create the moment load request
   const createMomentLoadRequest: CreateMomentLoadRequest = {

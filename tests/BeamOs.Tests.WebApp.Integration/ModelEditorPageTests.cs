@@ -639,11 +639,11 @@ public class ModelEditorPageTests : ReactPageTest
         await this.Expect(dropdownOptions).ToHaveCountAsync(0);
 
         // fill in value for load case id
-        var loadCaseInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "load case" });
+        var loadCaseInput = this.Page.GetByRole(AriaRole.Combobox, new() { Name = "load case" });
         await loadCaseInput.FillAsync("1");
 
         // fill in value for node id
-        var nodeIdInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "node id" });
+        var nodeIdInput = this.Page.GetByRole(AriaRole.Combobox, new() { Name = "node" });
         await nodeIdInput.FillAsync("1");
 
         // fill in value for magnitude
@@ -701,9 +701,9 @@ public class ModelEditorPageTests : ReactPageTest
         // verify that the moment load inputs have the correct values
         await this.Expect(loadCaseInput).ToHaveValueAsync("1");
         await this.Expect(nodeIdInput).ToHaveValueAsync("1");
-        await this.Expect(magnitudeInput).ToHaveValueAsync("500.0");
-        await this.Expect(directionInput).ToHaveValueAsync("1.0");
-        await this.Expect(directionYInput).ToHaveValueAsync("0.0");
-        await this.Expect(directionZInput).ToHaveValueAsync("0.0");
+        await magnitudeInput.ExpectToHaveApproximateValueAsync(500);
+        await directionInput.ExpectToHaveApproximateValueAsync(1);
+        await directionYInput.ExpectToHaveApproximateValueAsync(0);
+        await directionZInput.ExpectToHaveApproximateValueAsync(0);
     }
 }

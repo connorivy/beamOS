@@ -24,6 +24,9 @@ import {
 import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { handleCreateMomentLoad } from "./handleCreateMomentLoad"
+import { getTorqueUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
+import { convertTorque } from "../../../../utils/unitConversion"
+import { COORDINATE_PRECISION_MULTIPLIER } from "../SelectionInfo"
 
 type MomentLoadIdOption = {
     label: string;
@@ -69,16 +72,24 @@ export const MomentLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         else {
             const momentLoad = modelResponse?.momentLoads[momentLoadId]
             if (momentLoad) {
+                const modelTorqueUnit = getTorqueUnit(modelResponse.settings.unitSettings.lengthUnit, modelResponse.settings.unitSettings.forceUnit)
+
+                // Convert node coordinates from their unit to the model's unit for display
+                const val = convertTorque(momentLoad.torque.value, momentLoad.torque.unit, modelTorqueUnit)
+
+                // Round to avoid floating point precision issues (e.g., 1.0999999999999999 -> 1.1)
+                const roundedVal = Math.round(val * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+
                 dispatch(setMomentLoadIdInput(momentLoadId.toString()))
                 dispatch(setLoadCaseId(momentLoad.loadCaseId.toString()))
                 dispatch(setNodeId(momentLoad.nodeId.toString()))
-                dispatch(setMagnitude(momentLoad.torque.value.toString()))
+                dispatch(setMagnitude(roundedVal.toString()))
                 dispatch(setDirection({ key: "x", value: momentLoad.axisDirection.x.toString() }))
                 dispatch(setDirection({ key: "y", value: momentLoad.axisDirection.y.toString() }))
                 dispatch(setDirection({ key: "z", value: momentLoad.axisDirection.z.toString() }))
             }
         }
-    }, [momentLoadId, dispatch, modelResponse?.momentLoads, resetInput])
+    }, [momentLoadId, dispatch, modelResponse?.momentLoads, resetInput, modelResponse?.settings.unitSettings.lengthUnit, modelResponse?.settings.unitSettings.forceUnit])
 
     // Only allow whole numbers for momentLoadId input
     const handleMomentLoadIdInputChange = useCallback((_event: React.SyntheticEvent, value: string) => {
@@ -87,17 +98,17 @@ export const MomentLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         }
     }, [dispatch])
 
-    const handleLoadCaseIdChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        const val = event.target.value
-        if (val === "" || isWholeNumber(val)) {
-            dispatch(setLoadCaseId(val))
+    // Only allow whole numbers for loadCaseId
+    const handleLoadCaseIdChange = useCallback((_event: React.SyntheticEvent, value: string) => {
+        if (value === "" || isWholeNumber(value)) {
+            dispatch(setLoadCaseId(value))
         }
     }, [dispatch])
 
-    const handleNodeIdChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        const val = event.target.value
-        if (val === "" || isWholeNumber(val)) {
-            dispatch(setNodeId(val))
+    // Only allow whole numbers for nodeId
+    const handleNodeIdChange = useCallback((_event: React.SyntheticEvent, value: string) => {
+        if (value === "" || isWholeNumber(value)) {
+            dispatch(setNodeId(value))
         }
     }, [dispatch])
 
@@ -173,24 +184,40 @@ export const MomentLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 Load Case
             </Typography>
-            <TextField
-                label="Load Case*"
+            <Autocomplete
+                options={Object.keys(modelResponse?.loadCases ?? {})}
+                freeSolo
                 value={loadCaseId}
-                onChange={handleLoadCaseIdChange}
-                variant="outlined"
-                size="small"
+                inputValue={loadCaseId}
+                onInputChange={handleLoadCaseIdChange}
+                renderInput={params => (
+                    <TextField
+                        {...params}
+                        label="Load Case*"
+                        variant="outlined"
+                        size="small"
+                    />
+                )}
                 sx={{ mb: 2 }}
             />
 
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                Node Id
+                Node
             </Typography>
-            <TextField
-                label="Node Id*"
+            <Autocomplete
+                options={Object.keys(modelResponse?.nodes ?? {})}
+                freeSolo
                 value={nodeId}
-                onChange={handleNodeIdChange}
-                variant="outlined"
-                size="small"
+                inputValue={nodeId}
+                onInputChange={handleNodeIdChange}
+                renderInput={params => (
+                    <TextField
+                        {...params}
+                        label="Node*"
+                        variant="outlined"
+                        size="small"
+                    />
+                )}
                 sx={{ mb: 2 }}
             />
 
