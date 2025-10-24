@@ -88,9 +88,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         await dropdownOptions.First.ClickAsync();
 
         // verify that the x, y, and z inputs have the correct values
-        await this.Expect(xInput).ToHaveValueAsync("1.1");
-        await this.Expect(yInput).ToHaveValueAsync("2.2");
-        await this.Expect(zInput).ToHaveValueAsync("3.3");
+        await this.Page.AssertNodeDialogValues(1.1, 2.2, 3.3);
     }
 
     [Test]
@@ -130,6 +128,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         // test the optimistic store changes by reloading the element data without refreshing the page
         await nodeIdCombobox.ClickAsync();
         var clearButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "clear" });
+        await clearButton.ClickAsync();
 
         await nodeIdCombobox.FillAsync("1");
         var dropdownOptions = this.Page.GetByRole(
@@ -139,28 +138,18 @@ public partial class ModelEditorPageTests : ReactPageTest
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
         await dropdownOptions.First.ClickAsync();
 
-        // verify that the x, y, and z inputs have the correct values
-        var xInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
-        var yInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
-        var zInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
-        await xInput.ExpectToHaveApproximateValueAsync(100.1);
-        await yInput.ExpectToHaveApproximateValueAsync(200.2);
-        await zInput.ExpectToHaveApproximateValueAsync(300.3);
-
-        // verify that all translate and rotate checkboxes are checked
-        var translateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "along" });
-        await this.Expect(translateCheckboxes).ToHaveCountAsync(3);
-        foreach (var translateCheckbox in await translateCheckboxes.AllAsync())
-        {
-            await this.Expect(translateCheckbox).ToBeCheckedAsync();
-        }
-
-        var rotateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "about" });
-        await this.Expect(rotateCheckboxes).ToHaveCountAsync(3);
-        foreach (var rotateCheckbox in await rotateCheckboxes.AllAsync())
-        {
-            await this.Expect(rotateCheckbox).ToBeCheckedAsync();
-        }
+        await this.Page.AssertNodeDialogValues(
+            100.1,
+            200.2,
+            300.3,
+            "1",
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        );
 
         // test the database changes by reloading the element data from the server by refreshing the page
         await this.Page.ReloadAsync();
@@ -186,27 +175,17 @@ public partial class ModelEditorPageTests : ReactPageTest
         // select the node from the dropdown
         await dropdownOptions.First.ClickAsync();
 
-        // verify that the x, y, and z inputs have the correct values
-        xInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
-        yInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
-        zInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
-        await xInput.ExpectToHaveApproximateValueAsync(100.1);
-        await yInput.ExpectToHaveApproximateValueAsync(200.2);
-        await zInput.ExpectToHaveApproximateValueAsync(300.3);
-
-        // verify that all translate and rotate checkboxes are checked
-        translateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "along" });
-        await this.Expect(translateCheckboxes).ToHaveCountAsync(3);
-        foreach (var translateCheckbox in await translateCheckboxes.AllAsync())
-        {
-            await this.Expect(translateCheckbox).ToBeCheckedAsync();
-        }
-
-        rotateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "about" });
-        await this.Expect(rotateCheckboxes).ToHaveCountAsync(3);
-        foreach (var rotateCheckbox in await rotateCheckboxes.AllAsync())
-        {
-            await this.Expect(rotateCheckbox).ToBeCheckedAsync();
-        }
+        await this.Page.AssertNodeDialogValues(
+            100.1,
+            200.2,
+            300.3,
+            "1",
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        );
     }
 }

@@ -78,5 +78,69 @@ public static class PageExtns
                 await canRotateAboutZCheckbox.CheckAsync();
             }
         }
+
+        public async Task AssertNodeDialogValues(double x, double y, double z, string? nodeId = null, bool? canTranslateAlongX = null, bool? canTranslateAlongY = null, bool? canTranslateAlongZ = null, bool? canRotateAboutX = null, bool? canRotateAboutY = null, bool? canRotateAboutZ = null)
+        {
+            if (nodeId is not null)
+            {
+                var nodeIdInput = page.GetByRole(AriaRole.Combobox, new() { Name = "id" });
+                await Assertions.Expect(nodeIdInput).ToHaveValueAsync(nodeId);
+            }
+
+            var xInput = page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
+            await xInput.ExpectToHaveApproximateValueAsync(x);
+            var yInput = page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
+            await yInput.ExpectToHaveApproximateValueAsync(y);
+            var zInput = page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
+            await zInput.ExpectToHaveApproximateValueAsync(z);
+            if (canTranslateAlongX.HasValue)
+            {
+                var canTranslateAlongXCheckbox = page.GetByRole(
+                    AriaRole.Checkbox,
+                    new() { Name = "translate along x" }
+                );
+                if (canTranslateAlongX.Value)
+                {
+                    await Assertions.Expect(canTranslateAlongXCheckbox).ToBeCheckedAsync();
+                }
+                else
+                {
+                    await Assertions.Expect(canTranslateAlongXCheckbox).Not.ToBeCheckedAsync();
+                }
+            }
+
+            if (canTranslateAlongY.HasValue)
+            {
+                var canTranslateAlongYCheckbox = page.GetByRole(
+                    AriaRole.Checkbox,
+                    new() { Name = "translate along y" }
+                );
+                if (canTranslateAlongY.Value)
+                {
+                    await Assertions.Expect(canTranslateAlongYCheckbox).ToBeCheckedAsync();
+                }
+                else
+                {
+                    await Assertions.Expect(canTranslateAlongYCheckbox).Not.ToBeCheckedAsync();
+                }
+            }
+
+            if (canTranslateAlongZ.HasValue)
+            {
+                var canTranslateAlongZCheckbox = page.GetByRole(
+                    AriaRole.Checkbox,
+                    new() { Name = "translate along z" }
+                );
+
+                if (canTranslateAlongZ.Value)
+                {
+                    await Assertions.Expect(canTranslateAlongZCheckbox).ToBeCheckedAsync();
+                }
+                else
+                {
+                    await Assertions.Expect(canTranslateAlongZCheckbox).Not.ToBeCheckedAsync();
+                }
+            }
+        }
     }
 }
