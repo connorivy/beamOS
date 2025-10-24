@@ -81,6 +81,7 @@ export const RemoteEditorComponent = ({
     const fetchModel = async () => {
       const modelResponse = await apiClient.getModel(modelId)
       dispatch(modelLoaded({ canvasId, model: modelResponse, remoteModelId: modelId }))
+      await editors[canvasId].api.setSettings(modelResponse.settings)
       await editors[canvasId].api.createModel(modelResponse)
     }
     fetchModel().catch(console.error)
