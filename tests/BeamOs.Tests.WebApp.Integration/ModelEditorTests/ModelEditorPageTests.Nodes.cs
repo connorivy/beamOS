@@ -92,4 +92,86 @@ public partial class ModelEditorPageTests : ReactPageTest
         await this.Expect(yInput).ToHaveValueAsync("2.2");
         await this.Expect(zInput).ToHaveValueAsync("3.3");
     }
+
+    [Test]
+    [DependsOn(nameof(NodeDialog_ShouldCreateNode))]
+    public async Task NodeDialog_ShouldModifyExistingNode()
+    {
+        // click the nodes tab in the sidebar
+        var nodesTab = this.Page.GetByRole(
+            AriaRole.Button,
+            new PageGetByRoleOptions { Name = "nodes" }
+        );
+        await nodesTab.ClickAsync();
+
+        await this.Page.FillOutNodeSelectionInfo(
+            100.1,
+            200.2,
+            300.3,
+            "1",
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        );
+
+        // click the apply button
+        var applyButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "apply" });
+        await applyButton.ClickAsync();
+
+        var nodeIdCombobox = this.Page.GetByRole(
+            AriaRole.Combobox,
+            new PageGetByRoleOptions { Name = "id" }
+        );
+        await this.Expect(nodeIdCombobox).ToHaveValueAsync("1");
+
+        // refresh the page and ensure the created node persists
+        await this.Page.ReloadAsync();
+
+        // click the nodes tab in the sidebar again
+        nodesTab = this.Page.GetByRole(
+            AriaRole.Button,
+            new PageGetByRoleOptions { Name = "nodes" }
+        );
+        await nodesTab.ClickAsync();
+
+        // insert 1 into the node id combobox again
+        await nodeIdCombobox.FillAsync("1");
+        await nodeIdCombobox.ClickAsync();
+
+        // now there should be one result in the dropdown
+        var dropdownOptions = this.Page.GetByRole(
+            AriaRole.Option,
+            new PageGetByRoleOptions { Name = "1" }
+        );
+        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
+
+        // select the node from the dropdown
+        await dropdownOptions.First.ClickAsync();
+
+        // verify that the x, y, and z inputs have the correct values
+        var xInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
+        var yInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
+        var zInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
+        await xInput.ExpectToHaveApproximateValueAsync(100.1);
+        await yInput.ExpectToHaveApproximateValueAsync(200.2);
+        await zInput.ExpectToHaveApproximateValueAsync(300.3);
+
+        // verify that all translate and rotate checkboxes are checked
+        var translateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "along" });
+        await this.Expect(translateCheckboxes).ToHaveCountAsync(3);
+        foreach (var translateCheckbox in await translateCheckboxes.AllAsync())
+        {
+            await this.Expect(translateCheckbox).ToBeCheckedAsync();
+        }
+
+        var rotateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "about" });
+        await this.Expect(rotateCheckboxes).ToHaveCountAsync(3);
+        foreach (var rotateCheckbox in await rotateCheckboxes.AllAsync())
+        {
+            await this.Expect(rotateCheckbox).ToBeCheckedAsync();
+        }
+    }
 }
