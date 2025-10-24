@@ -76,7 +76,7 @@ export const Element1dSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 dispatch(setEndNodeId(element1d.endNodeId.toString()))
                 dispatch(setMaterialId(element1d.materialId.toString()))
                 dispatch(setSectionProfileId(element1d.sectionProfileId.toString()))
-                dispatch(setSectionProfileRotation(element1d.sectionProfileRotation?.value?.toString() ?? ""))
+                dispatch(setSectionProfileRotation(element1d.sectionProfileRotation?.value.toString() ?? ""))
             }
         }
     }, [element1dId, dispatch, modelResponse?.element1ds, resetInput])

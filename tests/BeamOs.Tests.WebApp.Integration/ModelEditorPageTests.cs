@@ -535,7 +535,7 @@ public class ModelEditorPageTests : ReactPageTest
         // there should not be any results in the dropdown
         var dropdownOptions = this.Page.GetByRole(
             AriaRole.Option,
-            new PageGetByRoleOptions { Name = "1" }
+            new PageGetByRoleOptions { Name = "1", Exact = true }
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(0);
 
@@ -578,7 +578,7 @@ public class ModelEditorPageTests : ReactPageTest
         // now there should be one result in the dropdown
         dropdownOptions = this.Page.GetByRole(
             AriaRole.Option,
-            new PageGetByRoleOptions { Name = "1" }
+            new PageGetByRoleOptions { Name = "1", Exact = true }
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
@@ -599,7 +599,7 @@ public class ModelEditorPageTests : ReactPageTest
         // now there should be one result in the dropdown
         dropdownOptions = this.Page.GetByRole(
             AriaRole.Option,
-            new PageGetByRoleOptions { Name = "1" }
+            new PageGetByRoleOptions { Name = "1", Exact = true }
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
 
@@ -611,6 +611,6 @@ public class ModelEditorPageTests : ReactPageTest
         await this.Expect(endNodeIdInput).ToHaveValueAsync("2");
         await this.Expect(materialIdInput).ToHaveValueAsync("1");
         await this.Expect(sectionProfileIdInput).ToHaveValueAsync("1");
-        await this.Expect(sectionProfileRotationInput).ToHaveValueAsync("30.0");
+        await this.Expect(sectionProfileRotationInput).ToHaveValueAsync("30");
     }
 }

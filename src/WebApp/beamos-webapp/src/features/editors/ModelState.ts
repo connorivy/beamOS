@@ -52,6 +52,7 @@ export function Element1dResponsesToDataMap(
       endNodeId: element1d.endNodeId,
       materialId: element1d.materialId,
       sectionProfileId: element1d.sectionProfileId,
+      sectionProfileRotation: element1d.sectionProfileRotation,
     }
   }
   return element1dMap

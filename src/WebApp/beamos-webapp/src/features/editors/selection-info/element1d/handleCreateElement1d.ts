@@ -9,6 +9,7 @@ import {
   removeElement1dById,
   type EditorState,
 } from "../../editorsSlice"
+import { AngleUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
 
 export async function handleCreateElement1d(
   apiClient: IStructuralAnalysisApiClientV1,
@@ -49,7 +50,7 @@ export async function handleCreateElement1d(
     sectionProfileId: parseInt(sectionProfileId),
     sectionProfileRotation: sectionProfileRotation ? {
       value: parseFloat(sectionProfileRotation),
-      unit: editorState.model.settings.unitSettings.angleUnit,
+      unit: editorState.model.settings.unitSettings.angleUnit ?? AngleUnit.Degree,
     } : undefined,
   }
 
@@ -70,7 +71,7 @@ export async function handleCreateElement1d(
     sectionProfileId: parseInt(sectionProfileId),
     sectionProfileRotation: createElement1dRequest.sectionProfileRotation ?? {
       value: 0,
-      unit: editorState.model.settings.unitSettings.angleUnit,
+      unit: editorState.model.settings.unitSettings.angleUnit ?? AngleUnit.Degree,
     },
   }
 
