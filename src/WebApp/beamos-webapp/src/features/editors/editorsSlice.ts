@@ -25,6 +25,7 @@ import type {
   PointLoadResponse,
   SectionProfileResponse,
   UpdateNodeRequest,
+  NodeData,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { ToModelState, type ModelState } from "./ModelState"
 
@@ -137,6 +138,48 @@ export const editorsSlice = createAppSlice({
           locationPoint: action.payload.node.locationPoint,
           restraint: action.payload.node.restraint,
         }
+      },
+    ),
+    modifyNode: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          nodeId: number
+          node: NodeData
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const node = action.payload.nodeId in editor.model.nodes ? editor.model.nodes[action.payload.nodeId] : null
+        if (!node) {
+          throw new Error(
+            `Node with id ${action.payload.nodeId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        node.locationPoint.x = action.payload.node.locationPoint.x
+        node.locationPoint.y = action.payload.node.locationPoint.y
+        node.locationPoint.z = action.payload.node.locationPoint.z
+        node.locationPoint.lengthUnit = action.payload.node.locationPoint.lengthUnit
+        node.restraint.canTranslateAlongX =
+          action.payload.node.restraint.canTranslateAlongX
+        node.restraint.canTranslateAlongY =
+          action.payload.node.restraint.canTranslateAlongY
+        node.restraint.canTranslateAlongZ =
+          action.payload.node.restraint.canTranslateAlongZ
+        node.restraint.canRotateAboutX =
+          action.payload.node.restraint.canRotateAboutX
+        node.restraint.canRotateAboutY =
+          action.payload.node.restraint.canRotateAboutY
+        node.restraint.canRotateAboutZ =
+          action.payload.node.restraint.canRotateAboutZ
       },
     ),
     removeNodeById: create.reducer(
@@ -545,6 +588,7 @@ export const {
   removeEditor,
   objectSelectionChanged,
   createNode,
+  modifyNode,
   removeNodeById,
   createLoadCase,
   removeLoadCaseById,

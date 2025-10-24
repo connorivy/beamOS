@@ -10,8 +10,15 @@ public static class PageExtns
         {
             if (nodeId is not null)
             {
-                var nodeIdInput = page.GetByRole(AriaRole.Textbox, new() { Name = "node id" });
+                var nodeIdInput = page.GetByRole(AriaRole.Combobox, new() { Name = "id" });
                 await nodeIdInput.FillAsync(nodeId);
+
+                // select the option in the dropdown
+                var dropdownOption = page.GetByRole(
+                    AriaRole.Option,
+                    new() { Name = nodeId }
+                );
+                await dropdownOption.ClickAsync();
             }
 
             // fill in values for x, y, and z textboxes

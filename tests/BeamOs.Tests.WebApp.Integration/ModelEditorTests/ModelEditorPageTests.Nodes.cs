@@ -127,28 +127,16 @@ public partial class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(nodeIdCombobox).ToHaveValueAsync("1");
 
-        // refresh the page and ensure the created node persists
-        await this.Page.ReloadAsync();
-
-        // click the nodes tab in the sidebar again
-        nodesTab = this.Page.GetByRole(
-            AriaRole.Button,
-            new PageGetByRoleOptions { Name = "nodes" }
-        );
-        await nodesTab.ClickAsync();
-
-        // insert 1 into the node id combobox again
-        await nodeIdCombobox.FillAsync("1");
+        // test the optimistic store changes by reloading the element data without refreshing the page
         await nodeIdCombobox.ClickAsync();
+        var clearButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "clear" });
 
-        // now there should be one result in the dropdown
+        await nodeIdCombobox.FillAsync("1");
         var dropdownOptions = this.Page.GetByRole(
             AriaRole.Option,
             new PageGetByRoleOptions { Name = "1" }
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
-
-        // select the node from the dropdown
         await dropdownOptions.First.ClickAsync();
 
         // verify that the x, y, and z inputs have the correct values
@@ -168,6 +156,53 @@ public partial class ModelEditorPageTests : ReactPageTest
         }
 
         var rotateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "about" });
+        await this.Expect(rotateCheckboxes).ToHaveCountAsync(3);
+        foreach (var rotateCheckbox in await rotateCheckboxes.AllAsync())
+        {
+            await this.Expect(rotateCheckbox).ToBeCheckedAsync();
+        }
+
+        // test the database changes by reloading the element data from the server by refreshing the page
+        await this.Page.ReloadAsync();
+
+        // click the nodes tab in the sidebar again
+        nodesTab = this.Page.GetByRole(
+            AriaRole.Button,
+            new PageGetByRoleOptions { Name = "nodes" }
+        );
+        await nodesTab.ClickAsync();
+
+        // insert 1 into the node id combobox again
+        await nodeIdCombobox.FillAsync("1");
+        await nodeIdCombobox.ClickAsync();
+
+        // now there should be one result in the dropdown
+        dropdownOptions = this.Page.GetByRole(
+            AriaRole.Option,
+            new PageGetByRoleOptions { Name = "1" }
+        );
+        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
+
+        // select the node from the dropdown
+        await dropdownOptions.First.ClickAsync();
+
+        // verify that the x, y, and z inputs have the correct values
+        xInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
+        yInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
+        zInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
+        await xInput.ExpectToHaveApproximateValueAsync(100.1);
+        await yInput.ExpectToHaveApproximateValueAsync(200.2);
+        await zInput.ExpectToHaveApproximateValueAsync(300.3);
+
+        // verify that all translate and rotate checkboxes are checked
+        translateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "along" });
+        await this.Expect(translateCheckboxes).ToHaveCountAsync(3);
+        foreach (var translateCheckbox in await translateCheckboxes.AllAsync())
+        {
+            await this.Expect(translateCheckbox).ToBeCheckedAsync();
+        }
+
+        rotateCheckboxes = this.Page.GetByRole(AriaRole.Checkbox, new() { Name = "about" });
         await this.Expect(rotateCheckboxes).ToHaveCountAsync(3);
         foreach (var rotateCheckbox in await rotateCheckboxes.AllAsync())
         {

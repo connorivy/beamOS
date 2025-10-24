@@ -26,6 +26,7 @@ import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { useEditors } from "../../EditorContext"
 import { handleCreateNode } from "./handleCreateNode"
+import { handleModifyNode } from "./handleModifyNode"
 import { getUnitName, LengthUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
 import { convertLength } from "../../../../utils/unitConversion"
 import { COORDINATE_PRECISION_MULTIPLIER } from "../SelectionInfo"
@@ -131,8 +132,22 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         dispatch(setRestraint({ key, value: event.target.checked }))
     }, [dispatch])
 
+
     const handleCreateNodeFunc = useCallback(async () => {
         await handleCreateNode(
+            apiClient,
+            dispatch,
+            nodeIdInput,
+            coords,
+            editorState,
+            editors[canvasId],
+            restraints,
+            canvasId
+        );
+    }, [apiClient, canvasId, coords, dispatch, editorState, editors, nodeIdInput, restraints])
+
+    const handleModifyNodeFunc = useCallback(async () => {
+        await handleModifyNode(
             apiClient,
             dispatch,
             nodeIdInput,
@@ -238,9 +253,15 @@ export const NodeSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 </FormGroup>
             </Collapse>
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateNodeFunc(); }}>
-                CREATE
-            </Button>
+            {nodeId === null ? (
+                <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateNodeFunc(); }}>
+                    CREATE
+                </Button>
+            ) : (
+                <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleModifyNodeFunc(); }}>
+                    APPLY
+                </Button>
+            )}
         </MuiBox>
     )
 }
