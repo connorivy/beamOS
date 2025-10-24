@@ -20,10 +20,11 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
-import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
+import { Element1dSelectionInfo } from "./element1d/Element1dSelectionInfo"
 import { PointLoadSelectionInfo } from "./pointLoad/PointLoadSelectionInfo"
+
 const MomentLoads = () => (
   <Typography variant="body1" color="grey.300">
     MomentLoads Component (empty)
@@ -46,7 +47,7 @@ const elementTypes = [
     key: "element1ds",
     label: "Element1Ds",
     icon: <LinearScaleIcon sx={{ mr: 1 }} />,
-    component: Element1DSelectionInfo,
+    component: Element1dSelectionInfo,
   },
   {
     key: "materials",
