@@ -163,7 +163,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         // click the sectionProfiles tab in the sidebar again
         sectionProfilesTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "sectionProfiles" }
+            new PageGetByRoleOptions { Name = "sections" }
         );
         await sectionProfilesTab.ClickAsync();
 

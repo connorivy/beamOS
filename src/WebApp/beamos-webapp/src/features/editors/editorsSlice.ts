@@ -26,6 +26,7 @@ import type {
   SectionProfileResponse,
   UpdateNodeRequest,
   NodeData,
+  SectionProfileData,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { ToModelState, type ModelState } from "./ModelState"
 
@@ -158,7 +159,10 @@ export const editorsSlice = createAppSlice({
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
         }
-        const node = action.payload.nodeId in editor.model.nodes ? editor.model.nodes[action.payload.nodeId] : null
+        const node =
+          action.payload.nodeId in editor.model.nodes
+            ? editor.model.nodes[action.payload.nodeId]
+            : null
         if (!node) {
           throw new Error(
             `Node with id ${action.payload.nodeId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
@@ -167,7 +171,8 @@ export const editorsSlice = createAppSlice({
         node.locationPoint.x = action.payload.node.locationPoint.x
         node.locationPoint.y = action.payload.node.locationPoint.y
         node.locationPoint.z = action.payload.node.locationPoint.z
-        node.locationPoint.lengthUnit = action.payload.node.locationPoint.lengthUnit
+        node.locationPoint.lengthUnit =
+          action.payload.node.locationPoint.lengthUnit
         node.restraint.canTranslateAlongX =
           action.payload.node.restraint.canTranslateAlongX
         node.restraint.canTranslateAlongY =
@@ -239,6 +244,51 @@ export const editorsSlice = createAppSlice({
           weakAxisShearArea: action.payload.sectionProfile.weakAxisShearArea,
           lengthUnit: action.payload.sectionProfile.lengthUnit,
         }
+      },
+    ),
+    modifySectionProfile: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          sectionProfileId: number
+          sectionProfile: SectionProfileData
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const sp =
+          action.payload.sectionProfileId in editor.model.sectionProfiles
+            ? editor.model.sectionProfiles[action.payload.sectionProfileId]
+            : null
+        if (!sp) {
+          throw new Error(
+            `SectionProfile with id ${action.payload.sectionProfileId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        sp.name = action.payload.sectionProfile.name
+        sp.area = action.payload.sectionProfile.area
+        sp.strongAxisMomentOfInertia =
+          action.payload.sectionProfile.strongAxisMomentOfInertia
+        sp.weakAxisMomentOfInertia =
+          action.payload.sectionProfile.weakAxisMomentOfInertia
+        sp.polarMomentOfInertia =
+          action.payload.sectionProfile.polarMomentOfInertia
+        sp.strongAxisPlasticSectionModulus =
+          action.payload.sectionProfile.strongAxisPlasticSectionModulus
+        sp.weakAxisPlasticSectionModulus =
+          action.payload.sectionProfile.weakAxisPlasticSectionModulus
+        sp.strongAxisShearArea =
+          action.payload.sectionProfile.strongAxisShearArea
+        sp.weakAxisShearArea = action.payload.sectionProfile.weakAxisShearArea
+        sp.lengthUnit = action.payload.sectionProfile.lengthUnit
       },
     ),
     removeSectionProfileById: create.reducer(
@@ -390,9 +440,11 @@ export const editorsSlice = createAppSlice({
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { [action.payload.loadCombinationId]: _, ...restLoadCombinations } =
-          editor.model.loadCombinations
+        const {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          [action.payload.loadCombinationId]: _,
+          ...restLoadCombinations
+        } = editor.model.loadCombinations
         editor.model.loadCombinations = restLoadCombinations
       },
     ),
@@ -438,7 +490,10 @@ export const editorsSlice = createAppSlice({
             `Model response for canvasId ${action.payload.canvasId} is null`,
           )
         }
-        const mat = action.payload.materialId in editor.model.materials ? editor.model.materials[action.payload.materialId] : null
+        const mat =
+          action.payload.materialId in editor.model.materials
+            ? editor.model.materials[action.payload.materialId]
+            : null
         if (!mat) {
           throw new Error(
             `Material with id ${action.payload.materialId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
@@ -626,6 +681,7 @@ export const {
   createLoadCombination,
   removeLoadCombinationById,
   createSectionProfile,
+  modifySectionProfile,
   removeSectionProfileById,
   createMaterial,
   removeMaterialById,

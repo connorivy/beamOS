@@ -19,6 +19,7 @@ import {
 import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { handleCreateSectionProfile } from "./handleCreateSectionProfile"
+import { handleModifySectionProfile } from "./handleModifySectionProfile"
 
 type SectionProfileIdOption = {
     label: string;
@@ -30,7 +31,7 @@ function isWholeNumber(val: string) {
 }
 
 function formatNumber(value: number | undefined): string {
-    if (value === undefined || value === null) {
+    if (value === undefined) {
         return ""
     }
     // Ensure at least one decimal place
@@ -111,6 +112,17 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
 
     const handleCreateSectionProfileFunc = useCallback(async () => {
         await handleCreateSectionProfile(
+            apiClient,
+            dispatch,
+            sectionProfileIdInput,
+            properties,
+            editorState,
+            canvasId
+        );
+    }, [apiClient, canvasId, dispatch, editorState, properties, sectionProfileIdInput])
+
+    const handleModifySectionProfileFunc = useCallback(async () => {
+        await handleModifySectionProfile(
             apiClient,
             dispatch,
             sectionProfileIdInput,
@@ -255,9 +267,15 @@ export const SectionProfileSelectionInfo = ({ canvasId }: { canvasId: string }) 
                 slotProps={{ htmlInput: { "aria-label": "strong axis shear area" } }}
             />
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateSectionProfileFunc(); }}>
-                CREATE
-            </Button>
+            {sectionProfileId === null ? (
+                <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateSectionProfileFunc(); }}>
+                    CREATE
+                </Button>
+            ) : (
+                <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleModifySectionProfileFunc(); }}>
+                    APPLY
+                </Button>
+            )}
         </MuiBox>
     )
 }
