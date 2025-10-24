@@ -20,6 +20,7 @@ import type {
   MaterialResponse,
   ModelResponse,
   NodeResponse,
+  PointLoadResponse,
   SectionProfileResponse,
   UpdateNodeRequest,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
@@ -262,6 +263,50 @@ export const editorsSlice = createAppSlice({
         editor.model.loadCases = restLoadCases
       },
     ),
+    createPointLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          pointLoad: PointLoadResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.pointLoads[action.payload.pointLoad.id] =
+          action.payload.pointLoad
+      },
+    ),
+    removePointLoadById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          pointLoadId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.pointLoadId]: _, ...restPointLoads } =
+          editor.model.pointLoads
+        editor.model.pointLoads = restPointLoads
+      },
+    ),
     createMaterial: create.reducer(
       (
         state,
@@ -413,6 +458,8 @@ export const {
   removeNodeById,
   createLoadCase,
   removeLoadCaseById,
+  createPointLoad,
+  removePointLoadById,
   createSectionProfile,
   removeSectionProfileById,
   createMaterial,
