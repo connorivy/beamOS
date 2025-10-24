@@ -5,6 +5,7 @@ namespace BeamOs.Tests.WebApp.Integration;
 
 public class ModelEditorPageTests : ReactPageTest
 {
+    private static readonly SemaphoreSlim modelCreationLock = new(1, 1);
     private static Guid? modelId;
 
     [Before(TUnit.Core.HookType.Test)]
@@ -13,15 +14,22 @@ public class ModelEditorPageTests : ReactPageTest
         // Create a new model and navigate to its editor page
         if (modelId == null)
         {
-            modelId = await this.PageContext.NavigateToNewModelPage(
-                modelName: "Test Model",
-                description: "This is a test model for integration testing."
-            );
+            await modelCreationLock.WaitAsync();
+
+            try
+            {
+                modelId ??= await this.PageContext.NavigateToNewModelPage(
+                    modelName: "Test Model",
+                    description: "This is a test model for integration testing."
+                );
+            }
+            finally
+            {
+                modelCreationLock.Release();
+            }
         }
-        else
-        {
-            await this.Page.GotoAsync($"/models/{modelId}");
-        }
+
+        await this.Page.GotoAsync($"/models/{modelId}");
     }
 
     [Test]
@@ -392,8 +400,12 @@ public class ModelEditorPageTests : ReactPageTest
     }
 
     [Test]
+    [DependsOn(nameof(ModelEditorPage_CreateNodeDialog_ShouldWork))]
+    [DependsOn(nameof(ModelEditorPage_LoadCaseDialog_ShouldWork))]
     public async Task ModelEditorPage_PointLoadDialog_ShouldWork()
     {
+        await Task.Delay(3000);
+
         var entityTab = this.Page.GetByRole(
             AriaRole.Button,
             new PageGetByRoleOptions { Name = "point loads" }
@@ -452,10 +464,10 @@ public class ModelEditorPageTests : ReactPageTest
         // refresh the page and ensure the created node persists
         await this.Page.ReloadAsync();
 
-        // click the nodes tab in the sidebar again
+        // click the point loads tab in the sidebar again
         entityTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "load cases" }
+            new PageGetByRoleOptions { Name = "point loads" }
         );
         await entityTab.ClickAsync();
 

@@ -23,12 +23,7 @@ import { setNodeId } from "./node/nodeSelectionSlice"
 import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
-
-const PointLoads = () => (
-  <Typography variant="body1" color="grey.300">
-    PointLoads Component (empty)
-  </Typography>
-)
+import { PointLoadSelectionInfo } from "./pointLoad/PointLoadSelectionInfo"
 const MomentLoads = () => (
   <Typography variant="body1" color="grey.300">
     MomentLoads Component (empty)
@@ -72,7 +67,7 @@ const loadTypes = [
     key: "pointloads",
     label: "Point Loads",
     icon: <ArrowDownwardIcon sx={{ mr: 1 }} />,
-    component: PointLoads,
+    component: PointLoadSelectionInfo,
   },
   {
     key: "momentloads",
