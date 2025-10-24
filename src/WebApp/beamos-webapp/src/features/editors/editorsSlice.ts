@@ -27,6 +27,7 @@ import type {
   UpdateNodeRequest,
   NodeData,
   SectionProfileData,
+  MomentLoadData,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { ToModelState, type ModelState } from "./ModelState"
 
@@ -629,6 +630,40 @@ export const editorsSlice = createAppSlice({
           action.payload.momentLoad
       },
     ),
+    modifyMomentLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoadId: number
+          momentLoad: MomentLoadData
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const ml =
+          action.payload.momentLoadId in editor.model.momentLoads
+            ? editor.model.momentLoads[action.payload.momentLoadId]
+            : null
+        if (!ml) {
+          throw new Error(
+            `MomentLoad with id ${action.payload.momentLoadId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        // Update all fields according to MomentLoadData structure
+        ml.nodeId = action.payload.momentLoad.nodeId
+        ml.loadCaseId = action.payload.momentLoad.loadCaseId
+        ml.torque = { ...action.payload.momentLoad.torque }
+        ml.axisDirection = { ...action.payload.momentLoad.axisDirection }
+      },
+    ),
     removeMomentLoadById: create.reducer(
       (
         state,
@@ -722,6 +757,7 @@ export const {
   createElement1d,
   removeElement1dById,
   createMomentLoad,
+  modifyMomentLoad,
   removeMomentLoadById,
   moveNode,
   modelLoaded,

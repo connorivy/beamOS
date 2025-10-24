@@ -27,6 +27,8 @@ import { handleCreateMomentLoad } from "./handleCreateMomentLoad"
 import { getTorqueUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
 import { convertTorque } from "../../../../utils/unitConversion"
 import { COORDINATE_PRECISION_MULTIPLIER } from "../SelectionInfo"
+import { handleModifyMomentLoad } from "./handleModifyMomentLoad"
+import { useEditors } from "../../EditorContext"
 
 type MomentLoadIdOption = {
     label: string;
@@ -47,6 +49,7 @@ export const MomentLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     const modelResponse = useAppSelector(state =>
         selectModelResponseByCanvasId(state, canvasId)
     )
+    const editor = useEditors()[canvasId]
     const apiClient = useApiClient()
     const editorState = useAppSelector(state => state.editors[canvasId])
     const momentLoadIds: MomentLoadIdOption[] = [
@@ -139,6 +142,23 @@ export const MomentLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
             canvasId
         );
     }, [apiClient, canvasId, direction, dispatch, editorState, loadCaseId, magnitude, momentLoadIdInput, nodeId])
+
+    const handleModifyMomentLoadFunc = useCallback(async () => {
+        await handleModifyMomentLoad(
+            apiClient,
+            dispatch,
+            momentLoadIdInput,
+            loadCaseId,
+            nodeId,
+            magnitude,
+            direction.x,
+            direction.y,
+            direction.z,
+            editorState,
+            editor,
+            canvasId
+        );
+    }, [apiClient, dispatch, momentLoadIdInput, loadCaseId, nodeId, magnitude, direction.x, direction.y, direction.z, editorState, editor, canvasId]);
 
     return (
         <MuiBox sx={{ px: 2, py: 2 }}>
@@ -261,9 +281,15 @@ export const MomentLoadSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 sx={{ mb: 2 }}
             />
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateMomentLoadFunc(); }}>
-                CREATE
-            </Button>
+            {momentLoadId === null ? (
+                <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateMomentLoadFunc(); }}>
+                    CREATE
+                </Button>
+            ) : (
+                <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleModifyMomentLoadFunc(); }}>
+                    APPLY
+                </Button>
+            )}
         </MuiBox>
     )
 }
