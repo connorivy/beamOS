@@ -10,6 +10,7 @@ public class ReactPageTest : WebContextTest
 
     public PageContext PageContext { get; private set; } = null!;
     public IPage Page => this.PageContext.Page;
+    protected virtual bool SaveSnapshotsOnSuccess => false;
 
     public override BrowserNewContextOptions ContextOptions(TestContext testContext)
     {
@@ -37,7 +38,8 @@ public class ReactPageTest : WebContextTest
                 this.Browser!,
                 this.Context,
                 await this.Context.NewPageAsync().ConfigureAwait(false),
-                TestContext.Current.TestName
+                TestContext.Current.TestName,
+                this.SaveSnapshotsOnSuccess
             )
             .ConfigureAwait(false);
     }
