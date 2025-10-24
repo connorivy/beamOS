@@ -84,7 +84,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         );
         await materialsTab.ClickAsync();
 
-        await FillOutMaterialSelectionInfo(this.Page, 29000, 11500, "1");
+        await FillOutMaterialSelectionInfo(this.Page, 999, 888, "1");
 
         // click the apply button
         var applyButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "apply" });
@@ -109,7 +109,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         await this.Expect(dropdownOptions).ToHaveCountAsync(1);
         await dropdownOptions.First.ClickAsync();
 
-        await AssertMaterialDialogValues(this.Page, 29000, 11500);
+        await AssertMaterialDialogValues(this.Page, 999, 888);
 
         // test the database changes by reloading the element data from the server by refreshing the page
         await this.Page.ReloadAsync();
@@ -135,7 +135,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         // select the material from the dropdown
         await dropdownOptions.First.ClickAsync();
 
-        await AssertMaterialDialogValues(this.Page, 100.1, 200.2);
+        await AssertMaterialDialogValues(this.Page, 999, 888);
     }
 
     internal static async Task FillOutMaterialSelectionInfo(

@@ -420,6 +420,35 @@ export const editorsSlice = createAppSlice({
         }
       },
     ),
+    modifyMaterial: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          materialId: number
+          material: MaterialResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const mat = action.payload.materialId in editor.model.materials ? editor.model.materials[action.payload.materialId] : null
+        if (!mat) {
+          throw new Error(
+            `Material with id ${action.payload.materialId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        mat.modulusOfElasticity = action.payload.material.modulusOfElasticity
+        mat.modulusOfRigidity = action.payload.material.modulusOfRigidity
+        mat.pressureUnit = action.payload.material.pressureUnit
+      },
+    ),
     removeMaterialById: create.reducer(
       (
         state,

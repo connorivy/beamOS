@@ -19,8 +19,12 @@ import {
 import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { handleCreateMaterial } from "./handleCreateMaterial"
+import { handleModifyMaterial } from "./handleModifyMaterial"
 import {
+  ForceUnit,
+  getPressureUnit,
   getUnitName,
+  LengthUnit,
   PressureUnit,
 } from "../../../../utils/type-extensions/UnitTypeContracts"
 
@@ -50,10 +54,11 @@ export const MaterialSelectionInfo = ({ canvasId }: { canvasId: string }) => {
       value: Number(id),
     })),
   ]
-  const pressureUnit = getUnitName(
+
+  const pressureUnit = getPressureUnit(modelResponse?.settings.unitSettings.forceUnit ?? ForceUnit.Newton, modelResponse?.settings.unitSettings.lengthUnit ?? LengthUnit.Meter)
+  const pressureUnitName = getUnitName(
     PressureUnit,
-    modelResponse?.settings.unitSettings.pressureUnit ??
-      PressureUnit.PoundForcePerSquareInch,
+    pressureUnit
   )
 
   const resetInput = useCallback(() => {
@@ -110,8 +115,20 @@ export const MaterialSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     [dispatch],
   )
 
+
   const handleCreateMaterialFunc = useCallback(async () => {
     await handleCreateMaterial(
+      apiClient,
+      dispatch,
+      materialIdInput,
+      properties,
+      editorState,
+      canvasId,
+    )
+  }, [apiClient, canvasId, dispatch, editorState, materialIdInput, properties])
+
+  const handleModifyMaterialFunc = useCallback(async () => {
+    await handleModifyMaterial(
       apiClient,
       dispatch,
       materialIdInput,
@@ -174,7 +191,7 @@ export const MaterialSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         sx={{ mb: 1 }}
         slotProps={{
           input: {
-            endAdornment: <Typography sx={{ ml: 1 }}>{pressureUnit}</Typography>,
+            endAdornment: <Typography sx={{ ml: 1 }}>{pressureUnitName}</Typography>,
           },
         }}
       />
@@ -187,20 +204,33 @@ export const MaterialSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         sx={{ mb: 2 }}
         slotProps={{
           input: {
-            endAdornment: <Typography sx={{ ml: 1 }}>{pressureUnit}</Typography>,
+            endAdornment: <Typography sx={{ ml: 1 }}>{pressureUnitName}</Typography>,
           },
         }}
       />
 
-      <Button
-        variant="contained"
-        sx={{ mt: 2, width: "100%" }}
-        onClick={() => {
-          void handleCreateMaterialFunc()
-        }}
-      >
-        CREATE
-      </Button>
+      {materialId === null ? (
+        <Button
+          variant="contained"
+          sx={{ mt: 2, width: "100%" }}
+          onClick={() => {
+            void handleCreateMaterialFunc()
+          }}
+        >
+          CREATE
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2, width: "100%" }}
+          onClick={() => {
+            void handleModifyMaterialFunc()
+          }}
+        >
+          APPLY
+        </Button>
+      )}
     </MuiBox>
   )
 }
