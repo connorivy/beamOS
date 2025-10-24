@@ -30,27 +30,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         );
         await this.Expect(dropdownOptions).ToHaveCountAsync(0);
 
-        // fill in value for load case id
-        var loadCaseInput = this.Page.GetByRole(AriaRole.Combobox, new() { Name = "load case" });
-        await loadCaseInput.FillAsync("1");
-
-        // fill in value for node id
-        var nodeIdInput = this.Page.GetByRole(AriaRole.Combobox, new() { Name = "node" });
-        await nodeIdInput.FillAsync("1");
-
-        // fill in value for magnitude
-        var magnitudeInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "magnitude" });
-        await magnitudeInput.FillAsync("500.0");
-
-        // fill in value for direction
-        var directionInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
-        await directionInput.FillAsync("1.0");
-
-        var directionYInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
-        await directionYInput.FillAsync("0.0");
-
-        var directionZInput = this.Page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
-        await directionZInput.FillAsync("0.0");
+        await FillOutMomentLoadSelectionInfo(this.Page, "1", 1, 500.0, 1.0, 0.0, 0.0);
 
         // click the create button
         var createButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "create" });
@@ -91,11 +71,147 @@ public partial class ModelEditorPageTests : ReactPageTest
         await dropdownOptions.First.ClickAsync();
 
         // verify that the moment load inputs have the correct values
-        await this.Expect(loadCaseInput).ToHaveValueAsync("1");
-        await this.Expect(nodeIdInput).ToHaveValueAsync("1");
-        await magnitudeInput.ExpectToHaveApproximateValueAsync(500);
-        await directionInput.ExpectToHaveApproximateValueAsync(1);
-        await directionYInput.ExpectToHaveApproximateValueAsync(0);
-        await directionZInput.ExpectToHaveApproximateValueAsync(0);
+        await AssertMomentLoadDialogValues(this.Page, "1", 1, 500.0, 1.0, 0.0, 0.0);
+    }
+
+    [Test]
+    [DependsOn(nameof(MomentLoadDialog_ShouldCreateMomentLoad))]
+    public async Task MomentLoadDialog_ShouldModifyExistingMomentLoad()
+    {
+        // click the momentLoads tab in the sidebar
+        var momentLoadsTab = this.Page.GetByRole(
+            AriaRole.Button,
+            new PageGetByRoleOptions { Name = "moment loads" }
+        );
+        await momentLoadsTab.ClickAsync();
+
+        await FillOutMomentLoadSelectionInfo(this.Page, "1", 1, 111, -1, 0, 0, "1");
+
+        // click the apply button
+        var applyButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "apply" });
+        await applyButton.ClickAsync();
+
+        var momentLoadIdCombobox = this.Page.GetByRole(
+            AriaRole.Combobox,
+            new PageGetByRoleOptions { Name = "id" }
+        );
+        await this.Expect(momentLoadIdCombobox).ToHaveValueAsync("1");
+
+        // test the optimistic store changes by reloading the element data without refreshing the page
+        await momentLoadIdCombobox.ClickAsync();
+        var clearButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "clear" });
+        await clearButton.ClickAsync();
+
+        await momentLoadIdCombobox.FillAsync("1");
+        var dropdownOptions = this.Page.GetByRole(
+            AriaRole.Option,
+            new PageGetByRoleOptions { Name = "1" }
+        );
+        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
+        await dropdownOptions.First.ClickAsync();
+
+        await AssertMomentLoadDialogValues(this.Page, "1", 1, 111, -1, 0, 0, "1");
+
+        // test the database changes by reloading the element data from the server by refreshing the page
+        await this.Page.ReloadAsync();
+
+        // click the momentLoads tab in the sidebar again
+        momentLoadsTab = this.Page.GetByRole(
+            AriaRole.Button,
+            new PageGetByRoleOptions { Name = "moment loads" }
+        );
+        await momentLoadsTab.ClickAsync();
+
+        // insert 1 into the momentLoad id combobox again
+        await momentLoadIdCombobox.FillAsync("1");
+        await momentLoadIdCombobox.ClickAsync();
+
+        // now there should be one result in the dropdown
+        dropdownOptions = this.Page.GetByRole(
+            AriaRole.Option,
+            new PageGetByRoleOptions { Name = "1" }
+        );
+        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
+
+        // select the momentLoad from the dropdown
+        await dropdownOptions.First.ClickAsync();
+
+        await AssertMomentLoadDialogValues(this.Page, "1", 1, 111, -1, 0, 0, "1");
+    }
+
+    internal static async Task FillOutMomentLoadSelectionInfo(
+        IPage page,
+        string loadCase,
+        int nodeId,
+        double magnitude,
+        double directionX,
+        double directionY,
+        double directionZ,
+        string? momentLoadId = null
+    )
+    {
+        if (momentLoadId is not null)
+        {
+            var momentLoadIdInput = page.GetByRole(AriaRole.Combobox, new() { Name = "id" });
+            await momentLoadIdInput.FillAsync(momentLoadId);
+
+            // select the option in the dropdown
+            var dropdownOption = page.GetByRole(AriaRole.Option, new() { Name = momentLoadId });
+            await dropdownOption.ClickAsync();
+        }
+
+        var loadCaseInput = page.GetByRole(AriaRole.Combobox, new() { Name = "load case" });
+        await loadCaseInput.FillAsync(loadCase);
+
+        var nodeIdInput = page.GetByRole(AriaRole.Combobox, new() { Name = "node" });
+        await nodeIdInput.FillAsync(nodeId.ToString());
+
+        var fxInput = page.GetByRole(AriaRole.Textbox, new() { Name = "magnitude" });
+        await fxInput.FillAsync(magnitude.ToString());
+
+        var directionInput = page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
+        await directionInput.FillAsync(directionX.ToString());
+
+        var directionYInput = page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
+        await directionYInput.FillAsync(directionY.ToString());
+
+        var directionZInput = page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
+        await directionZInput.FillAsync(directionZ.ToString());
+    }
+
+    internal static async Task AssertMomentLoadDialogValues(
+        IPage page,
+        string loadCase,
+        int nodeId,
+        double magnitude,
+        double directionX,
+        double directionY,
+        double directionZ,
+        string? momentLoadId = null
+    )
+    {
+        if (momentLoadId is not null)
+        {
+            var momentLoadIdInput = page.GetByRole(AriaRole.Combobox, new() { Name = "id" });
+            await Assertions.Expect(momentLoadIdInput).ToHaveValueAsync(momentLoadId);
+        }
+
+        var loadCaseInput = page.GetByRole(AriaRole.Combobox, new() { Name = "load case" });
+        await Assertions.Expect(loadCaseInput).ToHaveValueAsync(loadCase);
+
+        var nodeIdInput = page.GetByRole(AriaRole.Combobox, new() { Name = "node" });
+        await Assertions.Expect(nodeIdInput).ToHaveValueAsync(nodeId.ToString());
+
+        var fxInput = page.GetByRole(AriaRole.Textbox, new() { Name = "magnitude" });
+        await fxInput.ExpectToHaveApproximateValueAsync(magnitude);
+
+        var directionInput = page.GetByRole(AriaRole.Textbox, new() { Name = "x" });
+        await directionInput.ExpectToHaveApproximateValueAsync(directionX);
+
+        var directionYInput = page.GetByRole(AriaRole.Textbox, new() { Name = "y" });
+        await directionYInput.ExpectToHaveApproximateValueAsync(directionY);
+
+        var directionZInput = page.GetByRole(AriaRole.Textbox, new() { Name = "z" });
+        await directionZInput.ExpectToHaveApproximateValueAsync(directionZ);
     }
 }
