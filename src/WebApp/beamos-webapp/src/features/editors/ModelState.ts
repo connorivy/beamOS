@@ -9,6 +9,7 @@ import type {
   ModelSettings,
   NodeData,
   NodeResponse,
+  PointLoadResponse,
   SectionProfileData,
   SectionProfileResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
@@ -25,6 +26,7 @@ export type ModelState = {
   materials: Record<number, MaterialData>
   sectionProfiles: Record<number, SectionProfileData>
   loadCases: Record<number, LoadCase>
+  pointLoads: Record<number, PointLoadResponse>
 }
 
 export function NodeResponsesToDataMap(
@@ -50,6 +52,7 @@ export function Element1dResponsesToDataMap(
       endNodeId: element1d.endNodeId,
       materialId: element1d.materialId,
       sectionProfileId: element1d.sectionProfileId,
+      sectionProfileRotation: element1d.sectionProfileRotation,
     }
   }
   return element1dMap
@@ -102,6 +105,16 @@ export function LoadCasesToMap(
   return loadCaseMap
 }
 
+export function PointLoadsToMap(
+  pointLoads: PointLoadResponse[],
+): Record<number, PointLoadResponse> {
+  const pointLoadMap: Record<number, PointLoadResponse> = {}
+  for (const pointLoad of pointLoads) {
+    pointLoadMap[pointLoad.id] = pointLoad
+  }
+  return pointLoadMap
+}
+
 export function ToModelState(model: ModelResponse): ModelState {
   return {
     id: model.id,
@@ -117,5 +130,6 @@ export function ToModelState(model: ModelResponse): ModelState {
       model.sectionProfiles ?? [],
     ),
     loadCases: LoadCasesToMap(model.loadCases ?? []),
+    pointLoads: PointLoadsToMap(model.pointLoads ?? []),
   }
 }
