@@ -20,20 +20,17 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
-import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
+import { MomentLoadSelectionInfo } from "./momentLoad/MomentLoadSelectionInfo"
+import { Element1dSelectionInfo } from "./element1d/Element1dSelectionInfo"
+import { PointLoadSelectionInfo } from "./pointLoad/PointLoadSelectionInfo"
 
-const PointLoads = () => (
-  <Typography variant="body1" color="grey.300">
-    PointLoads Component (empty)
-  </Typography>
-)
-const MomentLoads = () => (
-  <Typography variant="body1" color="grey.300">
-    MomentLoads Component (empty)
-  </Typography>
-)
+// Precision for rounding coordinate values to avoid floating point precision issues
+// Using 1e4 allows for 4 decimal places of precision
+export const COORDINATE_PRECISION_MULTIPLIER = 1e4
+
+
 const LoadCombinations = () => (
   <Typography variant="body1" color="grey.300">
     LoadCombinations Component (empty)
@@ -51,7 +48,7 @@ const elementTypes = [
     key: "element1ds",
     label: "Element1Ds",
     icon: <LinearScaleIcon sx={{ mr: 1 }} />,
-    component: Element1DSelectionInfo,
+    component: Element1dSelectionInfo,
   },
   {
     key: "materials",
@@ -72,13 +69,13 @@ const loadTypes = [
     key: "pointloads",
     label: "Point Loads",
     icon: <ArrowDownwardIcon sx={{ mr: 1 }} />,
-    component: PointLoads,
+    component: PointLoadSelectionInfo,
   },
   {
     key: "momentloads",
     label: "Moment Loads",
     icon: <ReplayIcon sx={{ mr: 1 }} />,
-    component: MomentLoads,
+    component: MomentLoadSelectionInfo,
   },
   {
     key: "loadcases",

@@ -119,6 +119,58 @@ export function getAreaUnit(lengthUnit: number): number {
   return areaUnit
 }
 
+export function getTorqueUnit(lengthUnit: number, forceUnit: number): number {
+  switch (lengthUnit) {
+    case LengthUnit.Millimeter:
+      switch (forceUnit) {
+        case ForceUnit.Kilonewton:
+          return TorqueUnit.KilonewtonMillimeter
+        case ForceUnit.Newton:
+          return TorqueUnit.NewtonMillimeter
+        default:
+          throw new Error(`Unsupported force unit: ${forceUnit.toString()}`)
+      }
+    case LengthUnit.Centimeter:
+      switch (forceUnit) {
+        case ForceUnit.Kilonewton:
+          return TorqueUnit.KilonewtonCentimeter
+        case ForceUnit.Newton:
+          return TorqueUnit.NewtonCentimeter
+        default:
+          throw new Error(`Unsupported force unit: ${forceUnit.toString()}`)
+      }
+    case LengthUnit.Meter:
+      switch (forceUnit) {
+        case ForceUnit.Kilonewton:
+          return TorqueUnit.KilonewtonMeter
+        case ForceUnit.Newton:
+          return TorqueUnit.NewtonMeter
+        default:
+          throw new Error(`Unsupported force unit: ${forceUnit.toString()}`)
+      }
+    case LengthUnit.Inch:
+      switch (forceUnit) {
+        case ForceUnit.KilopoundForce:
+          return TorqueUnit.KilopoundForceInch
+        case ForceUnit.PoundForce:
+          return TorqueUnit.PoundForceInch
+        default:
+          throw new Error(`Unsupported force unit: ${forceUnit.toString()}`)
+      }
+    case LengthUnit.Foot:
+      switch (forceUnit) {
+        case ForceUnit.KilopoundForce:
+          return TorqueUnit.KilopoundForceFoot
+        case ForceUnit.PoundForce:
+          return TorqueUnit.PoundForceFoot
+        default:
+          throw new Error(`Unsupported force unit: ${forceUnit.toString()}`)
+      }
+    default:
+      throw new Error(`Unsupported length unit: ${lengthUnit.toString()}`)
+  }
+}
+
 export function getPressureUnit(forceUnit: number, lengthUnit: number): number {
   switch (forceUnit) {
     case ForceUnit.Kilonewton:
@@ -167,5 +219,91 @@ export function getPressureUnit(forceUnit: number, lengthUnit: number): number {
       }
     default:
       throw new Error(`Unsupported force unit: ${forceUnit.toString()}`)
+  }
+}
+
+export function getForceUnitFromTorqueUnit(torqueUnit: number): number {
+  switch (torqueUnit) {
+    case TorqueUnit.KilonewtonMillimeter:
+    case TorqueUnit.KilonewtonCentimeter:
+    case TorqueUnit.KilonewtonMeter:
+      return ForceUnit.Kilonewton
+    case TorqueUnit.NewtonMillimeter:
+    case TorqueUnit.NewtonCentimeter:
+    case TorqueUnit.NewtonMeter:
+      return ForceUnit.Newton
+    case TorqueUnit.KilopoundForceInch:
+    case TorqueUnit.KilopoundForceFoot:
+      return ForceUnit.PoundForce
+    case TorqueUnit.PoundForceInch:
+    case TorqueUnit.PoundForceFoot:
+      return ForceUnit.PoundForce
+    default:
+      throw new Error(`Unsupported torque unit: ${torqueUnit.toString()}`)
+  }
+}
+
+export function getLengthUnitFromTorqueUnit(torqueUnit: number): number {
+  switch (torqueUnit) {
+    case TorqueUnit.KilonewtonMillimeter:
+    case TorqueUnit.NewtonMillimeter:
+      return LengthUnit.Millimeter
+    case TorqueUnit.KilonewtonCentimeter:
+    case TorqueUnit.NewtonCentimeter:
+      return LengthUnit.Centimeter
+    case TorqueUnit.KilonewtonMeter:
+    case TorqueUnit.NewtonMeter:
+      return LengthUnit.Meter
+    case TorqueUnit.KilopoundForceInch:
+    case TorqueUnit.PoundForceInch:
+      return LengthUnit.Inch
+    case TorqueUnit.PoundForceFoot:
+    case TorqueUnit.KilopoundForceFoot:
+      return LengthUnit.Foot
+    default:
+      throw new Error(`Unsupported torque unit: ${torqueUnit.toString()}`)
+  }
+}
+
+export function getForceUnitFromPressureUnit(pressureUnit: number): number {
+  switch (pressureUnit) {
+    case PressureUnit.KilonewtonPerSquareMillimeter: 
+    case PressureUnit.KilonewtonPerSquareCentimeter: 
+    case PressureUnit.KilonewtonPerSquareMeter:
+      return ForceUnit.Kilonewton
+    case PressureUnit.NewtonPerSquareMillimeter: 
+    case PressureUnit.NewtonPerSquareCentimeter: 
+    case PressureUnit.NewtonPerSquareMeter:
+      return ForceUnit.Newton
+    case PressureUnit.KilopoundForcePerSquareInch:
+    case PressureUnit.KilopoundForcePerSquareFoot:
+      return ForceUnit.PoundForce
+    case PressureUnit.PoundForcePerSquareInch:
+    case PressureUnit.PoundForcePerSquareFoot:
+      return ForceUnit.PoundForce
+    default:
+      throw new Error(`Unsupported pressure unit: ${pressureUnit.toString()}`)
+  }
+}
+
+export function getLengthUnitFromPressureUnit(pressureUnit: number): number {
+  switch (pressureUnit) {
+    case PressureUnit.KilonewtonPerSquareMillimeter: 
+    case PressureUnit.NewtonPerSquareMillimeter: 
+      return LengthUnit.Millimeter
+    case PressureUnit.KilonewtonPerSquareCentimeter: 
+    case PressureUnit.NewtonPerSquareCentimeter: 
+      return LengthUnit.Centimeter
+    case PressureUnit.KilonewtonPerSquareMeter:
+    case PressureUnit.NewtonPerSquareMeter:
+      return LengthUnit.Meter
+    case PressureUnit.KilopoundForcePerSquareInch:
+    case PressureUnit.PoundForcePerSquareInch:
+      return LengthUnit.Inch
+    case PressureUnit.PoundForcePerSquareFoot:
+    case PressureUnit.KilopoundForcePerSquareFoot:
+      return LengthUnit.Foot
+    default:
+      throw new Error(`Unsupported pressure unit: ${pressureUnit.toString()}`)
   }
 }

@@ -5,12 +5,17 @@ import type {
   LoadCase,
   MaterialData,
   MaterialResponse,
+  MomentLoadResponse,
   ModelResponse,
   ModelSettings,
   NodeData,
   NodeResponse,
+  PointLoadResponse,
   SectionProfileData,
   SectionProfileResponse,
+  MomentLoadData,
+  PointLoadData,
+  LoadCaseData,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 export type ModelState = {
@@ -24,7 +29,9 @@ export type ModelState = {
   element1ds: Record<number, Element1dData>
   materials: Record<number, MaterialData>
   sectionProfiles: Record<number, SectionProfileData>
-  loadCases: Record<number, LoadCase>
+  loadCases: Record<number, LoadCaseData>
+  momentLoads: Record<number, MomentLoadData>
+  pointLoads: Record<number, PointLoadData>
 }
 
 export function NodeResponsesToDataMap(
@@ -50,6 +57,7 @@ export function Element1dResponsesToDataMap(
       endNodeId: element1d.endNodeId,
       materialId: element1d.materialId,
       sectionProfileId: element1d.sectionProfileId,
+      sectionProfileRotation: element1d.sectionProfileRotation,
     }
   }
   return element1dMap
@@ -102,6 +110,26 @@ export function LoadCasesToMap(
   return loadCaseMap
 }
 
+export function MomentLoadsToMap(
+  momentLoads: MomentLoadResponse[],
+): Record<number, MomentLoadResponse> {
+  const momentLoadMap: Record<number, MomentLoadResponse> = {}
+  for (const momentLoad of momentLoads) {
+    momentLoadMap[momentLoad.id] = momentLoad
+  }
+  return momentLoadMap
+}
+
+export function PointLoadsToMap(
+  pointLoads: PointLoadResponse[],
+): Record<number, PointLoadResponse> {
+  const pointLoadMap: Record<number, PointLoadResponse> = {}
+  for (const pointLoad of pointLoads) {
+    pointLoadMap[pointLoad.id] = pointLoad
+  }
+  return pointLoadMap
+}
+
 export function ToModelState(model: ModelResponse): ModelState {
   return {
     id: model.id,
@@ -117,5 +145,7 @@ export function ToModelState(model: ModelResponse): ModelState {
       model.sectionProfiles ?? [],
     ),
     loadCases: LoadCasesToMap(model.loadCases ?? []),
+    momentLoads: MomentLoadsToMap(model.momentLoads ?? []),
+    pointLoads: PointLoadsToMap(model.pointLoads ?? []),
   }
 }
