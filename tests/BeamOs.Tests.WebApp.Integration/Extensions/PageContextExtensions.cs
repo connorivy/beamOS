@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 
-namespace BeamOs.Tests.WebApp.Integration;
+namespace BeamOs.Tests.WebApp.Integration.Extensions;
 
 public static class PageContextExtensions
 {

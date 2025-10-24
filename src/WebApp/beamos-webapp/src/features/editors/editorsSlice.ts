@@ -15,10 +15,14 @@ export type AppDependencies = {
   // Add undoManager or other dependencies here as needed
 }
 import type {
+  Element1dResponse,
   LoadCase,
+  LoadCombination,
   MaterialResponse,
+  MomentLoadResponse,
   ModelResponse,
   NodeResponse,
+  PointLoadResponse,
   SectionProfileResponse,
   UpdateNodeRequest,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
@@ -261,6 +265,94 @@ export const editorsSlice = createAppSlice({
         editor.model.loadCases = restLoadCases
       },
     ),
+    createPointLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          pointLoad: PointLoadResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.pointLoads[action.payload.pointLoad.id] =
+          action.payload.pointLoad
+      },
+    ),
+    removePointLoadById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          pointLoadId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.pointLoadId]: _, ...restPointLoads } =
+          editor.model.pointLoads
+        editor.model.pointLoads = restPointLoads
+      },
+    ),
+    createLoadCombination: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCombination: LoadCombination
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.loadCombinations[action.payload.loadCombination.id] =
+          action.payload.loadCombination
+      },
+    ),
+    removeLoadCombinationById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCombinationId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.loadCombinationId]: _, ...restLoadCombinations } =
+          editor.model.loadCombinations
+        editor.model.loadCombinations = restLoadCombinations
+      },
+    ),
     createMaterial: create.reducer(
       (
         state,
@@ -306,6 +398,98 @@ export const editorsSlice = createAppSlice({
         const { [action.payload.materialId]: _, ...restMaterials } =
           editor.model.materials
         editor.model.materials = restMaterials
+      },
+    ),
+    createElement1d: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          element1d: Element1dResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.element1ds[action.payload.element1d.id] = {
+          startNodeId: action.payload.element1d.startNodeId,
+          endNodeId: action.payload.element1d.endNodeId,
+          materialId: action.payload.element1d.materialId,
+          sectionProfileId: action.payload.element1d.sectionProfileId,
+        }
+      },
+    ),
+    removeElement1dById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          element1dId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.element1dId]: _, ...restElement1ds } =
+          editor.model.element1ds
+        editor.model.element1ds = restElement1ds
+      },
+    ),
+    createMomentLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoad: MomentLoadResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.momentLoads[action.payload.momentLoad.id] =
+          action.payload.momentLoad
+      },
+    ),
+    removeMomentLoadById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoadId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.momentLoadId]: _, ...restMomentLoads } =
+          editor.model.momentLoads
+        editor.model.momentLoads = restMomentLoads
       },
     ),
     // moveNode: create.asyncThunk(
@@ -364,10 +548,18 @@ export const {
   removeNodeById,
   createLoadCase,
   removeLoadCaseById,
+  createPointLoad,
+  removePointLoadById,
+  createLoadCombination,
+  removeLoadCombinationById,
   createSectionProfile,
   removeSectionProfileById,
   createMaterial,
   removeMaterialById,
+  createElement1d,
+  removeElement1dById,
+  createMomentLoad,
+  removeMomentLoadById,
   moveNode,
   modelLoaded,
 } = editorsSlice.actions
