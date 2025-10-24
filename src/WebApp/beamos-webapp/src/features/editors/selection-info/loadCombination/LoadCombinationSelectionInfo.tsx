@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect } from "react"
 import { useAppSelector, useAppDispatch } from "../../../../app/hooks"
 import {
     setLoadCombinationId,
@@ -46,10 +46,7 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
     )
     const apiClient = useApiClient()
     const editorState = useAppSelector(state => state.editors[canvasId])
-    
-    // Use a ref to track if we've already added a pair in this render cycle
-    const isAddingPairRef = useRef(false)
-    
+
     const loadCombinationIds: LoadCombinationIdOption[] = [
         { label: "New Load Combination", value: null },
         ...Object.keys(modelResponse?.loadCombinations ?? {}).map(id => ({ label: id, value: Number(id) }))
@@ -93,9 +90,9 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
     }, [dispatch])
 
     const handleLoadCaseIdChange = useCallback((index: number) => (_event: React.SyntheticEvent, value: string | LoadCaseIdOption | null) => {
-        const newValue = typeof value === "string" ? value : (value?.value?.toString() ?? "")
+        const newValue = typeof value === "string" ? value : (value?.value.toString() ?? "")
         dispatch(setLoadCaseId({ index, value: newValue }))
-        
+
         // If this is the last pair and both fields will have values, add a new pair
         setTimeout(() => {
             if (index === loadCaseFactorPairs.length - 1 && newValue && loadCaseFactorPairs[index].factor) {
@@ -108,7 +105,7 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
         const val = event.target.value
         if (val === "" || /^-?\d*(\.\d*)?$/.test(val)) {
             dispatch(setFactor({ index, value: val }))
-            
+
             // If this is the last pair and both fields will have values, add a new pair
             setTimeout(() => {
                 if (index === loadCaseFactorPairs.length - 1 && val && loadCaseFactorPairs[index].loadCaseId) {
@@ -120,13 +117,13 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
 
     const handleCreateLoadCombinationFunc = useCallback(async () => {
         // Filter out empty pairs and convert to loadCaseFactors object
-        const loadCaseFactors: { [key: string]: number } = {}
+        const loadCaseFactors: Record<string, number> = {}
         for (const pair of loadCaseFactorPairs) {
             if (pair.loadCaseId && pair.factor) {
                 loadCaseFactors[pair.loadCaseId] = parseFloat(pair.factor)
             }
         }
-        
+
         await handleCreateLoadCombination(
             apiClient,
             dispatch,
@@ -181,9 +178,9 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 Load Case Factors
             </Typography>
-            
+
             {loadCaseFactorPairs.map((pair, index) => (
-                <MuiBox key={index} sx={{ mb: 2 }}>
+                <MuiBox key={index} sx={{ mb: 2, display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'flex-end' }}>
                     <Autocomplete
                         options={loadCaseIds}
                         getOptionLabel={(option: string | LoadCaseIdOption) =>
@@ -200,7 +197,7 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
                             _event,
                             newValue: string | LoadCaseIdOption | null
                         ) => {
-                            const value = typeof newValue === "string" ? newValue : (newValue?.value?.toString() ?? "")
+                            const value = typeof newValue === "string" ? newValue : (newValue?.value.toString() ?? "")
                             dispatch(setLoadCaseId({ index, value }))
                         }}
                         renderInput={params => (
@@ -212,15 +209,22 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
                             />
                         )}
                         freeSolo
-                        sx={{ mb: 1 }}
+                        sx={{ flex: 1 }}
                     />
                     <TextField
                         label="Factor*"
                         value={pair.factor}
-                        onChange={handleFactorChange(index)}
+                        onChange={e => {
+                            // Only allow up to 3 decimal places
+                            const val = e.target.value
+                            if (val === '' || /^-?\d*(\.\d{0,3})?$/.test(val)) {
+                                handleFactorChange(index)(e as React.ChangeEvent<HTMLInputElement>)
+                            }
+                        }}
                         variant="outlined"
                         size="small"
-                        fullWidth
+                        sx={{ width: 90 }}
+                        slotProps={{ htmlInput: { step: 0.001, min: -999, max: 999 } }}
                     />
                 </MuiBox>
             ))}
