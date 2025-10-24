@@ -27,6 +27,7 @@ import {
   LengthUnit,
   PressureUnit,
 } from "../../../../utils/type-extensions/UnitTypeContracts"
+import { COORDINATE_PRECISION_MULTIPLIER } from "../SelectionInfo"
 
 type MaterialIdOption = {
   label: string
@@ -76,17 +77,20 @@ export const MaterialSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     } else {
       const material = modelResponse?.materials[materialId]
       if (material) {
+        const roundedE = Math.round(material.modulusOfElasticity * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+        const roundedG = Math.round(material.modulusOfRigidity * COORDINATE_PRECISION_MULTIPLIER) / COORDINATE_PRECISION_MULTIPLIER
+
         dispatch(setMaterialIdInput(materialId.toString()))
         dispatch(
           setMaterialProperty({
             key: "modulusOfElasticity",
-            value: material.modulusOfElasticity.toString(),
+            value: roundedE.toString(),
           }),
         )
         dispatch(
           setMaterialProperty({
             key: "modulusOfRigidity",
-            value: material.modulusOfRigidity.toString(),
+            value: roundedG.toString(),
           }),
         )
       }
