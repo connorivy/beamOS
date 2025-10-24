@@ -26,6 +26,9 @@ import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSele
 import { MomentLoadSelectionInfo } from "./momentLoad/MomentLoadSelectionInfo"
 import { Element1dSelectionInfo } from "./element1d/Element1dSelectionInfo"
 import { PointLoadSelectionInfo } from "./pointLoad/PointLoadSelectionInfo"
+import { setElement1dId } from "./element1d/element1dSelectionSlice"
+import { setPointLoadId } from "./pointLoad/pointLoadSelectionSlice"
+import { setMomentLoadId } from "./momentLoad/momentLoadSelectionSlice"
 
 // Precision for rounding coordinate values to avoid floating point precision issues
 // Using 1e4 allows for 4 decimal places of precision
@@ -99,6 +102,18 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
     else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Node) {
       setSelectedType("nodes")
       dispatch(setNodeId(editorState.selection[0].id))
+    }
+    else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Element1d) {
+      setSelectedType("element1ds")
+      dispatch(setElement1dId(editorState.selection[0].id))
+    }
+    else if (editorState?.selection.length == 1 && editorState.selection[0].objectType == BeamOsObjectTypes.PointLoad) {
+      setSelectedType("pointloads")
+      dispatch(setPointLoadId(editorState.selection[0].id))
+    }
+    else if (editorState?.selection.length == 1 && editorState.selection[0].objectType == BeamOsObjectTypes.MomentLoad) {
+      setSelectedType("momentloads")
+      dispatch(setMomentLoadId(editorState.selection[0].id))
     }
   }, [canvasId, dispatch, editorState?.selection])
 
