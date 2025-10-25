@@ -336,6 +336,36 @@ export const editorsSlice = createAppSlice({
           action.payload.loadCase
       },
     ),
+    modifyLoadCase: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCaseId: number
+          loadCase: LoadCase
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const lc =
+          action.payload.loadCaseId in editor.model.loadCases
+            ? editor.model.loadCases[action.payload.loadCaseId]
+            : null
+        if (!lc) {
+          throw new Error(
+            `LoadCase with id ${action.payload.loadCaseId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        lc.name = action.payload.loadCase.name
+      },
+    ),
     removeLoadCaseById: create.reducer(
       (
         state,
@@ -743,6 +773,7 @@ export const {
   modifyNode,
   removeNodeById,
   createLoadCase,
+  modifyLoadCase,
   removeLoadCaseById,
   createPointLoad,
   modifyPointLoad,

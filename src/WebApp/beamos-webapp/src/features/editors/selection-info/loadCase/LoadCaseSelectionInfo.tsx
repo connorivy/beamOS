@@ -18,6 +18,7 @@ import {
 import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { handleCreateLoadCase } from "./handleCreateLoadCase"
+import { handleModifyLoadCase } from "./handleModifyLoadCase"
 
 type LoadCaseIdOption = {
     label: string;
@@ -41,6 +42,19 @@ export const LoadCaseSelectionInfo = ({ canvasId }: { canvasId: string }) => {
         { label: "New Load Case", value: null },
         ...Object.keys(modelResponse?.loadCases ?? {}).map(id => ({ label: id, value: Number(id) }))
     ]
+
+    const handleModifyLoadCaseFunc = useCallback(async () => {
+        if (typeof loadCaseId === "number" && !isNaN(loadCaseId)) {
+            await handleModifyLoadCase(
+                apiClient,
+                dispatch,
+                loadCaseId,
+                name,
+                editorState,
+                canvasId
+            );
+        }
+    }, [apiClient, canvasId, dispatch, editorState, loadCaseId, name])
 
     const resetInput = useCallback(() => {
         dispatch(setLoadCaseIdInput(""))
@@ -105,11 +119,11 @@ export const LoadCaseSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                     newValue: string | LoadCaseIdOption | null
                 ) => {
                     if (typeof newValue === "string") {
-                        dispatch(setLoadCaseId(null))
-                        dispatch(setLoadCaseIdInput(newValue))
+                        dispatch(setLoadCaseId(null));
+                        dispatch(setLoadCaseIdInput(newValue));
                     } else {
-                        dispatch(setLoadCaseId(newValue?.value ?? null))
-                        dispatch(setLoadCaseIdInput(newValue?.label ?? ""))
+                        dispatch(setLoadCaseId(newValue?.value ?? null));
+                        dispatch(setLoadCaseIdInput(newValue?.label ?? ""));
                     }
                 }}
                 renderInput={params => (
@@ -136,9 +150,15 @@ export const LoadCaseSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 sx={{ mb: 2 }}
             />
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateLoadCaseFunc(); }}>
-                CREATE
-            </Button>
+            {loadCaseId === null ? (
+                <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateLoadCaseFunc(); }}>
+                    CREATE
+                </Button>
+            ) : (
+                <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleModifyLoadCaseFunc(); }}>
+                    APPLY
+                </Button>
+            )}
         </MuiBox>
     )
 }

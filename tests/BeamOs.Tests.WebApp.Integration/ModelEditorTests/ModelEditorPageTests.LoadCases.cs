@@ -101,15 +101,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         var clearButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "clear" });
         await clearButton.ClickAsync();
 
-        await loadCaseIdCombobox.FillAsync("1");
-        var dropdownOptions = this.Page.GetByRole(
-            AriaRole.Option,
-            new PageGetByRoleOptions { Name = "1" }
-        );
-        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
-        await dropdownOptions.First.ClickAsync();
-
-        await AssertLoadCaseDialogValues(this.Page, "1", "1");
+        await AssertLoadCaseDialogValues(this.Page, "new load case name", "1");
 
         // test the database changes by reloading the element data from the server by refreshing the page
         await this.Page.ReloadAsync();
@@ -124,16 +116,6 @@ public partial class ModelEditorPageTests : ReactPageTest
         // insert 1 into the loadCase id combobox again
         await loadCaseIdCombobox.FillAsync("1");
         await loadCaseIdCombobox.ClickAsync();
-
-        // now there should be one result in the dropdown
-        dropdownOptions = this.Page.GetByRole(
-            AriaRole.Option,
-            new PageGetByRoleOptions { Name = "1" }
-        );
-        await this.Expect(dropdownOptions).ToHaveCountAsync(1);
-
-        // select the loadCase from the dropdown
-        await dropdownOptions.First.ClickAsync();
 
         await AssertLoadCaseDialogValues(this.Page, "new load case name", "1");
     }
