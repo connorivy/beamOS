@@ -73,8 +73,10 @@ export class Raycaster {
     if (this.raycastInfo.currentlyRaycasted) {
       const sceneObj = this.scene.getObjectById(
         this.raycastInfo.currentlyRaycasted.id,
-      ) as THREE.Mesh
-      sceneObj.material = this.raycastInfo.currentlyRaycasted.material
+      )
+      if (sceneObj instanceof THREE.Mesh) {
+        sceneObj.material = this.raycastInfo.currentlyRaycasted.material
+      }
     }
     this.raycastInfo.currentlyRaycasted = undefined
   }
