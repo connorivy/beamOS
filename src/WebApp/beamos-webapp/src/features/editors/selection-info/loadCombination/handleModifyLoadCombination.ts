@@ -49,21 +49,21 @@ export async function handleModifyLoadCombination(
     createLoadCombination({
       canvasId,
       loadCombination: optimisticLoadCombination,
-    })
+    }),
   )
 
   try {
     const realLoadCombinationResponse = await apiClient.putLoadCombination(
       editorState.remoteModelId,
       loadCombinationId,
-      updateLoadCombinationRequest
+      updateLoadCombinationRequest,
     )
     // Replace with real response
     dispatch(
       createLoadCombination({
         canvasId,
         loadCombination: realLoadCombinationResponse,
-      })
+      }),
     )
   } catch (error) {
     console.error("Failed to modify load combination:", error)
