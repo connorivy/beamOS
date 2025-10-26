@@ -14,13 +14,15 @@ export async function handleCreateLoadCombination(
   apiClient: IStructuralAnalysisApiClientV1,
   dispatch: Dispatch<Action>,
   loadCombinationIdInput: string,
-  loadCaseFactors: { [key: string]: number },
+  loadCaseFactors: Record<string, number>,
   editorState: EditorState,
   canvasId: string,
 ) {
   // Validate input
   if (loadCombinationIdInput || loadCombinationIdInput !== "") {
-    console.error("Load Combination ID cannot be specified for new load combination")
+    console.error(
+      "Load Combination ID cannot be specified for new load combination",
+    )
     return
   }
   if (Object.keys(loadCaseFactors).length === 0) {
@@ -55,7 +57,12 @@ export async function handleCreateLoadCombination(
   }
 
   // Optimistically update the store
-  dispatch(createLoadCombination({ canvasId, loadCombination: loadCombinationResponse }))
+  dispatch(
+    createLoadCombination({
+      canvasId,
+      loadCombination: loadCombinationResponse,
+    }),
+  )
 
   try {
     const realLoadCombinationResponse = await createLoadCombinationPromise
@@ -64,8 +71,15 @@ export async function handleCreateLoadCombination(
     console.log(
       `Real load combination response received: ${JSON.stringify(realLoadCombinationResponse)}`,
     )
-    dispatch(removeLoadCombinationById({ canvasId, loadCombinationId: uniqueTempId }))
-    dispatch(createLoadCombination({ canvasId, loadCombination: realLoadCombinationResponse }))
+    dispatch(
+      removeLoadCombinationById({ canvasId, loadCombinationId: uniqueTempId }),
+    )
+    dispatch(
+      createLoadCombination({
+        canvasId,
+        loadCombination: realLoadCombinationResponse,
+      }),
+    )
   } catch (error) {
     console.error("Failed to create load combination:", error)
     // Optionally, you might want to implement rollback logic here

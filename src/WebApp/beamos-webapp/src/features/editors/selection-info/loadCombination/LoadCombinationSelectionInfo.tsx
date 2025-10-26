@@ -179,55 +179,73 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
                 Load Case Factors
             </Typography>
 
-            {loadCaseFactorPairs.map((pair, index) => (
-                <MuiBox key={index} sx={{ mb: 2, display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'flex-end' }}>
-                    <Autocomplete
-                        options={loadCaseIds}
-                        getOptionLabel={(option: string | LoadCaseIdOption) =>
-                            typeof option === "string" ? option : option.label
-                        }
-                        value={
-                            loadCaseIds.find(
-                                lc => typeof lc !== "string" && lc.value.toString() === pair.loadCaseId
-                            ) ?? null
-                        }
-                        inputValue={pair.loadCaseId}
-                        onInputChange={handleLoadCaseIdChange(index)}
-                        onChange={(
-                            _event,
-                            newValue: string | LoadCaseIdOption | null
-                        ) => {
-                            const value = typeof newValue === "string" ? newValue : (newValue?.value.toString() ?? "")
-                            dispatch(setLoadCaseId({ index, value }))
-                        }}
-                        renderInput={params => (
-                            <TextField
-                                {...params}
-                                label="Load Case"
-                                variant="outlined"
-                                size="small"
-                            />
-                        )}
-                        freeSolo
-                        sx={{ flex: 1 }}
-                    />
-                    <TextField
-                        label="Factor*"
-                        value={pair.factor}
-                        onChange={e => {
-                            // Only allow up to 3 decimal places
-                            const val = e.target.value
-                            if (val === '' || /^-?\d*(\.\d{0,3})?$/.test(val)) {
-                                handleFactorChange(index)(e as React.ChangeEvent<HTMLInputElement>)
+            {loadCaseFactorPairs.map((pair, index) => {
+                // Collect all selected loadCaseIds except for the current one
+                const selectedIds = loadCaseFactorPairs
+                    .map((p, i) => i !== index ? p.loadCaseId : null)
+                    .filter(id => id)
+                // Filter options to exclude already selected IDs except for the current value
+                const availableLoadCaseIds = loadCaseIds.filter(opt =>
+                    !selectedIds.includes(opt.value.toString()) || opt.value.toString() === pair.loadCaseId
+                )
+                const noRemaining = availableLoadCaseIds.length === 0
+                return (
+                    <MuiBox key={index} sx={{ mb: 2, display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'flex-end' }}>
+                        <Autocomplete
+                            options={noRemaining ? [{ label: 'No remaining load cases', value: -1 }] : availableLoadCaseIds}
+                            getOptionLabel={(option: string | LoadCaseIdOption) =>
+                                typeof option === "string"
+                                    ? option
+                                    : option.label
                             }
-                        }}
-                        variant="outlined"
-                        size="small"
-                        sx={{ width: 90 }}
-                        slotProps={{ htmlInput: { step: 0.001, min: -999, max: 999 } }}
-                    />
-                </MuiBox>
-            ))}
+                            value={
+                                noRemaining
+                                    ? { label: 'No remaining load cases', value: -1 }
+                                    : availableLoadCaseIds.find(
+                                        lc => typeof lc !== "string" && lc.value.toString() === pair.loadCaseId
+                                    ) ?? null
+                            }
+                            inputValue={noRemaining ? 'No remaining load cases' : pair.loadCaseId}
+                            onInputChange={noRemaining ? undefined : handleLoadCaseIdChange(index)}
+                            onChange={noRemaining ? undefined : (
+                                _event,
+                                newValue: string | LoadCaseIdOption | null
+                            ) => {
+                                const value = typeof newValue === "string" ? newValue : (newValue?.value.toString() ?? "")
+                                dispatch(setLoadCaseId({ index, value }))
+                            }}
+                            renderInput={params => (
+                                <TextField
+                                    {...params}
+                                    label="Load Case"
+                                    variant="outlined"
+                                    size="small"
+                                    disabled={noRemaining}
+                                />
+                            )}
+                            freeSolo
+                            sx={{ flex: 1 }}
+                            disabled={noRemaining}
+                        />
+                        <TextField
+                            label="Factor*"
+                            value={pair.factor}
+                            onChange={e => {
+                                // Only allow up to 3 decimal places
+                                const val = e.target.value
+                                if (val === '' || /^-?\d*(\.\d{0,3})?$/.test(val)) {
+                                    handleFactorChange(index)(e as React.ChangeEvent<HTMLInputElement>)
+                                }
+                            }}
+                            variant="outlined"
+                            size="small"
+                            sx={{ width: 90 }}
+                            slotProps={{ htmlInput: { step: 0.001, min: -999, max: 999 } }}
+                            disabled={noRemaining}
+                        />
+                    </MuiBox>
+                )
+            })}
 
             <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateLoadCombinationFunc(); }}>
                 CREATE
