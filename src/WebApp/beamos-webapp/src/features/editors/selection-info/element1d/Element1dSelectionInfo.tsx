@@ -26,6 +26,8 @@ import {
 import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { handleCreateElement1d } from "./handleCreateElement1d"
+import { handleModifyElement1d } from "./handleModifyElement1d"
+import { useEditors } from "../../EditorContext"
 
 type Element1dIdOption = {
     label: string;
@@ -49,6 +51,7 @@ export const Element1dSelectionInfo = ({ canvasId }: { canvasId: string }) => {
     )
     const apiClient = useApiClient()
     const editorState = useAppSelector(state => state.editors[canvasId])
+    const editor = useEditors()[canvasId]
     const element1dIds: Element1dIdOption[] = [
         { label: "New Element1d", value: null },
         ...Object.keys(modelResponse?.element1ds ?? {}).map(id => ({ label: id, value: Number(id) }))
@@ -133,11 +136,27 @@ export const Element1dSelectionInfo = ({ canvasId }: { canvasId: string }) => {
             materialId,
             sectionProfileId,
             sectionProfileRotation,
+            editor,
             editorState,
             canvasId
         );
-    }, [apiClient, canvasId, dispatch, editorState, element1dIdInput, startNodeId, endNodeId, materialId, sectionProfileId, sectionProfileRotation])
+    }, [apiClient, dispatch, element1dIdInput, startNodeId, endNodeId, materialId, sectionProfileId, sectionProfileRotation, editor, editorState, canvasId])
 
+    const handleModifyElement1dFunc = useCallback(async () => {
+        await handleModifyElement1d(
+            apiClient,
+            dispatch,
+            element1dIdInput,
+            startNodeId,
+            endNodeId,
+            materialId,
+            sectionProfileId,
+            sectionProfileRotation,
+            editor,
+            editorState,
+            canvasId
+        );
+    }, [apiClient, dispatch, element1dIdInput, startNodeId, endNodeId, materialId, sectionProfileId, sectionProfileRotation, editor, editorState, canvasId])
     return (
         <MuiBox sx={{ px: 2, py: 2 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -239,9 +258,15 @@ export const Element1dSelectionInfo = ({ canvasId }: { canvasId: string }) => {
                 sx={{ mb: 2 }}
             />
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateElement1dFunc(); }}>
-                CREATE
-            </Button>
+            {element1dId === null ? (
+                <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateElement1dFunc(); }}>
+                    CREATE
+                </Button>
+            ) : (
+                <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleModifyElement1dFunc(); }}>
+                    APPLY
+                </Button>
+            )}
         </MuiBox>
     )
 }

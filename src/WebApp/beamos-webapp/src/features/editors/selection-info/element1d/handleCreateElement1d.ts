@@ -10,6 +10,7 @@ import {
   type EditorState,
 } from "../../editorsSlice"
 import { AngleUnit } from "../../../../utils/type-extensions/UnitTypeContracts"
+import type { BeamOsEditor } from "../../../three-js-editor/BeamOsEditor"
 
 export async function handleCreateElement1d(
   apiClient: IStructuralAnalysisApiClientV1,
@@ -20,6 +21,7 @@ export async function handleCreateElement1d(
   materialId: string,
   sectionProfileId: string,
   sectionProfileRotation: string,
+  editor: BeamOsEditor,
   editorState: EditorState,
   canvasId: string,
 ) {
@@ -29,7 +31,9 @@ export async function handleCreateElement1d(
     return
   }
   if (!startNodeId || !endNodeId || !materialId || !sectionProfileId) {
-    console.error("Start node ID, end node ID, material ID, and section profile ID are required")
+    console.error(
+      "Start node ID, end node ID, material ID, and section profile ID are required",
+    )
     return
   }
   if (!editorState.remoteModelId) {
@@ -48,10 +52,14 @@ export async function handleCreateElement1d(
     endNodeId: parseInt(endNodeId),
     materialId: parseInt(materialId),
     sectionProfileId: parseInt(sectionProfileId),
-    sectionProfileRotation: sectionProfileRotation ? {
-      value: parseFloat(sectionProfileRotation),
-      unit: editorState.model.settings.unitSettings.angleUnit ?? AngleUnit.Degree,
-    } : undefined,
+    sectionProfileRotation: sectionProfileRotation
+      ? {
+          value: parseFloat(sectionProfileRotation),
+          unit:
+            editorState.model.settings.unitSettings.angleUnit ??
+            AngleUnit.Degree,
+        }
+      : undefined,
   }
 
   // Call the API to create the element1d
@@ -71,11 +79,13 @@ export async function handleCreateElement1d(
     sectionProfileId: parseInt(sectionProfileId),
     sectionProfileRotation: createElement1dRequest.sectionProfileRotation ?? {
       value: 0,
-      unit: editorState.model.settings.unitSettings.angleUnit ?? AngleUnit.Degree,
+      unit:
+        editorState.model.settings.unitSettings.angleUnit ?? AngleUnit.Degree,
     },
   }
 
   // Optimistically update the store
+  await editor.api.createElement1d(element1dResponse)
   dispatch(createElement1d({ canvasId, element1d: element1dResponse }))
 
   try {
@@ -85,7 +95,9 @@ export async function handleCreateElement1d(
     console.log(
       `Real element1d response received: ${JSON.stringify(realElement1dResponse)}`,
     )
+    await editor.api.deleteElement1d({ canvasId, id: uniqueTempId })
     dispatch(removeElement1dById({ canvasId, element1dId: uniqueTempId }))
+    await editor.api.createElement1d(realElement1dResponse)
     dispatch(createElement1d({ canvasId, element1d: realElement1dResponse }))
   } catch (error) {
     console.error("Failed to create element1d:", error)

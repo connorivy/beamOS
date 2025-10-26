@@ -616,6 +616,43 @@ export const editorsSlice = createAppSlice({
         }
       },
     ),
+    modifyElement1d: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          element1dId: number
+          element1d: Element1dResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const el =
+          action.payload.element1dId in editor.model.element1ds
+            ? editor.model.element1ds[action.payload.element1dId]
+            : null
+        if (!el) {
+          throw new Error(
+            `Element1d with id ${action.payload.element1dId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        el.startNodeId = action.payload.element1d.startNodeId
+        el.endNodeId = action.payload.element1d.endNodeId
+        el.materialId = action.payload.element1d.materialId
+        el.sectionProfileId = action.payload.element1d.sectionProfileId
+        if ("sectionProfileRotation" in action.payload.element1d) {
+          el.sectionProfileRotation =
+            action.payload.element1d.sectionProfileRotation
+        }
+      },
+    ),
     removeElement1dById: create.reducer(
       (
         state,
@@ -786,6 +823,7 @@ export const {
   createMaterial,
   removeMaterialById,
   createElement1d,
+  modifyElement1d,
   removeElement1dById,
   createMomentLoad,
   modifyMomentLoad,
