@@ -105,8 +105,18 @@ export class BeamOsElement1d extends Line2 implements IBeamOsMesh {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onNodeMoved(_event: unknown) {
+    // Remove this element from its parent (scene or group) and dispose resources
+    if (this.parent) {
+      this.parent.remove(this)
+      this.geometry.dispose()
+      if (typeof this.material.dispose === "function") {
+        this.material.dispose()
+      }
+    }
+    // Optionally, dispatch an event if needed (commented out since the element is removed)
     this.setPositions()
     this.dispatchEvent({ type: "moved" })
+    // If you want to trigger additional cleanup, do it here
   }
 
   setPositions() {

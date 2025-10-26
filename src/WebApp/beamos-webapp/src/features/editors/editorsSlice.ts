@@ -15,13 +15,19 @@ export type AppDependencies = {
   // Add undoManager or other dependencies here as needed
 }
 import type {
+  Element1dResponse,
   LoadCase,
+  LoadCombination,
   MaterialResponse,
+  MomentLoadResponse,
   ModelResponse,
   NodeResponse,
   PointLoadResponse,
   SectionProfileResponse,
   UpdateNodeRequest,
+  NodeData,
+  SectionProfileData,
+  MomentLoadData,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { ToModelState, type ModelState } from "./ModelState"
 
@@ -136,6 +142,52 @@ export const editorsSlice = createAppSlice({
         }
       },
     ),
+    modifyNode: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          nodeId: number
+          node: NodeData
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const node =
+          action.payload.nodeId in editor.model.nodes
+            ? editor.model.nodes[action.payload.nodeId]
+            : null
+        if (!node) {
+          throw new Error(
+            `Node with id ${action.payload.nodeId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        node.locationPoint.x = action.payload.node.locationPoint.x
+        node.locationPoint.y = action.payload.node.locationPoint.y
+        node.locationPoint.z = action.payload.node.locationPoint.z
+        node.locationPoint.lengthUnit =
+          action.payload.node.locationPoint.lengthUnit
+        node.restraint.canTranslateAlongX =
+          action.payload.node.restraint.canTranslateAlongX
+        node.restraint.canTranslateAlongY =
+          action.payload.node.restraint.canTranslateAlongY
+        node.restraint.canTranslateAlongZ =
+          action.payload.node.restraint.canTranslateAlongZ
+        node.restraint.canRotateAboutX =
+          action.payload.node.restraint.canRotateAboutX
+        node.restraint.canRotateAboutY =
+          action.payload.node.restraint.canRotateAboutY
+        node.restraint.canRotateAboutZ =
+          action.payload.node.restraint.canRotateAboutZ
+      },
+    ),
     removeNodeById: create.reducer(
       (
         state,
@@ -195,6 +247,51 @@ export const editorsSlice = createAppSlice({
         }
       },
     ),
+    modifySectionProfile: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          sectionProfileId: number
+          sectionProfile: SectionProfileData
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const sp =
+          action.payload.sectionProfileId in editor.model.sectionProfiles
+            ? editor.model.sectionProfiles[action.payload.sectionProfileId]
+            : null
+        if (!sp) {
+          throw new Error(
+            `SectionProfile with id ${action.payload.sectionProfileId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        sp.name = action.payload.sectionProfile.name
+        sp.area = action.payload.sectionProfile.area
+        sp.strongAxisMomentOfInertia =
+          action.payload.sectionProfile.strongAxisMomentOfInertia
+        sp.weakAxisMomentOfInertia =
+          action.payload.sectionProfile.weakAxisMomentOfInertia
+        sp.polarMomentOfInertia =
+          action.payload.sectionProfile.polarMomentOfInertia
+        sp.strongAxisPlasticSectionModulus =
+          action.payload.sectionProfile.strongAxisPlasticSectionModulus
+        sp.weakAxisPlasticSectionModulus =
+          action.payload.sectionProfile.weakAxisPlasticSectionModulus
+        sp.strongAxisShearArea =
+          action.payload.sectionProfile.strongAxisShearArea
+        sp.weakAxisShearArea = action.payload.sectionProfile.weakAxisShearArea
+        sp.lengthUnit = action.payload.sectionProfile.lengthUnit
+      },
+    ),
     removeSectionProfileById: create.reducer(
       (
         state,
@@ -237,6 +334,36 @@ export const editorsSlice = createAppSlice({
         }
         editor.model.loadCases[action.payload.loadCase.id] =
           action.payload.loadCase
+      },
+    ),
+    modifyLoadCase: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCaseId: number
+          loadCase: LoadCase
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const lc =
+          action.payload.loadCaseId in editor.model.loadCases
+            ? editor.model.loadCases[action.payload.loadCaseId]
+            : null
+        if (!lc) {
+          throw new Error(
+            `LoadCase with id ${action.payload.loadCaseId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        lc.name = action.payload.loadCase.name
       },
     ),
     removeLoadCaseById: create.reducer(
@@ -283,6 +410,39 @@ export const editorsSlice = createAppSlice({
           action.payload.pointLoad
       },
     ),
+    modifyPointLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          pointLoadId: number
+          pointLoad: PointLoadResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const pl =
+          action.payload.pointLoadId in editor.model.pointLoads
+            ? editor.model.pointLoads[action.payload.pointLoadId]
+            : null
+        if (!pl) {
+          throw new Error(
+            `PointLoad with id ${action.payload.pointLoadId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        pl.nodeId = action.payload.pointLoad.nodeId
+        pl.loadCaseId = action.payload.pointLoad.loadCaseId
+        pl.force = action.payload.pointLoad.force
+        pl.direction = action.payload.pointLoad.direction
+      },
+    ),
     removePointLoadById: create.reducer(
       (
         state,
@@ -304,6 +464,52 @@ export const editorsSlice = createAppSlice({
         const { [action.payload.pointLoadId]: _, ...restPointLoads } =
           editor.model.pointLoads
         editor.model.pointLoads = restPointLoads
+      },
+    ),
+    createLoadCombination: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCombination: LoadCombination
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.loadCombinations[action.payload.loadCombination.id] =
+          action.payload.loadCombination
+      },
+    ),
+    removeLoadCombinationById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          loadCombinationId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          [action.payload.loadCombinationId]: _,
+          ...restLoadCombinations
+        } = editor.model.loadCombinations
+        editor.model.loadCombinations = restLoadCombinations
       },
     ),
     createMaterial: create.reducer(
@@ -330,6 +536,38 @@ export const editorsSlice = createAppSlice({
         }
       },
     ),
+    modifyMaterial: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          materialId: number
+          material: MaterialResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const mat =
+          action.payload.materialId in editor.model.materials
+            ? editor.model.materials[action.payload.materialId]
+            : null
+        if (!mat) {
+          throw new Error(
+            `Material with id ${action.payload.materialId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        mat.modulusOfElasticity = action.payload.material.modulusOfElasticity
+        mat.modulusOfRigidity = action.payload.material.modulusOfRigidity
+        mat.pressureUnit = action.payload.material.pressureUnit
+      },
+    ),
     removeMaterialById: create.reducer(
       (
         state,
@@ -351,6 +589,169 @@ export const editorsSlice = createAppSlice({
         const { [action.payload.materialId]: _, ...restMaterials } =
           editor.model.materials
         editor.model.materials = restMaterials
+      },
+    ),
+    createElement1d: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          element1d: Element1dResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.element1ds[action.payload.element1d.id] = {
+          startNodeId: action.payload.element1d.startNodeId,
+          endNodeId: action.payload.element1d.endNodeId,
+          materialId: action.payload.element1d.materialId,
+          sectionProfileId: action.payload.element1d.sectionProfileId,
+        }
+      },
+    ),
+    modifyElement1d: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          element1dId: number
+          element1d: Element1dResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const el =
+          action.payload.element1dId in editor.model.element1ds
+            ? editor.model.element1ds[action.payload.element1dId]
+            : null
+        if (!el) {
+          throw new Error(
+            `Element1d with id ${action.payload.element1dId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        el.startNodeId = action.payload.element1d.startNodeId
+        el.endNodeId = action.payload.element1d.endNodeId
+        el.materialId = action.payload.element1d.materialId
+        el.sectionProfileId = action.payload.element1d.sectionProfileId
+        if ("sectionProfileRotation" in action.payload.element1d) {
+          el.sectionProfileRotation =
+            action.payload.element1d.sectionProfileRotation
+        }
+      },
+    ),
+    removeElement1dById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          element1dId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.element1dId]: _, ...restElement1ds } =
+          editor.model.element1ds
+        editor.model.element1ds = restElement1ds
+      },
+    ),
+    createMomentLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoad: MomentLoadResponse
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.momentLoads[action.payload.momentLoad.id] =
+          action.payload.momentLoad
+      },
+    ),
+    modifyMomentLoad: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoadId: number
+          momentLoad: MomentLoadData
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const ml =
+          action.payload.momentLoadId in editor.model.momentLoads
+            ? editor.model.momentLoads[action.payload.momentLoadId]
+            : null
+        if (!ml) {
+          throw new Error(
+            `MomentLoad with id ${action.payload.momentLoadId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+        // Update all fields according to MomentLoadData structure
+        ml.nodeId = action.payload.momentLoad.nodeId
+        ml.loadCaseId = action.payload.momentLoad.loadCaseId
+        ml.torque = { ...action.payload.momentLoad.torque }
+        ml.axisDirection = { ...action.payload.momentLoad.axisDirection }
+      },
+    ),
+    removeMomentLoadById: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          momentLoadId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.momentLoadId]: _, ...restMomentLoads } =
+          editor.model.momentLoads
+        editor.model.momentLoads = restMomentLoads
       },
     ),
     // moveNode: create.asyncThunk(
@@ -406,15 +807,27 @@ export const {
   removeEditor,
   objectSelectionChanged,
   createNode,
+  modifyNode,
   removeNodeById,
   createLoadCase,
+  modifyLoadCase,
   removeLoadCaseById,
   createPointLoad,
+  modifyPointLoad,
   removePointLoadById,
+  createLoadCombination,
+  removeLoadCombinationById,
   createSectionProfile,
+  modifySectionProfile,
   removeSectionProfileById,
   createMaterial,
   removeMaterialById,
+  createElement1d,
+  modifyElement1d,
+  removeElement1dById,
+  createMomentLoad,
+  modifyMomentLoad,
+  removeMomentLoadById,
   moveNode,
   modelLoaded,
 } = editorsSlice.actions

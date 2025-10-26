@@ -3,8 +3,10 @@ import type {
   Element1dResponse,
   InternalNodeData,
   LoadCase,
+  LoadCombination,
   MaterialData,
   MaterialResponse,
+  MomentLoadResponse,
   ModelResponse,
   ModelSettings,
   NodeData,
@@ -12,6 +14,9 @@ import type {
   PointLoadResponse,
   SectionProfileData,
   SectionProfileResponse,
+  MomentLoadData,
+  PointLoadData,
+  LoadCaseData,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 export type ModelState = {
@@ -25,8 +30,10 @@ export type ModelState = {
   element1ds: Record<number, Element1dData>
   materials: Record<number, MaterialData>
   sectionProfiles: Record<number, SectionProfileData>
-  loadCases: Record<number, LoadCase>
-  pointLoads: Record<number, PointLoadResponse>
+  loadCombinations: Record<number, LoadCombination>
+  loadCases: Record<number, LoadCaseData>
+  momentLoads: Record<number, MomentLoadData>
+  pointLoads: Record<number, PointLoadData>
 }
 
 export function NodeResponsesToDataMap(
@@ -52,6 +59,7 @@ export function Element1dResponsesToDataMap(
       endNodeId: element1d.endNodeId,
       materialId: element1d.materialId,
       sectionProfileId: element1d.sectionProfileId,
+      sectionProfileRotation: element1d.sectionProfileRotation,
     }
   }
   return element1dMap
@@ -104,6 +112,26 @@ export function LoadCasesToMap(
   return loadCaseMap
 }
 
+export function LoadCombinationsToMap(
+  loadCombinations: LoadCombination[],
+): Record<number, LoadCombination> {
+  const loadCombinationMap: Record<number, LoadCombination> = {}
+  for (const loadCombination of loadCombinations) {
+    loadCombinationMap[loadCombination.id] = loadCombination
+  }
+  return loadCombinationMap
+}
+
+export function MomentLoadsToMap(
+  momentLoads: MomentLoadResponse[],
+): Record<number, MomentLoadResponse> {
+  const momentLoadMap: Record<number, MomentLoadResponse> = {}
+  for (const momentLoad of momentLoads) {
+    momentLoadMap[momentLoad.id] = momentLoad
+  }
+  return momentLoadMap
+}
+
 export function PointLoadsToMap(
   pointLoads: PointLoadResponse[],
 ): Record<number, PointLoadResponse> {
@@ -129,6 +157,8 @@ export function ToModelState(model: ModelResponse): ModelState {
       model.sectionProfiles ?? [],
     ),
     loadCases: LoadCasesToMap(model.loadCases ?? []),
+    loadCombinations: LoadCombinationsToMap(model.loadCombinations ?? []),
+    momentLoads: MomentLoadsToMap(model.momentLoads ?? []),
     pointLoads: PointLoadsToMap(model.pointLoads ?? []),
   }
 }

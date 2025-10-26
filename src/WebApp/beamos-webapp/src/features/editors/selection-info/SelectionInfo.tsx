@@ -20,20 +20,20 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 import { selectEditorByCanvasId } from "../editorsSlice"
 import { setNodeId } from "./node/nodeSelectionSlice"
-import { Element1DSelectionInfo } from "./element1D/Element1DSelectionInfo"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
+import { LoadCombinationSelectionInfo } from "./loadCombination/LoadCombinationSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
+import { MomentLoadSelectionInfo } from "./momentLoad/MomentLoadSelectionInfo"
+import { Element1dSelectionInfo } from "./element1d/Element1dSelectionInfo"
 import { PointLoadSelectionInfo } from "./pointLoad/PointLoadSelectionInfo"
-const MomentLoads = () => (
-  <Typography variant="body1" color="grey.300">
-    MomentLoads Component (empty)
-  </Typography>
-)
-const LoadCombinations = () => (
-  <Typography variant="body1" color="grey.300">
-    LoadCombinations Component (empty)
-  </Typography>
-)
+import { setElement1dId } from "./element1d/element1dSelectionSlice"
+import { setPointLoadId } from "./pointLoad/pointLoadSelectionSlice"
+import { setMomentLoadId } from "./momentLoad/momentLoadSelectionSlice"
+
+// Precision for rounding coordinate values to avoid floating point precision issues
+// Using 1e4 allows for 4 decimal places of precision
+export const COORDINATE_PRECISION_MULTIPLIER = 1e4
+
 
 const elementTypes = [
   {
@@ -46,7 +46,7 @@ const elementTypes = [
     key: "element1ds",
     label: "Element1Ds",
     icon: <LinearScaleIcon sx={{ mr: 1 }} />,
-    component: Element1DSelectionInfo,
+    component: Element1dSelectionInfo,
   },
   {
     key: "materials",
@@ -73,7 +73,7 @@ const loadTypes = [
     key: "momentloads",
     label: "Moment Loads",
     icon: <ReplayIcon sx={{ mr: 1 }} />,
-    component: MomentLoads,
+    component: MomentLoadSelectionInfo,
   },
   {
     key: "loadcases",
@@ -85,7 +85,7 @@ const loadTypes = [
     key: "loadcombinations",
     label: "Load Combinations",
     icon: <FormatListNumberedIcon sx={{ mr: 1 }} />,
-    component: LoadCombinations,
+    component: LoadCombinationSelectionInfo,
   },
 ]
 
@@ -102,6 +102,18 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
     else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Node) {
       setSelectedType("nodes")
       dispatch(setNodeId(editorState.selection[0].id))
+    }
+    else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Element1d) {
+      setSelectedType("element1ds")
+      dispatch(setElement1dId(editorState.selection[0].id))
+    }
+    else if (editorState?.selection.length == 1 && editorState.selection[0].objectType == BeamOsObjectTypes.PointLoad) {
+      setSelectedType("pointloads")
+      dispatch(setPointLoadId(editorState.selection[0].id))
+    }
+    else if (editorState?.selection.length == 1 && editorState.selection[0].objectType == BeamOsObjectTypes.MomentLoad) {
+      setSelectedType("momentloads")
+      dispatch(setMomentLoadId(editorState.selection[0].id))
     }
   }, [canvasId, dispatch, editorState?.selection])
 
