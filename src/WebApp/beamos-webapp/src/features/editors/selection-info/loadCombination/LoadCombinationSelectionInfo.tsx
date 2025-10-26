@@ -21,6 +21,7 @@ import {
 import { selectModelResponseByCanvasId } from "../../editorsSlice"
 import { useApiClient } from "../../../api-client/ApiClientContext"
 import { handleCreateLoadCombination } from "./handleCreateLoadCombination"
+import { handleModifyLoadCombination } from "./handleModifyLoadCombination"
 
 type LoadCombinationIdOption = {
     label: string;
@@ -115,6 +116,7 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
         }
     }, [dispatch, loadCaseFactorPairs])
 
+
     const handleCreateLoadCombinationFunc = useCallback(async () => {
         // Filter out empty pairs and convert to loadCaseFactors object
         const loadCaseFactors: Record<string, number> = {}
@@ -133,6 +135,26 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
             canvasId
         );
     }, [apiClient, canvasId, dispatch, editorState, loadCombinationIdInput, loadCaseFactorPairs])
+
+    const handleModifyLoadCombinationFunc = useCallback(async () => {
+        // Filter out empty pairs and convert to loadCaseFactors object
+        const loadCaseFactors: Record<string, number> = {}
+        for (const pair of loadCaseFactorPairs) {
+            if (pair.loadCaseId && pair.factor) {
+                loadCaseFactors[pair.loadCaseId] = parseFloat(pair.factor)
+            }
+        }
+        if (loadCombinationId !== null) {
+            await handleModifyLoadCombination(
+                apiClient,
+                dispatch,
+                loadCombinationId,
+                loadCaseFactors,
+                editorState,
+                canvasId
+            );
+        }
+    }, [apiClient, canvasId, dispatch, editorState, loadCombinationId, loadCaseFactorPairs])
 
     return (
         <MuiBox sx={{ px: 2, py: 2 }}>
@@ -247,9 +269,15 @@ export const LoadCombinationSelectionInfo = ({ canvasId }: { canvasId: string })
                 )
             })}
 
-            <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateLoadCombinationFunc(); }}>
-                CREATE
-            </Button>
+            {loadCombinationId === null ? (
+                <Button variant="contained" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleCreateLoadCombinationFunc(); }}>
+                    CREATE
+                </Button>
+            ) : (
+                <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }} onClick={() => { void handleModifyLoadCombinationFunc(); }}>
+                    APPLY
+                </Button>
+            )}
         </MuiBox>
     )
 }

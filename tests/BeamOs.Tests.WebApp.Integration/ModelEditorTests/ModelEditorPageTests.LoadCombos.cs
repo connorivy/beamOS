@@ -128,7 +128,7 @@ public partial class ModelEditorPageTests : ReactPageTest
         // click the loadCombos tab in the sidebar again
         loadCombosTab = this.Page.GetByRole(
             AriaRole.Button,
-            new PageGetByRoleOptions { Name = "load case" }
+            new PageGetByRoleOptions { Name = "load comb" }
         );
         await loadCombosTab.ClickAsync();
 
