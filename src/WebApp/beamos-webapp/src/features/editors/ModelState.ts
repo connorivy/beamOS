@@ -20,6 +20,9 @@ import type {
   ForcesResponse,
   DisplacementsResponse,
   ResultSetResponse,
+  DeflectionDiagramResponse,
+  ShearDiagramResponse,
+  MomentDiagramResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 export type ModelState = {
@@ -37,11 +40,14 @@ export type ModelState = {
   loadCases: Record<number, LoadCaseData>
   momentLoads: Record<number, MomentLoadData>
   pointLoads: Record<number, PointLoadData>
-  resultSets: Record<number, ResultSetData>
+  resultSets: Partial<Record<number, ResultSetData>>
 }
 
 export type ResultSetData = {
   nodes: Record<number, NodeResultData>
+  shearDiagrams?: ShearDiagramResponse[] | null
+  momentDiagrams?: MomentDiagramResponse[] | null
+  deflectionDiagrams?: DeflectionDiagramResponse[] | null
 }
 
 export type NodeResultData = {

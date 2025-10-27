@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Box, Stack, Select, MenuItem, Button, FormControl, InputLabel, List, ListItem, ListItemIcon, ListItemText, ListItemButton, Typography } from '@mui/material';
+import { Box, Select, MenuItem, Button, List, ListItem, Typography, ListItemButton, ListItemIcon } from '@mui/material';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 // import LinearScaleIcon from '@mui/icons-material/LinearScale';
 // import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 // import LayersIcon from '@mui/icons-material/Layers';
@@ -11,27 +9,18 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 // import WarningIcon from '@mui/icons-material/Warning';
 // import SpeedIcon from '@mui/icons-material/Speed';
 // import GroupWorkIcon from '@mui/icons-material/GroupWork';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectModelResponseByCanvasId } from '../editors/editorsSlice';
 import type { ModelState } from '../editors/ModelState';
+import { handleViewDeflectionResults, handleViewMomentResults, handleViewShearResults } from './handleViewDeflectionResults';
+import { useApiClient } from '../api-client/ApiClientContext';
+import { useEditors } from '../editors/EditorContext';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
+import ReplayIcon from '@mui/icons-material/Replay';
 
 type ResultsInfoProps = {
     canvasId: string;
 };
-
-const resultTypes = [
-    // { label: 'Reactions', icon: <ArrowDownwardIcon sx={{ mr: 1 }} /> },
-    { label: 'Shear', icon: <SyncAltIcon sx={{ mr: 1 }} /> },
-    { label: 'Moment', icon: <TimelineIcon sx={{ mr: 1 }} /> },
-    // { label: 'Axial', icon: <LinearScaleIcon sx={{ mr: 1 }} /> },
-    // { label: 'Torsion', icon: <OpenWithIcon sx={{ mr: 1 }} /> },
-    { label: 'Deflection', icon: <TrendingUpIcon sx={{ mr: 1 }} /> },
-    // { label: 'Stress', icon: <FunctionsIcon sx={{ mr: 1 }} /> },
-    // { label: 'Plates', icon: <LayersIcon sx={{ mr: 1 }} /> },
-    // { label: 'Buckling', icon: <WarningIcon sx={{ mr: 1 }} /> },
-    // { label: 'Dynamic Frequency', icon: <SpeedIcon sx={{ mr: 1 }} /> },
-    // { label: 'Near-Node Member Forces', icon: <GroupWorkIcon sx={{ mr: 1 }} /> },
-];
 
 
 export function ResultsInfo({ canvasId }: ResultsInfoProps) {
@@ -42,11 +31,68 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
         modelState ? Object.keys(modelState.resultSets) : [],
         [modelState]
     );
+    const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
     const [selectedResultSet, setSelectedResultSet] = useState(resultSetIds[0] ?? '');
+    const apiClient = useApiClient()
+    const dispatch = useAppDispatch()
+    const editor = useEditors()[canvasId];
+    const editorState = useAppSelector(state => state.editors[canvasId])
 
-    const handleButtonClick = (type: string) => {
-        alert(`Clicked ${type}`);
-    };
+    const resultTypes = [
+        {
+            label: 'Shear',
+            icon: <SwapVertIcon sx={{ mr: 1 }} />,
+            onClick: () => {
+                void handleViewShearResults(
+                    apiClient,
+                    dispatch,
+                    Number(selectedResultSet),
+                    editor,
+                    editorState,
+                    modelState,
+                    canvasId
+                )
+            }
+        },
+        {
+            label: 'Moment',
+            icon: <ReplayIcon sx={{ mr: 1 }} />,
+            onClick: () => {
+                void handleViewMomentResults(
+                    apiClient,
+                    dispatch,
+                    Number(selectedResultSet),
+                    editor,
+                    editorState,
+                    modelState,
+                    canvasId
+                )
+            }
+        },
+        // { label: 'Axial', icon: <LinearScaleIcon sx={{ mr: 1 }} /> },
+        // { label: 'Torsion', icon: <OpenWithIcon sx={{ mr: 1 }} /> },
+        {
+            label: 'Deflection',
+            icon: <TimelineIcon sx={{ mr: 1 }} />,
+            onClick: () => {
+                void handleViewDeflectionResults(
+                    apiClient,
+                    dispatch,
+                    Number(selectedResultSet),
+                    editor,
+                    editorState,
+                    modelState,
+                    canvasId
+                )
+            }
+        },
+        // { label: 'Stress', icon: <FunctionsIcon sx={{ mr: 1 }} /> },
+        // { label: 'Plates', icon: <LayersIcon sx={{ mr: 1 }} /> },
+        // { label: 'Buckling', icon: <WarningIcon sx={{ mr: 1 }} /> },
+        // { label: 'Dynamic Frequency', icon: <SpeedIcon sx={{ mr: 1 }} /> },
+        // { label: 'Near-Node Member Forces', icon: <GroupWorkIcon sx={{ mr: 1 }} /> },
+    ];
+
 
     return (
         <Box sx={{ flex: 1, px: 2, overflowY: "auto" }}>
@@ -67,10 +113,10 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                 </Select>
             </div>
             <List>
-                {resultTypes.map(({ label, icon }) => (
+                {resultTypes.map(({ label, icon, onClick }) => (
                     <ListItem disablePadding key={label}>
-                        <Button
-                            startIcon={icon}
+                        <ListItemButton
+                            selected={selectedLabel === label}
                             sx={{
                                 color: "grey.100",
                                 justifyContent: "flex-start",
@@ -82,10 +128,19 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                                 bgcolor: "transparent",
                                 "&:hover": { bgcolor: "grey.900" },
                             }}
-                            onClick={() => { handleButtonClick(label); }}
+                            onClick={() => {
+                                if (selectedLabel === label) {
+                                    void editor.api.clearCurrentOverlay();
+                                    setSelectedLabel(null);
+                                    return;
+                                }
+                                setSelectedLabel(label);
+                                onClick();
+                            }}
                         >
+                            <ListItemIcon>{icon}</ListItemIcon>
                             {label}
-                        </Button>
+                        </ListItemButton>
                     </ListItem>
                 ))}
             </List>

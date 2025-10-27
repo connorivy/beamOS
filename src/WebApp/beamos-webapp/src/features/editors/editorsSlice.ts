@@ -28,6 +28,9 @@ import type {
   NodeData,
   SectionProfileData,
   MomentLoadData,
+  DeflectionDiagramResponse,
+  ShearDiagramResponse,
+  MomentDiagramResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { ToModelState, type ModelState } from "./ModelState"
 
@@ -754,6 +757,99 @@ export const editorsSlice = createAppSlice({
         editor.model.momentLoads = restMomentLoads
       },
     ),
+    addDeflectionDiagrams: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          deflectionResults: DeflectionDiagramResponse[]
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const resultSet =
+          action.payload.resultSetId in editor.model.resultSets
+            ? editor.model.resultSets[action.payload.resultSetId]
+            : null
+        if (!resultSet) {
+          throw new Error(
+            `ResultSet with id ${action.payload.resultSetId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+
+        resultSet.deflectionDiagrams = action.payload.deflectionResults
+      },
+    ),
+    addShearForceDiagrams: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          shearForceResults: ShearDiagramResponse[]
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const resultSet =
+          action.payload.resultSetId in editor.model.resultSets
+            ? editor.model.resultSets[action.payload.resultSetId]
+            : null
+        if (!resultSet) {
+          throw new Error(
+            `ResultSet with id ${action.payload.resultSetId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+
+        resultSet.shearDiagrams = action.payload.shearForceResults
+      },
+    ),
+    addMomentDiagrams: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          momentResults: MomentDiagramResponse[]
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const resultSet =
+          action.payload.resultSetId in editor.model.resultSets
+            ? editor.model.resultSets[action.payload.resultSetId]
+            : null
+        if (!resultSet) {
+          throw new Error(
+            `ResultSet with id ${action.payload.resultSetId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+
+        resultSet.momentDiagrams = action.payload.momentResults
+      },
+    ),
     // moveNode: create.asyncThunk(
     //   async (command: MoveNodeCommand, thunkAPI) => {
     //     // Use injected dependencies from extra
@@ -830,6 +926,10 @@ export const {
   removeMomentLoadById,
   moveNode,
   modelLoaded,
+  // analytical reducers
+  addDeflectionDiagrams,
+  addShearForceDiagrams,
+  addMomentDiagrams,
 } = editorsSlice.actions
 
 export const {
