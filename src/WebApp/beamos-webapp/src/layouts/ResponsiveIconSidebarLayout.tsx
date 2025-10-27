@@ -10,6 +10,7 @@ const drawerWidth = 220;
 
 import SelectionInfo from "../features/editors/selection-info/SelectionInfo";
 import { IconButton, Tooltip } from "@mui/material";
+import ResultsInfo from "../features/results-viewing/ResultsInfo";
 
 const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React.ReactNode }> = ({ canvasId, children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -40,6 +41,7 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
     // Sidebar content for each icon
     const sidebarContents: Record<string, React.ReactNode> = {
         physical: <SelectionInfo canvasId={canvasId} />,
+        analytical: <ResultsInfo canvasId={canvasId} />,
     };
 
     return (
