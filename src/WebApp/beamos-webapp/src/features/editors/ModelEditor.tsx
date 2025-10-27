@@ -1,9 +1,8 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { RemoteEditorComponent } from "./EditorComponent"
 import { useParams } from "react-router-dom"
-import AppBarMain from "../../components/AppBarMain"
-import SidebarMain from "../../components/SidebarMain"
-import SelectionInfo from "./selection-info/SelectionInfo"
+import { Toolbar } from "./toolbar/Toolbar"
+import ResponsiveIconSidebarLayout from "../../layouts/ResponsiveIconSidebarLayout"
 
 // Generates a unique id for the canvas element
 function generateUniqueId(prefix = "editor-canvas-") {
@@ -20,55 +19,47 @@ export enum PanelContent {
 
 const ModelEditor = () => {
   const canvasId = useRef(generateUniqueId()).current
-  // Get modelId from route params
   const { modelId } = useParams<{ modelId: string }>()
-  // (Panel content stack and lock state removed as unused)
-
-  // Sidebar state
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  // const theme = useTheme();
-  // const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
   if (!modelId) {
     // Handle error, show a message, or redirect
     return <div>Model ID is required.</div>
   }
 
-  // Panel navigation handlers
-  // const goBack = () => {
-  //     if (!panelContentLocked && panelContentStack.length > 0) {
-  //         setPanelContentStack(stack => stack.slice(0, -1));
-  //     }
-  // };
-
-  // Layout and rendering
-  // modelId will be used for child components and logic (see Blazor version)
   return (
-    <div
-      className="relative h-full w-full"
-      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-    >
-      <AppBarMain
-        onSidebarToggle={() => {
-          setSidebarOpen(true)
-        }}
-      />
-      <div style={{ display: "flex", flex: 1, position: "relative" }}>
-        <SidebarMain
-          open={sidebarOpen}
-          onClose={() => {
-            setSidebarOpen(false)
-          }}
-          drawerWidth={320}
-        >
-          <SelectionInfo canvasId={canvasId} />
-        </SidebarMain>
-        <div style={{ flex: 1, position: "relative" }}>
+    <>
+      <div className="flex flex-row w-full  h-full">
+        <div className="h-full w-full relative">
           <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
+          <div className="flex items-center justify-center absolute left-4 right-4 top-4">
+            <Toolbar canvasId={canvasId} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
 export default ModelEditor
+
+const ModelEditorPage = () => {
+  const canvasId = useRef(generateUniqueId()).current
+  const { modelId } = useParams<{ modelId: string }>()
+
+  if (!modelId) {
+    // Handle error, show a message, or redirect
+    return <div>Model ID is required.</div>
+  }
+
+  return (
+    <>
+      <div className="h-full w-full">
+        <ResponsiveIconSidebarLayout canvasId={canvasId}>
+          <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
+        </ResponsiveIconSidebarLayout>
+      </div>
+    </>
+  )
+}
+
+export { ModelEditorPage }

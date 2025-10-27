@@ -124,7 +124,7 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
     return (
       <Box
         sx={{
-          width: 320,
+          width: "100%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
