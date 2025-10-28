@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../BeamOs.StructuralAnalysis/BeamOs.StructuralAnalysis.Core.csproj" />
+    <ProjectReference Include="../BeamOs.StructuralAnalysis.Core/BeamOs.StructuralAnalysis.Core.csproj" />
     <ProjectReference Include="..\..\..\tests\BeamOs.Tests.Common\BeamOs.Tests.Common.csproj" />
     <ProjectReference Include="..\..\Ai\BeamOs.Ai\BeamOs.Ai.csproj" />
     <ProjectReference Include="..\..\Common\BeamOs.Common.Api\BeamOs.Common.Api.csproj" />

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Select, MenuItem, Button, List, ListItem, Typography, ListItemButton, ListItemIcon } from '@mui/material';
+import { Box, Select, MenuItem, List, ListItem, Typography, ListItemButton, ListItemIcon } from '@mui/material';
 import TimelineIcon from '@mui/icons-material/Timeline';
 // import LinearScaleIcon from '@mui/icons-material/LinearScale';
 // import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -92,7 +92,6 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
         // { label: 'Dynamic Frequency', icon: <SpeedIcon sx={{ mr: 1 }} /> },
         // { label: 'Near-Node Member Forces', icon: <GroupWorkIcon sx={{ mr: 1 }} /> },
     ];
-
 
     return (
         <Box sx={{ flex: 1, px: 2, overflowY: "auto" }}>
