@@ -56,7 +56,10 @@ export const element1dSelectionSlice = createSlice({
     },
   },
   selectors: {
-    element1dIdSelector: (state: Element1dSelectionState) => state.element1dId,
+    element1dIdSelector: (state: Element1dSelectionState) => {
+      console.log("element1dIdSelector called, returning:", state.element1dId)
+      return state.element1dId
+    },
     element1dIdInputSelector: (state: Element1dSelectionState) =>
       state.element1dIdInput,
     startNodeIdSelector: (state: Element1dSelectionState) => state.startNodeId,

@@ -10,7 +10,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 // import SpeedIcon from '@mui/icons-material/Speed';
 // import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectModelResponseByCanvasId } from '../editors/editorsSlice';
+import { selectModelResponseByCanvasId, selectSelectedResultSetId, setSelectedResultSetId } from '../editors/editorsSlice';
 import type { ModelState } from '../editors/ModelState';
 import { handleViewDeflectionResults, handleViewMomentResults, handleViewShearResults } from './handleViewDeflectionResults';
 import { useApiClient } from '../api-client/ApiClientContext';
@@ -31,10 +31,11 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
         modelState ? Object.keys(modelState.resultSets) : [],
         [modelState]
     );
-    const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-    const [selectedResultSet, setSelectedResultSet] = useState(resultSetIds[0] ?? '');
-    const apiClient = useApiClient()
     const dispatch = useAppDispatch()
+    dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: Number(resultSetIds[0]) }));
+    const selectedResultSetId = useAppSelector(state => selectSelectedResultSetId(state, canvasId));
+    const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
+    const apiClient = useApiClient()
     const editor = useEditors()[canvasId];
     const editorState = useAppSelector(state => state.editors[canvasId])
 
@@ -46,7 +47,7 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                 void handleViewShearResults(
                     apiClient,
                     dispatch,
-                    Number(selectedResultSet),
+                    selectedResultSetId,
                     editor,
                     editorState,
                     modelState,
@@ -61,7 +62,7 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                 void handleViewMomentResults(
                     apiClient,
                     dispatch,
-                    Number(selectedResultSet),
+                    selectedResultSetId,
                     editor,
                     editorState,
                     modelState,
@@ -78,7 +79,7 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                 void handleViewDeflectionResults(
                     apiClient,
                     dispatch,
-                    Number(selectedResultSet),
+                    selectedResultSetId,
                     editor,
                     editorState,
                     modelState,
@@ -101,9 +102,9 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
             <div className="px-3">
                 <Select
                     labelId="result-set-select-label"
-                    value={selectedResultSet}
+                    value={selectedResultSetId}
                     label="Result Set"
-                    onChange={e => { setSelectedResultSet(e.target.value); }}
+                    onChange={e => { dispatch(setSelectedResultSetId(e.target.value)); }}
                     sx={{ width: '100%' }}
                 >
                     {resultSetIds.map((id: string) => (

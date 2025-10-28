@@ -5,9 +5,15 @@ import { ModelEditorPage } from "./features/editors/ModelEditor"
 import TutorialPage from "./features/tutorial/TutorialPage"
 import type React from "react"
 import SettingsPage from "./features/settings/SettingsPage"
+import { Toaster } from "react-hot-toast"
 
 export const App = () => {
-  return <Routes>{GetAllRoutes()}</Routes>
+  return (
+    <>
+      <Toaster />
+      <Routes>{GetAllRoutes()}</Routes>
+    </>
+  )
 }
 
 export const GetAllRoutes = (): React.ReactElement[] => {

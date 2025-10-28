@@ -19,11 +19,11 @@ export const EditorComponent = ({
   const dispatch = useAppDispatch()
   const eventsApiRef = useRef<EventsApi | null>(null)
   const editors = useEditors()
-  eventsApiRef.current ??= new EventsApi(dispatch)
+  eventsApiRef.current ??= new EventsApi(canvasId, dispatch)
 
   // Register editor in Redux on mount, update on prop change, remove on unmount
   useEffect(() => {
-    dispatch(addEditor({ canvasId, isReadOnly, selection: null, model: null }))
+    dispatch(addEditor({ canvasId, isReadOnly, selection: null, selectedType: null, selectedResultSetId: null, model: null }))
     return () => {
       dispatch(removeEditor(canvasId))
     }

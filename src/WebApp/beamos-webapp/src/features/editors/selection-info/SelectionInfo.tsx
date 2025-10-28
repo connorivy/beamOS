@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import List from "@mui/material/List"
@@ -18,17 +17,13 @@ import { NodeSelectionInfo } from "./node/NodeSelectionInfo"
 import { MaterialSelectionInfo } from "./material/MaterialSelectionInfo"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { BeamOsObjectTypes } from "../../three-js-editor/EditorApi/EditorApiAlphaExtensions"
-import { selectEditorByCanvasId } from "../editorsSlice"
-import { setNodeId } from "./node/nodeSelectionSlice"
+import { selectSelectedType, setSelectedType } from "../editorsSlice"
 import { LoadCaseSelectionInfo } from "./loadCase/LoadCaseSelectionInfo"
 import { LoadCombinationSelectionInfo } from "./loadCombination/LoadCombinationSelectionInfo"
 import { SectionProfileSelectionInfo } from "./sectionProfile/SectionProfileSelectionInfo"
 import { MomentLoadSelectionInfo } from "./momentLoad/MomentLoadSelectionInfo"
 import { Element1dSelectionInfo } from "./element1d/Element1dSelectionInfo"
 import { PointLoadSelectionInfo } from "./pointLoad/PointLoadSelectionInfo"
-import { setElement1dId } from "./element1d/element1dSelectionSlice"
-import { setPointLoadId } from "./pointLoad/pointLoadSelectionSlice"
-import { setMomentLoadId } from "./momentLoad/momentLoadSelectionSlice"
 
 // Precision for rounding coordinate values to avoid floating point precision issues
 // Using 1e4 allows for 4 decimal places of precision
@@ -37,25 +32,25 @@ export const COORDINATE_PRECISION_MULTIPLIER = 1e4
 
 const elementTypes = [
   {
-    key: "nodes",
+    key: BeamOsObjectTypes.Node,
     label: "Nodes",
     icon: <CircleIcon sx={{ mr: 1 }} />,
     component: NodeSelectionInfo,
   },
   {
-    key: "element1ds",
+    key: BeamOsObjectTypes.Element1d,
     label: "Element1Ds",
     icon: <LinearScaleIcon sx={{ mr: 1 }} />,
     component: Element1dSelectionInfo,
   },
   {
-    key: "materials",
+    key: BeamOsObjectTypes.Material,
     label: "Materials",
     icon: <WindowIcon sx={{ mr: 1 }} />,
     component: MaterialSelectionInfo,
   },
   {
-    key: "sections",
+    key: BeamOsObjectTypes.SectionProfile,
     label: "Sections",
     icon: <TitleIcon sx={{ mr: 1 }} />,
     component: SectionProfileSelectionInfo,
@@ -64,25 +59,25 @@ const elementTypes = [
 
 const loadTypes = [
   {
-    key: "pointloads",
+    key: BeamOsObjectTypes.PointLoad,
     label: "Point Loads",
     icon: <ArrowDownwardIcon sx={{ mr: 1 }} />,
     component: PointLoadSelectionInfo,
   },
   {
-    key: "momentloads",
+    key: BeamOsObjectTypes.MomentLoad,
     label: "Moment Loads",
     icon: <ReplayIcon sx={{ mr: 1 }} />,
     component: MomentLoadSelectionInfo,
   },
   {
-    key: "loadcases",
+    key: BeamOsObjectTypes.LoadCase,
     label: "Load Cases",
     icon: <AssignmentIcon sx={{ mr: 1 }} />,
     component: LoadCaseSelectionInfo,
   },
   {
-    key: "loadcombinations",
+    key: BeamOsObjectTypes.LoadCombination,
     label: "Load Combinations",
     icon: <FormatListNumberedIcon sx={{ mr: 1 }} />,
     component: LoadCombinationSelectionInfo,
@@ -90,32 +85,8 @@ const loadTypes = [
 ]
 
 export default function SelectionInfo({ canvasId }: { canvasId: string }) {
-  const [selectedType, setSelectedType] = useState<string | null>(null)
-  const editorState = useAppSelector(state => selectEditorByCanvasId(state, canvasId))
   const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    if (editorState?.selection === null || editorState?.selection.length === 0) {
-      setSelectedType(null)
-      dispatch(setNodeId(null))
-    }
-    else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Node) {
-      setSelectedType("nodes")
-      dispatch(setNodeId(editorState.selection[0].id))
-    }
-    else if (editorState?.selection.length === 1 && editorState.selection[0].objectType == BeamOsObjectTypes.Element1d) {
-      setSelectedType("element1ds")
-      dispatch(setElement1dId(editorState.selection[0].id))
-    }
-    else if (editorState?.selection.length == 1 && editorState.selection[0].objectType == BeamOsObjectTypes.PointLoad) {
-      setSelectedType("pointloads")
-      dispatch(setPointLoadId(editorState.selection[0].id))
-    }
-    else if (editorState?.selection.length == 1 && editorState.selection[0].objectType == BeamOsObjectTypes.MomentLoad) {
-      setSelectedType("momentloads")
-      dispatch(setMomentLoadId(editorState.selection[0].id))
-    }
-  }, [canvasId, dispatch, editorState?.selection])
+  const selectedType = useAppSelector(state => selectSelectedType(state, canvasId))
 
   if (selectedType) {
     const SelectedComponent = [...elementTypes, ...loadTypes].find(
@@ -134,7 +105,7 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
         <Button
           variant="outlined"
           onClick={() => {
-            setSelectedType(null)
+            dispatch(setSelectedType({ canvasId, selectedType: null }))
           }}
           sx={{ m: 2 }}
         >
@@ -176,7 +147,7 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
                   "&:hover": { bgcolor: "grey.900" },
                 }}
                 onClick={() => {
-                  setSelectedType(e.key)
+                  dispatch(setSelectedType({ canvasId, selectedType: e.key }))
                 }}
               >
                 {e.label}
@@ -205,7 +176,7 @@ export default function SelectionInfo({ canvasId }: { canvasId: string }) {
                   "&:hover": { bgcolor: "grey.900" },
                 }}
                 onClick={() => {
-                  setSelectedType(e.key)
+                  dispatch(setSelectedType({ canvasId, selectedType: e.key }))
                 }}
               >
                 {e.label}
