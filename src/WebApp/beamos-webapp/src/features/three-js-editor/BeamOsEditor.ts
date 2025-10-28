@@ -97,6 +97,7 @@ export class BeamOsEditor {
     this.observer = new ResizeObserver(entries => {
       const width = entries[0].contentRect.width
       const height = entries[0].contentRect.height
+
       callback(width, height)
     })
     this.observer.observe(this.domElement)
@@ -144,6 +145,7 @@ export class BeamOsEditor {
 
   resizeCanvasToDisplaySize(width: number, height: number) {
     // you must pass false here or three.js sadly fights the browser
+    console.log("resizing to", width, height)
     this.renderer.setSize(width, height, false)
 
     if (this.camera.camera instanceof THREE.PerspectiveCamera) {

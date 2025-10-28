@@ -45,7 +45,8 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
     };
 
     return (
-        <div className="flex flex-col h-screen w-screen">
+        // <div className="flex flex-col h-screen w-screen">
+        <div className="flex flex-col h-full w-full">
             <AppBarMain />
             <div className="flex flex-row h-full w-full">
                 {/* Icon Sidebar with highlight and separator */}

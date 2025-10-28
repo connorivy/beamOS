@@ -1,8 +1,9 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { RemoteEditorComponent } from "./EditorComponent"
 import { useParams } from "react-router-dom"
-import { Toolbar } from "./toolbar/Toolbar"
 import ResponsiveIconSidebarLayout from "../../layouts/ResponsiveIconSidebarLayout"
+import ResponsiveSecondarySidebar from "../../components/ResponsiveSecondarySidebar"
+import ResultViewer from "../results-viewing/ResultViewer"
 
 // Generates a unique id for the canvas element
 function generateUniqueId(prefix = "editor-canvas-") {
@@ -17,34 +18,10 @@ export enum PanelContent {
   ModelRepairScenarioCreator,
 }
 
-const ModelEditor = () => {
-  const canvasId = useRef(generateUniqueId()).current
-  const { modelId } = useParams<{ modelId: string }>()
-
-  if (!modelId) {
-    // Handle error, show a message, or redirect
-    return <div>Model ID is required.</div>
-  }
-
-  return (
-    <>
-      <div className="flex flex-row w-full  h-full">
-        <div className="h-full w-full relative">
-          <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
-          <div className="flex items-center justify-center absolute left-4 right-4 top-4">
-            <Toolbar canvasId={canvasId} />
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-export default ModelEditor
-
 const ModelEditorPage = () => {
   const canvasId = useRef(generateUniqueId()).current
   const { modelId } = useParams<{ modelId: string }>()
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   if (!modelId) {
     // Handle error, show a message, or redirect
@@ -52,13 +29,14 @@ const ModelEditorPage = () => {
   }
 
   return (
-    <>
-      <div className="h-full w-full">
-        <ResponsiveIconSidebarLayout canvasId={canvasId}>
-          <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
-        </ResponsiveIconSidebarLayout>
-      </div>
-    </>
+    <div className="h-full w-full">
+      <ResponsiveIconSidebarLayout canvasId={canvasId}>
+        <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
+        <ResponsiveSecondarySidebar open={sidebarOpen} onOpen={() => { setSidebarOpen(true) }} onClose={() => { setSidebarOpen(false) }}>
+          <ResultViewer />
+        </ResponsiveSecondarySidebar>
+      </ResponsiveIconSidebarLayout>
+    </div>
   )
 }
 

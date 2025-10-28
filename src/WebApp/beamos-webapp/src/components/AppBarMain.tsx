@@ -26,7 +26,7 @@ export const AppBarMain = ({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"))
 
   return (
-    <AppBar position="static" sx={{ boxShadow: 0 }}>
+    <AppBar position="relative" sx={{ display: "flex", boxShadow: 0 }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           {isSmallScreen && onSidebarToggle && (
