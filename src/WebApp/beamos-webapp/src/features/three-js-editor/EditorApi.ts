@@ -354,7 +354,6 @@ export class EditorApi implements IEditorApiAlpha {
     return Promise.resolve(ResultFactory.Success())
   }
   createInternalNode(nodeResponse: InternalNode): Promise<Result> {
-    console.log("Creating internal node", nodeResponse)
     const element1d = this.getObjectByBeamOsUniqueId<BeamOsElement1d>(
       BeamOsElement1d.beamOsObjectType,
       nodeResponse.element1dId,

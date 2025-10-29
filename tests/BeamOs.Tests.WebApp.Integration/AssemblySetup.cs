@@ -5,6 +5,7 @@ using BeamOs.Tests.Common.Integration;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TUnit.Core;
 
 namespace BeamOs.Tests.WebApp.Integration;
 

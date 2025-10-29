@@ -91,10 +91,6 @@ export async function handleCreateElement1d(
   try {
     const realElement1dResponse = await createElement1dPromise
 
-    // remove the optimistically created element1d and replace with real one
-    console.log(
-      `Real element1d response received: ${JSON.stringify(realElement1dResponse)}`,
-    )
     await editor.api.deleteElement1d({ canvasId, id: uniqueTempId })
     dispatch(removeElement1dById({ canvasId, element1dId: uniqueTempId }))
     await editor.api.createElement1d(realElement1dResponse)

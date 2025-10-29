@@ -97,6 +97,7 @@ export class BeamOsEditor {
     this.observer = new ResizeObserver(entries => {
       const width = entries[0].contentRect.width
       const height = entries[0].contentRect.height
+
       callback(width, height)
     })
     this.observer.observe(this.domElement)

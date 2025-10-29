@@ -4,24 +4,24 @@ const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#5e6ad2", // Linear purple
+      main: "#5e6ad2",
       light: "#7c88e5",
       dark: "#4d58b8",
     },
     secondary: {
-      main: "#8b92d1", // Lighter purple accent
+      main: "#8b92d1",
       light: "#a4aade",
       dark: "#7279bf",
     },
     background: {
-      default: "#0d0d0d", // Very dark background like Linear
-      paper: "#1a1a1a", // Slightly lighter for cards/surfaces
+      default: "#0d0d0d",
+      paper: "#1a1a1a",
     },
     text: {
-      primary: "#e8eaed", // Softer white
-      secondary: "#9ca3af", // Muted gray for secondary text
+      primary: "#e8eaed",
+      secondary: "#9ca3af",
     },
-    divider: "#2a2a2a", // Subtle borders
+    divider: "#2a2a2a",
     action: {
       hover: "rgba(255, 255, 255, 0.05)",
       selected: "rgba(94, 106, 210, 0.12)",
@@ -63,18 +63,20 @@ const theme = createTheme({
         root: {
           backgroundColor: "#1a1a1a",
           borderBottom: "1px solid #2a2a2a",
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#1a1a1a",
-          border: "1px solid #2a2a2a",
           backgroundImage: "none",
+          "--Paper-overlay": "none",
         },
       },
     },
+    // MuiCard: {
+    //   styleOverrides: {
+    //     root: {
+    //       backgroundColor: "#1a1a1a",
+    //       border: "1px solid #2a2a2a",
+    //       backgroundImage: "none",
+    //     },
+    //   },
+    // },
     MuiButton: {
       styleOverrides: {
         root: {

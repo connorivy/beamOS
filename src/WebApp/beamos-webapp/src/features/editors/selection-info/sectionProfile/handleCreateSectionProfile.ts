@@ -21,16 +21,25 @@ export async function handleCreateSectionProfile(
 ) {
   // Validate input
   if (sectionProfileIdInput || sectionProfileIdInput !== "") {
-    console.error("Section Profile ID cannot be specified for new section profile")
+    console.error(
+      "Section Profile ID cannot be specified for new section profile",
+    )
     return
   }
   if (!properties.name) {
     console.error("Name is required")
     return
   }
-  if (!properties.area || !properties.strongAxisMomentOfInertia || !properties.weakAxisMomentOfInertia || 
-      !properties.polarMomentOfInertia || !properties.strongAxisPlasticSectionModulus || 
-      !properties.weakAxisPlasticSectionModulus || !properties.strongAxisShearArea || !properties.weakAxisShearArea) {
+  if (
+    !properties.area ||
+    !properties.strongAxisMomentOfInertia ||
+    !properties.weakAxisMomentOfInertia ||
+    !properties.polarMomentOfInertia ||
+    !properties.strongAxisPlasticSectionModulus ||
+    !properties.weakAxisPlasticSectionModulus ||
+    !properties.strongAxisShearArea ||
+    !properties.weakAxisShearArea
+  ) {
     console.error("All section profile properties are required")
     return
   }
@@ -53,8 +62,12 @@ export async function handleCreateSectionProfile(
     strongAxisMomentOfInertia: parseFloat(properties.strongAxisMomentOfInertia),
     weakAxisMomentOfInertia: parseFloat(properties.weakAxisMomentOfInertia),
     polarMomentOfInertia: parseFloat(properties.polarMomentOfInertia),
-    strongAxisPlasticSectionModulus: parseFloat(properties.strongAxisPlasticSectionModulus),
-    weakAxisPlasticSectionModulus: parseFloat(properties.weakAxisPlasticSectionModulus),
+    strongAxisPlasticSectionModulus: parseFloat(
+      properties.strongAxisPlasticSectionModulus,
+    ),
+    weakAxisPlasticSectionModulus: parseFloat(
+      properties.weakAxisPlasticSectionModulus,
+    ),
     strongAxisShearArea: parseFloat(properties.strongAxisShearArea),
     weakAxisShearArea: parseFloat(properties.weakAxisShearArea),
     lengthUnit: lengthUnit,
@@ -73,28 +86,38 @@ export async function handleCreateSectionProfile(
     modelId: editorState.remoteModelId,
     name: createSectionProfileRequest.name,
     area: createSectionProfileRequest.area,
-    strongAxisMomentOfInertia: createSectionProfileRequest.strongAxisMomentOfInertia,
-    weakAxisMomentOfInertia: createSectionProfileRequest.weakAxisMomentOfInertia,
+    strongAxisMomentOfInertia:
+      createSectionProfileRequest.strongAxisMomentOfInertia,
+    weakAxisMomentOfInertia:
+      createSectionProfileRequest.weakAxisMomentOfInertia,
     polarMomentOfInertia: createSectionProfileRequest.polarMomentOfInertia,
-    strongAxisPlasticSectionModulus: createSectionProfileRequest.strongAxisPlasticSectionModulus,
-    weakAxisPlasticSectionModulus: createSectionProfileRequest.weakAxisPlasticSectionModulus,
+    strongAxisPlasticSectionModulus:
+      createSectionProfileRequest.strongAxisPlasticSectionModulus,
+    weakAxisPlasticSectionModulus:
+      createSectionProfileRequest.weakAxisPlasticSectionModulus,
     strongAxisShearArea: createSectionProfileRequest.strongAxisShearArea,
     weakAxisShearArea: createSectionProfileRequest.weakAxisShearArea,
     lengthUnit: createSectionProfileRequest.lengthUnit,
   }
 
   // Optimistically update the store
-  dispatch(createSectionProfile({ canvasId, sectionProfile: sectionProfileResponse }))
+  dispatch(
+    createSectionProfile({ canvasId, sectionProfile: sectionProfileResponse }),
+  )
 
   try {
     const realSectionProfileResponse = await createSectionProfilePromise
 
     // remove the optimistically created section profile and replace with real one
-    console.log(
-      `Real section profile response received: ${JSON.stringify(realSectionProfileResponse)}`,
+    dispatch(
+      removeSectionProfileById({ canvasId, sectionProfileId: uniqueTempId }),
     )
-    dispatch(removeSectionProfileById({ canvasId, sectionProfileId: uniqueTempId }))
-    dispatch(createSectionProfile({ canvasId, sectionProfile: realSectionProfileResponse }))
+    dispatch(
+      createSectionProfile({
+        canvasId,
+        sectionProfile: realSectionProfileResponse,
+      }),
+    )
   } catch (error) {
     console.error("Failed to create section profile:", error)
     // Optionally, you might want to implement rollback logic here

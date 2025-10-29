@@ -68,9 +68,6 @@ export async function handleCreateLoadCombination(
     const realLoadCombinationResponse = await createLoadCombinationPromise
 
     // remove the optimistically created load combination and replace with real one
-    console.log(
-      `Real load combination response received: ${JSON.stringify(realLoadCombinationResponse)}`,
-    )
     dispatch(
       removeLoadCombinationById({ canvasId, loadCombinationId: uniqueTempId }),
     )

@@ -17,6 +17,12 @@ import type {
   MomentLoadData,
   PointLoadData,
   LoadCaseData,
+  ForcesResponse,
+  DisplacementsResponse,
+  ResultSetResponse,
+  DeflectionDiagramResponse,
+  ShearDiagramResponse,
+  MomentDiagramResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 export type ModelState = {
@@ -34,6 +40,19 @@ export type ModelState = {
   loadCases: Record<number, LoadCaseData>
   momentLoads: Record<number, MomentLoadData>
   pointLoads: Record<number, PointLoadData>
+  resultSets: Partial<Record<number, ResultSetData>>
+}
+
+export type ResultSetData = {
+  nodes: Record<number, NodeResultData>
+  shearDiagrams?: ShearDiagramResponse[] | null
+  momentDiagrams?: MomentDiagramResponse[] | null
+  deflectionDiagrams?: DeflectionDiagramResponse[] | null
+}
+
+export type NodeResultData = {
+  forces: ForcesResponse
+  displacements: DisplacementsResponse
 }
 
 export function NodeResponsesToDataMap(
@@ -142,6 +161,25 @@ export function PointLoadsToMap(
   return pointLoadMap
 }
 
+export function ResultSetsToMap(
+  resultSets: ResultSetResponse[],
+): Record<number, ResultSetData> {
+  const resultSetMap: Record<number, ResultSetData> = {}
+  for (const resultSet of resultSets) {
+    const nodes: Record<number, NodeResultData> = {}
+    for (const nodeResult of resultSet.nodeResults ?? []) {
+      nodes[nodeResult.nodeId] = {
+        forces: nodeResult.forces,
+        displacements: nodeResult.displacements,
+      }
+    }
+    resultSetMap[resultSet.id] = {
+      nodes: nodes,
+    }
+  }
+  return resultSetMap
+}
+
 export function ToModelState(model: ModelResponse): ModelState {
   return {
     id: model.id,
@@ -160,5 +198,6 @@ export function ToModelState(model: ModelResponse): ModelState {
     loadCombinations: LoadCombinationsToMap(model.loadCombinations ?? []),
     momentLoads: MomentLoadsToMap(model.momentLoads ?? []),
     pointLoads: PointLoadsToMap(model.pointLoads ?? []),
+    resultSets: ResultSetsToMap(model.resultSets ?? []),
   }
 }

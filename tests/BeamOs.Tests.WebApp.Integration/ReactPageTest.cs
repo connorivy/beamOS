@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using TUnit.Core;
 using TUnit.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration;

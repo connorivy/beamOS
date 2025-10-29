@@ -104,7 +104,6 @@ export class Controls {
   }
 
   onDraggingChanged(event: DragEvent) {
-    console.log(event)
     // this.controls.enabled = event.
   }
 

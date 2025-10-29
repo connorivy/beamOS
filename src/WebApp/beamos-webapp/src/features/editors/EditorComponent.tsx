@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useAppDispatch } from "../../app/hooks"
-import { addEditor, updateEditor, removeEditor, modelLoaded } from "./editorsSlice"
+import { addEditor, updateEditor, removeEditor, modelLoaded, addShearForceDiagrams, addDeflectionDiag, addDeflectionDiagramsrams, addMomentDiagrams, addDeflectionDiagrams, setSelectedResultSetId } from "./editorsSlice"
 import { BeamOsEditor } from "../three-js-editor/BeamOsEditor"
 import { EventsApi } from "./EventsApi"
 import { useApiClient } from "../api-client/ApiClientContext"
@@ -19,11 +19,11 @@ export const EditorComponent = ({
   const dispatch = useAppDispatch()
   const eventsApiRef = useRef<EventsApi | null>(null)
   const editors = useEditors()
-  eventsApiRef.current ??= new EventsApi(dispatch)
+  eventsApiRef.current ??= new EventsApi(canvasId, dispatch)
 
   // Register editor in Redux on mount, update on prop change, remove on unmount
   useEffect(() => {
-    dispatch(addEditor({ canvasId, isReadOnly, selection: null, model: null }))
+    dispatch(addEditor({ canvasId, isReadOnly, selection: null, selectedType: null, selectedResultSetId: null, model: null }))
     return () => {
       dispatch(removeEditor(canvasId))
     }
@@ -55,9 +55,10 @@ export const EditorComponent = ({
 
   return (
     <canvas
+      className="w-full h-full absolute"
       ref={canvasRef}
       id={canvasId}
-      style={{ width: "100%", height: "100%", display: "block" }}
+    // style={{ width: "100%", height: "100%", display: "absolute" }}
     />
   )
 }
@@ -83,6 +84,22 @@ export const RemoteEditorComponent = ({
       dispatch(modelLoaded({ canvasId, model: modelResponse, remoteModelId: modelId }))
       await editors[canvasId].api.setSettings(modelResponse.settings)
       await editors[canvasId].api.createModel(modelResponse)
+
+      if (modelResponse.resultSets && modelResponse.resultSets.length > 0) {
+        for (const resultSet of modelResponse.resultSets ?? []) {
+          const diagramResponse = await apiClient.getDiagrams(modelId, resultSet.id, "kn-m")
+          if (diagramResponse.shearDiagrams) {
+            dispatch(addShearForceDiagrams({ canvasId, resultSetId: resultSet.id, shearForceResults: diagramResponse.shearDiagrams }))
+          }
+          if (diagramResponse.momentDiagrams) {
+            dispatch(addMomentDiagrams({ canvasId, resultSetId: resultSet.id, momentResults: diagramResponse.momentDiagrams }))
+          }
+          if (diagramResponse.deflectionDiagrams) {
+            dispatch(addDeflectionDiagrams({ canvasId, resultSetId: resultSet.id, deflectionResults: diagramResponse.deflectionDiagrams }))
+          }
+        }
+        dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: modelResponse.resultSets[0].id }))
+      }
     }
     fetchModel().catch(console.error)
   }, [apiClient, canvasId, dispatch, editors, modelId])

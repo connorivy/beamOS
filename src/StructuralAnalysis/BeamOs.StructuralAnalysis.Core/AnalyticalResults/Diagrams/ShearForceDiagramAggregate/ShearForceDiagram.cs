@@ -53,24 +53,22 @@ internal class ShearForceDiagram : DiagramBase<ShearForceDiagramId, ShearDiagram
         LinearCoordinateDirection3D localShearDirection
     )
     {
-        Forces startForces =
-            new(
-                new(localMemberForces[0], forceUnit),
-                new(localMemberForces[1], forceUnit),
-                new(localMemberForces[2], forceUnit),
-                Torque.Zero,
-                Torque.Zero,
-                Torque.Zero
-            );
-        Forces endForces =
-            new(
-                new(localMemberForces[6], forceUnit),
-                new(localMemberForces[7], forceUnit),
-                new(localMemberForces[8], forceUnit),
-                Torque.Zero,
-                Torque.Zero,
-                Torque.Zero
-            );
+        Forces startForces = new(
+            new(localMemberForces[0], forceUnit),
+            new(localMemberForces[1], forceUnit),
+            new(localMemberForces[2], forceUnit),
+            Torque.Zero,
+            Torque.Zero,
+            Torque.Zero
+        );
+        Forces endForces = new(
+            new(localMemberForces[6], forceUnit),
+            new(localMemberForces[7], forceUnit),
+            new(localMemberForces[8], forceUnit),
+            Torque.Zero,
+            Torque.Zero,
+            Torque.Zero
+        );
 
         var localAxisDirection = localShearDirection switch
         {
@@ -127,7 +125,7 @@ internal class ShearForceDiagram : DiagramBase<ShearForceDiagramId, ShearDiagram
             diagramId
         )
         {
-            GlobalShearDirection = globalShearDirection
+            GlobalShearDirection = globalShearDirection,
         };
     }
 
