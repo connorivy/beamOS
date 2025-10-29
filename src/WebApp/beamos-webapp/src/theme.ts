@@ -68,15 +68,15 @@ const theme = createTheme({
         },
       },
     },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#1a1a1a",
-          border: "1px solid #2a2a2a",
-          backgroundImage: "none",
-        },
-      },
-    },
+    // MuiCard: {
+    //   styleOverrides: {
+    //     root: {
+    //       backgroundColor: "#1a1a1a",
+    //       border: "1px solid #2a2a2a",
+    //       backgroundImage: "none",
+    //     },
+    //   },
+    // },
     MuiButton: {
       styleOverrides: {
         root: {

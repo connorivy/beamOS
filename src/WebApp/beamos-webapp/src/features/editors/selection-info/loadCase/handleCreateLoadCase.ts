@@ -61,9 +61,6 @@ export async function handleCreateLoadCase(
     const realLoadCaseResponse = await createLoadCasePromise
 
     // remove the optimistically created load case and replace with real one
-    console.log(
-      `Real load case response received: ${JSON.stringify(realLoadCaseResponse)}`,
-    )
     dispatch(removeLoadCaseById({ canvasId, loadCaseId: uniqueTempId }))
     dispatch(createLoadCase({ canvasId, loadCase: realLoadCaseResponse }))
   } catch (error) {

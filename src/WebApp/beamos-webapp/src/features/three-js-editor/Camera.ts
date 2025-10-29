@@ -73,9 +73,6 @@ export class Camera {
       const lookAtTarget = position.clone().add(target.multiplyScalar(10))
       orthoCamera.lookAt(lookAtTarget)
 
-      console.log(
-        `Switched to orth camera with FOV: ${fov.toString()}, position: ${position.toArray().toString()}, up: ${up.toArray().toString()}, lookAt: ${lookAtTarget.toArray().toString()}`,
-      )
       target = lookAtTarget
       this.camera = orthoCamera
     } else if (this.camera instanceof THREE.OrthographicCamera) {
@@ -98,9 +95,6 @@ export class Camera {
       const lookAtTarget = position.clone().add(target.multiplyScalar(10))
 
       perspCamera.lookAt(lookAtTarget)
-      console.log(
-        `Switched to perspective camera with FOV: ${fov.toString()}, position: ${position.toArray().toString()}, up: ${up.toArray().toString()}, lookAt: ${lookAtTarget.toArray().toString()}`,
-      )
       target = lookAtTarget
       this.camera = perspCamera
     }

@@ -80,6 +80,17 @@ export const AngleUnit = {
   Radian: 2,
 }
 
+export function getAngleUnitLabel(unit: number): string {
+  switch (unit) {
+    case AngleUnit.Degree:
+      return "°"
+    case AngleUnit.Radian:
+      return "rad"
+    default:
+      throw new Error(`Unsupported angle unit: ${unit.toString()}`)
+  }
+}
+
 export const TorqueUnit = {
   Undefined: 0,
   KilonewtonCentimeter: 7,

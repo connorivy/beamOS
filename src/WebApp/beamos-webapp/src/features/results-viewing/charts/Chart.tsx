@@ -14,7 +14,6 @@ const verticalLinePlugin: ChartPlugin = {
         const color = chart.data.datasets[0].borderColor as string;
 
         const zeroColor = Math.abs(chart.scales.y.min) / (Math.abs(chart.scales.y.max - chart.scales.y.min))
-        console.log("Zero Color:", zeroColor);
         const gradient = chart.ctx.createLinearGradient(0, chart.chartArea.bottom, 0, chart.chartArea.top);
 
         gradient.addColorStop(0, color.replace(/[\d.]+\)$/g, '.5)'));

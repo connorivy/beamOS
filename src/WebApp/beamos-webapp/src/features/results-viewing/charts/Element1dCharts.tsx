@@ -22,9 +22,7 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
 
   // Chart creation and event listeners
   useEffect(() => {
-    console.log("Rendering Element1dResultCharts useEffect");
     if (!modelState || !element1dId || !currentResultSet) {
-      console.log("Missing modelState, element1dId, or currentResultSet");
       return
     }
     const lengthUnit = modelState.settings.unitSettings.lengthUnit
@@ -35,15 +33,12 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
     const momentDiagram = currentResultSet.momentDiagrams?.find(diagram => diagram.element1dId === element1dId)
     const deflectionDiagram = currentResultSet.deflectionDiagrams?.find(diagram => diagram.element1dId === element1dId)
     if (!shearDiagram) {
-      console.log("No shear diagram found");
       return
     }
     if (!momentDiagram) {
-      console.log("No moment diagram found");
       return
     }
     if (!deflectionDiagram) {
-      console.log("No deflection diagram found");
       return
     }
 
@@ -138,7 +133,6 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
       }
     }
 
-    console.log("evalPoints:", evalPoints);
     shearDiagramRef.current = <LineChartComponent
       xValues={evalPoints}
       yValues={shearValues}
