@@ -86,9 +86,6 @@ export async function handleCreateNode(
     const realNodeResponse = await createNodePromise
 
     // remove the optimistically created node and replace with real one
-    console.log(
-      `Real node response received: ${JSON.stringify(realNodeResponse)}`,
-    )
     await editor.api.createNode(realNodeResponse)
     await editor.api.deleteNode({
       id: uniqueTempId,

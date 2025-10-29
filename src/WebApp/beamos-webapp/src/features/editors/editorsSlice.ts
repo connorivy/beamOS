@@ -28,7 +28,11 @@ import type {
   NodeData,
   SectionProfileData,
   MomentLoadData,
+  DeflectionDiagramResponse,
+  ShearDiagramResponse,
+  MomentDiagramResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import type { NodeResultData } from "./ModelState"
 import { ToModelState, type ModelState } from "./ModelState"
 
 // Define the shape of the editor state for a single editor
@@ -37,6 +41,8 @@ export type EditorState = {
   remoteModelId?: string
   isReadOnly: boolean
   selection: SelectedObject[] | null
+  selectedType: number | null
+  selectedResultSetId: number | null
   model: ModelState | null
 }
 
@@ -49,6 +55,30 @@ export const editorsSlice = createAppSlice({
   name: "editors",
   initialState,
   reducers: create => ({
+    setSelectedType: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          selectedType: number | null
+        }>,
+      ) => {
+        state[action.payload.canvasId].selectedType =
+          action.payload.selectedType
+      },
+    ),
+    setSelectedResultSetId: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          selectedResultSetId: number | null
+        }>,
+      ) => {
+        state[action.payload.canvasId].selectedResultSetId =
+          action.payload.selectedResultSetId
+      },
+    ),
     addEditor: create.reducer((state, action: PayloadAction<EditorState>) => {
       state[action.payload.canvasId] = action.payload
     }),
@@ -140,6 +170,32 @@ export const editorsSlice = createAppSlice({
           locationPoint: action.payload.node.locationPoint,
           restraint: action.payload.node.restraint,
         }
+      },
+    ),
+    addNodeResults: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          nodeResults: Record<number, NodeResultData>
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const currentResults =
+          editor.model.resultSets[action.payload.resultSetId]
+        if (!currentResults) {
+          throw new Error("ResultSetData does not exist on model")
+        }
+        currentResults.nodes = action.payload.nodeResults
       },
     ),
     modifyNode: create.reducer(
@@ -754,6 +810,141 @@ export const editorsSlice = createAppSlice({
         editor.model.momentLoads = restMomentLoads
       },
     ),
+    clearResults: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          return
+        }
+        editor.model.resultSets = []
+      },
+    ),
+    addDeflectionDiagrams: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          deflectionResults: DeflectionDiagramResponse[]
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const resultSet =
+          action.payload.resultSetId in editor.model.resultSets
+            ? editor.model.resultSets[action.payload.resultSetId]
+            : null
+        if (!resultSet) {
+          throw new Error(
+            `ResultSet with id ${action.payload.resultSetId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+
+        resultSet.deflectionDiagrams = action.payload.deflectionResults
+      },
+    ),
+    addResultsSet: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.resultSets[action.payload.resultSetId] = {
+          nodes: [],
+          deflectionDiagrams: [],
+          shearDiagrams: [],
+          momentDiagrams: [],
+        }
+      },
+    ),
+    addShearForceDiagrams: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          shearForceResults: ShearDiagramResponse[]
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const resultSet =
+          action.payload.resultSetId in editor.model.resultSets
+            ? editor.model.resultSets[action.payload.resultSetId]
+            : null
+        if (!resultSet) {
+          throw new Error(
+            `ResultSet with id ${action.payload.resultSetId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+
+        resultSet.shearDiagrams = action.payload.shearForceResults
+      },
+    ),
+    addMomentDiagrams: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          momentResults: MomentDiagramResponse[]
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const resultSet =
+          action.payload.resultSetId in editor.model.resultSets
+            ? editor.model.resultSets[action.payload.resultSetId]
+            : null
+        if (!resultSet) {
+          throw new Error(
+            `ResultSet with id ${action.payload.resultSetId.toString()} does not exist in model for canvasId ${action.payload.canvasId}`,
+          )
+        }
+
+        resultSet.momentDiagrams = action.payload.momentResults
+      },
+    ),
     // moveNode: create.asyncThunk(
     //   async (command: MoveNodeCommand, thunkAPI) => {
     //     // Use injected dependencies from extra
@@ -790,6 +981,10 @@ export const editorsSlice = createAppSlice({
     //   },
   }),
   selectors: {
+    selectSelectedType: (state: EditorsState, canvasId: string) =>
+      canvasId in state ? state[canvasId].selectedType : null,
+    selectSelectedResultSetId: (state: EditorsState, canvasId: string) =>
+      canvasId in state ? state[canvasId].selectedResultSetId : null,
     selectEditorByCanvasId: (state: EditorsState, canvasId: string) =>
       canvasId in state ? state[canvasId] : null,
     selectModelResponseByCanvasId: (state: EditorsState, canvasId: string) =>
@@ -802,6 +997,8 @@ export const editorsSlice = createAppSlice({
 })
 
 export const {
+  setSelectedType,
+  setSelectedResultSetId,
   addEditor,
   updateEditor,
   removeEditor,
@@ -830,9 +1027,18 @@ export const {
   removeMomentLoadById,
   moveNode,
   modelLoaded,
+  // analytical reducers
+  addResultsSet,
+  addNodeResults,
+  clearResults,
+  addDeflectionDiagrams,
+  addShearForceDiagrams,
+  addMomentDiagrams,
 } = editorsSlice.actions
 
 export const {
+  selectSelectedType,
+  selectSelectedResultSetId,
   selectEditorByCanvasId,
   selectModelResponseByCanvasId,
   selectNodeById,

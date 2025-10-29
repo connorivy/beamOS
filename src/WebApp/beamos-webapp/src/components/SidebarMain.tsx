@@ -1,6 +1,5 @@
 import type React from "react"
 import Drawer from "@mui/material/Drawer"
-import Box from "@mui/material/Box"
 import useMediaQuery from "@mui/material/useMediaQuery"
 import { useTheme } from "@mui/material/styles"
 
@@ -31,19 +30,20 @@ const SidebarMain: React.FC<SidebarMainProps> = ({
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: drawerWidth,
-          boxSizing: "border-box",
-          ...(isLargeScreen
-            ? {
-                top: `${appBarHeightPx}px`,
-                height: `calc(100% - ${appBarHeightPx}px)`,
-              }
-            : {}),
-        },
+        backgroundColor: "background.paper",
+        // "& .MuiDrawer-paper": {
+        //   width: drawerWidth,
+        //   boxSizing: "border-box",
+        //   ...(isLargeScreen
+        //     ? {
+        //       top: `${appBarHeightPx}px`,
+        //       height: `calc(100% - ${appBarHeightPx}px)`,
+        //     }
+        //     : {}),
+        // },
       }}
     >
-      <Box sx={{ width: drawerWidth, height: "100%" }}>{children}</Box>
+      {children}
     </Drawer>
   )
 }

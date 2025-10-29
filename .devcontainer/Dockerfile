@@ -44,7 +44,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # install dependencies for playwright
-RUN npx playwright install --with-deps
+RUN npx playwright install --with-deps --only-shell chromium
 
 # # Install k6
 # RUN gpg -k

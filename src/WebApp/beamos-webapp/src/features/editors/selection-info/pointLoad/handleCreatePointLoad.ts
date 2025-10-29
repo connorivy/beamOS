@@ -94,9 +94,6 @@ export async function handleCreatePointLoad(
     const realPointLoadResponse = await createPointLoadPromise
 
     // remove the optimistically created point load and replace with real one
-    console.log(
-      `Real point load response received: ${JSON.stringify(realPointLoadResponse)}`,
-    )
     dispatch(removePointLoadById({ canvasId, pointLoadId: uniqueTempId }))
     dispatch(createPointLoad({ canvasId, pointLoad: realPointLoadResponse }))
   } catch (error) {

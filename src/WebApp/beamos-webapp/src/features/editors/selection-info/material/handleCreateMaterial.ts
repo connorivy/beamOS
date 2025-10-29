@@ -74,9 +74,6 @@ export async function handleCreateMaterial(
     const realMaterialResponse = await createMaterialPromise
 
     // remove the optimistically created material and replace with real one
-    console.log(
-      `Real material response received: ${JSON.stringify(realMaterialResponse)}`,
-    )
     dispatch(removeMaterialById({ canvasId, materialId: uniqueTempId }))
     dispatch(createMaterial({ canvasId, material: realMaterialResponse }))
   } catch (error) {

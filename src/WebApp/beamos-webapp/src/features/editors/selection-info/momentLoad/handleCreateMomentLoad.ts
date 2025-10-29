@@ -45,7 +45,10 @@ export async function handleCreateMomentLoad(
     return
   }
 
-  const torqueUnit = getTorqueUnit(editorState.model.settings.unitSettings.lengthUnit, editorState.model.settings.unitSettings.forceUnit)
+  const torqueUnit = getTorqueUnit(
+    editorState.model.settings.unitSettings.lengthUnit,
+    editorState.model.settings.unitSettings.forceUnit,
+  )
 
   // Create the moment load request
   const createMomentLoadRequest: CreateMomentLoadRequest = {
@@ -87,9 +90,6 @@ export async function handleCreateMomentLoad(
     const realMomentLoadResponse = await createMomentLoadPromise
 
     // remove the optimistically created moment load and replace with real one
-    console.log(
-      `Real moment load response received: ${JSON.stringify(realMomentLoadResponse)}`,
-    )
     dispatch(removeMomentLoadById({ canvasId, momentLoadId: uniqueTempId }))
     dispatch(createMomentLoad({ canvasId, momentLoad: realMomentLoadResponse }))
   } catch (error) {

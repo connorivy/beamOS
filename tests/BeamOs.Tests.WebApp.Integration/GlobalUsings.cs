@@ -45,6 +45,7 @@ global using DependsOnAttribute = BeamOs.Tests.Common.DependsOnAttribute;
 global using BeforeAttribute = BeamOs.Tests.Common.BeforeAttribute;
 global using TUnitHookType = BeamOs.Tests.Common.HookType;
 #else
+global using TUnit.Core;
 global using TestAttribute = TUnit.Core.TestAttribute;
 global using MethodDataSourceAttribute = TUnit.Core.MethodDataSourceAttribute;
 global using ParallelGroupAttribute = TUnit.Core.ParallelGroupAttribute;

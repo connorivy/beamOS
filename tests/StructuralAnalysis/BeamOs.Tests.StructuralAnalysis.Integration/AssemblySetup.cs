@@ -11,6 +11,7 @@ using BeamOs.Tests.Common;
 using DiffEngine;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
+using TUnit.Core;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration;
 

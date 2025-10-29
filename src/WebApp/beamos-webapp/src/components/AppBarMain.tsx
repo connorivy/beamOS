@@ -26,7 +26,7 @@ export const AppBarMain = ({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"))
 
   return (
-    <AppBar position="static" sx={{ boxShadow: 0 }}>
+    <AppBar position="relative" sx={{ display: "flex", boxShadow: 0 }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           {isSmallScreen && onSidebarToggle && (
@@ -51,14 +51,14 @@ export const AppBarMain = ({
         <Box>
           <Button
             color="inherit"
-            href="/reliability"
+            onClick={() => { void navigate("/reliability") }}
             sx={{ textTransform: "none", fontWeight: 600 }}
           >
             Reliability
           </Button>
           <Button
             color="inherit"
-            href="/models"
+            onClick={() => { void navigate("/models") }}
             sx={{ textTransform: "none", fontWeight: 600 }}
           >
             Models
