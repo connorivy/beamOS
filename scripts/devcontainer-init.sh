@@ -26,7 +26,7 @@ dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integra
 # install powershell
 ./scripts/installPwsh.sh
 
-pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install --with-deps --only-shell
+pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install --with-deps --only-shell chromium
 
 python3 -m venv venv
 source venv/bin/activate
