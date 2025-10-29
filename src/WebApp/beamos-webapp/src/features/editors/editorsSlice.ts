@@ -32,6 +32,7 @@ import type {
   ShearDiagramResponse,
   MomentDiagramResponse,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import type { NodeResultData } from "./ModelState"
 import { ToModelState, type ModelState } from "./ModelState"
 
 // Define the shape of the editor state for a single editor
@@ -169,6 +170,32 @@ export const editorsSlice = createAppSlice({
           locationPoint: action.payload.node.locationPoint,
           restraint: action.payload.node.restraint,
         }
+      },
+    ),
+    addNodeResults: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+          nodeResults: Record<number, NodeResultData>
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        const currentResults =
+          editor.model.resultSets[action.payload.resultSetId]
+        if (!currentResults) {
+          throw new Error("ResultSetData does not exist on model")
+        }
+        currentResults.nodes = action.payload.nodeResults
       },
     ),
     modifyNode: create.reducer(
@@ -783,6 +810,23 @@ export const editorsSlice = createAppSlice({
         editor.model.momentLoads = restMomentLoads
       },
     ),
+    clearResults: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          return
+        }
+        editor.model.resultSets = []
+      },
+    ),
     addDeflectionDiagrams: create.reducer(
       (
         state,
@@ -812,6 +856,31 @@ export const editorsSlice = createAppSlice({
         }
 
         resultSet.deflectionDiagrams = action.payload.deflectionResults
+      },
+    ),
+    addResultsSet: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          resultSetId: number
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor?.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null`,
+          )
+        }
+        editor.model.resultSets[action.payload.resultSetId] = {
+          nodes: [],
+          deflectionDiagrams: [],
+          shearDiagrams: [],
+          momentDiagrams: [],
+        }
       },
     ),
     addShearForceDiagrams: create.reducer(
@@ -959,6 +1028,9 @@ export const {
   moveNode,
   modelLoaded,
   // analytical reducers
+  addResultsSet,
+  addNodeResults,
+  clearResults,
   addDeflectionDiagrams,
   addShearForceDiagrams,
   addMomentDiagrams,

@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import AppBarMain from "../components/AppBarMain";
@@ -9,14 +9,23 @@ import FunctionsIcon from '@mui/icons-material/Functions';
 const drawerWidth = 220;
 
 import SelectionInfo from "../features/editors/selection-info/SelectionInfo";
-import { IconButton, Tooltip } from "@mui/material";
+import { Box, Button, IconButton, Tooltip } from "@mui/material";
 import DarkPaper from "../components/DarkPaper";
 import ResultsInfo from "../features/results-viewing/ResultsInfo";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { selectModelResponseByCanvasId } from "../features/editors/editorsSlice";
+import { handleRunAnalysis } from "../features/results-viewing/handleRunAnalysis";
+import { useApiClient } from "../features/api-client/ApiClientContext";
+import { useEditors } from "../features/editors/EditorContext";
 
 const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React.ReactNode }> = ({ canvasId, children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [selectedSidebar, setSelectedSidebar] = useState<string>('physical');
     const isMobile = useMediaQuery('(max-width:900px)');
+    const modelState = useAppSelector(
+        state => selectModelResponseByCanvasId(state, canvasId)
+    )
+    const hasResults = modelState?.resultSets && Object.keys(modelState.resultSets).length > 0;
 
     // Icon sidebar items
     const icons = [
@@ -42,7 +51,7 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
     // Sidebar content for each icon
     const sidebarContents: Record<string, React.ReactNode> = {
         physical: <SelectionInfo canvasId={canvasId} />,
-        analytical: <ResultsInfo canvasId={canvasId} />,
+        analytical: hasResults ? <ResultsInfo canvasId={canvasId} /> : <Calculate canvasId={canvasId} />,
     };
 
     return (
@@ -114,3 +123,38 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
 };
 
 export default ResponsiveIconSidebarLayout;
+
+export function Calculate({ canvasId }: { canvasId: string }) {
+    const modelState = useAppSelector(
+        state => selectModelResponseByCanvasId(state, canvasId)
+    )
+    const dispatch = useAppDispatch()
+    const apiClient = useApiClient()
+    const editor = useEditors()[canvasId];
+
+    const handleRunAnalysisFunc = useCallback(async () => {
+        if (!modelState) {
+            return;
+        }
+        console.log("Running analysis...");
+        await handleRunAnalysis(apiClient, dispatch, modelState.id, canvasId, editor);
+        console.log("Analysis complete.");
+        // Implement the analysis logic here
+    }, [apiClient, canvasId, dispatch, editor, modelState]);
+
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%',
+            }}
+        >
+            <Button variant="contained" color="primary" onClick={() => { console.log("Button clicked"); void handleRunAnalysisFunc() }}>
+                Analyze
+            </Button>
+        </Box>
+    );
+}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Select, MenuItem, List, ListItem, Typography, ListItemButton, ListItemIcon } from '@mui/material';
+import { Box, Select, MenuItem, List, ListItem, Typography, ListItemButton, ListItemIcon, Button } from '@mui/material';
 import TimelineIcon from '@mui/icons-material/Timeline';
 // import LinearScaleIcon from '@mui/icons-material/LinearScale';
 // import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -15,8 +15,9 @@ import type { ModelState } from '../editors/ModelState';
 import { handleViewDeflectionResults, handleViewMomentResults, handleViewShearResults } from './handleViewDeflectionResults';
 import { useApiClient } from '../api-client/ApiClientContext';
 import { useEditors } from '../editors/EditorContext';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import ReplayIcon from '@mui/icons-material/Replay';
+import { handleClearResults } from './handleClearResults';
+// import SwapVertIcon from '@mui/icons-material/SwapVert';
+// import ReplayIcon from '@mui/icons-material/Replay';
 
 type ResultsInfoProps = {
     canvasId: string;
@@ -28,7 +29,7 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
         state => selectModelResponseByCanvasId(state, canvasId)
     ) as ModelState | null;
     const resultSetIds = useMemo(() =>
-        modelState ? Object.keys(modelState.resultSets) : [],
+        modelState ? Object.keys(modelState.resultSets).map(Number) : [],
         [modelState]
     );
     const dispatch = useAppDispatch()
@@ -37,39 +38,39 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
     const apiClient = useApiClient()
     const editor = useEditors()[canvasId];
     const editorState = useAppSelector(state => state.editors[canvasId])
-    selectedResultSetId ??= Number(resultSetIds[0]);
+    selectedResultSetId ??= resultSetIds[0];
 
     const resultTypes = [
-        {
-            label: 'Shear',
-            icon: <SwapVertIcon sx={{ mr: 1 }} />,
-            onClick: () => {
-                void handleViewShearResults(
-                    apiClient,
-                    dispatch,
-                    selectedResultSetId,
-                    editor,
-                    editorState,
-                    modelState,
-                    canvasId
-                )
-            }
-        },
-        {
-            label: 'Moment',
-            icon: <ReplayIcon sx={{ mr: 1 }} />,
-            onClick: () => {
-                void handleViewMomentResults(
-                    apiClient,
-                    dispatch,
-                    selectedResultSetId,
-                    editor,
-                    editorState,
-                    modelState,
-                    canvasId
-                )
-            }
-        },
+        // {
+        //     label: 'Shear',
+        //     icon: <SwapVertIcon sx={{ mr: 1 }} />,
+        //     onClick: () => {
+        //         void handleViewShearResults(
+        //             apiClient,
+        //             dispatch,
+        //             selectedResultSetId,
+        //             editor,
+        //             editorState,
+        //             modelState,
+        //             canvasId
+        //         )
+        //     }
+        // },
+        // {
+        //     label: 'Moment',
+        //     icon: <ReplayIcon sx={{ mr: 1 }} />,
+        //     onClick: () => {
+        //         void handleViewMomentResults(
+        //             apiClient,
+        //             dispatch,
+        //             selectedResultSetId,
+        //             editor,
+        //             editorState,
+        //             modelState,
+        //             canvasId
+        //         )
+        //     }
+        // },
         // { label: 'Axial', icon: <LinearScaleIcon sx={{ mr: 1 }} /> },
         // { label: 'Torsion', icon: <OpenWithIcon sx={{ mr: 1 }} /> },
         {
@@ -107,7 +108,7 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                     onChange={e => { dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: e.target.value })); }}
                     sx={{ width: '100%' }}
                 >
-                    {resultSetIds.map((id: string) => (
+                    {resultSetIds.map((id: number) => (
                         <MenuItem key={id} value={id}>{id}</MenuItem>
                     ))}
                 </Select>
@@ -144,6 +145,9 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                     </ListItem>
                 ))}
             </List>
+            <Button variant="contained" color="primary" onClick={() => { void handleClearResults(apiClient, dispatch, editorState.remoteModelId, canvasId, editor) }}>
+                Clear Results
+            </Button>
         </Box>
     );
 }
