@@ -8,7 +8,7 @@ import { element1dIdSelector } from "../editors/selection-info/element1d/element
 import { selectSelectedResultSetId } from "../editors/editorsSlice";
 import { useAppSelector } from "../../app/hooks";
 
-const ResultViewer: React.FC<{ canvasId: string }> = ({ canvasId }) => {
+const ResultViewer: React.FC<{ canvasId: string, onOpen: () => void, onClose: () => void }> = ({ canvasId, onOpen, onClose }) => {
     const selectedElement1dId = useAppSelector(element1dIdSelector)
     const selectedResultSetId = useAppSelector(state => selectSelectedResultSetId(state, canvasId))
     // const selectedNodeId = useAppSelector(nodeIdSelector)
@@ -17,13 +17,16 @@ const ResultViewer: React.FC<{ canvasId: string }> = ({ canvasId }) => {
     // )
 
     if (selectedElement1dId && selectedResultSetId) {
-        console.log("Rendering Element1dResultCharts with:", { canvasId, selectedElement1dId, selectedResultSetId });
+        onOpen();
         return (
             <Element1dResultCharts
                 canvasId={canvasId}
                 element1dId={selectedElement1dId}
                 resultSetId={selectedResultSetId} />
         )
+    }
+    else {
+        onClose();
     }
 
     // if (selectedElement1dId !== null) {

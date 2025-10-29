@@ -5,7 +5,8 @@ import { useAppSelector } from '../../../app/hooks';
 import { selectModelResponseByCanvasId } from '../../editors/editorsSlice';
 import { LineChartComponent } from './Chart';
 import { getValueAtLocation } from './diagramConsistantIntervalExtensions';
-import { LengthUnit } from '../../../utils/type-extensions/UnitTypeContracts';
+import { ForceUnit, getForceUnitLabel, getLengthUnitLabel, getTorqueUnit, getTorqueUnitLabel, LengthUnit, TorqueUnit } from '../../../utils/type-extensions/UnitTypeContracts';
+import { convertForce, convertLength, convertTorque } from '../../../utils/unitConversion';
 
 
 //Chart.defaults.color = "#fff";
@@ -26,6 +27,9 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
       console.log("Missing modelState, element1dId, or currentResultSet");
       return
     }
+    const lengthUnit = modelState.settings.unitSettings.lengthUnit
+    const forceUnit = modelState.settings.unitSettings.forceUnit
+    const torqueUnit = getTorqueUnit(lengthUnit, forceUnit)
 
     const shearDiagram = currentResultSet.shearDiagrams?.find(diagram => diagram.element1dId === element1dId)
     const momentDiagram = currentResultSet.momentDiagrams?.find(diagram => diagram.element1dId === element1dId)
@@ -53,7 +57,7 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
     // Build relativeOffsets array
     const relativeOffsets: number[] = [];
     for (let i = 0; i < regularIntervalLocations.length; i++) {
-      relativeOffsets.push(deflectionDiagram.offsets[i * 3 + 1]);
+      relativeOffsets.push(convertLength(deflectionDiagram.offsets[i * 3 + 1], LengthUnit.Meter, lengthUnit));
     }
 
     // Build evalPoints array
@@ -114,8 +118,8 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
         { value: 1, unit: LengthUnit.Inch }
       );
 
-      shearValues.push(shearValOnLeft);
-      momentValues.push(momValOnLeft);
+      shearValues.push(convertForce(shearValOnLeft, ForceUnit.Kilonewton, forceUnit));
+      momentValues.push(convertTorque(momValOnLeft, TorqueUnit.KilonewtonMeter, torqueUnit));
 
       if (
         (isBetweenIntervals && Math.abs(shearValOnLeft - shearValOnRight) > 0.001) ||
@@ -128,8 +132,8 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
         } else {
           relativeOffsets.splice(iEff + 1, 0, relativeOffsets[iEff]);
         }
-        shearValues.push(shearValOnRight);
-        momentValues.push(momValOnRight);
+        shearValues.push(convertForce(shearValOnRight, ForceUnit.Kilonewton, forceUnit));
+        momentValues.push(convertTorque(momValOnRight, TorqueUnit.KilonewtonMeter, torqueUnit));
         numDuplicateXValues++;
       }
     }
@@ -139,30 +143,30 @@ export const Element1dResultCharts: React.FC<{ canvasId: string, element1dId: nu
       xValues={evalPoints}
       yValues={shearValues}
       lineColor='rgba(255,199,0,1)'
-      yAxisLabel='Shear (N)'
+      yAxisLabel={`Shear (${getForceUnitLabel(forceUnit)})`}
     />;
 
     momentDiagramRef.current = <LineChartComponent
       xValues={evalPoints}
       yValues={momentValues}
       lineColor='rgba(6,120,255,1)'
-      yAxisLabel='Moment (Nm)'
+      yAxisLabel={`Moment (${getTorqueUnitLabel(torqueUnit)})`}
     />;
 
     deflectionDiagramRef.current = <LineChartComponent
       xValues={evalPoints}
       yValues={relativeOffsets}
       lineColor='rgba(33, 166, 81,1)'
-      yAxisLabel='Deflection (m)'
+      yAxisLabel={`Deflection (${getLengthUnitLabel(lengthUnit)})`}
     />;
 
   }, [currentResultSet, element1dId, modelState]);
 
   return (
-    <>
+    <div className="py-4">
       {shearDiagramRef.current}
       {momentDiagramRef.current}
       {deflectionDiagramRef.current}
-    </>
+    </div>
   );
 }

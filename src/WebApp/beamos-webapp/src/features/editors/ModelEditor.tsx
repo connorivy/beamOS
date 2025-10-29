@@ -33,7 +33,7 @@ const ModelEditorPage = () => {
       <ResponsiveIconSidebarLayout canvasId={canvasId}>
         <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
         <ResponsiveSecondarySidebar open={sidebarOpen} onOpen={() => { setSidebarOpen(true) }} onClose={() => { setSidebarOpen(false) }}>
-          <ResultViewer canvasId={canvasId} />
+          <ResultViewer canvasId={canvasId} onOpen={() => { setSidebarOpen(true); }} onClose={() => { setSidebarOpen(false); }} />
         </ResponsiveSecondarySidebar>
       </ResponsiveIconSidebarLayout>
     </div>

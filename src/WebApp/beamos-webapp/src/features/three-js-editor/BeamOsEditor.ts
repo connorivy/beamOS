@@ -145,7 +145,6 @@ export class BeamOsEditor {
 
   resizeCanvasToDisplaySize(width: number, height: number) {
     // you must pass false here or three.js sadly fights the browser
-    console.log("resizing to", width, height)
     this.renderer.setSize(width, height, false)
 
     if (this.camera.camera instanceof THREE.PerspectiveCamera) {

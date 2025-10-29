@@ -7,6 +7,23 @@ export const LengthUnit = {
   Millimeter: 5,
 }
 
+export function getLengthUnitLabel(unit: number): string {
+  switch (unit) {
+    case LengthUnit.Centimeter:
+      return "cm"
+    case LengthUnit.Foot:
+      return "ft"
+    case LengthUnit.Inch:
+      return "in"
+    case LengthUnit.Meter:
+      return "m"
+    case LengthUnit.Millimeter:
+      return "mm"
+    default:
+      throw new Error(`Unsupported length unit: ${unit.toString()}`)
+  }
+}
+
 export const AreaUnit = {
   Undefined: 0,
   SquareCentimeter: 1,
@@ -42,6 +59,21 @@ export const ForceUnit = {
   PoundForce: 4,
 }
 
+export function getForceUnitLabel(unit: number): string {
+  switch (unit) {
+    case ForceUnit.Kilonewton:
+      return "kN"
+    case ForceUnit.KilopoundForce:
+      return "kip"
+    case ForceUnit.Newton:
+      return "N"
+    case ForceUnit.PoundForce:
+      return "lbf"
+    default:
+      throw new Error(`Unsupported force unit: ${unit.toString()}`)
+  }
+}
+
 export const AngleUnit = {
   Undefined: 0,
   Degree: 1,
@@ -60,6 +92,33 @@ export const TorqueUnit = {
   NewtonMillimeter: 19,
   PoundForceFoot: 21,
   PoundForceInch: 22,
+}
+
+export function getTorqueUnitLabel(unit: number): string {
+  switch (unit) {
+    case TorqueUnit.KilonewtonCentimeter:
+      return "kN·cm"
+    case TorqueUnit.KilonewtonMeter:
+      return "kN·m"
+    case TorqueUnit.KilonewtonMillimeter:
+      return "kN·mm"
+    case TorqueUnit.KilopoundForceFoot:
+      return "kip·ft"
+    case TorqueUnit.KilopoundForceInch:
+      return "kip·in"
+    case TorqueUnit.NewtonCentimeter:
+      return "N·cm"
+    case TorqueUnit.NewtonMeter:
+      return "N·m"
+    case TorqueUnit.NewtonMillimeter:
+      return "N·mm"
+    case TorqueUnit.PoundForceFoot:
+      return "lbf·ft"
+    case TorqueUnit.PoundForceInch:
+      return "lbf·in"
+    default:
+      throw new Error(`Unsupported torque unit: ${unit.toString()}`)
+  }
 }
 
 export const ForcePerLengthUnit = {
@@ -267,12 +326,12 @@ export function getLengthUnitFromTorqueUnit(torqueUnit: number): number {
 
 export function getForceUnitFromPressureUnit(pressureUnit: number): number {
   switch (pressureUnit) {
-    case PressureUnit.KilonewtonPerSquareMillimeter: 
-    case PressureUnit.KilonewtonPerSquareCentimeter: 
+    case PressureUnit.KilonewtonPerSquareMillimeter:
+    case PressureUnit.KilonewtonPerSquareCentimeter:
     case PressureUnit.KilonewtonPerSquareMeter:
       return ForceUnit.Kilonewton
-    case PressureUnit.NewtonPerSquareMillimeter: 
-    case PressureUnit.NewtonPerSquareCentimeter: 
+    case PressureUnit.NewtonPerSquareMillimeter:
+    case PressureUnit.NewtonPerSquareCentimeter:
     case PressureUnit.NewtonPerSquareMeter:
       return ForceUnit.Newton
     case PressureUnit.KilopoundForcePerSquareInch:
@@ -288,11 +347,11 @@ export function getForceUnitFromPressureUnit(pressureUnit: number): number {
 
 export function getLengthUnitFromPressureUnit(pressureUnit: number): number {
   switch (pressureUnit) {
-    case PressureUnit.KilonewtonPerSquareMillimeter: 
-    case PressureUnit.NewtonPerSquareMillimeter: 
+    case PressureUnit.KilonewtonPerSquareMillimeter:
+    case PressureUnit.NewtonPerSquareMillimeter:
       return LengthUnit.Millimeter
-    case PressureUnit.KilonewtonPerSquareCentimeter: 
-    case PressureUnit.NewtonPerSquareCentimeter: 
+    case PressureUnit.KilonewtonPerSquareCentimeter:
+    case PressureUnit.NewtonPerSquareCentimeter:
       return LengthUnit.Centimeter
     case PressureUnit.KilonewtonPerSquareMeter:
     case PressureUnit.NewtonPerSquareMeter:

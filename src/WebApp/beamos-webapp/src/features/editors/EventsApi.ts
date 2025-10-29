@@ -31,7 +31,13 @@ export class EventsApi implements IEditorEventsApi {
         setSelectedType({ canvasId: this.canvasId, selectedType: null }),
       )
       this.dispatch(setNodeId(null))
-    } else if (body.selectedObjects[0].objectType == BeamOsObjectTypes.Node) {
+      this.dispatch(setElement1dId(null))
+      this.dispatch(setPointLoadId(null))
+      this.dispatch(setMomentLoadId(null))
+    } else if (
+      body.selectedObjects.length === 1 &&
+      body.selectedObjects[0].objectType == BeamOsObjectTypes.Node
+    ) {
       this.dispatch(
         setSelectedType({
           canvasId: this.canvasId,
@@ -39,7 +45,11 @@ export class EventsApi implements IEditorEventsApi {
         }),
       )
       this.dispatch(setNodeId(body.selectedObjects[0].id))
+      this.dispatch(setElement1dId(null))
+      this.dispatch(setPointLoadId(null))
+      this.dispatch(setMomentLoadId(null))
     } else if (
+      body.selectedObjects.length === 1 &&
       body.selectedObjects[0].objectType == BeamOsObjectTypes.Element1d
     ) {
       this.dispatch(
@@ -49,7 +59,11 @@ export class EventsApi implements IEditorEventsApi {
         }),
       )
       this.dispatch(setElement1dId(body.selectedObjects[0].id))
+      this.dispatch(setNodeId(null))
+      this.dispatch(setPointLoadId(null))
+      this.dispatch(setMomentLoadId(null))
     } else if (
+      body.selectedObjects.length === 1 &&
       body.selectedObjects[0].objectType == BeamOsObjectTypes.PointLoad
     ) {
       this.dispatch(
@@ -59,7 +73,11 @@ export class EventsApi implements IEditorEventsApi {
         }),
       )
       this.dispatch(setPointLoadId(body.selectedObjects[0].id))
+      this.dispatch(setNodeId(null))
+      this.dispatch(setElement1dId(null))
+      this.dispatch(setMomentLoadId(null))
     } else if (
+      body.selectedObjects.length === 1 &&
       body.selectedObjects[0].objectType == BeamOsObjectTypes.MomentLoad
     ) {
       this.dispatch(
@@ -69,6 +87,9 @@ export class EventsApi implements IEditorEventsApi {
         }),
       )
       this.dispatch(setMomentLoadId(body.selectedObjects[0].id))
+      this.dispatch(setNodeId(null))
+      this.dispatch(setElement1dId(null))
+      this.dispatch(setPointLoadId(null))
     }
     this.dispatch(
       objectSelectionChanged({

@@ -32,12 +32,12 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
         [modelState]
     );
     const dispatch = useAppDispatch()
-    dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: Number(resultSetIds[0]) }));
-    const selectedResultSetId = useAppSelector(state => selectSelectedResultSetId(state, canvasId));
+    let selectedResultSetId = useAppSelector(state => selectSelectedResultSetId(state, canvasId));
     const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
     const apiClient = useApiClient()
     const editor = useEditors()[canvasId];
     const editorState = useAppSelector(state => state.editors[canvasId])
+    selectedResultSetId ??= Number(resultSetIds[0]);
 
     const resultTypes = [
         {
@@ -104,7 +104,7 @@ export function ResultsInfo({ canvasId }: ResultsInfoProps) {
                     labelId="result-set-select-label"
                     value={selectedResultSetId}
                     label="Result Set"
-                    onChange={e => { dispatch(setSelectedResultSetId(e.target.value)); }}
+                    onChange={e => { dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: e.target.value })); }}
                     sx={{ width: '100%' }}
                 >
                     {resultSetIds.map((id: string) => (

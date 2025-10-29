@@ -81,7 +81,7 @@ const ResponsiveSecondarySidebar = ({ open, onOpen, onClose, children }: Respons
     // Large screens: floating sidebar on right with offset
     onOpen()
     return (
-        <div className="absolute top-0 right-0 bottom-0 w-96 p-2 pointer-events-none">
+        <div className="absolute top-0 right-0 max-h-full w-96 p-2 pointer-events-none">
             <Box
                 sx={{
                     width: "100%",
