@@ -40,11 +40,11 @@ RUN apt-get update && apt-get install -y \
     git
 
 # Install Node.js 20 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+# RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+#     && apt-get install -y nodejs
 
 # install dependencies for playwright
-RUN npx playwright install --with-deps
+# RUN npx playwright install --with-deps
 
 # # Install k6
 # RUN gpg -k
