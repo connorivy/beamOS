@@ -63,6 +63,8 @@ const theme = createTheme({
         root: {
           backgroundColor: "#1a1a1a",
           borderBottom: "1px solid #2a2a2a",
+          backgroundImage: "none",
+          "--Paper-overlay": "none",
         },
       },
     },

@@ -10,6 +10,7 @@ const drawerWidth = 220;
 
 import SelectionInfo from "../features/editors/selection-info/SelectionInfo";
 import { IconButton, Tooltip } from "@mui/material";
+import DarkPaper from "../components/DarkPaper";
 import ResultsInfo from "../features/results-viewing/ResultsInfo";
 
 const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React.ReactNode }> = ({ canvasId, children }) => {
@@ -49,32 +50,34 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
         <div className="flex flex-col h-full w-full">
             <AppBarMain />
             <div className="flex flex-row h-full w-full">
-                {/* Icon Sidebar with highlight and separator */}
-                <div className="flex flex-col items-center" style={{ minWidth: 56, borderRight: '1px solid #222', background: '#18181c', paddingTop: '8px' }}>
-                    {icons.map(icon => (
-                        <Tooltip key={icon.id} title={icon.label} placement="right" arrow>
-                            <IconButton
-                                onClick={() => { handleIconClick(icon.id); }}
-                                onKeyDown={handleKeyDown}
-                                aria-label={icon.label}
-                                // size="large"
-                                sx={{
-                                    color: selectedSidebar === icon.id ? 'primary.contrastText' : 'grey.400',
-                                    backgroundColor: selectedSidebar === icon.id ? 'primary.main' : 'inherit',
-                                    boxShadow: selectedSidebar === icon.id ? 2 : 0,
-                                    marginBottom: 2,
-                                    width: 48,
-                                    height: 48,
-                                    '&:hover': {
-                                        backgroundColor: selectedSidebar === icon.id ? 'primary.dark' : 'grey.900',
-                                    },
-                                }}
-                            >
-                                {icon.icon}
-                            </IconButton>
-                        </Tooltip>
-                    ))}
-                </div>
+                <DarkPaper>
+                    {/* Icon Sidebar with highlight and separator */}
+                    <div className="flex flex-col items-center" style={{ minWidth: 56, paddingTop: '8px' }}>
+                        {icons.map(icon => (
+                            <Tooltip key={icon.id} title={icon.label} placement="right" arrow>
+                                <IconButton
+                                    onClick={() => { handleIconClick(icon.id); }}
+                                    onKeyDown={handleKeyDown}
+                                    aria-label={icon.label}
+                                    // size="large"
+                                    sx={{
+                                        color: selectedSidebar === icon.id ? 'primary.contrastText' : 'grey.400',
+                                        backgroundColor: selectedSidebar === icon.id ? 'primary.main' : 'inherit',
+                                        boxShadow: selectedSidebar === icon.id ? 2 : 0,
+                                        marginBottom: 2,
+                                        width: 48,
+                                        height: 48,
+                                        '&:hover': {
+                                            backgroundColor: selectedSidebar === icon.id ? 'primary.dark' : 'grey.900',
+                                        },
+                                    }}
+                                >
+                                    {icon.icon}
+                                </IconButton>
+                            </Tooltip>
+                        ))}
+                    </div>
+                </DarkPaper>
                 {/* Main Sidebar Content with left shadow for separation */}
                 {isMobile ? (
                     <Drawer
@@ -97,9 +100,9 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
                         {sidebarContents[selectedSidebar]}
                     </Drawer>
                 ) : (
-                    <div className="w-96 shadow-lg" style={{ boxShadow: '4px 0 12px rgba(0,0,0,0.12)', borderLeft: '1px solid #222', background: '#18181c' }}>
+                    <DarkPaper className="w-96 shadow-lg">
                         {sidebarContents[selectedSidebar]}
-                    </div>
+                    </DarkPaper>
                 )}
                 {/* Main Content */}
                 <div className="h-full w-full relative">

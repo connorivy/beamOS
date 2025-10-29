@@ -5,6 +5,7 @@ import Box from "@mui/material/Box"
 import { styled } from "@mui/material/styles"
 import { Global } from "@emotion/react"
 import { grey } from "@mui/material/colors"
+import DarkPaper from "./DarkPaper"
 
 type ResponsiveSecondarySidebarProps = {
     open: boolean
@@ -51,11 +52,11 @@ const ResponsiveSecondarySidebar = ({ open, onOpen, onClose, children }: Respons
                     swipeAreaWidth={drawerBleeding}
                     disableSwipeToOpen={false}
                     keepMounted
-                    slotProps={{
-                        paper: {
-                            style: { borderTopLeftRadius: 16, borderTopRightRadius: 16, minHeight: 200, overflow: 'visible' },
-                        },
-                    }}
+                // slotProps={{
+                //     paper: {
+                //         style: { borderTopLeftRadius: 16, borderTopRightRadius: 16, minHeight: 200, overflow: 'visible' },
+                //     },
+                // }}
                 >
                     <Box
                         sx={{
@@ -66,13 +67,16 @@ const ResponsiveSecondarySidebar = ({ open, onOpen, onClose, children }: Respons
                             visibility: 'visible',
                             right: 0,
                             left: 0,
+                            overflowY: 'scroll'
                         }}
                     >
                         <Puller />
                     </Box>
-                    <Box p={2} height="100%" overflow="auto">
-                        {children}
-                    </Box>
+                    <DarkPaper>
+                        <Box p={2} height="100%" overflow="auto">
+                            {children}
+                        </Box>
+                    </DarkPaper>
                 </SwipeableDrawer>
             </>
         )
@@ -87,16 +91,14 @@ const ResponsiveSecondarySidebar = ({ open, onOpen, onClose, children }: Respons
                     width: "100%",
                     height: `100%`,
                     boxShadow: 3,
-                    borderRadius: 3,
-                    bgcolor: "background.paper",
                     zIndex: 1300,
                     display: open ? "block" : "none",
                     pointerEvents: "auto",
                 }}
             >
-                <Box height="100%" overflow="auto">
+                <DarkPaper className="rounded-lg">
                     {children}
-                </Box>
+                </DarkPaper>
             </Box>
         </div>
     )
