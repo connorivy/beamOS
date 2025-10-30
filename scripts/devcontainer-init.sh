@@ -5,8 +5,10 @@ set -e
 
 dotnet dev-certs https --trust
 
+cd $BEAMOS_ROOT
+
 # Make sure all scripts are executable and run deepClean
-chmod +x ./scripts/*.sh
+chmod +x $BEAMOS_ROOT/scripts/*.sh
 ./scripts/deepClean.sh
 
 dotnet tool restore
@@ -14,26 +16,26 @@ dotnet tool restore
 # Restore .NET dependencies
 dotnet restore
 
-npm ci --prefix ./src/WebApp/beamos-webapp
+npm ci --prefix $BEAMOS_ROOT/src/WebApp/beamos-webapp
 
 # Set up local NuGet feed
-mkdir -p /workspaces/beamOS/.nuget-local
-dotnet nuget add source /workspaces/beamOS/.nuget-local --name local
+mkdir -p $BEAMOS_ROOT/.nuget-local
+dotnet nuget add source $BEAMOS_ROOT/.nuget-local --name local
 
 # build webapp integration tests
-dotnet build ./tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
+dotnet build $BEAMOS_ROOT/tests/BeamOs.Tests.WebApp.Integration/BeamOs.Tests.WebApp.Integration.csproj
 
 # install powershell
-./scripts/installPwsh.sh
+$BEAMOS_ROOT/scripts/installPwsh.sh
 
-pwsh ./tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install --with-deps --only-shell chromium
+pwsh $BEAMOS_ROOT/tests/BeamOs.Tests.WebApp.Integration/bin/Debug/net9.0/playwright.ps1 install --with-deps --only-shell chromium
 
 python3 -m venv venv
 source venv/bin/activate
 
 # Create or upgrade venv with latest pip/setuptools
-python3 -m venv /workspaces/beamOS/venv --upgrade-deps
-source /workspaces/beamOS/venv/bin/activate
+python3 -m venv $BEAMOS_ROOT/venv --upgrade-deps
+source $BEAMOS_ROOT/venv/bin/activate
 # pip install --upgrade pip setuptools
 
 # # Install requirements if requirements.txt exists

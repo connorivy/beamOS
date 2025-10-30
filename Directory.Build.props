@@ -15,7 +15,6 @@
     
     <TUnitImplicitUsings>false</TUnitImplicitUsings>
     <DefineConstants Condition="'$(CODEGEN)' == 'true'">$(DefineConstants);CODEGEN</DefineConstants>
-    <LocalNugetFeed>/workspaces/beamOS/.nuget-local</LocalNugetFeed>
     <BeamOsEnableAot Condition="'$(BeamOsEnableAot)' == ''">false</BeamOsEnableAot>
 
     <BeamOsUsePostgres Condition="'$(BeamOsUsePostgres)' == ''">true</BeamOsUsePostgres>
