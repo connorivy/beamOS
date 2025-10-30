@@ -4,6 +4,6 @@ set -e
 
 "${BEAMOS_ROOT}/scripts/test-webapp.sh"
 
-dotnet test ${BEAMOS_ROOT}/BeamOs.NonWebTests.slnf
+dotnet test ${BEAMOS_ROOT}/BeamOs.NonWebTests.slnf "$@"
 
 echo "All tests completed."
