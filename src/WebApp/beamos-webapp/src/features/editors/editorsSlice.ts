@@ -80,6 +80,7 @@ export const editorsSlice = createAppSlice({
       },
     ),
     addEditor: create.reducer((state, action: PayloadAction<EditorState>) => {
+      console.log("Adding editor:", action.payload.canvasId)
       state[action.payload.canvasId] = action.payload
     }),
     updateEditor: create.reducer(
@@ -134,6 +135,7 @@ export const editorsSlice = createAppSlice({
           remoteModelId?: string
         }>,
       ) => {
+        console.log("Model loaded for canvasId:", action.payload.canvasId)
         const editor =
           action.payload.canvasId in state
             ? state[action.payload.canvasId]

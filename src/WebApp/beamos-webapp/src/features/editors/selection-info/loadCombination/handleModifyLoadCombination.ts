@@ -6,7 +6,6 @@ import type {
 } from "../../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import {
   createLoadCombination,
-  removeLoadCombinationById,
   type EditorState,
 } from "../../editorsSlice"
 

@@ -103,7 +103,7 @@ export class Controls {
     return new OrbitControls(camera, domElement)
   }
 
-  onDraggingChanged(event: DragEvent) {
+  onDraggingChanged(_event: DragEvent) {
     // this.controls.enabled = event.
   }
 

@@ -5,6 +5,7 @@ import type {
   Result,
 } from "../../../../../../codeGen/BeamOs.CodeGen.EditorApi/EditorApiAlpha"
 import {
+  BeamOsObjectTypes,
   objectTypeToString,
   ResultFactory,
 } from "./EditorApi/EditorApiAlphaExtensions"
@@ -54,6 +55,9 @@ export class ModelProposalDisplayer {
         BeamOsElement1d.beamOsObjectType,
         el.element1dId.existingId,
       )
+      if (!el.id) {
+        throw new Error("InternalNodeProposal id is undefined")
+      }
       const newInternalNode = new BeamOsInternalNode(
         el.id,
         existingElement1d,
@@ -101,6 +105,9 @@ export class ModelProposalDisplayer {
         BeamOsElement1d.beamOsObjectType,
         el.element1dId.existingId,
       )
+      if (!el.restraint) {
+        throw new Error("InternalNodeProposal restraint is undefined")
+      }
       const modifiedNode = new BeamOsInternalNode(
         el.id,
         existingElement1d,
@@ -289,6 +296,9 @@ export class ModelProposalDisplayer {
       )
 
       // Create the proposal element (new state)
+      if (!el.id) {
+        throw new Error("Element1dProposal id is undefined")
+      }
       const newElement1dProposal = new BeamOsElement1dProposal(
         existingElement.beamOsId,
         el.id,
@@ -373,7 +383,7 @@ export class ModelProposalDisplayer {
     el: DeleteModelEntityProposal,
     filterer: ColorFilterBuilder,
   ) {
-    if (el.objectType == BeamOsObjectType._3) {
+    if (el.objectType == BeamOsObjectTypes.Element1d) {
       // element1d
       const existingElement = this.getObjectByBeamOsUniqueId<BeamOsElement1d>(
         BeamOsElement1d.beamOsObjectType,
@@ -385,7 +395,7 @@ export class ModelProposalDisplayer {
         false,
         true,
       )
-    } else if (el.objectType == BeamOsObjectType._2) {
+    } else if (el.objectType == BeamOsObjectTypes.Node) {
       // node
       const existingNode = this.getObjectByBeamOsUniqueId<BeamOsNode>(
         BeamOsNode.beamOsObjectType,
@@ -400,7 +410,7 @@ export class ModelProposalDisplayer {
   }
 
   getObjectByBeamOsUniqueId<TObject>(
-    beamOsObjectType: BeamOsObjectType,
+    beamOsObjectType: number,
     entityId: number,
   ): TObject {
     const beamOsUniqueId =
@@ -417,7 +427,7 @@ export class ModelProposalDisplayer {
   }
 
   getProposalObjectByBeamOsUniqueId<TObject>(
-    beamOsObjectType: BeamOsObjectType,
+    beamOsObjectType: number,
     entityId: number,
   ): TObject {
     const beamOsUniqueId =
@@ -434,7 +444,7 @@ export class ModelProposalDisplayer {
   }
 
   tryGetObjectByBeamOsUniqueId<TObject>(
-    beamOsObjectType: BeamOsObjectType,
+    beamOsObjectType: number,
     entityId: number,
   ): TObject | null {
     const beamOsUniqueId =

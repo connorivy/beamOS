@@ -4,9 +4,9 @@ import prettierConfig from "eslint-config-prettier/flat"
 import reactPlugin from "eslint-plugin-react"
 import reactHooksPlugin from "eslint-plugin-react-hooks"
 import globals from "globals"
-import { config, configs } from "typescript-eslint"
+import { configs } from "typescript-eslint"
 
-const eslintConfig = config(
+export default [
   {
     name: "global-ignores",
     ignores: [
@@ -53,6 +53,14 @@ const eslintConfig = config(
     },
     rules: {
       "no-undef": [0],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "@typescript-eslint/consistent-type-definitions": [2, "type"],
       "@typescript-eslint/consistent-type-imports": [
         2,
@@ -77,8 +85,5 @@ const eslintConfig = config(
       ],
     },
   },
-
   prettierConfig,
-)
-
-export default eslintConfig
+]

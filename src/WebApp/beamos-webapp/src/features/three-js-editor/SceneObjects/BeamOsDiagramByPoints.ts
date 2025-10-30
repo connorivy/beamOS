@@ -5,7 +5,6 @@ import { BeamOsElement1d } from "./BeamOsElement1d"
 import { Line2 } from "three/examples/jsm/lines/Line2.js"
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js"
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js"
-import type { BeamOsObjectType } from "../EditorApi/EditorEventsApi"
 import {
   BeamOsObjectTypes,
   objectTypeToString,
@@ -17,8 +16,8 @@ export type DiagramEventMap = {
 } & THREE.Object3DEventMap
 
 export class BeamOsDiagramByPoints extends Line2 implements IBeamOsMesh {
-  public static beamOsObjectType: BeamOsObjectType = BeamOsObjectTypes.Other
-  public beamOsObjectType: BeamOsObjectType =
+  public static beamOsObjectType = BeamOsObjectTypes.Other
+  public beamOsObjectType =
     BeamOsDiagramByPoints.beamOsObjectType
   public beamOsUniqueId: string
   private previousMaterial: LineMaterial | undefined

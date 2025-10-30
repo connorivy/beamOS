@@ -19,8 +19,6 @@ const SidebarMain: React.FC<SidebarMainProps> = ({
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"))
 
-  const appBarHeight = 64 // Default MUI AppBar height
-  const appBarHeightPx = String(appBarHeight)
   return (
     <Drawer
       variant={isLargeScreen ? "persistent" : "temporary"}

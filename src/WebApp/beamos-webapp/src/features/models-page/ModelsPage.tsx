@@ -20,7 +20,7 @@ import CardContent from "@mui/material/CardContent"
 import Typography from "@mui/material/Typography"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import CreateModelDialog from "./CreateModelDialog"
 
 import type { CreateModelRequest } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
@@ -42,8 +42,8 @@ const ModelInfoCard: React.FC<ModelInfoCardProps> = ({ model, onView }) => (
     onClick={
       onView
         ? () => {
-            onView(model.id)
-          }
+          onView(model.id)
+        }
         : undefined
     }
     sx={{

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 import { RemoteEditorComponent } from "./EditorComponent"
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 import ResponsiveIconSidebarLayout from "../../layouts/ResponsiveIconSidebarLayout"
 import ResponsiveSecondarySidebar from "../../components/ResponsiveSecondarySidebar"
 import ResultViewer from "../results-viewing/ResultViewer"
