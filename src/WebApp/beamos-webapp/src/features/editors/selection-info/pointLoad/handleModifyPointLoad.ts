@@ -14,7 +14,7 @@ export async function handleModifyPointLoad(
   directionY: string,
   directionZ: string,
   editorState: EditorState,
-  editor: BeamOsEditor,
+  _editor: BeamOsEditor,
   canvasId: string,
 ) {
   // Validate input

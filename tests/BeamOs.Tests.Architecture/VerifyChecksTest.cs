@@ -1,3 +1,4 @@
+using TUnit.Core;
 using VerifyTUnit;
 
 namespace BeamOs.Tests.Architecture;

@@ -3,7 +3,6 @@ import { BeamOsMesh } from "../BeamOsMesh"
 // import type { DiagramConsistentIntervalResponse } from "../EditorApi/EditorApiAlpha"
 import type { DiagramConsistentIntervalResponse } from "../../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { BeamOsElement1d } from "./BeamOsElement1d"
-import type { BeamOsObjectType } from "../EditorApi/EditorEventsApi"
 import {
   BeamOsObjectTypes,
   objectTypeToString,
@@ -18,7 +17,7 @@ export class BeamOsDiagram extends BeamOsMesh<
   THREE.Material,
   DiagramEventMap
 > {
-  public static beamOsObjectType: BeamOsObjectType = BeamOsObjectTypes.Other
+  public static beamOsObjectType = BeamOsObjectTypes.Other
   public beamOsUniqueId: string
   // private static DiagramHex: number = 0xff00ff;
 

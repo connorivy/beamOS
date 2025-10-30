@@ -1,6 +1,5 @@
 import type * as THREE from "three"
 import { BeamOsMesh } from "../BeamOsMesh"
-import type { BeamOsObjectType } from "../EditorApi/EditorEventsApi"
 import type { NodeEventMap } from "./BeamOsNode"
 
 export abstract class BeamOsNodeBase extends BeamOsMesh<
@@ -10,7 +9,7 @@ export abstract class BeamOsNodeBase extends BeamOsMesh<
 > {
   constructor(
     public beamOsId: number,
-    public beamOsObjectType: BeamOsObjectType,
+    public beamOsObjectType: number,
     geometry?: THREE.BufferGeometry,
     material?: THREE.Material,
   ) {

@@ -12,7 +12,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectModelResponseByCanvasId, selectSelectedResultSetId, setSelectedResultSetId } from '../editors/editorsSlice';
 import type { ModelState } from '../editors/ModelState';
-import { handleViewDeflectionResults, handleViewMomentResults, handleViewShearResults } from './handleViewDeflectionResults';
+import { handleViewDeflectionResults } from './handleViewDeflectionResults';
 import { useApiClient } from '../api-client/ApiClientContext';
 import { useEditors } from '../editors/EditorContext';
 import { handleClearResults } from './handleClearResults';

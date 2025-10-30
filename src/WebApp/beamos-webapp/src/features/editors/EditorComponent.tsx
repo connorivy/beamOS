@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useAppDispatch } from "../../app/hooks"
-import { addEditor, updateEditor, removeEditor, modelLoaded, addShearForceDiagrams, addDeflectionDiag, addDeflectionDiagramsrams, addMomentDiagrams, addDeflectionDiagrams, setSelectedResultSetId } from "./editorsSlice"
+import { addEditor, removeEditor, modelLoaded, addShearForceDiagrams, addMomentDiagrams, addDeflectionDiagrams, setSelectedResultSetId } from "./editorsSlice"
 import { BeamOsEditor } from "../three-js-editor/BeamOsEditor"
 import { EventsApi } from "./EventsApi"
 import { useApiClient } from "../api-client/ApiClientContext"
@@ -21,17 +21,11 @@ export const EditorComponent = ({
   const editors = useEditors()
   eventsApiRef.current ??= new EventsApi(canvasId, dispatch)
 
-  // Register editor in Redux on mount, update on prop change, remove on unmount
   useEffect(() => {
     dispatch(addEditor({ canvasId, isReadOnly, selection: null, selectedType: null, selectedResultSetId: null, model: null }))
     return () => {
       dispatch(removeEditor(canvasId))
     }
-  }, [canvasId, dispatch, isReadOnly])
-
-  useEffect(() => {
-    const id = canvasId
-    dispatch(updateEditor({ canvasId: id, changes: { isReadOnly } }))
   }, [canvasId, dispatch, isReadOnly])
 
   useEffect(() => {
@@ -79,15 +73,39 @@ export const RemoteEditorComponent = ({
   const editors = useEditors()
 
   useEffect(() => {
+    let cancelled = false
+
     const fetchModel = async () => {
       const modelResponse = await apiClient.getModel(modelId)
+
+      if (cancelled) {
+        return
+      }
+
       dispatch(modelLoaded({ canvasId, model: modelResponse, remoteModelId: modelId }))
-      await editors[canvasId].api.setSettings(modelResponse.settings)
-      await editors[canvasId].api.createModel(modelResponse)
+
+      const editor = canvasId in editors ? editors[canvasId] : null
+      if (!editor) {
+        console.error("Editor not ready for canvasId:", canvasId)
+        return
+      }
+
+      await editor.api.setSettings(modelResponse.settings)
+      await editor.api.createModel(modelResponse)
+
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (cancelled) return
 
       if (modelResponse.resultSets && modelResponse.resultSets.length > 0) {
         for (const resultSet of modelResponse.resultSets ?? []) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (cancelled) break
+
           const diagramResponse = await apiClient.getDiagrams(modelId, resultSet.id, "kn-m")
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (cancelled) break
+
           if (diagramResponse.shearDiagrams) {
             dispatch(addShearForceDiagrams({ canvasId, resultSetId: resultSet.id, shearForceResults: diagramResponse.shearDiagrams }))
           }
@@ -102,6 +120,10 @@ export const RemoteEditorComponent = ({
       }
     }
     fetchModel().catch(console.error)
+
+    return () => {
+      cancelled = true
+    }
   }, [apiClient, canvasId, dispatch, editors, modelId])
 
   return (

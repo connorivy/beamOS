@@ -1,3 +1,4 @@
+import type { Action } from "@reduxjs/toolkit"
 import { BeamOsObjectTypes } from "../three-js-editor/EditorApi/EditorApiAlphaExtensions"
 import type {
   ChangeSelectionCommand,
@@ -16,11 +17,11 @@ import { setNodeId } from "./selection-info/node/nodeSelectionSlice"
 import { setPointLoadId } from "./selection-info/pointLoad/pointLoadSelectionSlice"
 
 export class EventsApi implements IEditorEventsApi {
-  private dispatch: (action: unknown) => void
+  private dispatch: (action: Action) => void
 
   constructor(
     private canvasId: string,
-    dispatch: (action: unknown) => void,
+    dispatch: (action: Action) => void,
   ) {
     this.dispatch = dispatch
   }
@@ -111,7 +112,7 @@ export class EventsApi implements IEditorEventsApi {
     return Promise.reject(new Error("MoveNode dispatch not implemented."))
   }
 
-  dispatchPutNodeClientCommand(body: PutNodeClientCommand): Promise<void> {
+  dispatchPutNodeClientCommand(_body: PutNodeClientCommand): Promise<void> {
     // TODO: Replace with actual putNode action when available
     // this.dispatch(putNode({ ...body }))
     return Promise.reject(new Error("PutNodeClient dispatch not implemented."))

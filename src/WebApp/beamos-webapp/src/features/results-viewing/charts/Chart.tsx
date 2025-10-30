@@ -25,7 +25,7 @@ const verticalLinePlugin: ChartPlugin = {
 
         chart.data.datasets[0].backgroundColor = gradient;
     },
-    afterDraw: (chart: Chart) => {
+    afterDraw: (_chart: Chart) => {
         // if (this.verticalLineX !== null) {
         //     const ctx = chart.ctx;
         //     const yAxis = chart.scales.y;
@@ -120,7 +120,7 @@ function getConfig(axisLabels: number[], yData: number[], color: string, yAxisLa
                 mode: 'nearest',
                 intersect: true
             },
-            onHover: (_event: ChartEvent, activeElements: ActiveElement[]) => {
+            onHover: (_event: ChartEvent, _activeElements: ActiveElement[]) => {
                 // if (activeElements.length > 0) {
                 //     setSnapIndex(activeElements[0].index);
                 // } else {

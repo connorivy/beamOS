@@ -13,7 +13,7 @@ export class TransformController {
   constructor(
     scene: THREE.Scene,
     camera: THREE.Camera,
-    private domElement: HTMLElement,
+    domElement: HTMLElement,
     private controls: Controls,
     // private dispatcher: IEditorEventsApi,
   ) {
@@ -72,11 +72,11 @@ export class TransformController {
 
       this.startLocation = undefined
     } else {
-      this.startLocation = new Coordinate3D({
-        x: dragEvent.target.object.position.x,
-        y: dragEvent.target.object.position.y,
-        z: dragEvent.target.object.position.z,
-      })
+      this.startLocation = new Coordinate3D(
+        dragEvent.target.object.position.x,
+        dragEvent.target.object.position.y,
+        dragEvent.target.object.position.z,
+      )
     }
   }
 

@@ -23,7 +23,6 @@
       "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis.SourceGenerator\\BeamOs.StructuralAnalysis.SourceGenerator.csproj",
       "src\\StructuralAnalysis\\BeamOs.StructuralAnalysis\\BeamOs.StructuralAnalysis.csproj",
       "src\\WebApp\\BeamOs.WebApp.EditorCommands\\BeamOs.WebApp.EditorCommands.csproj",
-      "tests\\BeamOs.Tests.Architecture\\BeamOs.Tests.Architecture.csproj",
       "tests\\BeamOs.Tests.Common.Integration\\BeamOs.Tests.Common.Integration.csproj",
       "tests\\BeamOs.Tests.Common\\BeamOs.Tests.Common.csproj",
       "tests\\StructuralAnalysis\\BeamOs.Tests.StructuralAnalysis.Integration\\BeamOs.Tests.StructuralAnalysis.Integration.csproj",
