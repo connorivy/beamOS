@@ -1,4 +1,7 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Api;
+using BeamOs.StructuralAnalysis.Api.Endpoints;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.Tests.Common;
 using BeamOs.Tests.Common.Integration;
@@ -13,6 +16,7 @@ public class AssemblySetup
 {
     private static WebApplicationFactory<IAssemblyMarkerStructuralAnalysisApi>? backendFactory;
     public static string FrontendAddress { get; set; }
+    public static BeamOsResultApiClient BeamOsResultApiClient { get; private set; }
     private static HttpClient? client;
     public static bool Initialized { get; set; }
 
@@ -53,7 +57,12 @@ public class AssemblySetup
         );
         await backend.StartAsync();
         backendFactory = backend;
-        // client = backendFactory.CreateClient();
+
+        var httpClient = new HttpClient() { BaseAddress = new Uri(backend.ServerAddress) };
+        var apiClient = new StructuralAnalysisApiClientV1(httpClient);
+        BeamOsResultApiClient = new BeamOsResultApiClient(
+            new StructuralAnalysisApiClientV2(apiClient)
+        );
 
         // WebAppFactory = new BlazorApplicationFactory<_Imports>(builder =>
         // {

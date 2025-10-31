@@ -29,6 +29,7 @@ public record ModelResponse(
     string Description,
     ModelSettings Settings,
     DateTimeOffset LastModified,
+    // Dictionary<string, object>? Metadata = null,
     List<NodeResponse>? Nodes = null,
     List<InternalNode>? InternalNodes = null,
     List<Element1dResponse>? Element1ds = null,

@@ -8,6 +8,7 @@ import Step from "@mui/material/Step"
 import StepLabel from "@mui/material/StepLabel"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
+import { StepButton } from "@mui/material"
 
 type TutorialWelcomeDialogProps = {
   open: boolean
@@ -126,10 +127,13 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Typography variant="h6">{currentStep.title}</Typography>
           <Box>{currentStep.content}</Box>
-          <Stepper activeStep={activeStep} alternativeLabel>
+          <Stepper activeStep={activeStep} alternativeLabel nonLinear>
             {steps.map(step => (
               <Step key={step.label}>
-                <StepLabel>{step.label}</StepLabel>
+                <StepButton onClick={() => setActiveStep(steps.indexOf(step))}>
+                  {step.label}
+                </StepButton>
+                {/* <StepLabel>{step.label}</StepLabel> */}
               </Step>
             ))}
           </Stepper>

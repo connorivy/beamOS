@@ -70,5 +70,35 @@ public static class PageContextExtensions
             var modelIdGuid = Guid.Parse(modelId);
             return modelIdGuid;
         }
+
+        public async Task<Guid> CreateTutorial()
+        {
+            await AssemblySetup.CreateAuthenticatedUser(page);
+
+            await page.Page.GotoAsync(
+                "/models",
+                new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle }
+            );
+
+            // Find the card with the heading "Tutorial" and click it
+            var tutorialCard = page.Page.GetByRole(AriaRole.Heading, new PageGetByRoleOptions { Name = "Tutorial" })
+                .First;
+
+            var modelResponseTask = page.Page.WaitForResponseAsync(r =>
+                r.Url.Contains("/models") && r.Request.Method == "POST"
+            );
+            await tutorialCard.ClickAsync();
+
+            // Assert - Verify that the URL has changed to the tutorial page
+            await Assertions.Expect(page.Page).ToHaveURLAsync("/tutorial");
+
+            // Wait for the POST request to /models and extract the modelId from the response
+            var response = await modelResponseTask;
+
+            var responseBody = await response.JsonAsync();
+            Console.WriteLine($"responseBody: {responseBody}");
+            var modelId = responseBody?.GetProperty("id").GetString() ?? throw new InvalidOperationException("Model ID not found in response.");
+            return Guid.Parse(modelId!);
+        }
     }
 }

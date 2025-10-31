@@ -1,20 +1,23 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { RemoteEditorComponent } from "../editors/EditorComponent"
-import AppBarMain from "../../components/AppBarMain"
-import SidebarMain from "../../components/SidebarMain"
-import SelectionInfo from "../editors/selection-info/SelectionInfo"
 import TutorialWelcomeDialog from "./TutorialWelcomeDialog"
 import { useApiClient } from "../api-client/ApiClientContext"
 import type {
   CreateModelRequest,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import ResponsiveIconSidebarLayout from "../../layouts/ResponsiveIconSidebarLayout"
+import ResponsiveSecondarySidebar from "../../components/ResponsiveSecondarySidebar"
+import ResultViewer from "../results-viewing/ResultViewer"
+import { AngleUnit, ForceUnit, LengthUnit } from "../../utils/type-extensions/UnitTypeContracts"
+import { useSearchParams } from "react-router"
 
 const TutorialPage = () => {
   const apiClient = useApiClient()
-  const [modelId, setModelId] = useState<string | null>(null)
+  const [searchParams] = useSearchParams();
+  const [modelId, setModelId] = useState<string | null>(searchParams.get("modelId"))
   const [dialogOpen, setDialogOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const canvasId = useRef<string>("tutorial-canvas")
+  const canvasId = "tutorial-canvas"
 
   useEffect(() => {
     // Create a temporary model when the tutorial page loads
@@ -26,9 +29,9 @@ const TutorialPage = () => {
             "This model was created as part of the BeamOS tutorial.",
           settings: {
             unitSettings: {
-              lengthUnit: 1, // K_IN
-              forceUnit: 2,
-              angleUnit: 1,
+              lengthUnit: LengthUnit.Inch,
+              forceUnit: ForceUnit.KilopoundForce,
+              angleUnit: AngleUnit.Degree,
             },
             yAxisUp: true,
             analysisSettings: {
@@ -56,33 +59,17 @@ const TutorialPage = () => {
   }
 
   return (
-    <div
-      className="relative h-full w-full"
-      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-    >
-      <AppBarMain
-        onSidebarToggle={() => {
-          setSidebarOpen(true)
-        }}
-      />
-      <div style={{ display: "flex", flex: 1, position: "relative" }}>
-        <SidebarMain
-          open={sidebarOpen}
-          onClose={() => {
-            setSidebarOpen(false)
-          }}
-          drawerWidth={320}
-        >
-          <SelectionInfo canvasId={canvasId.current} />
-        </SidebarMain>
-        <div style={{ flex: 1, position: "relative" }}>
-          {modelId ? (
-            <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId.current} />
-          ) : (
-            <div>Loading tutorial...</div>
-          )}
-        </div>
-      </div>
+    <div className="h-full w-full">
+      <ResponsiveIconSidebarLayout canvasId={canvasId}>
+        {modelId ? (
+          <RemoteEditorComponent modelId={modelId} isReadOnly={false} canvasId={canvasId} />
+        ) : (
+          <div>Loading tutorial model...</div>
+        )}
+        <ResponsiveSecondarySidebar open={sidebarOpen} onOpen={() => { setSidebarOpen(true) }} onClose={() => { setSidebarOpen(false) }}>
+          <ResultViewer canvasId={canvasId} onOpen={() => { setSidebarOpen(true); }} onClose={() => { setSidebarOpen(false); }} />
+        </ResponsiveSecondarySidebar>
+      </ResponsiveIconSidebarLayout>
       <TutorialWelcomeDialog open={dialogOpen} onClose={handleDialogClose} />
     </div>
   )
