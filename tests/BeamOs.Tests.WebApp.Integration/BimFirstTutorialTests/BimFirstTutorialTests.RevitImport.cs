@@ -1,4 +1,3 @@
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using FluentAssertions;
 using Microsoft.Playwright;
 
