@@ -46,8 +46,9 @@ internal sealed class GetModelProposalQueryHandler(
     }
 }
 
-internal sealed class GetModelProposalsQueryHandler(IModelProposalRepository modelProposalRepository)
-    : IQueryHandler<Guid, ICollection<ModelProposalInfo>>
+internal sealed class GetModelProposalsQueryHandler(
+    IModelProposalRepository modelProposalRepository
+) : IQueryHandler<Guid, ICollection<ModelProposalInfo>>
 {
     public async Task<Result<ICollection<ModelProposalInfo>>> ExecuteAsync(
         Guid command,

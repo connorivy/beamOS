@@ -20,8 +20,13 @@ const TutorialPage = () => {
   const canvasId = "tutorial-canvas"
 
   useEffect(() => {
-    // Create a temporary model when the tutorial page loads
+    // Create a temporary model when the tutorial page loads, but only if no modelId was provided
     const createTutorialModel = async () => {
+      // If a modelId is already present from URL params, don't create a new one
+      if (searchParams.get("modelId")) {
+        return;
+      }
+
       try {
         const request: CreateModelRequest = {
           name: "Tutorial Model",
@@ -52,7 +57,7 @@ const TutorialPage = () => {
     void createTutorialModel()
     // Show dialog immediately when component mounts
     setDialogOpen(true)
-  }, [apiClient])
+  }, [apiClient, searchParams])
 
   const handleDialogClose = () => {
     setDialogOpen(false)
@@ -70,7 +75,12 @@ const TutorialPage = () => {
           <ResultViewer canvasId={canvasId} onOpen={() => { setSidebarOpen(true); }} onClose={() => { setSidebarOpen(false); }} />
         </ResponsiveSecondarySidebar>
       </ResponsiveIconSidebarLayout>
-      <TutorialWelcomeDialog open={dialogOpen} onClose={handleDialogClose} />
+      <TutorialWelcomeDialog 
+        open={dialogOpen} 
+        onClose={handleDialogClose} 
+        modelId={modelId}
+        apiClient={apiClient}
+      />
     </div>
   )
 }
