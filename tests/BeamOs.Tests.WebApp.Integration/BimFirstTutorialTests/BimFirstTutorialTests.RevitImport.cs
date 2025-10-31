@@ -32,7 +32,15 @@ public partial class BimFirstTutorialTests : ReactPageTest
             AriaRole.Button,
             new LocatorGetByRoleOptions { Name = "import" }
         );
+        
+        // Click the import button and wait for it to be enabled again (import complete)
         await importData.ClickAsync();
+        
+        // Wait a moment for the button to become disabled (indicating import started)
+        await this.Page.WaitForTimeoutAsync(100);
+        
+        // Wait for the import to complete (button should be enabled again)
+        await this.Expect(importData).Not.ToBeDisabledAsync(new() { Timeout = 30000 });
 
         var modelResponseAfter = await AssemblySetup
             .BeamOsResultApiClient.Models[this.ModelId]
