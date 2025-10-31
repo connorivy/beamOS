@@ -127,6 +127,13 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
   const [isImporting, setIsImporting] = useState(false)
   const [importCompleted, setImportCompleted] = useState(false)
 
+  const steps = getSteps({
+    isImporting,
+    importCompleted,
+    onImport: () => handleImportSampleData(),
+    modelId,
+  })
+
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
       setActiveStep(prevStep => prevStep + 1)
@@ -272,13 +279,6 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
       setIsImporting(false)
     }
   }
-
-  const steps = getSteps({
-    isImporting,
-    importCompleted,
-    onImport: handleImportSampleData,
-    modelId,
-  })
 
   const currentStep = steps[activeStep]
 
