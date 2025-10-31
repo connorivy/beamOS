@@ -7,7 +7,7 @@ import Stepper from "@mui/material/Stepper"
 import Step from "@mui/material/Step"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
-import { StepButton } from "@mui/material"
+import { StepButton, Tooltip } from "@mui/material"
 import type { IStructuralAnalysisApiClientV1 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 type TutorialWelcomeDialogProps = {
@@ -17,7 +17,14 @@ type TutorialWelcomeDialogProps = {
   apiClient: IStructuralAnalysisApiClientV1
 }
 
-const steps = [
+type StepContentProps = {
+  isImporting: boolean
+  importCompleted: boolean
+  onImport: () => void
+  modelId: string | null
+}
+
+const getSteps = (props: StepContentProps) => [
   {
     label: "Welcome",
     title: "Welcome to BeamOS!",
@@ -53,6 +60,22 @@ const steps = [
         <Typography variant="body1" sx={{ mb: 2 }}>
           A Revit plugin is in development that users will be able to use to send their data into BeamOS. For the purpose of this tutorial, you can import some sample data below.
         </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+          <Button 
+            onClick={props.onImport} 
+            variant="contained" 
+            color="primary"
+            disabled={props.isImporting || !props.modelId}
+            aria-label="import"
+          >
+            {props.isImporting ? "Importing..." : "Import Sample Data"}
+          </Button>
+        </Box>
+        {props.importCompleted && (
+          <Typography variant="body2" color="success.main" sx={{ textAlign: 'center' }}>
+            ✓ Sample data imported successfully
+          </Typography>
+        )}
       </>
     ),
   },
@@ -132,131 +155,116 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
     try {
       console.log("Starting import of Kassimali_Example3_8 data for model:", modelId)
       
-      // Import Kassimali_Example3_8 data
-      // Nodes
-      console.log("Importing nodes...")
-      await apiClient.batchPutNode(modelId, [
-        {
-          id: 1,
-          locationPoint: { x: 12, y: 16, z: 0, lengthUnit: 2 }, // Foot = 2
-          restraint: { canTranslateAlongX: true, canTranslateAlongY: true, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-        },
-        {
-          id: 2,
-          locationPoint: { x: 0, y: 0, z: 0, lengthUnit: 2 },
-          restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-        },
-        {
-          id: 3,
-          locationPoint: { x: 12, y: 0, z: 0, lengthUnit: 2 },
-          restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-        },
-        {
-          id: 4,
-          locationPoint: { x: 24, y: 0, z: 0, lengthUnit: 2 },
-          restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-        },
-      ])
-      console.log("Nodes imported successfully")
+      // Create a model proposal with all the data instead of adding directly to the model
+      await apiClient.createModelProposal(modelId, {
+        description: "Tutorial sample data - Kassimali Example 3.8",
+        createNodeProposals: [
+          {
+            id: 1,
+            locationPoint: { x: 12, y: 16, z: 0, lengthUnit: 2 }, // Foot = 2
+            restraint: { canTranslateAlongX: true, canTranslateAlongY: true, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
+          },
+          {
+            id: 2,
+            locationPoint: { x: 0, y: 0, z: 0, lengthUnit: 2 },
+            restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
+          },
+          {
+            id: 3,
+            locationPoint: { x: 12, y: 0, z: 0, lengthUnit: 2 },
+            restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
+          },
+          {
+            id: 4,
+            locationPoint: { x: 24, y: 0, z: 0, lengthUnit: 2 },
+            restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
+          },
+        ],
+        createMaterialProposals: [
+          {
+            id: 992,
+            modulusOfElasticity: 29000,
+            modulusOfRigidity: 1,
+            pressureUnit: 4, // KilopoundForcePerSquareInch = 4
+          },
+        ],
+        createSectionProfileProposals: [
+          {
+            id: 8,
+            name: "8",
+            lengthUnit: 1, // Inch = 1
+            area: 8,
+            strongAxisMomentOfInertia: 1,
+            weakAxisMomentOfInertia: 1,
+            polarMomentOfInertia: 1,
+            strongAxisShearArea: 1,
+            weakAxisShearArea: 1,
+            strongAxisPlasticSectionModulus: 1,
+            weakAxisPlasticSectionModulus: 1,
+          },
+          {
+            id: 6,
+            name: "6",
+            lengthUnit: 1,
+            area: 6,
+            strongAxisMomentOfInertia: 1,
+            weakAxisMomentOfInertia: 1,
+            polarMomentOfInertia: 1,
+            strongAxisShearArea: 1,
+            weakAxisShearArea: 1,
+            strongAxisPlasticSectionModulus: 1,
+            weakAxisPlasticSectionModulus: 1,
+          },
+        ],
+        loadCaseProposals: [
+          { id: 1, name: "Load Case 1" },
+        ],
+        loadCombinationProposals: [
+          { id: 1, loadCaseFactors: { "1": 1.0 } },
+          { id: 2, loadCaseFactors: { "1": 1.0 } },
+        ],
+        pointLoadProposals: [
+          {
+            id: 1,
+            nodeId: 1,
+            loadCaseId: 1,
+            force: { value: 150, unit: 1 }, // KilopoundForce = 1
+            direction: { x: 1, y: 0, z: 0 },
+          },
+          {
+            id: 2,
+            nodeId: 1,
+            loadCaseId: 1,
+            force: { value: 300, unit: 1 },
+            direction: { x: 0, y: -1, z: 0 },
+          },
+        ],
+        createElement1dProposals: [
+          {
+            id: 1,
+            startNodeId: { proposedId: 2, existingId: undefined },
+            endNodeId: { proposedId: 1, existingId: undefined },
+            materialId: { proposedId: 992, existingId: undefined },
+            sectionProfileId: { proposedId: 8, existingId: undefined },
+          },
+          {
+            id: 2,
+            startNodeId: { proposedId: 3, existingId: undefined },
+            endNodeId: { proposedId: 1, existingId: undefined },
+            materialId: { proposedId: 992, existingId: undefined },
+            sectionProfileId: { proposedId: 6, existingId: undefined },
+          },
+          {
+            id: 3,
+            startNodeId: { proposedId: 4, existingId: undefined },
+            endNodeId: { proposedId: 1, existingId: undefined },
+            materialId: { proposedId: 992, existingId: undefined },
+            sectionProfileId: { proposedId: 8, existingId: undefined },
+          },
+        ],
+      })
 
-      // Materials
-      console.log("Importing materials...")
-      await apiClient.batchPutMaterial(modelId, [
-        {
-          id: 992,
-          modulusOfElasticity: 29000,
-          modulusOfRigidity: 1,
-          pressureUnit: 4, // KilopoundForcePerSquareInch = 4
-        },
-      ])
-      console.log("Materials imported successfully")
-
-      // Section Profiles
-      console.log("Importing section profiles...")
-      await apiClient.batchPutSectionProfile(modelId, [
-        {
-          id: 8,
-          name: "8",
-          lengthUnit: 1, // Inch = 1
-          area: 8,
-          strongAxisMomentOfInertia: 1,
-          weakAxisMomentOfInertia: 1,
-          polarMomentOfInertia: 1,
-          strongAxisShearArea: 1,
-          weakAxisShearArea: 1,
-          strongAxisPlasticSectionModulus: 1,
-          weakAxisPlasticSectionModulus: 1,
-        },
-        {
-          id: 6,
-          name: "6",
-          lengthUnit: 1,
-          area: 6,
-          strongAxisMomentOfInertia: 1,
-          weakAxisMomentOfInertia: 1,
-          polarMomentOfInertia: 1,
-          strongAxisShearArea: 1,
-          weakAxisShearArea: 1,
-          strongAxisPlasticSectionModulus: 1,
-          weakAxisPlasticSectionModulus: 1,
-        },
-      ])
-
-      // Load Cases
-      await apiClient.batchPutLoadCase(modelId, [
-        { id: 1, name: "Load Case 1" },
-      ])
-
-      // Load Combinations
-      await apiClient.batchPutLoadCombination(modelId, [
-        { id: 1, loadCaseFactors: { "1": 1.0 } },
-        { id: 2, loadCaseFactors: { "1": 1.0 } },
-      ])
-
-      // Point Loads
-      await apiClient.batchPutPointLoad(modelId, [
-        {
-          id: 1,
-          nodeId: 1,
-          loadCaseId: 1,
-          force: { value: 150, unit: 1 }, // KilopoundForce = 1
-          direction: { x: 1, y: 0, z: 0 },
-        },
-        {
-          id: 2,
-          nodeId: 1,
-          loadCaseId: 1,
-          force: { value: 300, unit: 1 },
-          direction: { x: 0, y: -1, z: 0 },
-        },
-      ])
-
-      // Elements
-      await apiClient.batchPutElement1d(modelId, [
-        {
-          id: 1,
-          startNodeId: 2,
-          endNodeId: 1,
-          materialId: 992,
-          sectionProfileId: 8,
-        },
-        {
-          id: 2,
-          startNodeId: 3,
-          endNodeId: 1,
-          materialId: 992,
-          sectionProfileId: 6,
-        },
-        {
-          id: 3,
-          startNodeId: 4,
-          endNodeId: 1,
-          materialId: 992,
-          sectionProfileId: 8,
-        },
-      ])
-
-      console.log("Sample data imported successfully")
+      console.log("Sample data imported successfully as model proposal")
       setImportCompleted(true)
     } catch (error) {
       console.error("Error importing sample data:", error)
@@ -265,7 +273,18 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
     }
   }
 
+  const steps = getSteps({
+    isImporting,
+    importCompleted,
+    onImport: handleImportSampleData,
+    modelId,
+  })
+
   const currentStep = steps[activeStep]
+
+  // Determine if the next button should be disabled
+  // On step 1 (BIM-First), disable next until import is complete
+  const isNextDisabled = activeStep === 1 && !importCompleted
 
   return (
     <Dialog
@@ -285,11 +304,6 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Typography variant="h6">{currentStep.title}</Typography>
           <Box>{currentStep.content}</Box>
-          {importCompleted && (
-            <Typography data-testid="import-completed" variant="body2" color="success.main">
-              ✓ Sample data imported successfully
-            </Typography>
-          )}
           <Stepper activeStep={activeStep} alternativeLabel nonLinear>
             {steps.map(step => (
               <Step key={step.label}>
@@ -311,21 +325,22 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
             Back
           </Button>
         )}
-        {activeStep === 1 && (
-          <Button 
-            onClick={handleImportSampleData} 
-            variant="contained" 
-            color="primary"
-            disabled={isImporting || !modelId}
-            aria-label="import"
-          >
-            {isImporting ? "Importing..." : "Import Sample Data"}
-          </Button>
-        )}
         {activeStep < steps.length - 1 && (
-          <Button onClick={handleNext} variant="contained" aria-label="next">
-            Next
-          </Button>
+          <Tooltip 
+            title={isNextDisabled ? "Please import sample data before proceeding" : ""}
+            arrow
+          >
+            <span>
+              <Button 
+                onClick={handleNext} 
+                variant="contained" 
+                aria-label="next"
+                disabled={isNextDisabled}
+              >
+                Next
+              </Button>
+            </span>
+          </Tooltip>
         )}
       </DialogActions>
     </Dialog>
