@@ -9,7 +9,6 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using EntityFramework.Exceptions.Common;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Riok.Mapperly.Abstractions;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -25,6 +24,12 @@ internal class CreateModelCommandHandler(
     )
     {
         Model model = command.ToDomainObject();
+        var value = await this.HandleBimFirstModelCreation(command, model, ct);
+        if (value.IsError)
+        {
+            return value.Error;
+        }
+
         modelRepository.Add(model);
         try
         {
@@ -36,6 +41,57 @@ internal class CreateModelCommandHandler(
         }
 
         return ModelToResponseMapper.Create(model.Settings.UnitSettings).Map(model);
+    }
+
+    private async Task<Result> HandleBimFirstModelCreation(
+        CreateModelRequest command,
+        Model model,
+        CancellationToken ct
+    )
+    {
+        if (model.Settings.WorkflowSettings.ModelingMode is not ModelingMode.BimFirst)
+        {
+            return Result.Success;
+        }
+
+        Model bimSourceModel;
+        if (model.BimSourceModelId.HasValue)
+        {
+            var possibleBimSourceModel = await modelRepository.GetSingle(
+                model.BimSourceModelId.Value,
+                ct
+            );
+            if (possibleBimSourceModel is null)
+            {
+                return BeamOsError.NotFound(
+                    description: $"BIM source model with ID {model.BimSourceModelId.Value} not found."
+                );
+            }
+            if (
+                possibleBimSourceModel.Settings.WorkflowSettings.ModelingMode
+                != ModelingMode.BimFirstSource
+            )
+            {
+                return BeamOsError.Validation(
+                    description: $"BIM source model with ID {model.BimSourceModelId.Value} is not in BIM First Source modeling mode."
+                );
+            }
+            bimSourceModel = possibleBimSourceModel;
+        }
+        else
+        {
+            bimSourceModel = (command with { Id = null }).ToDomainObject();
+            bimSourceModel.Settings.WorkflowSettings.ModelingMode = ModelingMode.BimFirstSource;
+            bimSourceModel.Name = $"BIM Source Model for {model.Name}";
+            bimSourceModel.Description =
+                $"This is an auto-generated BIM Source Model for {model.Name}. When you push changes from your BIM model, they will be applied to this model and then a change model request will be created for {model.Name}.";
+            modelRepository.Add(bimSourceModel);
+        }
+        bimSourceModel.Settings.WorkflowSettings.BimFirstModelIds ??= [];
+        bimSourceModel.Settings.WorkflowSettings.BimFirstModelIds.Add(model.Id);
+        model.BimSourceModel = bimSourceModel;
+
+        return Result.Success;
     }
 }
 
@@ -77,7 +133,20 @@ internal partial class ModelToResponseMapper : AbstractMapperProvidedUnits<Model
 
     private partial SectionProfileResponse ToResponse(SectionProfile entity, LengthUnit lengthUnit);
 
-    public ModelResponse Map(Model source) => this.ToResponse(source);
+    public ModelResponse Map(Model source)
+    {
+        var model = this.ToResponse(source);
+        return model with
+        {
+            Settings = model.Settings with
+            {
+                WorkflowSettings = model.Settings.WorkflowSettings with
+                {
+                    BimSourceModelId = source.BimSourceModelId,
+                },
+            },
+        };
+    }
 
     private partial ModelResponse ToResponse(Model source);
 }

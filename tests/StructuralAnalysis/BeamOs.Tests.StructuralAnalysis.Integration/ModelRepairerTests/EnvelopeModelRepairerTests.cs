@@ -236,7 +236,12 @@ public static class ModelRepairerTestUtil
             AngleUnit = AngleUnitContract.Radian,
         };
         var analysisSettings = new AnalysisSettings();
-        var modelSettings = new ModelSettings(unitSettings, analysisSettings, yAxisUp);
+        var modelSettings = new ModelSettings(
+            unitSettings,
+            analysisSettings,
+            new() { ModelingMode = ModelingMode.Independent },
+            yAxisUp
+        );
         return modelSettings;
     }
 

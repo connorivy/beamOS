@@ -70,7 +70,7 @@ public class ModelsPageTests : ReactPageTest
         // 'My Test Model' should be visible on the page
         var modelCard = this.Page.GetByRole(
             AriaRole.Heading,
-            new PageGetByRoleOptions { Name = "My Test Model" }
+            new PageGetByRoleOptions { Name = "My Test Model", Exact = true }
         );
         await Expect(modelCard).ToBeVisibleAsync();
     }

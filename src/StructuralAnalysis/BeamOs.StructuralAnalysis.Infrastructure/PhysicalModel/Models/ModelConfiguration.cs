@@ -50,6 +50,13 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder
+            .HasOne(m => m.BimSourceModel)
+            .WithMany()
+            .HasForeignKey(m => m.BimSourceModelId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
         // builder.Property(m => m.Name).HasColumnName(nameof(Model.Name));
         // builder.Property(m => m.Description).HasColumnName(nameof(Model.Description));
         // // builder.Property(m => m.Settings).HasColumnName(nameof(Model.Settings));

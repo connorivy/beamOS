@@ -10,7 +10,8 @@
       Value: 0.0,
       Unit: Radian
     },
-    Metadata: null
+    Metadata: null,
+    ExternalId: null
   },
   Error: null,
   IsError: false,

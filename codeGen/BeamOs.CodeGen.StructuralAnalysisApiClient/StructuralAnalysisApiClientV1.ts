@@ -3138,6 +3138,7 @@ export interface CreateElement1dRequest {
     sectionProfileRotation?: NullableOfAngle | undefined;
     id?: number | undefined;
     metadata?: { [key: string]: string; } | undefined;
+    externalId?: string | undefined;
 
     [key: string]: any;
 }
@@ -3327,6 +3328,7 @@ export interface DisplacementsResponse {
 }
 
 export interface Element1dData {
+    externalId?: string | undefined;
     startNodeId: number;
     endNodeId: number;
     materialId: number;
@@ -3346,6 +3348,7 @@ export interface Element1dResponse {
     sectionProfileId: number;
     sectionProfileRotation: Angle;
     metadata?: { [key: string]: string; } | undefined;
+    externalId?: string | undefined;
 
     [key: string]: any;
 }
@@ -3591,16 +3594,18 @@ export interface ModelResponse {
 
 export interface ModelSettings {
     unitSettings: UnitSettings;
-    analysisSettings: AnalysisSettings;
-    yAxisUp: boolean;
+    analysisSettings?: AnalysisSettings;
+    workflowSettings?: WorkflowSettings;
+    yAxisUp?: boolean;
 
     [key: string]: any;
 }
 
 export interface ModelSettings2 {
     unitSettings: UnitSettings;
-    analysisSettings: AnalysisSettings;
-    yAxisUp: boolean;
+    analysisSettings?: AnalysisSettings;
+    workflowSettings?: WorkflowSettings;
+    yAxisUp?: boolean;
 
     [key: string]: any;
 }
@@ -3836,6 +3841,7 @@ export interface ProposedID2 {
 
 export interface PutElement1dRequest {
     id: number;
+    externalId?: string | undefined;
     startNodeId: number;
     endNodeId: number;
     materialId: number;
@@ -4030,6 +4036,15 @@ export interface Vector3 {
     x: number;
     y: number;
     z: number;
+
+    [key: string]: any;
+}
+
+export interface WorkflowSettings {
+    modelingMode: number;
+    bimSourceModelId?: string | undefined;
+    bimFirstModelIds?: string[] | undefined;
+    bimFirstSourceModelId?: string | undefined;
 
     [key: string]: any;
 }

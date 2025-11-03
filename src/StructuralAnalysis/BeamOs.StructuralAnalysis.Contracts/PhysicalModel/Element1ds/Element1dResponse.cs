@@ -11,7 +11,8 @@ public record Element1dResponse(
     int MaterialId,
     int SectionProfileId,
     Angle SectionProfileRotation,
-    Dictionary<string, string>? Metadata = null
+    Dictionary<string, string>? Metadata = null,
+    string? ExternalId = null
 ) : IModelEntity
 {
     public Element1dData ToElement1dData()

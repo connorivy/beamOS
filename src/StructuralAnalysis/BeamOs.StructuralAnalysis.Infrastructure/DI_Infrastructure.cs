@@ -114,35 +114,36 @@ public static partial class DependencyInjection
 
 #if Postgres
     private static void AddDb(this IServiceCollection services, string connectionString) =>
-        _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
-            options
-                .UseNpgsql(
-                    connectionString,
-                    o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
-                )
-                // .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
-                .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
-                .AddInterceptors(
-                    new ModelProposalEntityIdIncrementingInterceptor(TimeProvider.System)
-                )
-                .UseExceptionProcessor()
-                // .UseModel(StructuralAnalysisDbContextModel.Instance)
+        _ = services.AddDbContext<StructuralAnalysisDbContext>(
+            (sp, options) =>
+                options
+                    .UseNpgsql(
+                        connectionString,
+                        o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
+                    )
+                    .AddInterceptors(
+                        new ModelEntityIdIncrementingInterceptor(TimeProvider.System),
+                        new ModelProposalEntityIdIncrementingInterceptor(TimeProvider.System),
+                        new PublishDomainEventsInterceptor(sp)
+                    )
+                    .UseExceptionProcessor()
+                    // .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
-                .LogTo(Console.WriteLine, LogLevel.Error)
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors()
+                    .LogTo(Console.WriteLine, LogLevel.Error)
 #endif
 #if !DEBUG
-                .UseLoggerFactory(
-                    LoggerFactory.Create(builder =>
-                    {
-                        builder.AddFilter((category, level) => level >= LogLevel.Error);
-                    })
-                )
+                    .UseLoggerFactory(
+                        LoggerFactory.Create(builder =>
+                        {
+                            builder.AddFilter((category, level) => level >= LogLevel.Error);
+                        })
+                    )
 #endif
-                .ConfigureWarnings(warnings =>
-                    warnings.Log(RelationalEventId.PendingModelChangesWarning)
-                )
+                    .ConfigureWarnings(warnings =>
+                        warnings.Log(RelationalEventId.PendingModelChangesWarning)
+                    )
         );
 #endif
 

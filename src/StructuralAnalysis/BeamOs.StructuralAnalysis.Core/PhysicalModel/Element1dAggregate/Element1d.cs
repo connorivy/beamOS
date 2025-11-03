@@ -15,7 +15,8 @@ internal class Element1d : BeamOsModelEntity<Element1dId>
         NodeId endNodeId,
         MaterialId materialId,
         SectionProfileId sectionProfileId,
-        Element1dId? id = null
+        Element1dId? id = null,
+        string? externalId = null
     )
         : base(id ?? new(), modelId)
     {
@@ -24,6 +25,7 @@ internal class Element1d : BeamOsModelEntity<Element1dId>
         this.EndNodeId = endNodeId;
         this.MaterialId = materialId;
         this.SectionProfileId = sectionProfileId;
+        this.ExternalId = externalId;
     }
 
     public NodeId StartNodeId { get; set; }
@@ -35,6 +37,7 @@ internal class Element1d : BeamOsModelEntity<Element1dId>
     public SectionProfileId SectionProfileId { get; set; }
     public SectionProfileInfoBase? SectionProfile { get; set; }
     public IList<InternalNode>? InternalNodes { get; set; }
+    public string? ExternalId { get; set; }
 
     //public ICollection<ShearForceDiagram>? ShearForceDiagrams { get; init; }
     //public ICollection<MomentDiagram>? MomentDiagrams { get; init; }
@@ -257,7 +260,7 @@ internal class Element1d : BeamOsModelEntity<Element1dId>
         IReadOnlyDictionary<NodeId, NodeDefinition>? nodeStore = null
     )
     {
-        var decimalFraction = ratioAlongElement1d.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+        var decimalFraction = ratioAlongElement1d.As(RatioUnit.DecimalFraction);
         if (decimalFraction is < 0 or > 1)
         {
             throw new ArgumentOutOfRangeException(
@@ -288,11 +291,11 @@ internal class Element1d : BeamOsModelEntity<Element1dId>
         var startLocation = startNode.GetLocationPoint(elementStore, nodeStore);
         var endLocation = endNode.GetLocationPoint(elementStore, nodeStore);
 
-        var x = startLocation.X + (endLocation.X - startLocation.X) * decimalFraction;
+        var x = startLocation.X + ((endLocation.X - startLocation.X) * decimalFraction);
 
-        var y = startLocation.Y + (endLocation.Y - startLocation.Y) * decimalFraction;
+        var y = startLocation.Y + ((endLocation.Y - startLocation.Y) * decimalFraction);
 
-        var z = startLocation.Z + (endLocation.Z - startLocation.Z) * decimalFraction;
+        var z = startLocation.Z + ((endLocation.Z - startLocation.Z) * decimalFraction);
 
         return new Point(x, y, z);
     }

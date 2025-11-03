@@ -16,7 +16,7 @@ public interface IBeamOsModel
     public string Name { get; }
     public string Description { get; }
     public ModelSettings Settings { get; }
-    public UnitSettings UnitSettings => this.Settings.UnitSettings;
+    public UnitSettings unitSettings => this.Settings.UnitSettings;
     public DateTimeOffset LastModified { get; }
 
     /// <summary>

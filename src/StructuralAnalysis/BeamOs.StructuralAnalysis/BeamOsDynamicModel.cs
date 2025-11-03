@@ -1,3 +1,4 @@
+using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases;
@@ -27,7 +28,7 @@ public sealed class BeamOsDynamicModel(
 
     private readonly List<PutNodeRequest> nodes = [];
 
-    public UnitSettingsContract UnitSettings => this.Settings.UnitSettings;
+    public UnitSettingsContract unitSettings => this.Settings.UnitSettings;
 
     public BeamOsDynamicModel(
         Guid modelId,
@@ -57,7 +58,7 @@ public sealed class BeamOsDynamicModel(
             new PutNodeRequest()
             {
                 Id = id,
-                LocationPoint = new(x, y, z, this.UnitSettings.LengthUnit),
+                LocationPoint = new(x, y, z, this.unitSettings.LengthUnit),
                 Restraint = restraint ?? RestraintContract.Free,
             }
         );
@@ -76,7 +77,8 @@ public sealed class BeamOsDynamicModel(
         int endNodeId,
         int materialId,
         int sectionProfileId,
-        AngleContract? sectionProfileRotation = null
+        AngleContract? sectionProfileRotation = null,
+        string? externalId = null
     ) =>
         this.AddElement1ds(
             new PutElement1dRequest(
@@ -85,7 +87,8 @@ public sealed class BeamOsDynamicModel(
                 endNodeId,
                 materialId,
                 sectionProfileId,
-                sectionProfileRotation ?? new(0, AngleUnitContract.Radian)
+                sectionProfileRotation ?? new(0, AngleUnitContract.Radian),
+                externalId: externalId
             )
         );
 
@@ -105,7 +108,7 @@ public sealed class BeamOsDynamicModel(
                 Id = id,
                 ModulusOfElasticity = modulusOfElasticity,
                 ModulusOfRigidity = modulusOfRigidity,
-                PressureUnit = this.UnitSettings.PressureUnit,
+                PressureUnit = this.unitSettings.PressureUnit,
             }
         );
 
@@ -154,7 +157,7 @@ public sealed class BeamOsDynamicModel(
                 Id = id,
                 NodeId = nodeId,
                 LoadCaseId = loadCaseId,
-                Force = new(force, this.UnitSettings.ForceUnit),
+                Force = new(force, this.unitSettings.ForceUnit),
                 Direction = direction,
             }
         );
@@ -181,7 +184,7 @@ public sealed class BeamOsDynamicModel(
                 Id = id,
                 NodeId = nodeId,
                 LoadCaseId = loadCaseId,
-                Torque = new(moment, this.UnitSettings.TorqueUnit),
+                Torque = new(moment, this.unitSettings.TorqueUnit),
                 AxisDirection = axisDirection,
             }
         );
@@ -220,7 +223,7 @@ public sealed class BeamOsDynamicModel(
                 WeakAxisPlasticSectionModulus = weakAxisPlasticSectionModulus,
                 StrongAxisShearArea = strongAxisShearArea,
                 WeakAxisShearArea = weakAxisShearArea,
-                LengthUnit = this.UnitSettings.LengthUnit,
+                LengthUnit = this.unitSettings.LengthUnit,
             }
         );
 
@@ -252,4 +255,25 @@ public sealed class BeamOsDynamicModel(
     [DotWrapIgnore]
     public IEnumerable<SectionProfileFromLibraryContract> SectionProfilesFromLibraryRequests() =>
         this.sectionProfilesFromLibrary.AsReadOnly();
+}
+
+public record TrackedElement1dNode(double X, double Y, double Z, Restraint? Restraint) { }
+
+public sealed class ModelOperations(Guid id)
+{
+    public Guid Id => id;
+
+    public void AddTrackedElement1d(
+        string externalId,
+        Point startNodeLocation,
+        Point endNodeLocation,
+        string? materialName,
+        string? sectionProfileName
+    ) => throw new NotImplementedException();
+
+    public async Task PushChanges(BeamOsApiResultModelId modelApiClient)
+    {
+        // create nodes by location. check
+        throw new NotImplementedException();
+    }
 }

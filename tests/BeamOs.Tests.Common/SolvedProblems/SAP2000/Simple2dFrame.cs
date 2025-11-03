@@ -29,6 +29,7 @@ public class Simple2dFrame : ModelFixture
                 ForceUnit = ForceUnitContract.KilopoundForce,
             },
             null,
+            new() { ModelingMode = ModelingMode.Independent },
             true
         );
 

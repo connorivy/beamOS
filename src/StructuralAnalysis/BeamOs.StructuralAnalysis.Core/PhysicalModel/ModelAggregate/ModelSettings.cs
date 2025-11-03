@@ -6,16 +6,19 @@ internal class ModelSettings : BeamOSValueObject
 {
     public UnitSettings UnitSettings { get; private set; }
     public AnalysisSettings AnalysisSettings { get; private set; }
+    public WorkflowSettings WorkflowSettings { get; private set; }
     public bool YAxisUp { get; private set; }
 
     public ModelSettings(
         UnitSettings unitSettings,
         bool yAxisUp,
+        WorkflowSettings workflowSettings,
         AnalysisSettings? analysisSettings = null
     )
     {
         this.UnitSettings = unitSettings;
         this.AnalysisSettings = analysisSettings ?? new();
+        this.WorkflowSettings = workflowSettings;
         this.YAxisUp = yAxisUp;
     }
 
