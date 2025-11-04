@@ -6,6 +6,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using BeamOs.Tests.Common;
+using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
@@ -78,7 +79,7 @@ public class DiffModelTests
 
         var diffResponse = await AssemblySetup
             .StructuralAnalysisRemoteApiClient.Models[modelIdA]
-            .GetModelDiffAsync(diffRequest);
+            .Diff.GitModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
 

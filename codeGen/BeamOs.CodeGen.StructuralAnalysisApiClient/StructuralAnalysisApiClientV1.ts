@@ -220,6 +220,12 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
+    gitModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     repairModel(modelId: string, body: string | null | undefined): Promise<ModelProposalResponse>;
 
     /**
@@ -1974,6 +1980,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
+    gitModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/diff";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGitModelDiff(_response);
+        });
+    }
+
+    protected processGitModelDiff(response: Response): Promise<ModelDiffResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ModelDiffResponse;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelDiffResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     repairModel(modelId: string, body: string | null | undefined): Promise<ModelProposalResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/repair";
         if (modelId === undefined || modelId === null)
@@ -3376,6 +3426,12 @@ export interface DiagramConsistentIntervalResponse2 {
     [key: string]: any;
 }
 
+export interface DiffModelRequest {
+    targetModelId: string;
+
+    [key: string]: any;
+}
+
 export interface DisplacementsResponse {
     displacementAlongX: Length;
     displacementAlongY: Length;
@@ -3421,6 +3477,20 @@ export interface Element1dResponse {
     [key: string]: any;
 }
 
+export interface Element1dResponse2 {
+    id: number;
+    modelId: string;
+    startNodeId: number;
+    endNodeId: number;
+    materialId: number;
+    sectionProfileId: number;
+    sectionProfileRotation: Angle;
+    metadata?: { [key: string]: string; } | undefined;
+    externalId?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface Element1dResultResponse {
     modelId: string;
     resultSetId: number;
@@ -3431,6 +3501,48 @@ export interface Element1dResultResponse {
     maxMoment: Torque;
     minDisplacement: Length;
     maxDisplacement: Length;
+
+    [key: string]: any;
+}
+
+export interface EntityDiffOfElement1dResponse {
+    status: number;
+    entity: Element1dResponse2 | undefined;
+
+    [key: string]: any;
+}
+
+export interface EntityDiffOfMaterialResponse {
+    status: number;
+    entity: MaterialResponse2 | undefined;
+
+    [key: string]: any;
+}
+
+export interface EntityDiffOfMomentLoadResponse {
+    status: number;
+    entity: MomentLoadResponse2 | undefined;
+
+    [key: string]: any;
+}
+
+export interface EntityDiffOfNodeResponse {
+    status: number;
+    entity: NodeResponse2 | undefined;
+
+    [key: string]: any;
+}
+
+export interface EntityDiffOfPointLoadResponse {
+    status: number;
+    entity: PointLoadResponse2 | undefined;
+
+    [key: string]: any;
+}
+
+export interface EntityDiffOfSectionProfileResponse {
+    status: number;
+    entity: SectionProfileResponse2 | undefined;
 
     [key: string]: any;
 }
@@ -3544,6 +3656,27 @@ export interface MaterialResponse {
     modulusOfElasticity: number;
     modulusOfRigidity: number;
     pressureUnit: number;
+
+    [key: string]: any;
+}
+
+export interface MaterialResponse2 {
+    id: number;
+    modelId: string;
+    modulusOfElasticity: number;
+    modulusOfRigidity: number;
+    pressureUnit: number;
+
+    [key: string]: any;
+}
+
+export interface ModelDiffResponse {
+    nodes?: EntityDiffOfNodeResponse[];
+    element1ds?: EntityDiffOfElement1dResponse[];
+    materials?: EntityDiffOfMaterialResponse[];
+    sectionProfiles?: EntityDiffOfSectionProfileResponse[];
+    pointLoads?: EntityDiffOfPointLoadResponse[];
+    momentLoads?: EntityDiffOfMomentLoadResponse[];
 
     [key: string]: any;
 }
@@ -3768,6 +3901,17 @@ export interface MomentLoadResponse {
     [key: string]: any;
 }
 
+export interface MomentLoadResponse2 {
+    id: number;
+    nodeId: number;
+    loadCaseId: number;
+    modelId: string;
+    torque: Torque;
+    axisDirection: Vector3;
+
+    [key: string]: any;
+}
+
 export interface NodeData {
     locationPoint: Point;
     restraint: Restraint;
@@ -3777,6 +3921,15 @@ export interface NodeData {
 }
 
 export interface NodeResponse {
+    id: number;
+    modelId: string;
+    locationPoint: Point;
+    restraint: Restraint;
+
+    [key: string]: any;
+}
+
+export interface NodeResponse2 {
     id: number;
     modelId: string;
     locationPoint: Point;
@@ -3843,6 +3996,9 @@ export interface OperationStatus {
 }
 
 export interface PatchModelRequest {
+    materialRequests?: CreateMaterialRequest2[] | undefined;
+    sectionProfileFromLibraryRequests?: CreateSectionProfileFromLibraryRequest[] | undefined;
+    sectionProfileRequests?: CreateSectionProfileRequest[] | undefined;
     element1dsToAddOrUpdateByExternalId?: Element1dByLocationRequest[] | undefined;
     options?: PatchOperationOptions;
 
@@ -3891,6 +4047,17 @@ export interface PointLoadData {
 }
 
 export interface PointLoadResponse {
+    modelId: string;
+    id: number;
+    nodeId: number;
+    loadCaseId: number;
+    force: Force;
+    direction: Vector3;
+
+    [key: string]: any;
+}
+
+export interface PointLoadResponse2 {
     modelId: string;
     id: number;
     nodeId: number;
@@ -4084,6 +4251,23 @@ export interface SectionProfileFromLibraryData {
 }
 
 export interface SectionProfileResponse {
+    id: number;
+    modelId: string;
+    name: string;
+    area: number;
+    strongAxisMomentOfInertia: number;
+    weakAxisMomentOfInertia: number;
+    polarMomentOfInertia: number;
+    strongAxisPlasticSectionModulus: number;
+    weakAxisPlasticSectionModulus: number;
+    strongAxisShearArea: number | undefined;
+    weakAxisShearArea: number | undefined;
+    lengthUnit: number;
+
+    [key: string]: any;
+}
+
+export interface SectionProfileResponse2 {
     id: number;
     modelId: string;
     name: string;
