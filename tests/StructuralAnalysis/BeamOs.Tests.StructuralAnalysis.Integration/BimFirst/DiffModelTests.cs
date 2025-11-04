@@ -78,7 +78,7 @@ public class DiffModelTests
 
         var diffResponse = await AssemblySetup
             .StructuralAnalysisRemoteApiClient.Models[modelIdA]
-            .GetDiffedModelAsync(diffRequest);
+            .GetModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
 
