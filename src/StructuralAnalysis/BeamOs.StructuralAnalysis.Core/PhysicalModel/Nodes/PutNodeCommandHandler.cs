@@ -57,7 +57,6 @@ internal static partial class PutNodeCommandMapper
     public static partial Node ToDomainObject(this ModelResourceWithIntIdRequest<NodeData> command);
 
     [MapNestedProperties(nameof(ModelResourceWithIntIdRequest<>.Body))]
-    [MapperIgnoreTarget(nameof(NodeResponse.OctreeNodeId))]
     public static partial NodeResponse ToResponse(
         this ModelResourceWithIntIdRequest<NodeData> command
     );
