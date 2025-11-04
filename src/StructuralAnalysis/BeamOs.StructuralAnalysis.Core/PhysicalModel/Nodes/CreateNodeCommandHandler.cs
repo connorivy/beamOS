@@ -23,10 +23,10 @@ internal class CreateNodeCommandHandler(
     )
     {
         Node node = command.ToDomainObject();
-        
+
         nodeRepository.Add(node);
         await unitOfWork.SaveChangesAsync(ct);
-        
+
         // After saving, the node has been assigned an ID
         // Set the OctreeNodeId to the same value as the Node's ID
         // The actual octree structure is built in-memory when needed for spatial queries
