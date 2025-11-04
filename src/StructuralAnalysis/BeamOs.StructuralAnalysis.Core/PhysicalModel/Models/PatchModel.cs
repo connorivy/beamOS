@@ -161,38 +161,59 @@ internal sealed class PatchModelCommandHandler(
         var nodeResponses = new List<NodeResponse>();
         foreach (var elementByLoc in req.Body.Element1dsToAddOrUpdateByExternalId ?? [])
         {
-            var startNode = this.GetOrAddNodeAtLocation(
-                model.Id,
+            var (startNode, isStartNodeNew) = this.GetOrAddNodeAtLocation(
+                model,
                 octree,
                 nodeStore,
                 elementByLoc.StartNodeLocation.ToDomain()
             );
-            nodeDefinitionRepository.Add(startNode);
-            var endNode = this.GetOrAddNodeAtLocation(
-                model.Id,
+            if (isStartNodeNew)
+            {
+                nodeDefinitionRepository.Add(startNode);
+            }
+            var (endNode, isEndNodeNew) = this.GetOrAddNodeAtLocation(
+                model,
                 octree,
                 nodeStore,
                 elementByLoc.EndNodeLocation.ToDomain()
             );
-            nodeDefinitionRepository.Add(endNode);
+            if (isEndNodeNew)
+            {
+                nodeDefinitionRepository.Add(endNode);
+            }
             var existingElement1d = element1dStore.Values.FirstOrDefault(e =>
-                e.StartNodeId == startNode.Id && e.EndNodeId == endNode.Id
+                e.ExternalId == elementByLoc.ExternalId
             );
             Element1d element1d;
+            bool isElementNew;
             if (existingElement1d is not null)
             {
                 element1d = element1dStore[existingElement1d.Id];
                 element1d.StartNodeId = startNode.Id;
                 element1d.EndNodeId = endNode.Id;
+                isElementNew = false;
             }
             else
             {
-                element1d = new Element1d(model.Id, startNode.Id, endNode.Id, 1, 1);
+                model.MaxElement1dId++;
+                element1d = new Element1d(
+                    model.Id,
+                    startNode.Id,
+                    endNode.Id,
+                    1,
+                    1,
+                    new Element1dId(model.MaxElement1dId),
+                    elementByLoc.ExternalId
+                );
                 element1dStore.Add(element1d.Id, element1d);
+                isElementNew = true;
             }
             element1d.StartNode = startNode;
             element1d.EndNode = endNode;
-            element1dRepository.Add(element1d);
+            if (isElementNew)
+            {
+                element1dRepository.Add(element1d);
+            }
             response.Element1dsToAddOrUpdateByExternalIdResults.Add(
                 new OperationStatus()
                 {
@@ -208,8 +229,8 @@ internal sealed class PatchModelCommandHandler(
         return response;
     }
 
-    private NodeDefinition GetOrAddNodeAtLocation(
-        ModelId modelId,
+    private (NodeDefinition node, bool isNew) GetOrAddNodeAtLocation(
+        Model model,
         Octree octree,
         Dictionary<NodeId, NodeDefinition> nodeStore,
         Point location
@@ -222,11 +243,15 @@ internal sealed class PatchModelCommandHandler(
 
         if (nodeIds.Count == 0)
         {
-            return new Node(modelId, location, Restraint.Free);
+            model.MaxNodeId++;
+            var newNode = new Node(model.Id, location, Restraint.Free, new NodeId(model.MaxNodeId));
+            octree.Add(newNode);
+            nodeStore.Add(newNode.Id, newNode);
+            return (newNode, true);
         }
         else
         {
-            return nodeStore[nodeIds[0]];
+            return (nodeStore[nodeIds[0]], false);
         }
     }
 }
