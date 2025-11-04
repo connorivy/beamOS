@@ -70,6 +70,7 @@ public static partial class DependencyInjection
         _ = services.AddScoped<IEnvelopeResultSetRepository, EnvelopeResultSetRepository>();
         _ = services.AddScoped<IModelProposalRepository, ModelProposalRepository>();
         _ = services.AddScoped<IProposalIssueRepository, ProposalIssueRepository>();
+        _ = services.AddScoped<IOctreeRepository, OctreeRepository>();
 
 #if Postgres
         _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();

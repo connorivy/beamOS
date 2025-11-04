@@ -3,6 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.NodeResultAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,7 @@ internal class StructuralAnalysisDbContext : DbContext
 
     public DbSet<EnvelopeResultSet> EnvelopeResultSets { get; set; }
     public DbSet<EnvelopeElement1dResult> EnvelopeElement1dResults { get; set; }
+    public DbSet<Octree> Octrees { get; set; }
 
     //public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     //public DbSet<MomentDiagram> MomentDiagrams { get; set; }

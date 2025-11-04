@@ -57,6 +57,14 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
 
+        builder
+            // .HasOne(m => m.Octree)
+            .HasOne<Octree>()
+            .WithOne(m => m.Model)
+            .HasForeignKey<Octree>(m => m.ModelId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
         // builder.Property(m => m.Name).HasColumnName(nameof(Model.Name));
         // builder.Property(m => m.Description).HasColumnName(nameof(Model.Description));
         // // builder.Property(m => m.Settings).HasColumnName(nameof(Model.Settings));

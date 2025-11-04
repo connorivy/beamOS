@@ -235,18 +235,15 @@ internal class Octree : BeamOsEntity<OctreeId>, IBeamOsModelEntity
     public Octree(ModelId modelId)
         : base(modelId.Id) { }
 
+    public Octree(ModelId modelId, Point center, double initialSize)
+        : base(modelId.Id)
+    {
+        this.Root = new OctreeNode(center, initialSize);
+    }
+
     [Obsolete("EF Ctor")]
     protected Octree()
         : base() { }
-
-    private void InitializeRoot(Point center)
-    {
-        if (this.Root is not null)
-        {
-            throw new InvalidOperationException("Octree root is already initialized.");
-        }
-        this.Root = new OctreeNode(center, DefaultStartNodeSize);
-    }
 
     private bool RootContains(Point pos)
     {
