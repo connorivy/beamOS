@@ -208,6 +208,12 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
+    patchModel(modelId: string, body: PatchModelRequest | null | undefined): Promise<PatchModelResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ModelResponse>;
 
     /**
@@ -1880,6 +1886,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
+    patchModel(modelId: string, body: PatchModelRequest | null | undefined): Promise<PatchModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPatchModel(_response);
+        });
+    }
+
+    protected processPatchModel(response: Response): Promise<PatchModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PatchModelResponse;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PatchModelResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     putModel(modelId: string, body: ModelInfoData | null | undefined): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}";
         if (modelId === undefined || modelId === null)
@@ -3106,6 +3156,16 @@ export interface BatchResponse {
     [key: string]: any;
 }
 
+export interface BeamOsError {
+    code: string;
+    description: string;
+    type: number;
+    numericType?: number;
+    metadata: any | undefined;
+
+    [key: string]: any;
+}
+
 export interface CreateElement1dProposal {
     id?: number | undefined;
     startNodeId: ProposedID;
@@ -3323,6 +3383,14 @@ export interface DisplacementsResponse {
     rotationAboutX: Angle;
     rotationAboutY: Angle;
     rotationAboutZ: Angle;
+
+    [key: string]: any;
+}
+
+export interface Element1dByLocationRequest {
+    externalId: string;
+    startNodeLocation: Point;
+    endNodeLocation: Point;
 
     [key: string]: any;
 }
@@ -3765,6 +3833,35 @@ export interface NullableOfRestraint {
     [key: string]: any;
 }
 
+export interface OperationStatus {
+    objectType: number;
+    externalId?: string | undefined;
+    id?: number | undefined;
+    result: Result;
+
+    [key: string]: any;
+}
+
+export interface PatchModelRequest {
+    element1dsToAddOrUpdateByExternalId?: Element1dByLocationRequest[] | undefined;
+    options?: PatchOperationOptions;
+
+    [key: string]: any;
+}
+
+export interface PatchModelResponse {
+    element1dsToAddOrUpdateByExternalIdResults?: OperationStatus[] | undefined;
+
+    [key: string]: any;
+}
+
+export interface PatchOperationOptions {
+    nodeResolutionStrategy?: number;
+    element1dResolutionStrategy?: number;
+
+    [key: string]: any;
+}
+
 export interface Point {
     x: number;
     y: number;
@@ -3924,6 +4021,13 @@ export interface Restraint {
     [key: string]: any;
 }
 
+export interface Result {
+    error: BeamOsError | undefined;
+    isError: boolean;
+
+    [key: string]: any;
+}
+
 export interface ResultSet {
     id: number;
     modelId: string;
@@ -4044,7 +4148,6 @@ export interface WorkflowSettings {
     modelingMode: number;
     bimSourceModelId?: string | undefined;
     bimFirstModelIds?: string[] | undefined;
-    bimFirstSourceModelId?: string | undefined;
 
     [key: string]: any;
 }
