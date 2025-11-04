@@ -48,7 +48,16 @@ internal sealed class PatchModelCommandHandler(
     {
         var options = req.Body.Options ?? new PatchOperationOptions();
 
-        var model = await modelRepository.GetSingle(req.ModelId, ct);
+        var model = await modelRepository.GetSingle(
+            req.ModelId,
+            ct,
+            nameof(Model.Nodes),
+            nameof(Model.InternalNodes),
+            nameof(Model.Element1ds),
+            nameof(Model.Materials),
+            nameof(Model.SectionProfiles),
+            nameof(Model.SectionProfilesFromLibrary)
+        );
         if (model is null)
         {
             return BeamOsError.NotFound(
@@ -65,6 +74,10 @@ internal sealed class PatchModelCommandHandler(
         var sectionProfileStore = (model.SectionProfiles ?? [])
             .Concat<SectionProfileInfoBase>(model.SectionProfilesFromLibrary ?? [])
             .ToDictionary(sp => sp.Id);
+        
+        // Track next available IDs for new entities created in this request
+        int nextNodeId = model.MaxNodeId;
+        int nextElement1dId = model.MaxElement1dId;
 
         foreach (Node node in model.Nodes ?? [])
         {
@@ -165,7 +178,8 @@ internal sealed class PatchModelCommandHandler(
                 model,
                 octree,
                 nodeStore,
-                elementByLoc.StartNodeLocation.ToDomain()
+                elementByLoc.StartNodeLocation.ToDomain(),
+                ref nextNodeId
             );
             if (isStartNodeNew)
             {
@@ -175,7 +189,8 @@ internal sealed class PatchModelCommandHandler(
                 model,
                 octree,
                 nodeStore,
-                elementByLoc.EndNodeLocation.ToDomain()
+                elementByLoc.EndNodeLocation.ToDomain(),
+                ref nextNodeId
             );
             if (isEndNodeNew)
             {
@@ -195,21 +210,18 @@ internal sealed class PatchModelCommandHandler(
             }
             else
             {
-                model.MaxElement1dId++;
+                nextElement1dId++;
                 element1d = new Element1d(
                     model.Id,
                     startNode.Id,
                     endNode.Id,
                     1,
                     1,
-                    new Element1dId(model.MaxElement1dId),
+                    new Element1dId(nextElement1dId),
                     elementByLoc.ExternalId
                 );
-                element1dStore.Add(element1d.Id, element1d);
                 isElementNew = true;
             }
-            element1d.StartNode = startNode;
-            element1d.EndNode = endNode;
             if (isElementNew)
             {
                 element1dRepository.Add(element1d);
@@ -233,7 +245,8 @@ internal sealed class PatchModelCommandHandler(
         Model model,
         Octree octree,
         Dictionary<NodeId, NodeDefinition> nodeStore,
-        Point location
+        Point location,
+        ref int nextNodeId
     )
     {
         var nodeIds = octree.FindNodeIdsWithin(
@@ -243,10 +256,9 @@ internal sealed class PatchModelCommandHandler(
 
         if (nodeIds.Count == 0)
         {
-            model.MaxNodeId++;
-            var newNode = new Node(model.Id, location, Restraint.Free, new NodeId(model.MaxNodeId));
+            nextNodeId++;
+            var newNode = new Node(model.Id, location, Restraint.Free, new NodeId(nextNodeId));
             octree.Add(newNode);
-            nodeStore.Add(newNode.Id, newNode);
             return (newNode, true);
         }
         else
