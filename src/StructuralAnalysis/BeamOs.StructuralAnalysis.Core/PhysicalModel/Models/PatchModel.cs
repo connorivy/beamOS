@@ -169,7 +169,10 @@ internal sealed class PatchModelCommandHandler(
         NodeDefinition node;
         if (nodeIds.Count == 0)
         {
-            // Create new node with pre-assigned ID to avoid EF Core tracking conflicts
+            // Create new node with pre-assigned ID
+            // Note: EF Core uses composite key {Id, ModelId} for tracking. While 0 is typically
+            // a sentinel value, the change tracker still tracks entities with {Id: 0, ModelId: X}.
+            // Pre-assigning unique IDs avoids tracking conflicts when adding multiple new nodes.
             model.MaxNodeId++;
             var newNode = new Node(model.Id, location, Restraint.Free, new NodeId(model.MaxNodeId));
             nodeDefinitionRepository.Add(newNode);
