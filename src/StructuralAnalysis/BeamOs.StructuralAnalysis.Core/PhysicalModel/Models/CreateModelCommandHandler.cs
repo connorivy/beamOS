@@ -24,10 +24,18 @@ internal class CreateModelCommandHandler(
     )
     {
         Model model = command.ToDomainObject();
+        
         var value = await this.HandleBimFirstModelCreation(command, model, ct);
         if (value.IsError)
         {
             return value.Error;
+        }
+
+        // Initialize the octree for the model (and BIM source model if present)
+        model.InitializeOctree();
+        if (model.BimSourceModel is not null)
+        {
+            model.BimSourceModel.InitializeOctree();
         }
 
         modelRepository.Add(model);

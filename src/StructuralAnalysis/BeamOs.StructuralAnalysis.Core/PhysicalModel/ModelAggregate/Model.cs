@@ -16,11 +16,18 @@ internal class Model : BeamOsEntity<ModelId>
         this.Name = name;
         this.Description = description;
         this.Settings = settings;
-        this.NodeOctree = new Octree(
-            this.Id,
-            new Point(0, 0, 0, UnitsNet.Units.LengthUnit.Meter),
-            100.0
-        );
+    }
+    
+    public void InitializeOctree()
+    {
+        if (this.NodeOctree is null)
+        {
+            this.NodeOctree = new Octree(
+                this.Id,
+                new Point(0, 0, 0, UnitsNet.Units.LengthUnit.Meter),
+                100.0
+            );
+        }
     }
 
     public string Name { get; set; }
