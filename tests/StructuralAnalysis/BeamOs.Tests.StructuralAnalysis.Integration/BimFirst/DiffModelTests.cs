@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
+using BeamOs.Tests.Common;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
@@ -71,5 +72,42 @@ public class DiffModelTests
     }
 
     [Test]
-    public async Task CreateElement1dByLocation_ShouldReturnSuccessfulResponse() { }
+    public async Task InitialDiff_ShouldReturnEmptyDifferences()
+    {
+        var diffRequest = new DiffModelRequest() { TargetModelId = modelIdB };
+
+        var diffResponse = await AssemblySetup
+            .StructuralAnalysisRemoteApiClient.Models[modelIdA]
+            .GetDiffedModelAsync(diffRequest);
+
+        diffResponse.ThrowIfError();
+
+        diffResponse.Value.Element1ds.Should().BeEmpty();
+        diffResponse.Value.Nodes.Should().BeEmpty();
+    }
+
+    // [Test]
+    // public async Task DiffAfterChanges_ShouldReturnDifferences()
+    // {
+    //     var patchRequest = new PatchModelRequest()
+    //     {
+    //         MaterialRequests = [ new CreateMaterialRequest() { Id = 1, ]
+    //     };
+
+    //     var patchResponse = await AssemblySetup
+    //         .StructuralAnalysisRemoteApiClient.Models[modelIdA]
+    //         .PatchModelAsync(patchRequest);
+    //     patchResponse.ThrowIfError();
+
+    //     var diffRequest = new DiffModelRequest() { TargetModelId = modelIdB };
+
+    //     var diffResponse = await AssemblySetup
+    //         .StructuralAnalysisRemoteApiClient.Models[modelIdA]
+    //         .GetDiffedModelAsync(diffRequest);
+
+    //     diffResponse.ThrowIfError();
+
+    //     diffResponse.Value.Element1ds.Should().HaveCount(1);
+    //     diffResponse.Value.Nodes.Should().HaveCount(1);
+    // }
 }
