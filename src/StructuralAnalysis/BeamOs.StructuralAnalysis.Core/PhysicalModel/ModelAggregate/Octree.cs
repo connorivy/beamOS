@@ -30,7 +30,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     // For EF Core
     protected OctreeNode()
     {
-        this.Center = new(0, 0, 0, UnitsNet.Units.LengthUnit.Meter);
+        this.Center = new(0, 0, 0, LengthUnit.Meter);
         this.Length = 0;
         this.Depth = 0;
         this.Objects = [];
@@ -119,14 +119,14 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     }
 
     private Point Min =>
-        new Point(
+        new(
             this.Center.X.Meters - (this.Length / 2.0),
             this.Center.Y.Meters - (this.Length / 2.0),
             this.Center.Z.Meters - (this.Length / 2.0),
             this.Center.X.Unit
         );
     private Point Max =>
-        new Point(
+        new(
             this.Center.X.Meters + (this.Length / 2.0),
             this.Center.Y.Meters + (this.Length / 2.0),
             this.Center.Z.Meters + (this.Length / 2.0),
