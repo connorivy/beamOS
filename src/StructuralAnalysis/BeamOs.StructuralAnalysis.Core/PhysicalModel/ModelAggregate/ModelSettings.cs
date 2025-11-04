@@ -7,18 +7,21 @@ internal class ModelSettings : BeamOSValueObject
     public UnitSettings UnitSettings { get; private set; }
     public AnalysisSettings AnalysisSettings { get; private set; }
     public WorkflowSettings WorkflowSettings { get; private set; }
+    public ToleranceSettings ToleranceSettings { get; private set; }
     public bool YAxisUp { get; private set; }
 
     public ModelSettings(
         UnitSettings unitSettings,
         bool yAxisUp,
         WorkflowSettings workflowSettings,
-        AnalysisSettings? analysisSettings = null
+        AnalysisSettings? analysisSettings = null,
+        ToleranceSettings? toleranceSettings = null
     )
     {
         this.UnitSettings = unitSettings;
         this.AnalysisSettings = analysisSettings ?? new();
         this.WorkflowSettings = workflowSettings;
+        this.ToleranceSettings = toleranceSettings ?? ToleranceSettings.Default;
         this.YAxisUp = yAxisUp;
     }
 

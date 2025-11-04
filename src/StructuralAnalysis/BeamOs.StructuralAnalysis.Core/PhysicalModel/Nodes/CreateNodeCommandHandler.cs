@@ -2,7 +2,6 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
-using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Riok.Mapperly.Abstractions;
@@ -10,8 +9,8 @@ using Riok.Mapperly.Abstractions;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 
 internal class CreateNodeCommandHandler(
-    // INodeDefinitionRepository nodeRepository,
     INodeRepository nodeRepository,
+    IOctreeRepository octreeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<ModelResourceRequest<CreateNodeRequest>, NodeResponse>
 {
@@ -21,6 +20,17 @@ internal class CreateNodeCommandHandler(
     )
     {
         Node node = command.ToDomainObject();
+        var addNodeResult = await octreeRepository.AddNodeIfWithinTolerance(
+            command.ModelId,
+            node,
+            ct
+        );
+
+        if (addNodeResult.IsError)
+        {
+            return addNodeResult.Error;
+        }
+
         nodeRepository.Add(node);
         await unitOfWork.SaveChangesAsync(ct);
 

@@ -7,6 +7,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using EntityFramework.Exceptions.Common;
 using Riok.Mapperly.Abstractions;
@@ -15,6 +16,7 @@ namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
 internal class CreateModelCommandHandler(
     IModelRepository modelRepository,
+    IOctreeRepository octreeRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<CreateModelRequest, ModelResponse>
 {
@@ -31,6 +33,7 @@ internal class CreateModelCommandHandler(
         }
 
         modelRepository.Add(model);
+        octreeRepository.Add(new Octree(model.Id));
         try
         {
             await unitOfWork.SaveChangesAsync(ct);

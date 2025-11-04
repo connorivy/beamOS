@@ -58,3 +58,15 @@ internal class WorkflowSettings : BeamOSValueObject
         yield return this.ModelingMode;
     }
 }
+
+internal class ToleranceSettings : BeamOSValueObject
+{
+    public static ToleranceSettings Default =>
+        new() { AdjacentNodeTolerance = Length.FromInches(1) };
+    public Length AdjacentNodeTolerance { get; set; }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return this.AdjacentNodeTolerance;
+    }
+}
