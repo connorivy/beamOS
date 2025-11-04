@@ -15,7 +15,7 @@ public class DiffModelTests
     private static Guid modelIdA;
     private static Guid modelIdB;
 
-    [Before(HookType.Test)]
+    [Before(TUnit.Core.HookType.Test)]
     public async Task SetupModel()
     {
         await semaphore.WaitAsync();
