@@ -47,6 +47,11 @@ internal static partial class CreateMaterialStaticMapper
         this ModelResourceRequest<CreateMaterialRequest> command
     );
 
+    public static Material ToDomainObject(
+        this CreateMaterialRequest materialRequest,
+        ModelId modelId
+    ) => new ModelResourceRequest<CreateMaterialRequest>(modelId, materialRequest).ToDomainObject();
+
     public static MaterialResponse ToResponse(this Material command, PressureUnit pressureUnit) =>
         command.ToResponse(
             command.ModulusOfElasticity.As(pressureUnit),

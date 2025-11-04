@@ -3,7 +3,9 @@ using BeamOs.CodeGen.StructuralAnalysisApiClient;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using FluentAssertions;
 
@@ -58,6 +60,25 @@ public class PatchModelTests(ApiClientKey client)
     {
         var patchRequest = new PatchModelRequest()
         {
+            SectionProfileFromLibraryRequests =
+            [
+                new CreateSectionProfileFromLibraryRequest()
+                {
+                    Id = 1,
+                    Library = StructuralCode.AISC_360_16,
+                    Name = "W10X33",
+                },
+            ],
+            MaterialRequests =
+            [
+                new CreateMaterialRequest()
+                {
+                    Id = 1,
+                    ModulusOfElasticity = 29000,
+                    ModulusOfRigidity = 11500,
+                    PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
+                },
+            ],
             Element1dsToAddOrUpdateByExternalId =
             [
                 new Element1dByLocationRequest()
@@ -77,5 +98,38 @@ public class PatchModelTests(ApiClientKey client)
 
         modelResponse.Value.Element1ds.Should().HaveCount(1);
         modelResponse.Value.Nodes.Should().HaveCount(2);
+    }
+
+    [Test]
+    [DependsOn(nameof(CreateElement1dByLocation_ShouldReturnSuccessfulResponse))]
+    public async Task CreateElement1dByLocation_ShouldReuseExistingNodes()
+    {
+        var patchRequest = new PatchModelRequest()
+        {
+            Element1dsToAddOrUpdateByExternalId =
+            [
+                new Element1dByLocationRequest()
+                {
+                    ExternalId = "element-1",
+                    StartNodeLocation = new Point(0, 0, 0, LengthUnitContract.Meter),
+                    EndNodeLocation = new Point(0, 10, 0, LengthUnitContract.Meter),
+                },
+                new Element1dByLocationRequest()
+                {
+                    ExternalId = "element-2",
+                    StartNodeLocation = new Point(0, 0, 0, LengthUnitContract.Meter),
+                    EndNodeLocation = new Point(10, 0, 0, LengthUnitContract.Meter),
+                },
+            ],
+        };
+
+        var patchResponse = await this.ModelClient.PatchModelAsync(patchRequest);
+        patchResponse.ThrowIfError();
+
+        var modelResponse = await this.ModelClient.GetModelAsync();
+        modelResponse.ThrowIfError();
+
+        modelResponse.Value.Element1ds.Should().HaveCount(2);
+        modelResponse.Value.Nodes.Should().HaveCount(3);
     }
 }

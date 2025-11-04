@@ -1,11 +1,16 @@
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 public record PatchModelRequest
 {
+    public List<CreateMaterialRequest>? MaterialRequests { get; init; }
+    public List<CreateSectionProfileFromLibraryRequest>? SectionProfileFromLibraryRequests { get; init; }
+    public List<CreateSectionProfileRequest>? SectionProfileRequests { get; init; }
     public List<Element1dByLocationRequest>? Element1dsToAddOrUpdateByExternalId { get; init; }
     public PatchOperationOptions Options { get; init; }
 }
