@@ -43,8 +43,6 @@ public class OctreeIntegrationTests(ApiClientKey apiClientKey)
         // Assert - Node should have a valid OctreeNodeId assigned
         var node = nodeResponse.Value;
         node.Should().NotBeNull();
-        // TODO: Once the feature is implemented, this assertion should verify that OctreeNodeId is assigned
-        // node.OctreeNodeId.Should().NotBeNull();
-        // node.OctreeNodeId.Should().BeGreaterThan(0);
+        node.OctreeNodeId.Should().BeGreaterThan(0);
     }
 }

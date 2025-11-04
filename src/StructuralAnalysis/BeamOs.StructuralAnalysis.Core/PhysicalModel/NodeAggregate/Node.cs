@@ -29,7 +29,7 @@ internal class Node : NodeDefinition
 
     public Point LocationPoint { get; set; }
     public Restraint Restraint { get; set; }
-    public OctreeNodeId? OctreeNodeId { get; set; }
+    public OctreeNodeId OctreeNodeId { get; set; }
 
     public override Point GetLocationPoint(
         IReadOnlyDictionary<Element1dId, Element1d>? elementStore = null,

@@ -11,22 +11,24 @@ public record NodeResponse : IModelEntity
     public NodeResponse() { }
 
     [SetsRequiredMembers]
-    public NodeResponse(int id, Guid modelId, Point locationPoint, Restraint restraint)
+    public NodeResponse(int id, Guid modelId, Point locationPoint, Restraint restraint, int octreeNodeId)
     {
         this.Id = id;
         this.ModelId = modelId;
         this.LocationPoint = locationPoint;
         this.Restraint = restraint;
+        this.OctreeNodeId = octreeNodeId;
     }
 
     [SetsRequiredMembers]
-    public NodeResponse(int id, Guid modelId, NodeData data)
-        : this(id, modelId, data.LocationPoint, data.Restraint) { }
+    public NodeResponse(int id, Guid modelId, NodeData data, int octreeNodeId)
+        : this(id, modelId, data.LocationPoint, data.Restraint, octreeNodeId) { }
 
     public required int Id { get; init; }
     public required Guid ModelId { get; init; }
     public required Point LocationPoint { get; init; }
     public required Restraint Restraint { get; init; }
+    public int OctreeNodeId { get; init; }
 
     public NodeData ToNodeData() => new(this.LocationPoint, this.Restraint);
 }
