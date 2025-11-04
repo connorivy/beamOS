@@ -199,19 +199,18 @@ internal sealed class PatchModelCommandHandler(
             var existingElement1d = element1dStore.Values.FirstOrDefault(e =>
                 e.ExternalId == elementByLoc.ExternalId
             );
-            Element1d element1d;
             if (existingElement1d is not null)
             {
-                element1d = element1dStore[existingElement1d.Id];
-                element1d.StartNodeId = startNode.Id;
-                element1d.EndNodeId = endNode.Id;
-                // Use Put to update existing element (since it came from AsNoTracking query)
-                await element1dRepository.Put(element1d);
+                // Update existing element - just change node IDs, EF will track via Put
+                existingElement1d.StartNodeId = startNode.Id;
+                existingElement1d.EndNodeId = endNode.Id;
+                await element1dRepository.Put(existingElement1d);
             }
             else
             {
+                // Create new element
                 nextElement1dId++;
-                element1d = new Element1d(
+                var newElement = new Element1d(
                     model.Id,
                     startNode.Id,
                     endNode.Id,
@@ -220,7 +219,8 @@ internal sealed class PatchModelCommandHandler(
                     new Element1dId(nextElement1dId),
                     elementByLoc.ExternalId
                 );
-                element1dRepository.Add(element1d);
+                element1dRepository.Add(newElement);
+                element1dStore.Add(newElement.Id, newElement);
             }
             response.Element1dsToAddOrUpdateByExternalIdResults.Add(
                 new OperationStatus()
