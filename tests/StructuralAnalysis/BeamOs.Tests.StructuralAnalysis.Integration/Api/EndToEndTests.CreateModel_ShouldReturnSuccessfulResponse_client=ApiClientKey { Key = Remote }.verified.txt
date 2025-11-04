@@ -20,9 +20,8 @@
       },
       WorkflowSettings: {
         ModelingMode: BimFirst,
-        BimSourceModelId: null,
-        BimFirstModelIds: null,
-        BimFirstSourceModelId: null
+        BimSourceModelId: Guid_2,
+        BimFirstModelIds: null
       },
       YAxisUp: true
     },

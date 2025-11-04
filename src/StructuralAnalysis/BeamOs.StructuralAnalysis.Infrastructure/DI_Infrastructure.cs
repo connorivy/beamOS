@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Identity;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
@@ -78,11 +79,9 @@ public static partial class DependencyInjection
         // _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
         services.AddQueryHandlers();
-        // services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
-        //     typeof(IQueryHandler<,>),
-        //     ServiceLifetime.Scoped,
-        //     false
-        // );
+        var domainEventHandlerProvider = new DomainEventHandlerProvider();
+        services.AddDomainEventHandlers(domainEventHandlerProvider);
+        services.AddSingleton(domainEventHandlerProvider);
 
         return services;
     }
@@ -247,4 +246,23 @@ public static partial class DependencyInjection
         AsSelf = true
     )]
     public static partial IServiceCollection AddQueryHandlers(this IServiceCollection services);
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(DomainEventHandlerBase<>),
+        CustomHandler = nameof(AddDomainEventHandler)
+    )]
+    public static partial IServiceCollection AddDomainEventHandlers(
+        this IServiceCollection services,
+        DomainEventHandlerProvider typeProvider
+    );
+
+    private static void AddDomainEventHandler<TEventHandler, TEvent>(
+        this IServiceCollection services,
+        DomainEventHandlerProvider typeProvider
+    )
+        where TEventHandler : DomainEventHandlerBase<TEvent>
+        where TEvent : IDomainEvent
+    {
+        typeProvider.RegisterHandler<TEvent, TEventHandler>(services);
+    }
 }

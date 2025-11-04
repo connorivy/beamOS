@@ -22,7 +22,20 @@ internal sealed class NodeDefinitionRepository(StructuralAnalysisDbContext dbCon
 {
     public override ValueTask Put(NodeDefinition aggregate)
     {
-        this.DbContext.NodeDefinitions.Update(aggregate);
+        var efDef = this.DbContext.NodeDefinitions.Update(aggregate);
+        if (efDef.Property(n => n.NodeType).IsModified)
+        {
+            // aggregate.AddEvent(new NodeTypeChangedEvent(aggregate.Id));
+        }
+        else if (aggregate is Node node)
+        {
+            var efNode = this.DbContext.Entry(node);
+            if (efNode.Property(n => n.LocationPoint).IsModified)
+            {
+                // node.AddEvent(new NodeLocationChangedEvent(node.Id));
+            }
+        }
+
         return ValueTask.CompletedTask;
     }
 }
