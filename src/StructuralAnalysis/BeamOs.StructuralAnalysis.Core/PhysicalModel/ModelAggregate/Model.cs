@@ -44,16 +44,6 @@ internal class Model : BeamOsEntity<ModelId>
         }
     } = DateTimeOffset.UtcNow;
 
-    // public Octree? NodeOctree { get; private set; }
-    // public OctreeId? NodeOctreeId { get; set; }
-
-    // public double MinX { get; set; } = double.MaxValue;
-    // public double MinY { get; set; } = double.MaxValue;
-    // public double MinZ { get; set; } = double.MaxValue;
-    // public double MaxX { get; set; } = double.MinValue;
-    // public double MaxY { get; set; } = double.MinValue;
-    // public double MaxZ { get; set; } = double.MinValue;
-
     public IList<Node>? Nodes { get; set; }
     public int MaxNodeId { get; set; }
     public IList<InternalNode>? InternalNodes { get; set; }

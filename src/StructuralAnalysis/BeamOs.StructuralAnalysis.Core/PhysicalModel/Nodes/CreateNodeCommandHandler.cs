@@ -2,8 +2,10 @@ using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using Riok.Mapperly.Abstractions;
 
@@ -21,7 +23,14 @@ internal class CreateNodeCommandHandler(
     )
     {
         Node node = command.ToDomainObject();
+        
         nodeRepository.Add(node);
+        await unitOfWork.SaveChangesAsync(ct);
+        
+        // After saving, the node has been assigned an ID
+        // Set the OctreeNodeId to the same value as the Node's ID
+        // The actual octree structure is built in-memory when needed for spatial queries
+        node.OctreeNodeId = new OctreeNodeId(node.Id);
         await unitOfWork.SaveChangesAsync(ct);
 
         return node.ToResponse();
