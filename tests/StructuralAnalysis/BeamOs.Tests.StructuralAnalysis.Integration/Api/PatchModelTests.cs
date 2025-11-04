@@ -7,6 +7,7 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Sdk;
 using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
@@ -16,12 +17,7 @@ public class PatchModelTests(ApiClientKey client)
 {
     private static readonly SemaphoreSlim semaphore = new(1, 1);
     private static readonly ConcurrentDictionary<ApiClientKey, Guid> ClientModelIds = [];
-    private static readonly ConcurrentDictionary<
-        ApiClientKey,
-        ApiResponse<ModelResponse>
-    > ModelResponses = [];
     private Guid ModelId => ClientModelIds[client];
-    private ApiResponse<ModelResponse> ModelResponseResult => ModelResponses[client];
     private BeamOsResultApiClient ApiClient => client.GetClient();
     private BeamOsApiResultModelId ModelClient => this.ApiClient.Models[this.ModelId];
 
@@ -38,16 +34,18 @@ public class PatchModelTests(ApiClientKey client)
 
             var modelId = Guid.NewGuid();
 
-            CreateModelRequest request = new()
-            {
-                Name = "test model",
-                Description = "test model",
-                Settings = new(UnitSettingsContract.K_FT),
-                Id = modelId,
-            };
+            BeamOsDynamicModel model = new(
+                modelId,
+                new(UnitSettingsContract.K_IN),
+                "test model",
+                "test model"
+            );
+            model.AddSectionProfileFromLibrary(1, "W10X33", StructuralCode.AISC_360_16);
+            model.AddMaterial(1, 29000, 11500);
+
+            await model.CreateOnly(this.ApiClient);
 
             ClientModelIds[client] = modelId;
-            ModelResponses[client] = await this.ApiClient.Models.CreateModelAsync(request);
         }
         finally
         {
@@ -60,25 +58,6 @@ public class PatchModelTests(ApiClientKey client)
     {
         var patchRequest = new PatchModelRequest()
         {
-            SectionProfileFromLibraryRequests =
-            [
-                new CreateSectionProfileFromLibraryRequest()
-                {
-                    Id = 1,
-                    Library = StructuralCode.AISC_360_16,
-                    Name = "W10X33",
-                },
-            ],
-            MaterialRequests =
-            [
-                new CreateMaterialRequest()
-                {
-                    Id = 1,
-                    ModulusOfElasticity = 29000,
-                    ModulusOfRigidity = 11500,
-                    PressureUnit = PressureUnitContract.KilopoundForcePerSquareInch,
-                },
-            ],
             Element1dsToAddOrUpdateByExternalId =
             [
                 new Element1dByLocationRequest()

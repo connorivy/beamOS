@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
@@ -48,7 +49,17 @@ internal sealed class PatchModelCommandHandler(
     {
         var options = req.Body.Options ?? new PatchOperationOptions();
 
-        var model = await modelRepository.GetSingle(req.ModelId, ct);
+        var model = await modelRepository.GetSingle(
+            req.ModelId,
+            ct,
+            nameof(Model.Nodes),
+            nameof(Model.InternalNodes),
+            nameof(Model.Element1ds),
+            nameof(Model.Materials),
+            nameof(Model.SectionProfiles),
+            nameof(Model.SectionProfilesFromLibrary)
+        );
+
         if (model is null)
         {
             return BeamOsError.NotFound(
@@ -81,12 +92,13 @@ internal sealed class PatchModelCommandHandler(
             if (materialRequest.Id.HasValue && materialStore.ContainsKey(materialRequest.Id.Value))
             {
                 material = materialStore[materialRequest.Id.Value];
+                await materialRepository.Put(material);
             }
             else
             {
                 material = materialRequest.ToDomainObject(model.Id);
+                materialRepository.Add(material);
             }
-            materialRepository.Add(material);
         }
 
         foreach (var sectionProfileRequest in req.Body.SectionProfileRequests ?? [])
@@ -103,14 +115,7 @@ internal sealed class PatchModelCommandHandler(
             {
                 sectionProfile = sectionProfileRequest.ToDomainObject(model.Id);
             }
-            if (sectionProfile is SectionProfile sp)
-            {
-                sectionProfileRepository.Add(sp);
-            }
-            else if (sectionProfile is SectionProfileFromLibrary spl)
-            {
-                sectionProfileFromLibraryRepository.Add(spl);
-            }
+            await this.AddToRepo(sectionProfile);
         }
 
         foreach (var sectionProfileRequest in req.Body.SectionProfileFromLibraryRequests ?? [])
@@ -147,34 +152,26 @@ internal sealed class PatchModelCommandHandler(
                 }
                 sectionProfile = sectionProfileNullable;
             }
-            if (sectionProfile is SectionProfile sp)
-            {
-                sectionProfileRepository.Add(sp);
-            }
-            else if (sectionProfile is SectionProfileFromLibrary spl)
-            {
-                sectionProfileFromLibraryRepository.Add(spl);
-            }
+            await this.AddToRepo(sectionProfile);
         }
 
         var response = new PatchModelResponse() { Element1dsToAddOrUpdateByExternalIdResults = [] };
         var nodeResponses = new List<NodeResponse>();
         foreach (var elementByLoc in req.Body.Element1dsToAddOrUpdateByExternalId ?? [])
         {
-            var startNode = this.GetOrAddNodeAtLocation(
+            var startNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
                 nodeStore,
                 elementByLoc.StartNodeLocation.ToDomain()
             );
-            nodeDefinitionRepository.Add(startNode);
-            var endNode = this.GetOrAddNodeAtLocation(
+            var endNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
                 nodeStore,
                 elementByLoc.EndNodeLocation.ToDomain()
             );
-            nodeDefinitionRepository.Add(endNode);
+
             var existingElement1d = element1dStore.Values.FirstOrDefault(e =>
                 e.StartNodeId == startNode.Id && e.EndNodeId == endNode.Id
             );
@@ -184,15 +181,18 @@ internal sealed class PatchModelCommandHandler(
                 element1d = element1dStore[existingElement1d.Id];
                 element1d.StartNodeId = startNode.Id;
                 element1d.EndNodeId = endNode.Id;
+                element1d.StartNode = startNode;
+                element1d.EndNode = endNode;
+                await element1dRepository.Put(element1d);
             }
             else
             {
                 element1d = new Element1d(model.Id, startNode.Id, endNode.Id, 1, 1);
                 element1dStore.Add(element1d.Id, element1d);
+                element1d.StartNode = startNode;
+                element1d.EndNode = endNode;
+                element1dRepository.Add(element1d);
             }
-            element1d.StartNode = startNode;
-            element1d.EndNode = endNode;
-            element1dRepository.Add(element1d);
             response.Element1dsToAddOrUpdateByExternalIdResults.Add(
                 new OperationStatus()
                 {
@@ -208,7 +208,33 @@ internal sealed class PatchModelCommandHandler(
         return response;
     }
 
-    private NodeDefinition GetOrAddNodeAtLocation(
+    private async Task AddToRepo(SectionProfileInfoBase sectionProfile, bool isNew = false)
+    {
+        if (sectionProfile is SectionProfile sp)
+        {
+            if (isNew)
+            {
+                sectionProfileRepository.Add(sp);
+            }
+            else
+            {
+                await sectionProfileRepository.Put(sp);
+            }
+        }
+        else if (sectionProfile is SectionProfileFromLibrary spl)
+        {
+            if (isNew)
+            {
+                sectionProfileFromLibraryRepository.Add(spl);
+            }
+            else
+            {
+                await sectionProfileFromLibraryRepository.Put(spl);
+            }
+        }
+    }
+
+    private async Task<NodeDefinition> GetOrAddNodeAtLocation(
         ModelId modelId,
         Octree octree,
         Dictionary<NodeId, NodeDefinition> nodeStore,
@@ -222,11 +248,15 @@ internal sealed class PatchModelCommandHandler(
 
         if (nodeIds.Count == 0)
         {
-            return new Node(modelId, location, Restraint.Free);
+            var node = new Node(modelId, location, Restraint.Free);
+            nodeDefinitionRepository.Add(node);
+            return node;
         }
         else
         {
-            return nodeStore[nodeIds[0]];
+            var node = nodeStore[nodeIds[0]];
+            await nodeDefinitionRepository.Put(node);
+            return node;
         }
     }
 }
