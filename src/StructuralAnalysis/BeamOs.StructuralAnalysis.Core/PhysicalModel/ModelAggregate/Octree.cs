@@ -224,7 +224,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     }
 }
 
-internal class Octree : BeamOsEntity<OctreeId>, IBeamOsModelEntity
+internal class Octree : BeamOsEntity<OctreeId>
 {
     private const double DefaultStartNodeSize = 1.0;
     public OctreeNodeId? RootId { get; private set; }
@@ -233,11 +233,15 @@ internal class Octree : BeamOsEntity<OctreeId>, IBeamOsModelEntity
     public Model? Model { get; private set; }
 
     public Octree(ModelId modelId)
-        : base(modelId.Id) { }
+        : base(modelId.Id)
+    {
+        this.ModelId = modelId;
+    }
 
     public Octree(ModelId modelId, Point center, double initialSize)
         : base(modelId.Id)
     {
+        this.ModelId = modelId;
         this.Root = new OctreeNode(center, initialSize);
     }
 
@@ -368,10 +372,6 @@ internal class Octree : BeamOsEntity<OctreeId>, IBeamOsModelEntity
         this.Root.FindNodeIdsWithin(searchPoint, toleranceMeters, result, nodeIdsToIgnore);
         return result;
     }
-
-    public int GetIntId() => throw new NotImplementedException();
-
-    public void SetIntId(int value) => throw new NotImplementedException();
 }
 
 internal readonly record struct OctreeId

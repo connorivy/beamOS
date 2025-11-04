@@ -55,6 +55,7 @@ internal class StructuralAnalysisDbContext : DbContext
     public DbSet<EnvelopeResultSet> EnvelopeResultSets { get; set; }
     public DbSet<EnvelopeElement1dResult> EnvelopeElement1dResults { get; set; }
     public DbSet<Octree> Octrees { get; set; }
+    public DbSet<OctreeNode> OctreeNodes { get; set; }
 
     //public DbSet<ShearForceDiagram> ShearForceDiagrams { get; set; }
     //public DbSet<MomentDiagram> MomentDiagrams { get; set; }

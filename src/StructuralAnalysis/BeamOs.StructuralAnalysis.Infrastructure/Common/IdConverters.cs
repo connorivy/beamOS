@@ -150,3 +150,15 @@ internal class ModelEntityDeleteProposalIdConverter
     public ModelEntityDeleteProposalIdConverter()
         : base(x => x.Id, x => new(x), null) { }
 }
+
+internal class OctreeIdConverter : ValueConverter<OctreeId, Guid>
+{
+    public OctreeIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
+
+internal class OctreeNodeIdConverter : ValueConverter<OctreeNodeId, int>
+{
+    public OctreeNodeIdConverter()
+        : base(x => x.Id, x => new(x), null) { }
+}
