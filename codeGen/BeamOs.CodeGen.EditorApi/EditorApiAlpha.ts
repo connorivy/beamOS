@@ -2135,7 +2135,6 @@ export interface WorkflowSettings {
     modelingMode: number;
     bimSourceModelId?: string | undefined;
     bimFirstModelIds?: string[] | undefined;
-    bimFirstSourceModelId?: string | undefined;
 
     [key: string]: any;
 }

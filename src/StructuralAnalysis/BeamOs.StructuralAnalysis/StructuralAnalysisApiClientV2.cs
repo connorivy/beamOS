@@ -358,5 +358,10 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         ModelResourceRequest request,
         CancellationToken ct = default
     ) => apiClientV1.DeleteModelAsync(request.ModelId, ct);
+
+    public Task<ApiResponse<PatchModelResponse>> PatchModel(
+        ModelResourceRequest<PatchModelRequest> request,
+        CancellationToken ct = default
+    ) => apiClientV1.PatchModelAsync(request.ModelId, request.Body, ct);
 }
 #endif

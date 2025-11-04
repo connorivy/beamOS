@@ -271,6 +271,14 @@ public sealed class ModelOperations(Guid id)
         string? sectionProfileName
     ) => throw new NotImplementedException();
 
+    public void AddElement1dByLocation(
+        string externalId,
+        Point startNodeLocation,
+        Point endNodeLocation,
+        string? materialName,
+        string? sectionProfileName
+    ) => throw new NotImplementedException();
+
     public async Task PushChanges(BeamOsApiResultModelId modelApiClient)
     {
         // create nodes by location. check
