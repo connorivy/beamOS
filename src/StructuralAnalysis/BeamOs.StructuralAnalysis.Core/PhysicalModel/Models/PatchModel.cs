@@ -200,13 +200,13 @@ internal sealed class PatchModelCommandHandler(
                 e.ExternalId == elementByLoc.ExternalId
             );
             Element1d element1d;
-            bool isElementNew;
             if (existingElement1d is not null)
             {
                 element1d = element1dStore[existingElement1d.Id];
                 element1d.StartNodeId = startNode.Id;
                 element1d.EndNodeId = endNode.Id;
-                isElementNew = false;
+                // Use Put to update existing element (since it came from AsNoTracking query)
+                await element1dRepository.Put(element1d);
             }
             else
             {
@@ -220,10 +220,6 @@ internal sealed class PatchModelCommandHandler(
                     new Element1dId(nextElement1dId),
                     elementByLoc.ExternalId
                 );
-                isElementNew = true;
-            }
-            if (isElementNew)
-            {
                 element1dRepository.Add(element1d);
             }
             response.Element1dsToAddOrUpdateByExternalIdResults.Add(
