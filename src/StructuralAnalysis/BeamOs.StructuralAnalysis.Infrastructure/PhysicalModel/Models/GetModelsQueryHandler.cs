@@ -18,7 +18,7 @@ internal class GetModelsQueryHandler(StructuralAnalysisDbContext dbContext)
         [
             Guid.Parse("4ce66084-4ac1-40bc-99ae-3d0f334c66fa"), // twisty bowl framing
             Guid.Parse("0a83df88-656e-47d9-98fe-25fd7d370b06"), // Kassimali_Example3_8
-            Guid.Parse("6b04df0f-45d6-4aed-9c04-8272ed23f811") // Kassimali_Example8_4
+            Guid.Parse("6b04df0f-45d6-4aed-9c04-8272ed23f811"), // Kassimali_Example8_4
         ];
 
         return await dbContext

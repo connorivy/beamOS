@@ -1,5 +1,5 @@
-using BeamOs.StructuralAnalysis;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
+using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
 // [assembly: DotWrap.DotWrapExternalPropertyMeta(

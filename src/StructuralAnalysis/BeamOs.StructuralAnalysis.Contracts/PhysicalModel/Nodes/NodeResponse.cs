@@ -11,7 +11,13 @@ public record NodeResponse : IModelEntity
     public NodeResponse() { }
 
     [SetsRequiredMembers]
-    public NodeResponse(int id, Guid modelId, Point locationPoint, Restraint restraint, int octreeNodeId)
+    public NodeResponse(
+        int id,
+        Guid modelId,
+        Point locationPoint,
+        Restraint restraint,
+        int octreeNodeId
+    )
     {
         this.Id = id;
         this.ModelId = modelId;

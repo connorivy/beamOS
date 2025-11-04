@@ -1,4 +1,3 @@
-
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 
 internal interface IGetAnalyticalResultResourceQuery

@@ -1,6 +1,5 @@
 namespace BeamOs.StructuralAnalysis.Domain.DirectStiffnessMethod;
 
-
 //internal class DsmAnalysisModelOptions
 //{
 //    // default to timoshenko

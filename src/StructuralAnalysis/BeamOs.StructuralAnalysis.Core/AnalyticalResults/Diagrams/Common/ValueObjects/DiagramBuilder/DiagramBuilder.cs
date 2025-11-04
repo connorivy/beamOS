@@ -71,8 +71,8 @@ internal class DiagramBuilder
         //    new(new Length(0, this.lengthUnit), this.elementLength, new Polynomial(0.0))
         //];
 
-        var orderedLengths = this.pointValues
-            .Select(pv => pv.Location)
+        var orderedLengths = this
+            .pointValues.Select(pv => pv.Location)
             .Concat(this.distributedValues.Select(dv => dv.StartLocation))
             .Concat(this.distributedValues.Select(dv => dv.EndLocation))
             .Concat(this.previousDiagramIntervals.Select(i => i.StartLocation))
@@ -178,8 +178,8 @@ internal class DiagramBuilder
         Length location
     )
     {
-        var intervalIndex = intervals.FindIndex(
-            i => i.StartLocation.Equals(location, this.equalityTolerance)
+        var intervalIndex = intervals.FindIndex(i =>
+            i.StartLocation.Equals(location, this.equalityTolerance)
         );
 
         if (intervalIndex < 0)
@@ -251,8 +251,8 @@ internal class DiagramBuilder
             );
         }
 
-        List<DiagramPointValue> bcsToSolveFor = this.boundaryConditions
-            .Take(this.numTimesToIntegrate)
+        List<DiagramPointValue> bcsToSolveFor = this
+            .boundaryConditions.Take(this.numTimesToIntegrate)
             .ToList();
         IEnumerable<double> integrationConstants = this.SolveForIntegrationConstants(
             intervals,
@@ -330,8 +330,7 @@ internal class DiagramBuilder
     {
         var containingIntervals = this.GetContainingIntervals(intervals, location).ToList();
         var valInFirstInterval = containingIntervals[0]
-            .Polynomial
-            .SafeEvaluate(location.As(this.lengthUnit));
+            .Polynomial.SafeEvaluate(location.As(this.lengthUnit));
 
         if (containingIntervals.Count > 1)
         {
@@ -341,8 +340,7 @@ internal class DiagramBuilder
             }
 
             var valInLastInterval = containingIntervals[1]
-                .Polynomial
-                .SafeEvaluate(location.As(this.lengthUnit));
+                .Polynomial.SafeEvaluate(location.As(this.lengthUnit));
             if (
                 Math.Abs(valInFirstInterval - valInLastInterval)
                 > this.equalityTolerance.As(this.lengthUnit)

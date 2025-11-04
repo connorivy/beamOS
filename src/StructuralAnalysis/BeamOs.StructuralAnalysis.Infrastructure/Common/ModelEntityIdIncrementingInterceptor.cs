@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -118,6 +119,12 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                         maxId++;
                     } while (takenIds?.Contains(maxId) ?? false);
                     entityInfo.Entity.SetIntId(maxId);
+
+                    // For Node entities, also set the OctreeNodeId to match the Node.Id
+                    if (entityInfo.Entity is Node node)
+                    {
+                        node.OctreeNodeId = new OctreeNodeId(maxId);
+                    }
                 }
             }
 

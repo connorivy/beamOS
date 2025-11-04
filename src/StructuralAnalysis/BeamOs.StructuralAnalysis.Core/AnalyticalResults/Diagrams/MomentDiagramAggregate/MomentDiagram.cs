@@ -59,25 +59,23 @@ internal sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagram
         ShearForceDiagram shearForceDiagram
     )
     {
-        Forces startForces =
-            new(
-                Force.Zero,
-                Force.Zero,
-                Force.Zero,
-                new(localMemberTorques[3], torqueUnit),
-                new(localMemberTorques[4], torqueUnit),
-                new(localMemberTorques[5], torqueUnit)
-            );
+        Forces startForces = new(
+            Force.Zero,
+            Force.Zero,
+            Force.Zero,
+            new(localMemberTorques[3], torqueUnit),
+            new(localMemberTorques[4], torqueUnit),
+            new(localMemberTorques[5], torqueUnit)
+        );
 
-        Forces endForces =
-            new(
-                Force.Zero,
-                Force.Zero,
-                Force.Zero,
-                new(localMemberTorques[9], torqueUnit),
-                new(localMemberTorques[10], torqueUnit),
-                new(localMemberTorques[11], torqueUnit)
-            );
+        Forces endForces = new(
+            Force.Zero,
+            Force.Zero,
+            Force.Zero,
+            new(localMemberTorques[9], torqueUnit),
+            new(localMemberTorques[10], torqueUnit),
+            new(localMemberTorques[11], torqueUnit)
+        );
 
         var localAxisDirection = localShearDirection switch
         {
@@ -138,7 +136,7 @@ internal sealed class MomentDiagram : DiagramBase<MomentDiagramId, MomentDiagram
             diagramId
         )
         {
-            GlobalShearDirection = globalShearDirection
+            GlobalShearDirection = globalShearDirection,
         };
     }
 
