@@ -38,13 +38,12 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     }
 
     // Remove ToPoint3D, use Point directly
-    internal void Insert(NodeId nodeId, Point position)
+    internal OctreeNodeId Insert(NodeId nodeId, Point position)
     {
         if (this.Children != null)
         {
             int index = this.GetChildIndex(position);
-            this.Children[index].Insert(nodeId, position);
-            return;
+            return this.Children[index].Insert(nodeId, position);
         }
 
         this.Objects.Add(new(nodeId, position));
@@ -58,6 +57,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
             }
             this.Objects.Clear();
         }
+        return this.Id;
     }
 
     public void Subdivide()
@@ -253,7 +253,7 @@ internal class Octree : BeamOsModelEntity<OctreeId>
             && pos.Z.Meters <= this.Root.Center.Z.Meters + half;
     }
 
-    public void Add(Node node)
+    public OctreeNodeId Add(Node node)
     {
         Point position = node.LocationPoint;
 
@@ -261,10 +261,10 @@ internal class Octree : BeamOsModelEntity<OctreeId>
         {
             this.Root = ExpandRootToFit(this.Root, position);
         }
-        this.Root.Insert(node.Id, position);
+        return this.Root.Insert(node.Id, position);
     }
 
-    public void Add(
+    public OctreeNodeId Add(
         InternalNode node,
         IReadOnlyDictionary<Element1dId, Element1d> element1dStore,
         IReadOnlyDictionary<NodeId, NodeDefinition> nodeStore
@@ -276,7 +276,7 @@ internal class Octree : BeamOsModelEntity<OctreeId>
         {
             this.Root = ExpandRootToFit(this.Root, position);
         }
-        this.Root.Insert(node.Id, position);
+        return this.Root.Insert(node.Id, position);
     }
 
     public void Remove(NodeId nodeId, Point? location)

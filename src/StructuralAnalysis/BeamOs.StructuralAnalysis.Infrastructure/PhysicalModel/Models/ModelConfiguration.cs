@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using BeamOs.StructuralAnalysis.Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -56,6 +57,15 @@ internal class ModelConfiguration : IEntityTypeConfiguration<Model>
             .HasForeignKey(m => m.BimSourceModelId)
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
+
+        builder
+            .HasOne(m => m.NodeOctree)
+            .WithOne()
+            .HasForeignKey<Octree>(o => o.ModelId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
+
+        builder.Property(m => m.NodeOctreeId).HasConversion<OctreeIdConverter>();
 
         // builder.Property(m => m.Name).HasColumnName(nameof(Model.Name));
         // builder.Property(m => m.Description).HasColumnName(nameof(Model.Description));

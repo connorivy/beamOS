@@ -16,6 +16,11 @@ internal class Model : BeamOsEntity<ModelId>
         this.Name = name;
         this.Description = description;
         this.Settings = settings;
+        this.NodeOctree = new Octree(
+            this.Id,
+            new Point(0, 0, 0, UnitsNet.Units.LengthUnit.Meter),
+            100.0
+        );
     }
 
     public string Name { get; set; }
@@ -44,8 +49,8 @@ internal class Model : BeamOsEntity<ModelId>
         }
     } = DateTimeOffset.UtcNow;
 
-    // public Octree? NodeOctree { get; private set; }
-    // public OctreeId? NodeOctreeId { get; set; }
+    public Octree? NodeOctree { get; set; }
+    public OctreeId? NodeOctreeId { get; set; }
 
     // public double MinX { get; set; } = double.MaxValue;
     // public double MinY { get; set; } = double.MaxValue;

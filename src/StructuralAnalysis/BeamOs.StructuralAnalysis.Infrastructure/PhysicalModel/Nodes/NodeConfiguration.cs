@@ -1,4 +1,5 @@
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,5 +15,7 @@ internal class NodeConfiguration : IEntityTypeConfiguration<Node>
             .HasForeignKey(el => el.ModelId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(n => n.OctreeNodeId).HasConversion<OctreeNodeIdConverter>();
     }
 }
