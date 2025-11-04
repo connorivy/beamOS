@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
@@ -138,7 +137,8 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             {
                 // Check if modified - ignore ModelId field for comparison  
                 // For now, only track added/removed entities
-                // TODO: Implement proper content comparison for modified entities
+                // TODO (#issue): Implement proper content comparison for modified entities
+                // This requires creating custom equality comparers that exclude ModelId and other metadata fields
             }
         }
 
