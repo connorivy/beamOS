@@ -6,7 +6,10 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
-internal class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSectionModulus
+internal class SectionProfile
+    : SectionProfileInfoBase,
+        IHasStrongAxisPlasticSectionModulus,
+        IBeamOsModelEntity<SectionProfileId, SectionProfile>
 {
     public SectionProfile(
         ModelId modelId,
@@ -146,6 +149,47 @@ internal class SectionProfile : SectionProfileInfoBase, IHasStrongAxisPlasticSec
             this.WeakAxisShearArea,
             id
         );
+    }
+
+    public bool MemberwiseEquals(SectionProfile other)
+    {
+        var momentOfInertiaTolerance = new AreaMomentOfInertia(
+            .0001,
+            AreaMomentOfInertiaUnit.MeterToTheFourth
+        );
+        return this.Area.Equals(other.Area, new Area(.0001, AreaUnit.SquareMeter))
+            && this.StrongAxisMomentOfInertia.Equals(
+                other.StrongAxisMomentOfInertia,
+                momentOfInertiaTolerance
+            )
+            && this.WeakAxisMomentOfInertia.Equals(
+                other.WeakAxisMomentOfInertia,
+                momentOfInertiaTolerance
+            )
+            && this.PolarMomentOfInertia.Equals(
+                other.PolarMomentOfInertia,
+                momentOfInertiaTolerance
+            )
+            && this.StrongAxisPlasticSectionModulus.Equals(
+                other.StrongAxisPlasticSectionModulus,
+                momentOfInertiaTolerance
+            )
+            && this.WeakAxisPlasticSectionModulus.Equals(
+                other.WeakAxisPlasticSectionModulus,
+                momentOfInertiaTolerance
+            )
+            && (
+                this.StrongAxisShearArea?.Equals(
+                    other.StrongAxisShearArea,
+                    new Area(.0001, AreaUnit.SquareMeter)
+                ) ?? (other.StrongAxisShearArea is null)
+            )
+            && (
+                this.WeakAxisShearArea?.Equals(
+                    other.WeakAxisShearArea,
+                    new Area(.0001, AreaUnit.SquareMeter)
+                ) ?? (other.WeakAxisShearArea is null)
+            );
     }
 
     [Obsolete("EF Core Constructor", true)]

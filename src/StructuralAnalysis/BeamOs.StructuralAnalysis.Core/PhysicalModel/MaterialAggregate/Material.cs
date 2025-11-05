@@ -3,7 +3,7 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 
-internal class Material : BeamOsModelEntity<MaterialId>
+internal class Material : BeamOsModelEntity<MaterialId>, IBeamOsModelEntity<MaterialId, Material>
 {
     public Material(
         ModelId modelId,
@@ -25,6 +25,18 @@ internal class Material : BeamOsModelEntity<MaterialId>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     protected Material() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+    public bool MemberwiseEquals(Material other)
+    {
+        return this.ModulusOfElasticity.Equals(
+                other.ModulusOfElasticity,
+                new Pressure(.01, PressureUnit.NewtonPerSquareMeter)
+            )
+            && this.ModulusOfRigidity.Equals(
+                other.ModulusOfRigidity,
+                new Pressure(.01, PressureUnit.NewtonPerSquareMeter)
+            );
+    }
 }
 
 internal sealed class MaterialProposal : BeamOsModelProposalEntity<MaterialProposalId, MaterialId>
