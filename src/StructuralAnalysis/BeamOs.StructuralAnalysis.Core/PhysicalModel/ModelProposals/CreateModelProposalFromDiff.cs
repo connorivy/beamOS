@@ -88,6 +88,8 @@ internal class CreateModelProposalFromDiffCommandHandler(
         }
 
         // Process element1ds
+        // Note: Currently assumes all referenced entities (nodes, materials, section profiles) exist in the model.
+        // Future enhancement: Check if referenced IDs are in the diff's added entities and use ProposedID.Proposed() instead.
         foreach (var element1dDiff in diffData.Element1ds)
         {
             switch (element1dDiff.Status)
