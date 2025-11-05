@@ -15,73 +15,50 @@ namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
 
 public class DiffModelTests
 {
-    private static readonly SemaphoreSlim semaphore = new(1, 1);
-    private static Guid modelIdA;
-    private static Guid modelIdB;
-
-    [Before(TUnit.Core.HookType.Test)]
-    public async Task SetupModel()
+    private static BeamOsDynamicModel DynamicModel()
     {
-        await semaphore.WaitAsync();
-        try
-        {
-            if (modelIdA != default)
-            {
-                return;
-            }
-
-            modelIdA = Guid.NewGuid();
-            modelIdB = Guid.NewGuid();
-
-            BeamOsDynamicModel modelA = new(
-                modelIdA,
-                new() { UnitSettings = UnitSettingsContract.K_FT },
-                "test model",
-                "test model"
-            );
-            BeamOsDynamicModel modelB = new(
-                modelIdB,
-                new() { UnitSettings = UnitSettingsContract.K_FT },
-                "test model",
-                "test model"
-            );
-            modelA.AddNode(1, 0, 0, 0);
-            modelB.AddNode(1, 0, 0, 0);
-
-            modelA.AddNode(2, 0, 0, 10);
-            modelB.AddNode(2, 0, 0, 10);
-
-            modelA.AddNode(3, 0, 0, 20);
-            modelB.AddNode(3, 0, 0, 20);
-
-            modelA.AddMaterial(1, 290000, 11500);
-            modelB.AddMaterial(1, 290000, 11500);
-
-            modelA.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
-            modelB.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
-
-            modelA.AddElement1d(1, 1, 2, 1, 1);
-            modelB.AddElement1d(1, 1, 2, 1, 1);
-
-            modelA.AddElement1d(2, 2, 3, 1, 1);
-            modelB.AddElement1d(2, 2, 3, 1, 1);
-
-            await modelA.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
-            await modelB.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
-        }
-        finally
-        {
-            semaphore.Release();
-        }
+        return new BeamOsDynamicModel(
+            Guid.NewGuid(),
+            new() { UnitSettings = UnitSettingsContract.K_FT },
+            "test model",
+            "test model"
+        );
     }
 
     [Test]
     public async Task InitialDiff_ShouldReturnEmptyDifferences()
     {
-        var diffRequest = new DiffModelRequest() { TargetModelId = modelIdB };
+        BeamOsDynamicModel modelA = DynamicModel();
+        BeamOsDynamicModel modelB = DynamicModel();
+
+        modelA.AddNode(1, 0, 0, 0);
+        modelB.AddNode(1, 0, 0, 0);
+
+        modelA.AddNode(2, 0, 0, 10);
+        modelB.AddNode(2, 0, 0, 10);
+
+        modelA.AddNode(3, 0, 0, 20);
+        modelB.AddNode(3, 0, 0, 20);
+
+        modelA.AddMaterial(1, 290000, 11500);
+        modelB.AddMaterial(1, 290000, 11500);
+
+        modelA.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+        modelB.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+
+        modelA.AddElement1d(1, 1, 2, 1, 1);
+        modelB.AddElement1d(1, 1, 2, 1, 1);
+
+        modelA.AddElement1d(2, 2, 3, 1, 1);
+        modelB.AddElement1d(2, 2, 3, 1, 1);
+
+        await modelA.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+        await modelB.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+
+        var diffRequest = new DiffModelRequest() { TargetModelId = modelB.Id };
 
         var diffResponse = await AssemblySetup
-            .StructuralAnalysisRemoteApiClient.Models[modelIdA]
+            .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
             .Diff.GitModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
@@ -95,29 +72,39 @@ public class DiffModelTests
     [Test]
     public async Task DiffWithAddedNode_ShouldDetectAddedNode()
     {
-        // Add a node to model B
-        var createNodeResponse = await AssemblySetup
-            .StructuralAnalysisRemoteApiClient.Models[modelIdB]
-            .Nodes.CreateNodeAsync(
-                new CreateNodeRequest()
-                {
-                    Id = 4,
-                    LocationPoint = new()
-                    {
-                        X = 0,
-                        Y = 0,
-                        Z = 30,
-                        LengthUnit = BeamOs.StructuralAnalysis.Contracts.Common.LengthUnit.Foot,
-                    },
-                    Restraint = Restraint.Free,
-                }
-            );
-        createNodeResponse.ThrowIfError();
+        BeamOsDynamicModel modelA = DynamicModel();
+        BeamOsDynamicModel modelB = DynamicModel();
 
-        var diffRequest = new DiffModelRequest() { TargetModelId = modelIdB };
+        modelA.AddNode(1, 0, 0, 0);
+        modelB.AddNode(1, 0, 0, 0);
+
+        modelA.AddNode(2, 0, 0, 10);
+        modelB.AddNode(2, 0, 0, 10);
+
+        modelA.AddNode(3, 0, 0, 20);
+        modelB.AddNode(3, 0, 0, 20);
+
+        modelA.AddMaterial(1, 290000, 11500);
+        modelB.AddMaterial(1, 290000, 11500);
+
+        modelA.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+        modelB.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+
+        modelA.AddElement1d(1, 1, 2, 1, 1);
+        modelB.AddElement1d(1, 1, 2, 1, 1);
+
+        modelA.AddElement1d(2, 2, 3, 1, 1);
+        modelB.AddElement1d(2, 2, 3, 1, 1);
+
+        modelB.AddNode(4, 0, 0, 30);
+
+        await modelA.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+        await modelB.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+
+        var diffRequest = new DiffModelRequest() { TargetModelId = modelB.Id };
 
         var diffResponse = await AssemblySetup
-            .StructuralAnalysisRemoteApiClient.Models[modelIdA]
+            .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
             .Diff.GitModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
@@ -131,17 +118,37 @@ public class DiffModelTests
     [Test]
     public async Task DiffWithRemovedElement_ShouldDetectRemovedElement()
     {
-        // Remove an element from model B
-        var deleteResponse = await AssemblySetup
-            .StructuralAnalysisRemoteApiClient.Models[modelIdB]
-            .Element1ds[2]
-            .DeleteElement1dAsync();
-        deleteResponse.ThrowIfError();
+        BeamOsDynamicModel modelA = DynamicModel();
+        BeamOsDynamicModel modelB = DynamicModel();
 
-        var diffRequest = new DiffModelRequest() { TargetModelId = modelIdB };
+        modelA.AddNode(1, 0, 0, 0);
+        modelB.AddNode(1, 0, 0, 0);
+
+        modelA.AddNode(2, 0, 0, 10);
+        modelB.AddNode(2, 0, 0, 10);
+
+        modelA.AddNode(3, 0, 0, 20);
+        modelB.AddNode(3, 0, 0, 20);
+
+        modelA.AddMaterial(1, 290000, 11500);
+        modelB.AddMaterial(1, 290000, 11500);
+
+        modelA.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+        modelB.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+
+        modelA.AddElement1d(1, 1, 2, 1, 1);
+        modelB.AddElement1d(1, 1, 2, 1, 1);
+
+        modelA.AddElement1d(2, 2, 3, 1, 1);
+        // modelB.AddElement1d(2, 2, 3, 1, 1);
+
+        await modelA.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+        await modelB.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+
+        var diffRequest = new DiffModelRequest() { TargetModelId = modelB.Id };
 
         var diffResponse = await AssemblySetup
-            .StructuralAnalysisRemoteApiClient.Models[modelIdA]
+            .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
             .Diff.GitModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
@@ -155,24 +162,39 @@ public class DiffModelTests
     [Test]
     public async Task DiffWithAddedMaterial_ShouldDetectAddedMaterial()
     {
-        // Add a material to model B
-        var createMaterialResponse = await AssemblySetup
-            .StructuralAnalysisRemoteApiClient.Models[modelIdB]
-            .Materials.CreateMaterialAsync(
-                new CreateMaterialRequest()
-                {
-                    Id = 2,
-                    ModulusOfElasticity = 200000,
-                    ModulusOfRigidity = 80000,
-                    PressureUnit = BeamOs.StructuralAnalysis.Contracts.Common.PressureUnit.KilopoundForcePerSquareFoot,
-                }
-            );
-        createMaterialResponse.ThrowIfError();
+        BeamOsDynamicModel modelA = DynamicModel();
+        BeamOsDynamicModel modelB = DynamicModel();
 
-        var diffRequest = new DiffModelRequest() { TargetModelId = modelIdB };
+        modelA.AddNode(1, 0, 0, 0);
+        modelB.AddNode(1, 0, 0, 0);
+
+        modelA.AddNode(2, 0, 0, 10);
+        modelB.AddNode(2, 0, 0, 10);
+
+        modelA.AddNode(3, 0, 0, 20);
+        modelB.AddNode(3, 0, 0, 20);
+
+        modelA.AddMaterial(1, 290000, 11500);
+        modelB.AddMaterial(1, 290000, 11500);
+
+        modelA.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+        modelB.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+
+        modelA.AddElement1d(1, 1, 2, 1, 1);
+        modelB.AddElement1d(1, 1, 2, 1, 1);
+
+        modelA.AddElement1d(2, 2, 3, 1, 1);
+        modelB.AddElement1d(2, 2, 3, 1, 1);
+
+        modelB.AddMaterial(2, 200000, 80000);
+
+        await modelA.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+        await modelB.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+
+        var diffRequest = new DiffModelRequest() { TargetModelId = modelB.Id };
 
         var diffResponse = await AssemblySetup
-            .StructuralAnalysisRemoteApiClient.Models[modelIdA]
+            .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
             .Diff.GitModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
