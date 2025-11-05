@@ -176,7 +176,9 @@ internal class CreateModelProposalFromDiffCommandHandler(
             {
                 case DiffStatus.Added:
                     modelProposalData.CreateSectionProfileProposals.Add(
-                        new CreateSectionProfileRequest(sectionProfileDiff.Entity.ToSectionProfileData())
+                        new CreateSectionProfileRequest(
+                            sectionProfileDiff.Entity.ToSectionProfileData()
+                        )
                         {
                             Id = sectionProfileDiff.Entity.Id,
                         }
