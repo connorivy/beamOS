@@ -1,7 +1,12 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
@@ -53,45 +58,55 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             );
         }
 
-        // Create mappers
-        var sourceMapper = ModelToResponseMapper.Create(sourceModel.Settings.UnitSettings);
-        var targetMapper = ModelToResponseMapper.Create(targetModel.Settings.UnitSettings);
+        // var sourceMapper = ModelToResponseMapper.Create(sourceModel.Settings.UnitSettings);
+        // var targetMapper = ModelToResponseMapper.Create(targetModel.Settings.UnitSettings);
 
-        // Map to responses
-        var sourceResponse = sourceMapper.Map(sourceModel);
-        var targetResponse = targetMapper.Map(targetModel);
+        // var sourceResponse = sourceMapper.Map(sourceModel);
+        // var targetResponse = targetMapper.Map(targetModel);
 
         // Compute differences
         var response = new ModelDiffResponse
         {
-            Nodes = ComputeDiff(
-                sourceResponse.Nodes ?? [],
-                targetResponse.Nodes ?? [],
-                n => n.Id
-            ),
+            Nodes =
+            [
+                .. ComputeDiff<NodeId, Node>(
+                        sourceModel.Nodes ?? [],
+                        targetModel.Nodes ?? [],
+                        n => n.Id
+                    )
+                    .Select(diff =>
+                    {
+                        var (status, node) = diff;
+                        return new EntityDiff<NodeResponse>
+                        {
+                            Status = status,
+                            Entity = node.ToResponse(),
+                        };
+                    }),
+            ],
             Element1ds = ComputeDiff(
-                sourceResponse.Element1ds ?? [],
-                targetResponse.Element1ds ?? [],
+                sourceModel.Element1ds ?? [],
+                targetModel.Element1ds ?? [],
                 e => e.Id
             ),
             Materials = ComputeDiff(
-                sourceResponse.Materials ?? [],
-                targetResponse.Materials ?? [],
+                sourceModel.Materials ?? [],
+                targetModel.Materials ?? [],
                 m => m.Id
             ),
             SectionProfiles = ComputeDiff(
-                sourceResponse.SectionProfiles ?? [],
-                targetResponse.SectionProfiles ?? [],
+                sourceModel.SectionProfiles ?? [],
+                targetModel.SectionProfiles ?? [],
                 sp => sp.Id
             ),
             PointLoads = ComputeDiff(
-                sourceResponse.PointLoads ?? [],
-                targetResponse.PointLoads ?? [],
+                sourceModel.PointLoads ?? [],
+                targetModel.PointLoads ?? [],
                 pl => pl.Id
             ),
             MomentLoads = ComputeDiff(
-                sourceResponse.MomentLoads ?? [],
-                targetResponse.MomentLoads ?? [],
+                sourceModel.MomentLoads ?? [],
+                targetModel.MomentLoads ?? [],
                 ml => ml.Id
             ),
         };
@@ -99,11 +114,13 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
         return response;
     }
 
-    private static List<EntityDiff<T>> ComputeDiff<T>(
-        List<T> sourceEntities,
-        List<T> targetEntities,
+    private static IEnumerable<(DiffStatus Status, T Entity)> ComputeDiff<TId, T>(
+        IEnumerable<T> sourceEntities,
+        IEnumerable<T> targetEntities,
         Func<T, int> keySelector
     )
+        where T : IBeamOsModelEntity<TId, T>
+        where TId : struct, IIntBasedId
     {
         var diffs = new List<EntityDiff<T>>();
 
@@ -116,9 +133,7 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             var key = keySelector(sourceEntity);
             if (!targetDict.ContainsKey(key))
             {
-                diffs.Add(
-                    new EntityDiff<T> { Status = DiffStatus.Removed, Entity = sourceEntity }
-                );
+                yield return (DiffStatus.Removed, sourceEntity);
             }
         }
 
@@ -128,22 +143,12 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             var key = keySelector(targetEntity);
             if (!sourceDict.TryGetValue(key, out var sourceEntity))
             {
-                // Added entity (in target but not in source)
-                diffs.Add(
-                    new EntityDiff<T> { Status = DiffStatus.Added, Entity = targetEntity }
-                );
+                yield return (DiffStatus.Added, targetEntity);
             }
-            else
+            else if (!sourceEntity.MemberwiseEquals(targetEntity))
             {
-                // Check if modified - ignore ModelId field for comparison  
-                // For now, only track added/removed entities
-                // TODO (#issue): Implement proper content comparison for modified entities
-                // This requires creating custom equality comparers that exclude ModelId and other metadata fields
+                yield return (DiffStatus.Modified, targetEntity);
             }
         }
-
-        return diffs;
     }
-
-
 }

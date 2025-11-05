@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeamOs.StructuralAnalysis.Domain.Common;
 
 [PrimaryKey(nameof(Id), nameof(ModelId))]
-internal class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
+internal abstract class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModelEntity
     where TId : struct, IIntBasedId
 {
     public BeamOsModelEntity(TId id, ModelId modelId)
@@ -40,6 +40,13 @@ internal interface IHasIntIdDomain
 }
 
 internal interface IBeamOsModelEntity : IHasModelIdDomain, IHasIntIdDomain { }
+
+internal interface IBeamOsModelEntity<TId, in T> : IBeamOsModelEntity
+    where TId : struct, IIntBasedId
+    where T : IBeamOsModelEntity<TId, T>
+{
+    public bool MemberwiseEquals(T other);
+}
 
 internal interface IBeamOsModelProposalEntity : IHasModelIdDomain, IHasIntIdDomain
 {

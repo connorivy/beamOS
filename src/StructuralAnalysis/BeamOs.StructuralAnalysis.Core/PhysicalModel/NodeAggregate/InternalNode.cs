@@ -163,6 +163,22 @@ internal class InternalNode : NodeDefinition
         return new(forceAlongX, forceAlongY, forceAlongZ, momentAboutX, momentAboutY, momentAboutZ);
     }
 
+    public override bool MemberwiseEquals(NodeDefinition other)
+    {
+        if (other is not InternalNode otherNode)
+        {
+            return false;
+        }
+
+        return this.ModelId == otherNode.ModelId
+            && this.Element1dId == otherNode.Element1dId
+            && this.RatioAlongElement1d.Equals(
+                otherNode.RatioAlongElement1d,
+                new Ratio(.5, RatioUnit.Percent)
+            )
+            && this.Restraint == otherNode.Restraint;
+    }
+
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     protected InternalNode() { }
