@@ -153,6 +153,17 @@ internal class CreateModelProposalCommandHandler(
             var proposalIssue = proposalIssueContract.ToDomain(command.ModelId, modelProposal.Id);
             modelProposal.ProposalIssues.Add(proposalIssue);
         }
+        foreach (var deleteEntityProposal in command.Body.DeleteModelEntityProposals ?? [])
+        {
+            var deleteProposal = new DeleteModelEntityProposal(
+                command.ModelId,
+                modelProposal.Id,
+                deleteEntityProposal.Id,
+                deleteEntityProposal.ObjectType
+            );
+            modelProposal.DeleteModelEntityProposals ??= [];
+            modelProposal.DeleteModelEntityProposals.Add(deleteProposal);
+        }
 
         await unitOfWork.SaveChangesAsync(ct);
 
