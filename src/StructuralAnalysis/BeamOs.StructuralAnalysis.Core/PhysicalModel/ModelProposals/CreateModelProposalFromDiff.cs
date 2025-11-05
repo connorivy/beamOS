@@ -84,6 +84,10 @@ internal class CreateModelProposalFromDiffCommandHandler(
                         }
                     );
                     break;
+                default:
+                    return BeamOsError.Validation(
+                        description: $"Unknown DiffStatus: {nodeDiff.Status}"
+                    );
             }
         }
 
@@ -129,6 +133,10 @@ internal class CreateModelProposalFromDiffCommandHandler(
                         }
                     );
                     break;
+                default:
+                    return BeamOsError.Validation(
+                        description: $"Unknown DiffStatus: {element1dDiff.Status}"
+                    );
             }
         }
 
@@ -168,6 +176,10 @@ internal class CreateModelProposalFromDiffCommandHandler(
                         }
                     );
                     break;
+                default:
+                    return BeamOsError.Validation(
+                        description: $"Unknown DiffStatus: {materialDiff.Status}"
+                    );
             }
         }
 
@@ -203,10 +215,13 @@ internal class CreateModelProposalFromDiffCommandHandler(
                         }
                     );
                     break;
+                default:
+                    return BeamOsError.Validation(
+                        description: $"Unknown DiffStatus: {sectionProfileDiff.Status}"
+                    );
             }
         }
 
-        // Call the existing CreateModelProposalCommandHandler with the built data
         var proposalRequest = new ModelResourceRequest<ModelProposalData>
         {
             ModelId = command.ModelId,
