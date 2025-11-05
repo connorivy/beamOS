@@ -314,7 +314,7 @@ internal class Element1d
             && this.SectionProfileId == other.SectionProfileId
             && this.SectionProfileRotation.Equals(
                 other.SectionProfileRotation,
-                new UnitsNet.Angle(1, AngleUnit.Degree)
+                new Angle(1, AngleUnit.Degree)
             )
             && this.ExternalId == other.ExternalId;
     }

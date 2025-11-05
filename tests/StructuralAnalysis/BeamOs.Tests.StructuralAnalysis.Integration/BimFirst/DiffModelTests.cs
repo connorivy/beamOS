@@ -160,6 +160,56 @@ public class DiffModelTests
     }
 
     [Test]
+    public async Task DiffWithModifiedElement_ShouldDetectModifiedElement()
+    {
+        BeamOsDynamicModel modelA = DynamicModel();
+        BeamOsDynamicModel modelB = DynamicModel();
+
+        modelA.AddNode(1, 0, 0, 0);
+        modelB.AddNode(1, 0, 0, 0);
+
+        modelA.AddNode(2, 0, 0, 10);
+        modelB.AddNode(2, 0, 0, 10);
+
+        modelA.AddNode(3, 0, 0, 20);
+        modelB.AddNode(3, 0, 0, 20);
+
+        modelB.AddNode(4, 0, 0, 30);
+
+        modelA.AddMaterial(1, 290000, 11500);
+        modelB.AddMaterial(1, 290000, 11500);
+
+        modelA.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+        modelB.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+
+        modelA.AddElement1d(1, 1, 2, 1, 1);
+        modelB.AddElement1d(1, 1, 2, 1, 1);
+
+        modelA.AddElement1d(2, 2, 3, 1, 1);
+        modelB.AddElement1d(2, 2, 4, 1, 1);
+
+        await modelA.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+        await modelB.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+
+        var diffRequest = new DiffModelRequest() { TargetModelId = modelB.Id };
+
+        var diffResponse = await AssemblySetup
+            .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
+            .Diff.GitModelDiffAsync(diffRequest);
+
+        diffResponse.ThrowIfError();
+
+        diffResponse.Value.Nodes.Should().HaveCount(1);
+        diffResponse.Value.Nodes[0].Status.Should().Be(DiffStatus.Added);
+
+        diffResponse.Value.Element1ds.Should().HaveCount(1);
+        diffResponse.Value.Element1ds[0].Status.Should().Be(DiffStatus.Modified);
+        diffResponse.Value.Element1ds[0].Entity.Id.Should().Be(2);
+        diffResponse.Value.Element1ds[0].Entity.StartNodeId.Should().Be(2);
+        diffResponse.Value.Element1ds[0].Entity.EndNodeId.Should().Be(4);
+    }
+
+    [Test]
     public async Task DiffWithAddedMaterial_ShouldDetectAddedMaterial()
     {
         BeamOsDynamicModel modelA = DynamicModel();

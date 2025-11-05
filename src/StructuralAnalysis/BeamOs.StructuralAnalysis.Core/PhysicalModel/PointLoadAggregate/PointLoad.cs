@@ -6,7 +6,9 @@ using MathNet.Spatial.Euclidean;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 
-internal class PointLoad : BeamOsModelEntity<PointLoadId>
+internal class PointLoad
+    : BeamOsModelEntity<PointLoadId>,
+        IBeamOsModelEntity<PointLoadId, PointLoad>
 {
     public PointLoad(
         ModelId modelId,
@@ -66,6 +68,14 @@ internal class PointLoad : BeamOsModelEntity<PointLoadId>
         CoordinateSystemDirection3D direction,
         LoadCombination loadCombination
     ) => this.GetForceInDirection(direction) * loadCombination.GetFactor(this.LoadCaseId);
+
+    public bool MemberwiseEquals(PointLoad other)
+    {
+        return this.NodeId == other.NodeId
+            && this.LoadCaseId == other.LoadCaseId
+            && this.Force.Equals(other.Force, new Force(.01, ForceUnit.Newton))
+            && this.Direction.Equals(other.Direction);
+    }
 
     [Obsolete("EF Core Constructor")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

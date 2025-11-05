@@ -1,15 +1,26 @@
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
-using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.MomentLoads;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
@@ -61,13 +72,6 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             );
         }
 
-        // var sourceMapper = ModelToResponseMapper.Create(sourceModel.Settings.UnitSettings);
-        // var targetMapper = ModelToResponseMapper.Create(targetModel.Settings.UnitSettings);
-
-        // var sourceResponse = sourceMapper.Map(sourceModel);
-        // var targetResponse = targetMapper.Map(targetModel);
-
-        // Compute differences
         var response = new ModelDiffResponse
         {
             Nodes =
@@ -97,26 +101,65 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                     }),
             ],
 
-            Materials = ComputeDiff(
-                sourceModel.Materials ?? [],
-                targetModel.Materials ?? [],
-                m => m.Id
-            ),
-            SectionProfiles = ComputeDiff(
-                sourceModel.SectionProfiles ?? [],
-                targetModel.SectionProfiles ?? [],
-                sp => sp.Id
-            ),
-            PointLoads = ComputeDiff(
-                sourceModel.PointLoads ?? [],
-                targetModel.PointLoads ?? [],
-                pl => pl.Id
-            ),
-            MomentLoads = ComputeDiff(
-                sourceModel.MomentLoads ?? [],
-                targetModel.MomentLoads ?? [],
-                ml => ml.Id
-            ),
+            Materials =
+            [
+                .. ComputeDiff<MaterialId, Material>(
+                        sourceModel.Materials ?? [],
+                        targetModel.Materials ?? [],
+                        n => n.Id
+                    )
+                    .Select(diff => new EntityDiff<MaterialResponse>
+                    {
+                        Status = diff.Status,
+                        Entity = diff.Entity.ToResponse(
+                            sourceModel.Settings.UnitSettings.PressureUnit
+                        ),
+                    }),
+            ],
+
+            SectionProfiles =
+            [
+                .. ComputeDiff<SectionProfileId, SectionProfile>(
+                        sourceModel.SectionProfiles ?? [],
+                        targetModel.SectionProfiles ?? [],
+                        n => n.Id
+                    )
+                    .Select(diff => new EntityDiff<SectionProfileResponse>
+                    {
+                        Status = diff.Status,
+                        Entity = diff.Entity.ToResponse(
+                            sourceModel.Settings.UnitSettings.LengthUnit
+                        ),
+                    }),
+            ],
+
+            PointLoads =
+            [
+                .. ComputeDiff<PointLoadId, PointLoad>(
+                        sourceModel.PointLoads ?? [],
+                        targetModel.PointLoads ?? [],
+                        n => n.Id
+                    )
+                    .Select(diff => new EntityDiff<PointLoadResponse>
+                    {
+                        Status = diff.Status,
+                        Entity = diff.Entity.ToResponse(),
+                    }),
+            ],
+
+            MomentLoads =
+            [
+                .. ComputeDiff<MomentLoadId, MomentLoad>(
+                        sourceModel.MomentLoads ?? [],
+                        targetModel.MomentLoads ?? [],
+                        n => n.Id
+                    )
+                    .Select(diff => new EntityDiff<MomentLoadResponse>
+                    {
+                        Status = diff.Status,
+                        Entity = diff.Entity.ToResponse(),
+                    }),
+            ],
         };
 
         return response;
