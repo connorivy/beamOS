@@ -2,10 +2,13 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.Common.Domain.Models;
 using BeamOs.StructuralAnalysis.Application.Common;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.Common;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
@@ -74,21 +77,26 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                         targetModel.Nodes ?? [],
                         n => n.Id
                     )
-                    .Select(diff =>
+                    .Select(diff => new EntityDiff<NodeResponse>
                     {
-                        var (status, node) = diff;
-                        return new EntityDiff<NodeResponse>
-                        {
-                            Status = status,
-                            Entity = node.ToResponse(),
-                        };
+                        Status = diff.Status,
+                        Entity = diff.Entity.ToResponse(),
                     }),
             ],
-            Element1ds = ComputeDiff(
-                sourceModel.Element1ds ?? [],
-                targetModel.Element1ds ?? [],
-                e => e.Id
-            ),
+            Element1ds =
+            [
+                .. ComputeDiff<Element1dId, Element1d>(
+                        sourceModel.Element1ds ?? [],
+                        targetModel.Element1ds ?? [],
+                        n => n.Id
+                    )
+                    .Select(diff => new EntityDiff<Element1dResponse>
+                    {
+                        Status = diff.Status,
+                        Entity = diff.Entity.ToResponse(),
+                    }),
+            ],
+
             Materials = ComputeDiff(
                 sourceModel.Materials ?? [],
                 targetModel.Materials ?? [],

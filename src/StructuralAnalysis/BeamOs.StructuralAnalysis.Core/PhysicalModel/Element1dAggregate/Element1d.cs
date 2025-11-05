@@ -7,7 +7,9 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 
-internal class Element1d : BeamOsModelEntity<Element1dId>
+internal class Element1d
+    : BeamOsModelEntity<Element1dId>,
+        IBeamOsModelEntity<Element1dId, Element1d>
 {
     public Element1d(
         ModelId modelId,
@@ -298,6 +300,23 @@ internal class Element1d : BeamOsModelEntity<Element1dId>
         var z = startLocation.Z + ((endLocation.Z - startLocation.Z) * decimalFraction);
 
         return new Point(x, y, z);
+    }
+
+    public bool MemberwiseEquals(Element1d other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+        return this.StartNodeId == other.StartNodeId
+            && this.EndNodeId == other.EndNodeId
+            && this.MaterialId == other.MaterialId
+            && this.SectionProfileId == other.SectionProfileId
+            && this.SectionProfileRotation.Equals(
+                other.SectionProfileRotation,
+                new UnitsNet.Angle(1, AngleUnit.Degree)
+            )
+            && this.ExternalId == other.ExternalId;
     }
 
     [Obsolete("EF Core Constructor", true)]
