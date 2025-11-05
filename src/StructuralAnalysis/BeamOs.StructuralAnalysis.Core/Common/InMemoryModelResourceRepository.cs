@@ -35,6 +35,11 @@ internal class InMemoryRepository<TId, T> : IRepository<TId, T>
     {
         // No-op for in-memory repository
     }
+
+    public void Attach(T aggregate)
+    {
+        // No-op for in-memory repository
+    }
 }
 
 internal class InMemoryModelResourceRepository<TId, T>(
@@ -59,6 +64,11 @@ internal class InMemoryModelResourceRepository<TId, T>(
     }
 
     public void ClearChangeTracker()
+    {
+        // No-op for in-memory repository
+    }
+
+    public void Attach(T aggregate)
     {
         // No-op for in-memory repository
     }

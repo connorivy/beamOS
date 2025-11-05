@@ -52,6 +52,15 @@ internal abstract class RepositoryBase<
     {
         dbContext.ChangeTracker.Clear();
     }
+
+    /// <summary>
+    /// Begin tracking with the EntityStatus.Unchanged state
+    /// </summary>
+    /// <param name="aggregate"></param>
+    public void Attach(TEntity aggregate)
+    {
+        dbContext.Set<TEntity>().Attach(aggregate);
+    }
 }
 
 internal abstract class ModelResourceRepositoryInBase<

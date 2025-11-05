@@ -106,7 +106,7 @@ public class DiffModelTests
 
         diffResponse.Value.Nodes.Should().HaveCount(1);
         diffResponse.Value.Nodes[0].Status.Should().Be(DiffStatus.Added);
-        diffResponse.Value.Nodes[0].Entity.Id.Should().Be(4);
+        diffResponse.Value.Nodes[0].SourceEntity.Id.Should().Be(4);
         diffResponse.Value.Element1ds.Should().BeEmpty();
     }
 
@@ -150,7 +150,7 @@ public class DiffModelTests
 
         diffResponse.Value.Element1ds.Should().HaveCount(1);
         diffResponse.Value.Element1ds[0].Status.Should().Be(DiffStatus.Removed);
-        diffResponse.Value.Element1ds[0].Entity.Id.Should().Be(2);
+        diffResponse.Value.Element1ds[0].SourceEntity.Id.Should().Be(2);
         diffResponse.Value.Nodes.Should().BeEmpty();
     }
 
@@ -199,9 +199,9 @@ public class DiffModelTests
 
         diffResponse.Value.Element1ds.Should().HaveCount(1);
         diffResponse.Value.Element1ds[0].Status.Should().Be(DiffStatus.Modified);
-        diffResponse.Value.Element1ds[0].Entity.Id.Should().Be(2);
-        diffResponse.Value.Element1ds[0].Entity.StartNodeId.Should().Be(2);
-        diffResponse.Value.Element1ds[0].Entity.EndNodeId.Should().Be(4);
+        diffResponse.Value.Element1ds[0].SourceEntity.Id.Should().Be(2);
+        diffResponse.Value.Element1ds[0].SourceEntity.StartNodeId.Should().Be(2);
+        diffResponse.Value.Element1ds[0].SourceEntity.EndNodeId.Should().Be(4);
     }
 
     [Test]
@@ -246,7 +246,7 @@ public class DiffModelTests
 
         diffResponse.Value.Materials.Should().HaveCount(1);
         diffResponse.Value.Materials[0].Status.Should().Be(DiffStatus.Added);
-        diffResponse.Value.Materials[0].Entity.Id.Should().Be(2);
+        diffResponse.Value.Materials[0].SourceEntity.Id.Should().Be(2);
     }
 
     [Test]
@@ -271,8 +271,8 @@ public class DiffModelTests
             [
                 new()
                 {
-                    Status = DiffStatus.Added,
-                    Entity = new NodeResponse
+                    SourceEntity = null,
+                    TargetEntity = new NodeResponse
                     {
                         Id = 4,
                         ModelId = modelA.Id,
@@ -288,8 +288,20 @@ public class DiffModelTests
                 },
                 new()
                 {
-                    Status = DiffStatus.Modified,
-                    Entity = new NodeResponse
+                    SourceEntity = new NodeResponse
+                    {
+                        Id = 2,
+                        ModelId = modelA.Id,
+                        LocationPoint = new Point
+                        {
+                            X = 0,
+                            Y = 0,
+                            Z = 10,
+                            LengthUnit = LengthUnitContract.Foot,
+                        },
+                        Restraint = Restraint.Fixed,
+                    },
+                    TargetEntity = new NodeResponse
                     {
                         Id = 2,
                         ModelId = modelA.Id,
@@ -305,20 +317,20 @@ public class DiffModelTests
                 },
                 new()
                 {
-                    Status = DiffStatus.Removed,
-                    Entity = new NodeResponse
+                    SourceEntity = new NodeResponse
                     {
                         Id = 3,
                         ModelId = modelA.Id,
                         LocationPoint = new Point
                         {
-                            X = 20,
+                            X = 0,
                             Y = 0,
-                            Z = 50,
+                            Z = 10,
                             LengthUnit = LengthUnitContract.Foot,
                         },
                         Restraint = Restraint.Free,
                     },
+                    TargetEntity = null,
                 },
             ],
         };

@@ -1,5 +1,4 @@
 using BeamOs.Common.Domain.Models;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
@@ -9,6 +8,7 @@ public interface IDomainEventHandler
 #pragma warning restore CA1711 // Identifiers should not have incorrect suffix
 {
     public Task HandleAsync(IDomainEvent notification, CancellationToken ct = default);
+    public bool HandleAfterChangesSaved { get; }
 }
 
 #pragma warning disable CA1711 // Identifiers should not have incorrect suffix
@@ -23,6 +23,7 @@ public abstract class DomainEventHandlerBase<TNotification> : IDomainEventHandle
     where TNotification : IDomainEvent
 {
     public abstract Task HandleAsync(TNotification notification, CancellationToken ct = default);
+    public virtual bool HandleAfterChangesSaved => false;
 
     public async Task HandleAsync(IDomainEvent notification, CancellationToken ct = default)
     {
@@ -71,17 +72,5 @@ public class DomainEventHandlerProvider
         }
 
         return (IDomainEventHandler)serviceProvider.GetRequiredService(handler);
-    }
-}
-
-internal sealed class BimFirstSourceModelUpdatedEventHandler
-    : DomainEventHandlerBase<BimFirstSourceModelUpdatedEvent>
-{
-    public override Task HandleAsync(
-        BimFirstSourceModelUpdatedEvent notification,
-        CancellationToken ct = default
-    )
-    {
-        return Task.CompletedTask;
     }
 }

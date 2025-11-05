@@ -85,8 +85,8 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                     )
                     .Select(diff => new EntityDiff<NodeResponse>
                     {
-                        Status = diff.Status,
-                        Entity = diff.Entity.ToResponse(),
+                        SourceEntity = diff.SourceEntity?.ToResponse(),
+                        TargetEntity = diff.TargetEntity?.ToResponse(),
                     }),
             ],
             Element1ds =
@@ -98,8 +98,8 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                     )
                     .Select(diff => new EntityDiff<Element1dResponse>
                     {
-                        Status = diff.Status,
-                        Entity = diff.Entity.ToResponse(),
+                        SourceEntity = diff.SourceEntity?.ToResponse(),
+                        TargetEntity = diff.TargetEntity?.ToResponse(),
                     }),
             ],
 
@@ -112,9 +112,11 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                     )
                     .Select(diff => new EntityDiff<MaterialResponse>
                     {
-                        Status = diff.Status,
-                        Entity = diff.Entity.ToResponse(
+                        SourceEntity = diff.SourceEntity?.ToResponse(
                             sourceModel.Settings.UnitSettings.PressureUnit
+                        ),
+                        TargetEntity = diff.TargetEntity?.ToResponse(
+                            targetModel.Settings.UnitSettings.PressureUnit
                         ),
                     }),
             ],
@@ -128,9 +130,11 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                     )
                     .Select(diff => new EntityDiff<SectionProfileResponse>
                     {
-                        Status = diff.Status,
-                        Entity = diff.Entity.ToResponse(
+                        SourceEntity = diff.SourceEntity?.ToResponse(
                             sourceModel.Settings.UnitSettings.LengthUnit
+                        ),
+                        TargetEntity = diff.TargetEntity?.ToResponse(
+                            targetModel.Settings.UnitSettings.LengthUnit
                         ),
                     }),
             ],
@@ -144,8 +148,8 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                     )
                     .Select(diff => new EntityDiff<PointLoadResponse>
                     {
-                        Status = diff.Status,
-                        Entity = diff.Entity.ToResponse(),
+                        SourceEntity = diff.SourceEntity?.ToResponse(),
+                        TargetEntity = diff.TargetEntity?.ToResponse(),
                     }),
             ],
 
@@ -158,8 +162,8 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
                     )
                     .Select(diff => new EntityDiff<MomentLoadResponse>
                     {
-                        Status = diff.Status,
-                        Entity = diff.Entity.ToResponse(),
+                        SourceEntity = diff.SourceEntity?.ToResponse(),
+                        TargetEntity = diff.TargetEntity?.ToResponse(),
                     }),
             ],
         };
@@ -167,12 +171,12 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
         return response;
     }
 
-    private static IEnumerable<(DiffStatus Status, T Entity)> ComputeDiff<TId, T>(
+    private static IEnumerable<(T? SourceEntity, T? TargetEntity)> ComputeDiff<TId, T>(
         IEnumerable<T> sourceEntities,
         IEnumerable<T> targetEntities,
         Func<T, int> keySelector
     )
-        where T : IBeamOsModelEntity<TId, T>
+        where T : class, IBeamOsModelEntity<TId, T>
         where TId : struct, IIntBasedId
     {
         var diffs = new List<EntityDiff<T>>();
@@ -186,7 +190,7 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             var key = keySelector(sourceEntity);
             if (!targetDict.ContainsKey(key))
             {
-                yield return (DiffStatus.Removed, sourceEntity);
+                yield return (sourceEntity, null);
             }
         }
 
@@ -196,11 +200,11 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             var key = keySelector(targetEntity);
             if (!sourceDict.TryGetValue(key, out var sourceEntity))
             {
-                yield return (DiffStatus.Added, targetEntity);
+                yield return (null, targetEntity);
             }
             else if (!sourceEntity.MemberwiseEquals(targetEntity))
             {
-                yield return (DiffStatus.Modified, targetEntity);
+                yield return (sourceEntity, targetEntity);
             }
         }
     }

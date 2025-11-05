@@ -9,6 +9,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 public class PublishDomainEventsInterceptor(IServiceProvider serviceProvider)
     : SaveChangesInterceptor
 {
+    private readonly List<IDomainEvent> domainEventsToHandleAfterSave = [];
+
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
@@ -16,6 +18,29 @@ public class PublishDomainEventsInterceptor(IServiceProvider serviceProvider)
     )
     {
         await this.PublishDomainEvents(eventData.Context);
+        return result;
+    }
+
+    public override async ValueTask<int> SavedChangesAsync(
+        SaveChangesCompletedEventData eventData,
+        int result,
+        CancellationToken cancellationToken = default
+    )
+    {
+        foreach (var domainEvent in this.domainEventsToHandleAfterSave)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var notificationHandlerProvider =
+                scope.ServiceProvider.GetRequiredService<DomainEventHandlerProvider>();
+            var handler = notificationHandlerProvider.GetOptionalHandler(
+                domainEvent.GetType(),
+                scope.ServiceProvider
+            );
+            if (handler is not null)
+            {
+                await handler.HandleAsync(domainEvent);
+            }
+        }
         return result;
     }
 
@@ -56,6 +81,11 @@ public class PublishDomainEventsInterceptor(IServiceProvider serviceProvider)
             );
             if (handler is not null)
             {
+                if (handler.HandleAfterChangesSaved)
+                {
+                    this.domainEventsToHandleAfterSave.Add(domainEvent);
+                    continue;
+                }
                 await handler.HandleAsync(domainEvent);
             }
         }

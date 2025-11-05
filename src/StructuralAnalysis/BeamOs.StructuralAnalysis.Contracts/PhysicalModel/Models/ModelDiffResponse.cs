@@ -21,8 +21,26 @@ public record ModelDiffData
 
 public record EntityDiff<T>
 {
-    public required DiffStatus Status { get; init; }
-    public required T Entity { get; init; }
+    public DiffStatus Status
+    {
+        get
+        {
+            if (this.SourceEntity is null && this.TargetEntity is not null)
+            {
+                return DiffStatus.Added;
+            }
+            else if (this.SourceEntity is not null && this.TargetEntity is null)
+            {
+                return DiffStatus.Removed;
+            }
+            else
+            {
+                return DiffStatus.Modified;
+            }
+        }
+    }
+    public required T? TargetEntity { get; init; }
+    public required T? SourceEntity { get; init; }
 }
 
 public enum DiffStatus

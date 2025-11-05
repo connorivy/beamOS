@@ -20,6 +20,8 @@ internal interface IRepository<TId, in T>
     public void Remove(T aggregate);
 
     public void ClearChangeTracker();
+
+    public void Attach(T aggregate);
 }
 
 internal interface IModelResourceRepositoryIn<TId, in T> : IRepository<TId, T>

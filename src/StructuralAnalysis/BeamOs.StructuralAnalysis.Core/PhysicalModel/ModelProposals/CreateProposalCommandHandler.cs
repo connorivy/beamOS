@@ -42,6 +42,7 @@ internal class CreateModelProposalCommandHandler(
         {
             return BeamOsError.NotFound(description: $"Model with id {command.ModelId} not found");
         }
+        modelRepository.Attach(model);
         var modelProposal = command.Body.ToProposalDomain(model);
         modelProposal.NodeProposals = [];
         modelProposal.Element1dProposals = [];

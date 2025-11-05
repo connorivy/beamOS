@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
 using FluentAssertions;
 
@@ -14,12 +14,9 @@ public class BimFirstTests(ApiClientKey client)
 {
     private static readonly SemaphoreSlim semaphore = new(1, 1);
     private static readonly ConcurrentDictionary<ApiClientKey, Guid> ClientModelIds = [];
-    private static readonly ConcurrentDictionary<
-        ApiClientKey,
-        ApiResponse<ModelResponse>
-    > ModelResponses = [];
+    private static readonly ConcurrentDictionary<ApiClientKey, Guid> BimFirstSourceModelIds = [];
     private Guid ModelId => ClientModelIds[client];
-    private ApiResponse<ModelResponse> ModelResponseResult => ModelResponses[client];
+    private Guid BimSourceModelId => BimFirstSourceModelIds[client];
     private BeamOsResultApiClient ApiClient => client.GetClient();
     private BeamOsApiResultModelId ModelClient => this.ApiClient.Models[this.ModelId];
 
@@ -34,8 +31,6 @@ public class BimFirstTests(ApiClientKey client)
                 return;
             }
 
-            var modelId = Guid.NewGuid();
-
             CreateModelRequest request = new()
             {
                 Name = "test model",
@@ -45,12 +40,37 @@ public class BimFirstTests(ApiClientKey client)
                     UnitSettings = UnitSettingsContract.K_FT,
                     WorkflowSettings = new() { ModelingMode = ModelingMode.BimFirst },
                 },
-                // ModelingMode = ModelingModeContract.BimFirst,
-                Id = modelId,
             };
+            var createModelResponse = await this.ApiClient.Models.CreateModelAsync(request);
+            createModelResponse.ThrowIfError();
+            var modelId = createModelResponse.Value.Id;
 
             ClientModelIds[client] = modelId;
-            ModelResponses[client] = await this.ApiClient.Models.CreateModelAsync(request);
+            var bimSourceModelId =
+                createModelResponse.Value.Settings.WorkflowSettings.BimSourceModelId
+                ?? throw new InvalidOperationException(
+                    "Bim Source Model Id should not be null after creating a Bim First model."
+                );
+            BimFirstSourceModelIds[client] = bimSourceModelId;
+            BeamOsDynamicModel beamOsDynamicModel = new(
+                bimSourceModelId,
+                new()
+                {
+                    UnitSettings = UnitSettingsContract.K_FT,
+                    WorkflowSettings = new() { ModelingMode = ModelingMode.BimFirst },
+                },
+                "test model",
+                "test model"
+            );
+            beamOsDynamicModel.AddMaterial(1, 100, 100);
+            beamOsDynamicModel.AddSectionProfileFromLibrary(
+                1,
+                "W12X26",
+                StructuralCode.AISC_360_16
+            );
+            await beamOsDynamicModel.CreateOrUpdate(
+                AssemblySetup.StructuralAnalysisRemoteApiClient
+            );
         }
         finally
         {
@@ -65,47 +85,62 @@ public class BimFirstTests(ApiClientKey client)
         modelResponse.ThrowIfError();
 
         modelResponse.Value.Settings.WorkflowSettings.BimSourceModelId.Should().NotBeNull();
+        BimFirstSourceModelIds[client] =
+            modelResponse.Value.Settings.WorkflowSettings.BimSourceModelId
+            ?? throw new InvalidOperationException(
+                "Bim Source Model Id should not be null after creating a Bim First model."
+            );
         var bimSourceModel = await this
             .ApiClient.Models[modelResponse.Value.Settings.WorkflowSettings.BimSourceModelId.Value]
             .GetModelAsync();
         bimSourceModel.ThrowIfError();
     }
 
-    // [Test]
-    // public async Task PushInitialBimModel_ShouldCreateBimModelAndProposal()
-    // {
-    //     var modelProposalResponse = await this.ModelClient.Proposals.GetModelProposalsAsync();
-    //     modelProposalResponse.ThrowIfError();
-    //     modelProposalResponse.Value.Should().HaveCount(0);
+    [Test]
+    [DependsOn(nameof(BimFirstModel_ShouldHaveCreatedSelfAndBimFirstSourceModel))]
+    public async Task PushInitialBimModel_ShouldCreateBimModelAndProposal()
+    {
+        var modelProposalResponse = await this.ModelClient.Proposals.GetModelProposalsAsync();
+        modelProposalResponse.ThrowIfError();
+        modelProposalResponse.Value.Should().HaveCount(0);
 
-    //     var modelBuilder = new ModelOperations(this.ModelId);
+        var patchModelRequest = new PatchModelRequest()
+        {
+            Element1dsToAddOrUpdateByExternalId =
+            [
+                new Element1dByLocationRequest()
+                {
+                    ExternalId = "Bim-Element-1",
+                    StartNodeLocation = new Point(0, 0, 0, LengthUnitContract.Foot),
+                    EndNodeLocation = new Point(20, 0, 0, LengthUnitContract.Foot),
+                },
+                new Element1dByLocationRequest()
+                {
+                    ExternalId = "Bim-Element-2",
+                    StartNodeLocation = new Point(20, 0, 0, LengthUnitContract.Foot),
+                    EndNodeLocation = new Point(20, 20, 0, LengthUnitContract.Foot),
+                },
+                new Element1dByLocationRequest()
+                {
+                    ExternalId = "Bim-Element-3",
+                    StartNodeLocation = new Point(20, 20, 0, LengthUnitContract.Foot),
+                    EndNodeLocation = new Point(0, 20, 0, LengthUnitContract.Foot),
+                },
+                new Element1dByLocationRequest()
+                {
+                    ExternalId = "Bim-Element-4",
+                    StartNodeLocation = new Point(0, 20, 0, LengthUnitContract.Foot),
+                    EndNodeLocation = new Point(0, 0, 0, LengthUnitContract.Foot),
+                },
+            ],
+        };
+        var patchResponse = await this
+            .ApiClient.Models[this.BimSourceModelId]
+            .PatchModelAsync(patchModelRequest);
+        patchResponse.ThrowIfError();
 
-    //     modelBuilder.AddTrackedElement1d(
-    //         "Element-1",
-    //         new(0, 0, 0, LengthUnitContract.Foot),
-    //         new(10, 0, 0, LengthUnitContract.Foot),
-    //         null,
-    //         null
-    //     );
-    //     modelBuilder.AddTrackedElement1d(
-    //         "Element-2",
-    //         new(10, 0, 0, LengthUnitContract.Foot),
-    //         new(10, 10, 0, LengthUnitContract.Foot),
-    //         null,
-    //         null
-    //     );
-    //     modelBuilder.AddTrackedElement1d(
-    //         "Element-3",
-    //         new(10, 10, 0, LengthUnitContract.Foot),
-    //         new(0, 10, 0, LengthUnitContract.Foot),
-    //         null,
-    //         null
-    //     );
-
-    //     await modelBuilder.PushChanges(this.ModelClient);
-
-    //     var newModelProposalResponse = await this.ModelClient.Proposals.GetModelProposalsAsync();
-    //     newModelProposalResponse.ThrowIfError();
-    //     newModelProposalResponse.Value.Should().HaveCount(1);
-    // }
+        var newModelProposalResponse = await this.ModelClient.Proposals.GetModelProposalsAsync();
+        newModelProposalResponse.ThrowIfError();
+        newModelProposalResponse.Value.Should().HaveCount(1);
+    }
 }

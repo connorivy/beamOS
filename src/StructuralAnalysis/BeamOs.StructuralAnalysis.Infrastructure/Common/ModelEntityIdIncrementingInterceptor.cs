@@ -133,6 +133,7 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
             currentModel.MaxMomentLoadId = entityTypeToMaxIdDict[typeof(MomentLoad)];
             currentModel.MaxLoadCaseId = entityTypeToMaxIdDict[typeof(LoadCase)];
             currentModel.MaxLoadCombinationId = entityTypeToMaxIdDict[typeof(LoadCombination)];
+            currentModel.MaxModelProposalId = entityTypeToMaxIdDict[typeof(ModelProposal)];
             currentModel.LastModified = timeProvider.GetUtcNow();
         }
 

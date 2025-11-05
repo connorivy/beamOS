@@ -151,6 +151,7 @@ internal sealed class PatchModelCommandHandler(
                     );
                 }
                 sectionProfile = sectionProfileNullable;
+                sectionProfile.SetIntId(sectionProfileRequest.Id);
             }
             await this.AddToRepo(sectionProfile);
         }
@@ -172,9 +173,18 @@ internal sealed class PatchModelCommandHandler(
                 elementByLoc.EndNodeLocation.ToDomain()
             );
 
-            var existingElement1d = element1dStore.Values.FirstOrDefault(e =>
-                e.StartNodeId == startNode.Id && e.EndNodeId == endNode.Id
-            );
+            Element1d? existingElement1d;
+            if (startNode.Id != 0 && endNode.Id != 0)
+            {
+                existingElement1d = element1dStore.Values.FirstOrDefault(e =>
+                    e.StartNodeId == startNode.Id && e.EndNodeId == endNode.Id
+                );
+            }
+            else
+            {
+                existingElement1d = null;
+            }
+
             Element1d element1d;
             if (existingElement1d is not null)
             {
@@ -187,10 +197,11 @@ internal sealed class PatchModelCommandHandler(
             }
             else
             {
-                element1d = new Element1d(model.Id, startNode.Id, endNode.Id, 1, 1);
-                element1dStore.Add(element1d.Id, element1d);
-                element1d.StartNode = startNode;
-                element1d.EndNode = endNode;
+                element1d = new Element1d(model.Id, startNode.Id, endNode.Id, 1, 1)
+                {
+                    StartNode = startNode,
+                    EndNode = endNode,
+                };
                 element1dRepository.Add(element1d);
             }
             response.Element1dsToAddOrUpdateByExternalIdResults.Add(
