@@ -154,6 +154,12 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
+    createModelProposalFromDiff(modelId: string, body: ModelDiffResponse | null | undefined): Promise<ModelProposalResponse>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     createModel(body: CreateModelRequest | undefined): Promise<ModelResponse>;
 
     /**
@@ -220,7 +226,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    gitModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse>;
+    getModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse2>;
 
     /**
      * @param body (optional) 
@@ -232,7 +238,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    createMomentLoad(modelId: string, body: CreateMomentLoadRequest | null | undefined): Promise<MomentLoadResponse>;
+    createMomentLoad(modelId: string, body: CreateMomentLoadRequest | null | undefined): Promise<MomentLoadResponse2>;
 
     /**
      * @param body (optional) 
@@ -249,19 +255,19 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    putMomentLoad(modelId: string, id: number, body: MomentLoadData | null | undefined): Promise<MomentLoadResponse>;
+    putMomentLoad(modelId: string, id: number, body: MomentLoadData | null | undefined): Promise<MomentLoadResponse2>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createNode(modelId: string, body: CreateNodeRequest2 | null | undefined): Promise<NodeResponse>;
+    createNode(modelId: string, body: CreateNodeRequest2 | null | undefined): Promise<NodeResponse2>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    patchNode(modelId: string, body: UpdateNodeRequest | null | undefined): Promise<NodeResponse>;
+    patchNode(modelId: string, body: UpdateNodeRequest | null | undefined): Promise<NodeResponse2>;
 
     /**
      * @param body (optional) 
@@ -301,13 +307,13 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    putNode(modelId: string, id: number, body: NodeData | null | undefined): Promise<NodeResponse>;
+    putNode(modelId: string, id: number, body: NodeData | null | undefined): Promise<NodeResponse2>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse>;
+    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse2>;
 
     /**
      * @param body (optional) 
@@ -324,13 +330,13 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    putPointLoad(modelId: string, id: number, body: PointLoadData | null | undefined): Promise<PointLoadResponse>;
+    putPointLoad(modelId: string, id: number, body: PointLoadData | null | undefined): Promise<PointLoadResponse2>;
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse>;
+    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse2>;
 
     /**
      * @param body (optional) 
@@ -342,7 +348,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    createSectionProfile(modelId: string, body: CreateSectionProfileRequest2 | null | undefined): Promise<SectionProfileResponse>;
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest2 | null | undefined): Promise<SectionProfileResponse2>;
 
     /**
      * @param body (optional) 
@@ -359,7 +365,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    putSectionProfile(modelId: string, id: number, body: SectionProfileData | null | undefined): Promise<SectionProfileResponse>;
+    putSectionProfile(modelId: string, id: number, body: SectionProfileData | null | undefined): Promise<SectionProfileResponse2>;
 
     /**
      * @param body (optional) 
@@ -1482,6 +1488,50 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
+    createModelProposalFromDiff(modelId: string, body: ModelDiffResponse | null | undefined): Promise<ModelProposalResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/proposals/from-diff";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateModelProposalFromDiff(_response);
+        });
+    }
+
+    protected processCreateModelProposalFromDiff(response: Response): Promise<ModelProposalResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ModelProposalResponse;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ModelProposalResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     createModel(body: CreateModelRequest | undefined): Promise<ModelResponse> {
         let url_ = this.baseUrl + "/api/models";
         url_ = url_.replace(/[?&]$/, "");
@@ -1980,7 +2030,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    gitModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse> {
+    getModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/diff";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -1999,17 +2049,17 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGitModelDiff(_response);
+            return this.processGetModelDiff(_response);
         });
     }
 
-    protected processGitModelDiff(response: Response): Promise<ModelDiffResponse> {
+    protected processGetModelDiff(response: Response): Promise<ModelDiffResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ModelDiffResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ModelDiffResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2017,7 +2067,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ModelDiffResponse>(null as any);
+        return Promise.resolve<ModelDiffResponse2>(null as any);
     }
 
     /**
@@ -2068,7 +2118,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    createMomentLoad(modelId: string, body: CreateMomentLoadRequest | null | undefined): Promise<MomentLoadResponse> {
+    createMomentLoad(modelId: string, body: CreateMomentLoadRequest | null | undefined): Promise<MomentLoadResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2091,13 +2141,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateMomentLoad(response: Response): Promise<MomentLoadResponse> {
+    protected processCreateMomentLoad(response: Response): Promise<MomentLoadResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MomentLoadResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MomentLoadResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2105,7 +2155,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MomentLoadResponse>(null as any);
+        return Promise.resolve<MomentLoadResponse2>(null as any);
     }
 
     /**
@@ -2198,7 +2248,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    putMomentLoad(modelId: string, id: number, body: MomentLoadData | null | undefined): Promise<MomentLoadResponse> {
+    putMomentLoad(modelId: string, id: number, body: MomentLoadData | null | undefined): Promise<MomentLoadResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/moment-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2224,13 +2274,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutMomentLoad(response: Response): Promise<MomentLoadResponse> {
+    protected processPutMomentLoad(response: Response): Promise<MomentLoadResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MomentLoadResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MomentLoadResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2238,14 +2288,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MomentLoadResponse>(null as any);
+        return Promise.resolve<MomentLoadResponse2>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createNode(modelId: string, body: CreateNodeRequest2 | null | undefined): Promise<NodeResponse> {
+    createNode(modelId: string, body: CreateNodeRequest2 | null | undefined): Promise<NodeResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2268,13 +2318,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateNode(response: Response): Promise<NodeResponse> {
+    protected processCreateNode(response: Response): Promise<NodeResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NodeResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NodeResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2282,14 +2332,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NodeResponse>(null as any);
+        return Promise.resolve<NodeResponse2>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    patchNode(modelId: string, body: UpdateNodeRequest | null | undefined): Promise<NodeResponse> {
+    patchNode(modelId: string, body: UpdateNodeRequest | null | undefined): Promise<NodeResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2312,13 +2362,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPatchNode(response: Response): Promise<NodeResponse> {
+    protected processPatchNode(response: Response): Promise<NodeResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NodeResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NodeResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2326,7 +2376,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NodeResponse>(null as any);
+        return Promise.resolve<NodeResponse2>(null as any);
     }
 
     /**
@@ -2596,7 +2646,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    putNode(modelId: string, id: number, body: NodeData | null | undefined): Promise<NodeResponse> {
+    putNode(modelId: string, id: number, body: NodeData | null | undefined): Promise<NodeResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/nodes/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2622,13 +2672,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutNode(response: Response): Promise<NodeResponse> {
+    protected processPutNode(response: Response): Promise<NodeResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NodeResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NodeResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2636,14 +2686,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NodeResponse>(null as any);
+        return Promise.resolve<NodeResponse2>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse> {
+    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2666,13 +2716,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreatePointLoad(response: Response): Promise<PointLoadResponse> {
+    protected processCreatePointLoad(response: Response): Promise<PointLoadResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PointLoadResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PointLoadResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2680,7 +2730,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PointLoadResponse>(null as any);
+        return Promise.resolve<PointLoadResponse2>(null as any);
     }
 
     /**
@@ -2773,7 +2823,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    putPointLoad(modelId: string, id: number, body: PointLoadData | null | undefined): Promise<PointLoadResponse> {
+    putPointLoad(modelId: string, id: number, body: PointLoadData | null | undefined): Promise<PointLoadResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2799,13 +2849,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutPointLoad(response: Response): Promise<PointLoadResponse> {
+    protected processPutPointLoad(response: Response): Promise<PointLoadResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PointLoadResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PointLoadResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2813,14 +2863,14 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PointLoadResponse>(null as any);
+        return Promise.resolve<PointLoadResponse2>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse> {
+    addSectionProfileFromLibrary(modelId: string, body: SectionProfileFromLibraryData | null | undefined): Promise<SectionProfileResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/from-library";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2843,13 +2893,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processAddSectionProfileFromLibrary(response: Response): Promise<SectionProfileResponse> {
+    protected processAddSectionProfileFromLibrary(response: Response): Promise<SectionProfileResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SectionProfileResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SectionProfileResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2857,7 +2907,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SectionProfileResponse>(null as any);
+        return Promise.resolve<SectionProfileResponse2>(null as any);
     }
 
     /**
@@ -2908,7 +2958,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    createSectionProfile(modelId: string, body: CreateSectionProfileRequest2 | null | undefined): Promise<SectionProfileResponse> {
+    createSectionProfile(modelId: string, body: CreateSectionProfileRequest2 | null | undefined): Promise<SectionProfileResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2931,13 +2981,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse> {
+    protected processCreateSectionProfile(response: Response): Promise<SectionProfileResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SectionProfileResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SectionProfileResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2945,7 +2995,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SectionProfileResponse>(null as any);
+        return Promise.resolve<SectionProfileResponse2>(null as any);
     }
 
     /**
@@ -3038,7 +3088,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    putSectionProfile(modelId: string, id: number, body: SectionProfileData | null | undefined): Promise<SectionProfileResponse> {
+    putSectionProfile(modelId: string, id: number, body: SectionProfileData | null | undefined): Promise<SectionProfileResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/section-profiles/{id}";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3064,13 +3114,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processPutSectionProfile(response: Response): Promise<SectionProfileResponse> {
+    protected processPutSectionProfile(response: Response): Promise<SectionProfileResponse2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SectionProfileResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SectionProfileResponse2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3078,7 +3128,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SectionProfileResponse>(null as any);
+        return Promise.resolve<SectionProfileResponse2>(null as any);
     }
 
     /**
@@ -3521,28 +3571,28 @@ export interface EntityDiffOfMaterialResponse {
 
 export interface EntityDiffOfMomentLoadResponse {
     status: number;
-    entity: MomentLoadResponse2 | undefined;
+    entity: MomentLoadResponse | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfNodeResponse {
     status: number;
-    entity: NodeResponse2 | undefined;
+    entity: NodeResponse | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfPointLoadResponse {
     status: number;
-    entity: PointLoadResponse2 | undefined;
+    entity: PointLoadResponse | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfSectionProfileResponse {
     status: number;
-    entity: SectionProfileResponse2 | undefined;
+    entity: SectionProfileResponse | undefined;
 
     [key: string]: any;
 }
@@ -3681,6 +3731,17 @@ export interface ModelDiffResponse {
     [key: string]: any;
 }
 
+export interface ModelDiffResponse2 {
+    nodes?: EntityDiffOfNodeResponse[];
+    element1ds?: EntityDiffOfElement1dResponse[];
+    materials?: EntityDiffOfMaterialResponse[];
+    sectionProfiles?: EntityDiffOfSectionProfileResponse[];
+    pointLoads?: EntityDiffOfPointLoadResponse[];
+    momentLoads?: EntityDiffOfMomentLoadResponse[];
+
+    [key: string]: any;
+}
+
 export interface ModelEntityResponse {
     id: number;
     modelId: string;
@@ -3778,14 +3839,14 @@ export interface ModelResponse {
     description: string;
     settings: ModelSettings;
     lastModified: Date;
-    nodes?: NodeResponse[] | undefined;
+    nodes?: NodeResponse2[] | undefined;
     internalNodes?: InternalNode[] | undefined;
     element1ds?: Element1dResponse[] | undefined;
     materials?: MaterialResponse[] | undefined;
-    sectionProfiles?: SectionProfileResponse[] | undefined;
+    sectionProfiles?: SectionProfileResponse2[] | undefined;
     sectionProfilesFromLibrary?: SectionProfileFromLibrary[] | undefined;
-    pointLoads?: PointLoadResponse[] | undefined;
-    momentLoads?: MomentLoadResponse[] | undefined;
+    pointLoads?: PointLoadResponse2[] | undefined;
+    momentLoads?: MomentLoadResponse2[] | undefined;
     resultSets?: ResultSetResponse[] | undefined;
     loadCases?: LoadCase[] | undefined;
     loadCombinations?: LoadCombination[] | undefined;
@@ -3925,6 +3986,7 @@ export interface NodeResponse {
     modelId: string;
     locationPoint: Point;
     restraint: Restraint;
+    metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }
@@ -3934,6 +3996,7 @@ export interface NodeResponse2 {
     modelId: string;
     locationPoint: Point;
     restraint: Restraint;
+    metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }

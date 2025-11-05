@@ -364,9 +364,14 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         CancellationToken ct = default
     ) => apiClientV1.PatchModelAsync(request.ModelId, request.Body, ct);
 
-    public Task<ApiResponse<ModelDiffResponse>> GitModelDiff(
+    public Task<ApiResponse<ModelProposalResponse>> CreateModelProposalFromDiff(
+        ModelResourceRequest<ModelDiffData> request,
+        CancellationToken ct = default
+    ) => apiClientV1.CreateModelProposalFromDiffAsync(request.ModelId, request.Body, ct);
+
+    public Task<ApiResponse<ModelDiffData>> GetModelDiff(
         ModelResourceRequest<DiffModelRequest> request,
         CancellationToken ct = default
-    ) => apiClientV1.GitModelDiffAsync(request.ModelId, request.Body, ct);
+    ) => apiClientV1.GetModelDiffAsync(request.ModelId, request.Body, ct);
 }
 #endif

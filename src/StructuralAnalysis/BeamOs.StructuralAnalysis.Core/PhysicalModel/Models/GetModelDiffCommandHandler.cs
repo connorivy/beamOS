@@ -25,9 +25,9 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
 internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelRepository)
-    : ICommandHandler<ModelResourceRequest<DiffModelRequest>, ModelDiffResponse>
+    : ICommandHandler<ModelResourceRequest<DiffModelRequest>, ModelDiffData>
 {
-    public async Task<Result<ModelDiffResponse>> ExecuteAsync(
+    public async Task<Result<ModelDiffData>> ExecuteAsync(
         ModelResourceRequest<DiffModelRequest> req,
         CancellationToken ct = default
     )
@@ -72,8 +72,10 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             );
         }
 
-        var response = new ModelDiffResponse
+        var response = new ModelDiffData
         {
+            BaseModelId = sourceModelId,
+            TargetModelId = targetModelId,
             Nodes =
             [
                 .. ComputeDiff<NodeId, Node>(

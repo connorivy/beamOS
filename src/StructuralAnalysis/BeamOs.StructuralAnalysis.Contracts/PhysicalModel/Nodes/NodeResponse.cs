@@ -6,7 +6,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 
 public record NodeDefinition(int Id);
 
-public record NodeResponse : IModelEntity
+public record NodeResponse : NodeData, IModelEntity
 {
     public NodeResponse() { }
 
@@ -25,10 +25,8 @@ public record NodeResponse : IModelEntity
 
     public required int Id { get; init; }
     public required Guid ModelId { get; init; }
-    public required Point LocationPoint { get; init; }
-    public required Restraint Restraint { get; init; }
 
-    public NodeData ToNodeData() => new(this.LocationPoint, this.Restraint);
+    public NodeData ToNodeData() => this;
 }
 
 // public record NodeModelResponse : NodeData, IHasIntId

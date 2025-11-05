@@ -9,10 +9,10 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 [BeamOsTag(BeamOsTags.AI)]
-internal class GitModelDiff(GetModelDiffCommandHandler getModelDiffCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<DiffModelRequest, ModelDiffResponse>
+internal class GetModelDiff(GetModelDiffCommandHandler getModelDiffCommandHandler)
+    : BeamOsModelResourceBaseEndpoint<DiffModelRequest, ModelDiffData>
 {
-    public override async Task<Result<ModelDiffResponse>> ExecuteRequestAsync(
+    public override async Task<Result<ModelDiffData>> ExecuteRequestAsync(
         ModelResourceRequest<DiffModelRequest> req,
         CancellationToken ct = default
     ) => await getModelDiffCommandHandler.ExecuteAsync(req, ct);

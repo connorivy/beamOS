@@ -1904,6 +1904,7 @@ export interface NodeResponse {
     modelId: string;
     locationPoint: Point;
     restraint: Restraint;
+    metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }

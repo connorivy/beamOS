@@ -1,14 +1,9 @@
-using System.Collections.Concurrent;
-using BeamOs.CodeGen.StructuralAnalysisApiClient;
-using BeamOs.Common.Contracts;
-using BeamOs.StructuralAnalysis;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.Common;
-using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Sdk;
-using BeamOs.Tests.Common;
 using FluentAssertions;
 
 namespace BeamOs.Tests.StructuralAnalysis.Integration.Api;
@@ -59,7 +54,7 @@ public class DiffModelTests
 
         var diffResponse = await AssemblySetup
             .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
-            .Diff.GitModelDiffAsync(diffRequest);
+            .Diff.GetModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
 
@@ -105,7 +100,7 @@ public class DiffModelTests
 
         var diffResponse = await AssemblySetup
             .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
-            .Diff.GitModelDiffAsync(diffRequest);
+            .Diff.GetModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
 
@@ -149,7 +144,7 @@ public class DiffModelTests
 
         var diffResponse = await AssemblySetup
             .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
-            .Diff.GitModelDiffAsync(diffRequest);
+            .Diff.GetModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
 
@@ -195,7 +190,7 @@ public class DiffModelTests
 
         var diffResponse = await AssemblySetup
             .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
-            .Diff.GitModelDiffAsync(diffRequest);
+            .Diff.GetModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
 
@@ -245,12 +240,129 @@ public class DiffModelTests
 
         var diffResponse = await AssemblySetup
             .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
-            .Diff.GitModelDiffAsync(diffRequest);
+            .Diff.GetModelDiffAsync(diffRequest);
 
         diffResponse.ThrowIfError();
 
         diffResponse.Value.Materials.Should().HaveCount(1);
         diffResponse.Value.Materials[0].Status.Should().Be(DiffStatus.Added);
         diffResponse.Value.Materials[0].Entity.Id.Should().Be(2);
+    }
+
+    [Test]
+    public async Task CreateModelProposalFromDiff_WithAddedNodeOperations_ShouldCreateCorrectProposal()
+    {
+        // Arrange
+        BeamOsDynamicModel modelA = DynamicModel();
+        modelA.AddNode(1, 0, 0, 0);
+        modelA.AddNode(2, 0, 0, 10);
+        modelA.AddNode(3, 0, 0, 20);
+        modelA.AddMaterial(1, 290000, 11500);
+        modelA.AddSectionProfileFromLibrary(1, "W8X10", StructuralCode.AISC_360_16);
+        modelA.AddElement1d(1, 1, 2, 1, 1);
+        modelA.AddElement1d(2, 2, 3, 1, 1);
+        await modelA.CreateOnly(AssemblySetup.StructuralAnalysisRemoteApiClient);
+
+        var diffResponse = new ModelDiffData
+        {
+            BaseModelId = modelA.Id,
+            TargetModelId = Guid.NewGuid(),
+            Nodes =
+            [
+                new()
+                {
+                    Status = DiffStatus.Added,
+                    Entity = new NodeResponse
+                    {
+                        Id = 4,
+                        ModelId = modelA.Id,
+                        LocationPoint = new Point
+                        {
+                            X = 0,
+                            Y = 0,
+                            Z = 30,
+                            LengthUnit = LengthUnitContract.Foot,
+                        },
+                        Restraint = Restraint.Free,
+                    },
+                },
+                new()
+                {
+                    Status = DiffStatus.Modified,
+                    Entity = new NodeResponse
+                    {
+                        Id = 2,
+                        ModelId = modelA.Id,
+                        LocationPoint = new Point
+                        {
+                            X = 10,
+                            Y = 0,
+                            Z = 40,
+                            LengthUnit = LengthUnitContract.Foot,
+                        },
+                        Restraint = Restraint.Fixed,
+                    },
+                },
+                new()
+                {
+                    Status = DiffStatus.Removed,
+                    Entity = new NodeResponse
+                    {
+                        Id = 3,
+                        ModelId = modelA.Id,
+                        LocationPoint = new Point
+                        {
+                            X = 20,
+                            Y = 0,
+                            Z = 50,
+                            LengthUnit = LengthUnitContract.Foot,
+                        },
+                        Restraint = Restraint.Free,
+                    },
+                },
+            ],
+        };
+
+        var modelProposalCreationResult = await AssemblySetup
+            .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
+            .Proposals.FromDiff.CreateModelProposalFromDiffAsync(diffResponse);
+        modelProposalCreationResult.ThrowIfError();
+
+        var modelProposalResult = await AssemblySetup
+            .StructuralAnalysisRemoteApiClient.Models[modelA.Id]
+            .Proposals[modelProposalCreationResult.Value.Id]
+            .GetModelProposalAsync();
+        modelProposalResult.ThrowIfError();
+
+        modelProposalResult.Value.CreateNodeProposals.Should().HaveCount(1);
+        modelProposalCreationResult.Value.CreateNodeProposals.Should().HaveCount(1);
+
+        var unitsNetLocation = modelProposalResult
+            .Value.CreateNodeProposals[0]
+            .LocationPoint.ToDomain();
+        unitsNetLocation.X.Feet.Should().Be(0);
+        unitsNetLocation.Y.Feet.Should().Be(0);
+        unitsNetLocation.Z.Feet.Should().Be(30);
+        modelProposalResult.Value.CreateNodeProposals[0].Restraint.Should().Be(Restraint.Free);
+
+        modelProposalResult.Value.ModifyNodeProposals.Should().HaveCount(1);
+        modelProposalCreationResult.Value.ModifyNodeProposals.Should().HaveCount(1);
+
+        var modifiedUnitsNetLocation = modelProposalResult
+            .Value.ModifyNodeProposals[0]
+            .LocationPoint.ToDomain();
+        modifiedUnitsNetLocation.X.Feet.Should().Be(10);
+        modifiedUnitsNetLocation.Y.Feet.Should().Be(0);
+        modifiedUnitsNetLocation.Z.Feet.Should().Be(40);
+        modelProposalResult.Value.ModifyNodeProposals[0].Restraint.Should().Be(Restraint.Fixed);
+
+        modelProposalResult.Value.DeleteModelEntityProposals.Should().HaveCount(1);
+        modelProposalCreationResult.Value.DeleteModelEntityProposals.Should().HaveCount(1);
+
+        modelProposalResult
+            .Value.DeleteModelEntityProposals[0]
+            .ObjectType.Should()
+            .Be(BeamOsObjectType.Node);
+        modelProposalResult.Value.DeleteModelEntityProposals[0].Id.Should().Be(3);
     }
 }

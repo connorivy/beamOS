@@ -7,8 +7,10 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
 
 namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 
-public record ModelDiffResponse
+public record ModelDiffData
 {
+    public required Guid BaseModelId { get; init; }
+    public required Guid TargetModelId { get; init; }
     public List<EntityDiff<NodeResponse>> Nodes { get; init; } = [];
     public List<EntityDiff<Element1dResponse>> Element1ds { get; init; } = [];
     public List<EntityDiff<MaterialResponse>> Materials { get; init; } = [];
