@@ -60,8 +60,8 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
 
         foreach (var bimFirstModelId in notification.SubscribedModelIds)
         {
-            // Get the BIM first model (source in the diff)
-            var targetModel = await modelRepository.GetSingle(
+            // Get the subscribed BimFirst model
+            var subscribedModel = await modelRepository.GetSingle(
                 bimFirstModelId,
                 ct,
                 nameof(Model.Nodes),
@@ -72,13 +72,13 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
                 nameof(Model.MomentLoads)
             );
 
-            if (targetModel is null)
+            if (subscribedModel is null)
             {
                 continue;
             }
 
-            // Compute diff between the subscribed model (source) and the updated BIM source model (target)
-            var diffData = this.ComputeModelDiff(targetModel, sourceModel);
+            // Compute diff: subscribedModel (base) vs sourceModel (target with changes)
+            var diffData = this.ComputeModelDiff(subscribedModel, sourceModel);
 
             var filteredDiff = this.RemoveNonGeometryChanges(diffData);
             if (filteredDiff is null)
