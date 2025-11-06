@@ -40,8 +40,12 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
     )
     {
         // Query the BIM source model (the updated model)
-        // Note: Even though HandleAfterChangesSaved is false, this query runs in a new DI scope
-        // with a separate DbContext, so uncommitted changes may not be visible
+        // Note: This handler computes diffs locally instead of using GetModelDiffCommandHandler.
+        // While HandleAfterChangesSaved is false (runs before save), the handler runs in a separate
+        // DI scope with a separate DbContext, so this query may not see uncommitted changes.
+        // This is a known architectural limitation - to fully access uncommitted changes, the event
+        // would need to pass model data in a serializable format, or the event system would need
+        // to support shared DbContext for pre-save handlers.
         var sourceModel = await modelRepository.GetSingle(
             notification.SourceModelId,
             ct,
