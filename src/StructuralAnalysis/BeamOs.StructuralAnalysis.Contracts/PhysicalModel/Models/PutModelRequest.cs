@@ -6,4 +6,7 @@ public record PutModelRequest
     public PatchOperationOptions Options { get; init; }
 }
 
-public record PutModelResponse { }
+public record PutModelResponse
+{
+    public List<OperationStatus>? Element1dsToAddOrUpdateByExternalIdResults { get; init; }
+}

@@ -5,6 +5,7 @@ using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
@@ -78,7 +79,7 @@ internal sealed class PutSourceModelCommandHandler(
             octree.Add(internalNode, element1dStore, nodeStore);
         }
 
-        var response = new PutModelResponse();
+        var response = new PutModelResponse() { Element1dsToAddOrUpdateByExternalIdResults = [] };
         var nodeResponses = new List<NodeResponse>();
         HashSet<Element1dId> existingElement1dIds = [];
         HashSet<NodeId> existingNodeIds = [];
@@ -123,17 +124,26 @@ internal sealed class PutSourceModelCommandHandler(
                 element1d.EndNodeId = endNode.Id;
                 element1d.StartNode = startNode;
                 element1d.EndNode = endNode;
+                element1d.ExternalId = elementByLoc.ExternalId;
                 await element1dRepository.Put(element1d);
             }
             else
             {
-                element1d = new Element1d(model.Id, startNode.Id, endNode.Id, 1, 1)
+                element1d = new Element1d(model.Id, startNode.Id, endNode.Id, 1, 1, externalId: elementByLoc.ExternalId)
                 {
                     StartNode = startNode,
                     EndNode = endNode,
                 };
                 element1dRepository.Add(element1d);
             }
+            response.Element1dsToAddOrUpdateByExternalIdResults.Add(
+                new OperationStatus()
+                {
+                    ObjectType = BeamOsObjectType.Element1d,
+                    ExternalId = elementByLoc.ExternalId,
+                    Result = Result.Success,
+                }
+            );
         }
 
         foreach (var nodeId in nodeStore.Keys.Where(e => !existingNodeIds.Contains(e)))
