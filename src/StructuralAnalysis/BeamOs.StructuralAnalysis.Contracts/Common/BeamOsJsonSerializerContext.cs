@@ -28,6 +28,8 @@ namespace BeamOs.StructuralAnalysis.Contracts.Common;
 [JsonSerializable(typeof(ModelDiffData))]
 [JsonSerializable(typeof(PatchModelRequest))]
 [JsonSerializable(typeof(PatchModelResponse))]
+[JsonSerializable(typeof(PutModelRequest))]
+[JsonSerializable(typeof(PutModelResponse))]
 [JsonSerializable(typeof(CreateMaterialRequest))]
 [JsonSerializable(typeof(CreateElement1dRequest))]
 [JsonSerializable(typeof(CreateSectionProfileRequest))]
