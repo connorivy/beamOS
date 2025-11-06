@@ -39,8 +39,9 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
         CancellationToken ct = default
     )
     {
-        // Get the BIM source model (target in the diff) - this will include uncommitted changes
-        // since HandleAfterChangesSaved is false and we're in the same transaction
+        // Query the BIM source model (the updated model)
+        // Note: Even though HandleAfterChangesSaved is false, this query runs in a new DI scope
+        // with a separate DbContext, so uncommitted changes may not be visible
         var sourceModel = await modelRepository.GetSingle(
             notification.SourceModelId,
             ct,
@@ -100,6 +101,21 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
 
     private ModelDiffData ComputeModelDiff(Model sourceModel, Model targetModel)
     {
+        // Validate models have required data
+        if (sourceModel.Settings?.UnitSettings is null)
+        {
+            throw new InvalidOperationException(
+                $"Source model ({sourceModel.Id}) is missing Settings or UnitSettings"
+            );
+        }
+
+        if (targetModel.Settings?.UnitSettings is null)
+        {
+            throw new InvalidOperationException(
+                $"Target model ({targetModel.Id}) is missing Settings or UnitSettings"
+            );
+        }
+
         return new ModelDiffData
         {
             BaseModelId = sourceModel.Id,
