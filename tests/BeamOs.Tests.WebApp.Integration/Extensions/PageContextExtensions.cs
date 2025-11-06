@@ -57,14 +57,30 @@ public static class PageContextExtensions
             var forceUnitOption = page.Page.GetByRole(AriaRole.Option, new() { Name = forceUnit ?? "kilopoundforce" });
             await forceUnitOption.ClickAsync();
 
-            // click the submit button
+            // click the submit button and wait for the POST request to create the model
             var submitButton = dialog.GetByRole(AriaRole.Button, new() { Name = "create" });
+            var modelResponseTask = page.Page.WaitForResponseAsync(r =>
+                r.Url.Contains("/models") && r.Request.Method == "POST", 
+                new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 15_000}
+            );
             await submitButton.ClickAsync();
+            
+            // Wait for the POST request to complete
+            var response = await modelResponseTask;
+            
+            // Verify the response was successful
+            if (!response.Ok)
+            {
+                var responseBody = await response.TextAsync();
+                throw new InvalidOperationException($"Model creation failed with status {response.Status}: {responseBody}");
+            }
 
             // wait for the page url to look something like {http}://localhost:{port}/models/{guid}
-            await page.Page.WaitForURLAsync(
+            // Use Expect().ToHaveURLAsync() instead of WaitForURLAsync() because this is a SPA navigation
+            // that doesn't trigger a full page load event
+            await Assertions.Expect(page.Page).ToHaveURLAsync(
                 new Regex("^(http|https)://localhost:\\d+/models/[0-9a-fA-F-]{36}$"),
-                new() { Timeout = 3000 }
+                new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 15_000 }
             );
 
             // get the model id from the url

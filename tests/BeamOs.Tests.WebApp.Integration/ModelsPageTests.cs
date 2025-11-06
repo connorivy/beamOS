@@ -52,14 +52,23 @@ public class ModelsPageTests : ReactPageTest
         var kip = this.Page.GetByRole(AriaRole.Option, new() { Name = "kilopoundforce" });
         await kip.ClickAsync();
 
-        // click the submit button
+        // click the submit button and wait for the POST request to create the model
         var submitButton = dialog.GetByRole(AriaRole.Button, new() { Name = "create" });
+        var modelResponseTask = this.Page.WaitForResponseAsync(r =>
+            r.Url.Contains("/models") && r.Request.Method == "POST", 
+            new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 15_000}
+        );
         await submitButton.ClickAsync();
+        
+        // Wait for the POST request to complete
+        await modelResponseTask;
 
         // wait for the page url to look something like {http}://localhost:{port}/models/{guid}
-        await this.Page.WaitForURLAsync(
+        // Use Expect().ToHaveURLAsync() instead of WaitForURLAsync() because this is a SPA navigation
+        // that doesn't trigger a full page load event
+        await Expect(this.Page).ToHaveURLAsync(
             new Regex("^(http|https)://localhost:\\d+/models/[0-9a-fA-F-]{36}$"),
-            new() { Timeout = 3000 }
+            new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 15_000 }
         );
 
         // go back to the models page
