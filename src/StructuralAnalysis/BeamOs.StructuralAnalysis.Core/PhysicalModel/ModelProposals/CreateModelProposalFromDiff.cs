@@ -1,6 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
@@ -16,20 +17,30 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Reviewer)]
 [BeamOsTag(BeamOsTags.AI)]
 internal class CreateModelProposalFromDiff(
-    CreateModelProposalFromDiffCommandHandler createModelProposalFromDiffCommandHandler
+    CreateModelProposalFromDiffCommandHandler createModelProposalFromDiffCommandHandler,
+    IStructuralAnalysisUnitOfWork unitOfWork
 ) : BeamOsModelResourceBaseEndpoint<ModelDiffData, ModelProposalResponse>
 {
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelResourceRequest<ModelDiffData> req,
         CancellationToken ct = default
-    ) => await createModelProposalFromDiffCommandHandler.ExecuteAsync(req, ct);
+    )
+    {
+        var result = await createModelProposalFromDiffCommandHandler.ExecuteAsync(req, ct);
+        await unitOfWork.SaveChangesAsync(ct);
+        if (result.IsError)
+        {
+            return result.Error;
+        }
+        return result.Value.ToContract();
+    }
 }
 
 internal class CreateModelProposalFromDiffCommandHandler(
     CreateModelProposalCommandHandler createModelProposalCommandHandler
-) : ICommandHandler<ModelResourceRequest<ModelDiffData>, ModelProposalResponse>
+) : ICommandHandler<ModelResourceRequest<ModelDiffData>, ModelProposal>
 {
-    public async Task<Result<ModelProposalResponse>> ExecuteAsync(
+    public async Task<Result<ModelProposal>> ExecuteAsync(
         ModelResourceRequest<ModelDiffData> command,
         CancellationToken ct = default
     )
@@ -58,20 +69,20 @@ internal class CreateModelProposalFromDiffCommandHandler(
                 case DiffStatus.Added:
                     modelProposalData.CreateNodeProposals.Add(
                         new CreateNodeRequest(
-                            nodeDiff.SourceEntity.LocationPoint,
-                            nodeDiff.SourceEntity.Restraint,
-                            nodeDiff.SourceEntity.Id,
-                            nodeDiff.SourceEntity.Metadata
+                            nodeDiff.TargetEntity.LocationPoint,
+                            nodeDiff.TargetEntity.Restraint,
+                            nodeDiff.TargetEntity.Id,
+                            nodeDiff.TargetEntity.Metadata
                         )
                     );
                     break;
                 case DiffStatus.Modified:
                     modelProposalData.ModifyNodeProposals.Add(
                         new PutNodeRequest(
-                            nodeDiff.SourceEntity.Id,
-                            nodeDiff.SourceEntity.LocationPoint,
-                            nodeDiff.SourceEntity.Restraint,
-                            nodeDiff.SourceEntity.Metadata
+                            nodeDiff.TargetEntity.Id,
+                            nodeDiff.TargetEntity.LocationPoint,
+                            nodeDiff.TargetEntity.Restraint,
+                            nodeDiff.TargetEntity.Metadata
                         )
                     );
                     break;
@@ -101,26 +112,26 @@ internal class CreateModelProposalFromDiffCommandHandler(
                 case DiffStatus.Added:
                     modelProposalData.CreateElement1dProposals.Add(
                         Element1dProposalBase.Create(
-                            ProposedID.Existing(element1dDiff.SourceEntity.StartNodeId),
-                            ProposedID.Existing(element1dDiff.SourceEntity.EndNodeId),
-                            ProposedID.Existing(element1dDiff.SourceEntity.MaterialId),
-                            ProposedID.Existing(element1dDiff.SourceEntity.SectionProfileId),
-                            element1dDiff.SourceEntity.SectionProfileRotation,
-                            element1dDiff.SourceEntity.Metadata,
-                            element1dDiff.SourceEntity.Id
+                            ProposedID.Existing(element1dDiff.TargetEntity.StartNodeId),
+                            ProposedID.Existing(element1dDiff.TargetEntity.EndNodeId),
+                            ProposedID.Existing(element1dDiff.TargetEntity.MaterialId),
+                            ProposedID.Existing(element1dDiff.TargetEntity.SectionProfileId),
+                            element1dDiff.TargetEntity.SectionProfileRotation,
+                            element1dDiff.TargetEntity.Metadata,
+                            element1dDiff.TargetEntity.Id
                         )
                     );
                     break;
                 case DiffStatus.Modified:
                     modelProposalData.ModifyElement1dProposals.Add(
                         Element1dProposalBase.Modify(
-                            element1dDiff.SourceEntity.Id,
-                            ProposedID.Existing(element1dDiff.SourceEntity.StartNodeId),
-                            ProposedID.Existing(element1dDiff.SourceEntity.EndNodeId),
-                            ProposedID.Existing(element1dDiff.SourceEntity.MaterialId),
-                            ProposedID.Existing(element1dDiff.SourceEntity.SectionProfileId),
-                            element1dDiff.SourceEntity.SectionProfileRotation,
-                            element1dDiff.SourceEntity.Metadata
+                            element1dDiff.TargetEntity.Id,
+                            ProposedID.Existing(element1dDiff.TargetEntity.StartNodeId),
+                            ProposedID.Existing(element1dDiff.TargetEntity.EndNodeId),
+                            ProposedID.Existing(element1dDiff.TargetEntity.MaterialId),
+                            ProposedID.Existing(element1dDiff.TargetEntity.SectionProfileId),
+                            element1dDiff.TargetEntity.SectionProfileRotation,
+                            element1dDiff.TargetEntity.Metadata
                         )
                     );
                     break;
@@ -149,10 +160,10 @@ internal class CreateModelProposalFromDiffCommandHandler(
                     modelProposalData.CreateMaterialProposals.Add(
                         new CreateMaterialRequest
                         {
-                            Id = materialDiff.SourceEntity.Id,
-                            ModulusOfElasticity = materialDiff.SourceEntity.ModulusOfElasticity,
-                            ModulusOfRigidity = materialDiff.SourceEntity.ModulusOfRigidity,
-                            PressureUnit = materialDiff.SourceEntity.PressureUnit,
+                            Id = materialDiff.TargetEntity.Id,
+                            ModulusOfElasticity = materialDiff.TargetEntity.ModulusOfElasticity,
+                            ModulusOfRigidity = materialDiff.TargetEntity.ModulusOfRigidity,
+                            PressureUnit = materialDiff.TargetEntity.PressureUnit,
                         }
                     );
                     break;
@@ -160,10 +171,10 @@ internal class CreateModelProposalFromDiffCommandHandler(
                     modelProposalData.ModifyMaterialProposals.Add(
                         new PutMaterialRequest
                         {
-                            Id = materialDiff.SourceEntity.Id,
-                            ModulusOfElasticity = materialDiff.SourceEntity.ModulusOfElasticity,
-                            ModulusOfRigidity = materialDiff.SourceEntity.ModulusOfRigidity,
-                            PressureUnit = materialDiff.SourceEntity.PressureUnit,
+                            Id = materialDiff.TargetEntity.Id,
+                            ModulusOfElasticity = materialDiff.TargetEntity.ModulusOfElasticity,
+                            ModulusOfRigidity = materialDiff.TargetEntity.ModulusOfRigidity,
+                            PressureUnit = materialDiff.TargetEntity.PressureUnit,
                         }
                     );
                     break;
@@ -191,18 +202,18 @@ internal class CreateModelProposalFromDiffCommandHandler(
                 case DiffStatus.Added:
                     modelProposalData.CreateSectionProfileProposals.Add(
                         new CreateSectionProfileRequest(
-                            sectionProfileDiff.SourceEntity.ToSectionProfileData()
+                            sectionProfileDiff.TargetEntity.ToSectionProfileData()
                         )
                         {
-                            Id = sectionProfileDiff.SourceEntity.Id,
+                            Id = sectionProfileDiff.TargetEntity.Id,
                         }
                     );
                     break;
                 case DiffStatus.Modified:
                     modelProposalData.ModifySectionProfileProposals.Add(
                         new PutSectionProfileRequest(
-                            sectionProfileDiff.SourceEntity.Id,
-                            sectionProfileDiff.SourceEntity.ToSectionProfileData()
+                            sectionProfileDiff.TargetEntity.Id,
+                            sectionProfileDiff.TargetEntity.ToSectionProfileData()
                         )
                     );
                     break;

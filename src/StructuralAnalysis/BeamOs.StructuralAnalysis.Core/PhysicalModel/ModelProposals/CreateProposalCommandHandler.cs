@@ -29,9 +29,10 @@ internal class CreateModelProposalCommandHandler(
     IElement1dRepository element1dRepository,
     IMaterialRepository materialRepository,
     ISectionProfileRepository sectionProfileRepository
-) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>
+// ) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>
+) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposal>
 {
-    public async Task<Result<ModelProposalResponse>> ExecuteAsync(
+    public async Task<Result<ModelProposal>> ExecuteAsync(
         ModelResourceRequest<ModelProposalData> command,
         CancellationToken ct = default
     )
@@ -165,9 +166,7 @@ internal class CreateModelProposalCommandHandler(
             modelProposal.DeleteModelEntityProposals.Add(deleteProposal);
         }
 
-        // await unitOfWork.SaveChangesAsync(ct);
-
-        return modelProposal.ToContract();
+        return modelProposal;
     }
 
     private static async Task<Dictionary<int, TEntity>> GetExistingEntities<TId, TEntity>(

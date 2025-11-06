@@ -37,10 +37,10 @@ internal static partial class DependencyInjection
         // );
 
         // required for the speckle connector
-        services.AddScoped<
-            ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>,
-            CreateModelProposalCommandHandler
-        >();
+        // services.AddScoped<
+        //     ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>,
+        //     CreateModelProposalCommandHandler
+        // >();
 
         return services;
     }

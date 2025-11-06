@@ -106,7 +106,7 @@ public class DiffModelTests
 
         diffResponse.Value.Nodes.Should().HaveCount(1);
         diffResponse.Value.Nodes[0].Status.Should().Be(DiffStatus.Added);
-        diffResponse.Value.Nodes[0].SourceEntity.Id.Should().Be(4);
+        diffResponse.Value.Nodes[0].TargetEntity.Id.Should().Be(4);
         diffResponse.Value.Element1ds.Should().BeEmpty();
     }
 
@@ -199,9 +199,10 @@ public class DiffModelTests
 
         diffResponse.Value.Element1ds.Should().HaveCount(1);
         diffResponse.Value.Element1ds[0].Status.Should().Be(DiffStatus.Modified);
-        diffResponse.Value.Element1ds[0].SourceEntity.Id.Should().Be(2);
-        diffResponse.Value.Element1ds[0].SourceEntity.StartNodeId.Should().Be(2);
-        diffResponse.Value.Element1ds[0].SourceEntity.EndNodeId.Should().Be(4);
+        diffResponse.Value.Element1ds[0].TargetEntity.Id.Should().Be(2);
+        diffResponse.Value.Element1ds[0].TargetEntity.StartNodeId.Should().Be(2);
+        diffResponse.Value.Element1ds[0].SourceEntity.EndNodeId.Should().Be(3);
+        diffResponse.Value.Element1ds[0].TargetEntity.EndNodeId.Should().Be(4);
     }
 
     [Test]
@@ -246,7 +247,7 @@ public class DiffModelTests
 
         diffResponse.Value.Materials.Should().HaveCount(1);
         diffResponse.Value.Materials[0].Status.Should().Be(DiffStatus.Added);
-        diffResponse.Value.Materials[0].SourceEntity.Id.Should().Be(2);
+        diffResponse.Value.Materials[0].TargetEntity.Id.Should().Be(2);
     }
 
     [Test]

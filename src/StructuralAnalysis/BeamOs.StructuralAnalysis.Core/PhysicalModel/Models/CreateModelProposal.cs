@@ -22,8 +22,12 @@ internal class CreateModelProposal(
     )
     {
         var result = await createProposalCommandHandler.ExecuteAsync(req, ct);
+        if (result.IsError)
+        {
+            return result.Error;
+        }
         await unitOfWork.SaveChangesAsync(ct);
-        return result;
+        return result.Value.ToContract();
     }
 }
 
