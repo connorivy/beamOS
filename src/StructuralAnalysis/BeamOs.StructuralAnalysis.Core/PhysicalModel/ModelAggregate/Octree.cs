@@ -75,7 +75,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
                         this.Center.X.Meters + (dx * offset),
                         this.Center.Y.Meters + (dy * offset),
                         this.Center.Z.Meters + (dz * offset),
-                        this.Center.X.Unit
+                        LengthUnit.Meter
                     );
                     int childIndex = 0;
                     if (dx > 0)
@@ -327,7 +327,7 @@ internal class Octree : BeamOsEntity<OctreeId>
             oldCenter.X.Meters + offsetX,
             oldCenter.Y.Meters + offsetY,
             oldCenter.Z.Meters + offsetZ,
-            oldCenter.X.Unit
+            LengthUnit.Meter
         );
         OctreeNode newRoot = new(newCenter, newLength);
         newRoot.Subdivide();
