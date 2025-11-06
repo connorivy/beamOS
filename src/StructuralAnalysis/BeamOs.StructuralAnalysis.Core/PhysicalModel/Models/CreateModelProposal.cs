@@ -1,6 +1,7 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Api.Endpoints.OpenSees;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
@@ -10,13 +11,24 @@ namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals")]
 [BeamOsEndpointType(Http.Post)]
 [BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Proposer)]
-internal class CreateModelProposal(CreateModelProposalCommandHandler createProposalCommandHandler)
-    : BeamOsModelResourceBaseEndpoint<ModelProposalData, ModelProposalResponse>
+internal class CreateModelProposal(
+    CreateModelProposalCommandHandler createProposalCommandHandler,
+    IStructuralAnalysisUnitOfWork unitOfWork
+) : BeamOsModelResourceBaseEndpoint<ModelProposalData, ModelProposalResponse>
 {
     public override async Task<Result<ModelProposalResponse>> ExecuteRequestAsync(
         ModelResourceRequest<ModelProposalData> req,
         CancellationToken ct = default
-    ) => await createProposalCommandHandler.ExecuteAsync(req, ct);
+    )
+    {
+        var result = await createProposalCommandHandler.ExecuteAsync(req, ct);
+        if (result.IsError)
+        {
+            return result.Error;
+        }
+        await unitOfWork.SaveChangesAsync(ct);
+        return result.Value.ToContract();
+    }
 }
 
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithTrailingSlash + "proposals")]

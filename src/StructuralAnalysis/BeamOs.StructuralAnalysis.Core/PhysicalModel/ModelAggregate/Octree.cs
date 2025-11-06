@@ -30,7 +30,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     // For EF Core
     protected OctreeNode()
     {
-        this.Center = new(0, 0, 0, UnitsNet.Units.LengthUnit.Meter);
+        this.Center = new(0, 0, 0, LengthUnit.Meter);
         this.Length = 0;
         this.Depth = 0;
         this.Objects = [];
@@ -119,14 +119,14 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     }
 
     private Point Min =>
-        new Point(
+        new(
             this.Center.X.Meters - (this.Length / 2.0),
             this.Center.Y.Meters - (this.Length / 2.0),
             this.Center.Z.Meters - (this.Length / 2.0),
             this.Center.X.Unit
         );
     private Point Max =>
-        new Point(
+        new(
             this.Center.X.Meters + (this.Length / 2.0),
             this.Center.Y.Meters + (this.Length / 2.0),
             this.Center.Z.Meters + (this.Length / 2.0),
@@ -224,26 +224,30 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     }
 }
 
-internal class Octree : BeamOsModelEntity<OctreeId>
+internal class Octree : BeamOsEntity<OctreeId>
 {
     private const double DefaultStartNodeSize = 1.0;
-    public OctreeNode Root { get; private set; }
+    public OctreeNode? Root { get; private set; }
 
-    public Octree(ModelId modelId, Point point, double startNodeSize, OctreeId? id = null)
-        : base(id ?? new(), modelId)
+    public Octree(ModelId modelId)
+        : base(modelId.Id) { }
+
+    public Octree(ModelId modelId, Point point, double startNodeSize)
+        : base(modelId.Id)
     {
         this.Root = new OctreeNode(point, startNodeSize);
     }
 
-    // For EF Core
+    [Obsolete("For EF Core only", true)]
     protected Octree()
-        : base(default, default)
-    {
-        this.Root = null!; // EF Core will set this
-    }
+        : base() { }
 
     private bool RootContains(Point pos)
     {
+        if (this.Root is null)
+        {
+            return false;
+        }
         double half = this.Root.Length / 2.0;
         return pos.X.Meters >= this.Root.Center.X.Meters - half
             && pos.X.Meters <= this.Root.Center.X.Meters + half
@@ -256,6 +260,7 @@ internal class Octree : BeamOsModelEntity<OctreeId>
     public void Add(Node node)
     {
         Point position = node.LocationPoint;
+        this.Root ??= new OctreeNode(position, DefaultStartNodeSize);
 
         while (!this.IsPointWithinRoot(position))
         {
@@ -271,6 +276,7 @@ internal class Octree : BeamOsModelEntity<OctreeId>
     )
     {
         Point position = node.GetLocationPoint(element1dStore, nodeStore);
+        this.Root ??= new OctreeNode(position, DefaultStartNodeSize);
 
         while (!this.IsPointWithinRoot(position))
         {
@@ -281,11 +287,20 @@ internal class Octree : BeamOsModelEntity<OctreeId>
 
     public void Remove(NodeId nodeId, Point? location)
     {
+        if (this.Root is null)
+        {
+            return;
+        }
+
         this.Root.Remove(nodeId, location);
     }
 
     private bool IsPointWithinRoot(Point point)
     {
+        if (this.Root is null)
+        {
+            return false;
+        }
         double half = this.Root.Length / 2.0;
         return point.X.Meters >= this.Root.Center.X.Meters - half
             && point.X.Meters <= this.Root.Center.X.Meters + half
@@ -341,25 +356,30 @@ internal class Octree : BeamOsModelEntity<OctreeId>
     )
     {
         List<NodeId> result = [];
+        if (this.Root is null)
+        {
+            return result;
+        }
+
         this.Root.FindNodeIdsWithin(searchPoint, toleranceMeters, result, nodeIdsToIgnore);
         return result;
     }
 }
 
-internal readonly record struct OctreeId : IIntBasedId
+internal readonly record struct OctreeId
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
-    public OctreeId(int id)
+    public OctreeId(Guid id)
     {
         this.Id = id;
     }
 
-    public static implicit operator int(OctreeId id) => id.Id;
+    public static implicit operator Guid(OctreeId id) => id.Id;
 
-    public static implicit operator OctreeId(int id) => new(id);
+    public static implicit operator OctreeId(Guid id) => new(id);
 
-    public override string ToString() => this.Id.ToString(CultureInfo.InvariantCulture);
+    public override string ToString() => this.Id.ToString();
 }
 
 internal readonly record struct OctreeNodeId : IIntBasedId

@@ -18,6 +18,11 @@
       AnalysisSettings: {
         Element1DAnalysisType: Timoshenko
       },
+      WorkflowSettings: {
+        ModelingMode: BimFirst,
+        BimSourceModelId: Guid_2,
+        BimFirstModelIds: null
+      },
       YAxisUp: true
     },
     LastModified: DateTimeOffset_1,

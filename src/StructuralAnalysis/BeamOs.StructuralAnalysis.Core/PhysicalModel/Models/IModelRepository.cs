@@ -81,6 +81,11 @@ internal sealed class InMemoryModelRepository(
         // No-op for in-memory repository
     }
 
+    public void Attach(Model aggregate)
+    {
+        // No-op for in-memory repository
+    }
+
     public async Task<Model?> GetSingle(
         ModelId modelId,
         Func<IQueryable<Model>, IQueryable<Model>>? includeNavigationProperties = null,

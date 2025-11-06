@@ -1661,6 +1661,7 @@ export interface Element1dResponse {
     sectionProfileId: number;
     sectionProfileRotation: Angle;
     metadata?: { [key: string]: string; } | undefined;
+    externalId?: string | undefined;
 
     [key: string]: any;
 }
@@ -1810,8 +1811,9 @@ export interface ModelResponse {
 
 export interface ModelSettings {
     unitSettings: UnitSettings;
-    analysisSettings: AnalysisSettings;
-    yAxisUp: boolean;
+    analysisSettings?: AnalysisSettings;
+    workflowSettings?: WorkflowSettings;
+    yAxisUp?: boolean;
 
     [key: string]: any;
 }
@@ -1902,6 +1904,7 @@ export interface NodeResponse {
     modelId: string;
     locationPoint: Point;
     restraint: Restraint;
+    metadata?: { [key: string]: string; } | undefined;
 
     [key: string]: any;
 }
@@ -2125,6 +2128,14 @@ export interface Vector3 {
     x: number;
     y: number;
     z: number;
+
+    [key: string]: any;
+}
+
+export interface WorkflowSettings {
+    modelingMode: number;
+    bimSourceModelId?: string | undefined;
+    bimFirstModelIds?: string[] | undefined;
 
     [key: string]: any;
 }

@@ -22,6 +22,14 @@ internal static partial class BeamOsDomainContractMappers
         return new(source.X.As(unit), source.Y.As(unit), source.Z.As(unit), unit.MapToContract());
     }
 
+    public static BeamOs.StructuralAnalysis.Domain.Common.Point ToDomain(
+        this BeamOs.StructuralAnalysis.Contracts.Common.Point source
+    )
+    {
+        var unit = source.LengthUnit.MapToLengthUnit();
+        return new(source.X, source.Y, source.Z, unit);
+    }
+
     //public static Dictionary<string, object> ToDict(CustomData customData) => customData.AsDict();
 
     public static UnitSettings ToDomain(this UnitSettingsContract source)

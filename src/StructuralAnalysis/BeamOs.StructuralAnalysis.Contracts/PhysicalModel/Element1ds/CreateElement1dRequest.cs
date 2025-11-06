@@ -13,7 +13,8 @@ public record CreateElement1dRequest
         int sectionProfileId,
         Angle? sectionProfileRotation,
         int? id,
-        Dictionary<string, string>? metadata
+        Dictionary<string, string>? metadata,
+        string? externalId = null
     )
     {
         this.StartNodeId = startNodeId;
@@ -22,6 +23,7 @@ public record CreateElement1dRequest
         this.SectionProfileId = sectionProfileId;
         this.SectionProfileRotation = sectionProfileRotation ?? new(0, AngleUnit.Degree);
         this.Id = id;
+        this.ExternalId = externalId;
         this.Metadata = metadata;
     }
 
@@ -46,4 +48,5 @@ public record CreateElement1dRequest
     public Angle? SectionProfileRotation { get; init; } = new(0, AngleUnit.Degree);
     public int? Id { get; init; }
     public Dictionary<string, string>? Metadata { get; init; }
+    public string? ExternalId { get; init; }
 }

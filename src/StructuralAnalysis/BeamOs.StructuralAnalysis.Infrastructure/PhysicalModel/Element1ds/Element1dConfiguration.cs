@@ -9,7 +9,7 @@ internal class Element1dConfiguration : IEntityTypeConfiguration<Element1d>
     public void Configure(EntityTypeBuilder<Element1d> builder)
     {
         builder.HasKey(n => new { n.Id, n.ModelId });
-        builder.Property(n => n.Id).ValueGeneratedNever();
+        // builder.Property(n => n.Id).ValueGeneratedNever();
 
         _ = builder
             .HasOne(el => el.StartNode)

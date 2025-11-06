@@ -71,7 +71,7 @@ public sealed class FluentApiClientBuilder
     /// <param name="methodName"></param>
     public void AddMethodAtRoute(
         INamedTypeSymbol endpointSymbol,
-        ITypeSymbol handlerSymbol,
+        IList<IParameterSymbol> ctorParameters,
         ITypeSymbol requestType,
         ITypeSymbol returnType
     )
@@ -116,7 +116,6 @@ public sealed class FluentApiClientBuilder
                 {
                     Name = endpointSymbol.Name,
                     RequestType = requestType,
-                    HandlerSymbol = handlerSymbol,
                     ReturnType = returnType,
                     EndpointSymbol = endpointSymbol,
                     // Parameters = parameters,
@@ -270,7 +269,6 @@ public class ApiMethod
     public string Name { get; set; } = string.Empty;
     public ITypeSymbol ReturnType { get; set; }
     public ITypeSymbol RequestType { get; set; }
-    public ITypeSymbol HandlerSymbol { get; set; }
     public INamedTypeSymbol EndpointSymbol { get; set; }
     // public ICollection<IParameterSymbol> Parameters { get; set; } = [];
 }

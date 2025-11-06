@@ -28,11 +28,11 @@ internal class CreateModelProposalCommandHandler(
     INodeDefinitionRepository nodeRepository,
     IElement1dRepository element1dRepository,
     IMaterialRepository materialRepository,
-    ISectionProfileRepository sectionProfileRepository,
-    IStructuralAnalysisUnitOfWork unitOfWork
-) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>
+    ISectionProfileRepository sectionProfileRepository
+// ) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>
+) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposal>
 {
-    public async Task<Result<ModelProposalResponse>> ExecuteAsync(
+    public async Task<Result<ModelProposal>> ExecuteAsync(
         ModelResourceRequest<ModelProposalData> command,
         CancellationToken ct = default
     )
@@ -42,6 +42,7 @@ internal class CreateModelProposalCommandHandler(
         {
             return BeamOsError.NotFound(description: $"Model with id {command.ModelId} not found");
         }
+
         var modelProposal = command.Body.ToProposalDomain(model);
         modelProposal.NodeProposals = [];
         modelProposal.Element1dProposals = [];
@@ -153,10 +154,19 @@ internal class CreateModelProposalCommandHandler(
             var proposalIssue = proposalIssueContract.ToDomain(command.ModelId, modelProposal.Id);
             modelProposal.ProposalIssues.Add(proposalIssue);
         }
+        foreach (var deleteEntityProposal in command.Body.DeleteModelEntityProposals ?? [])
+        {
+            var deleteProposal = new DeleteModelEntityProposal(
+                command.ModelId,
+                modelProposal.Id,
+                deleteEntityProposal.Id,
+                deleteEntityProposal.ObjectType
+            );
+            modelProposal.DeleteModelEntityProposals ??= [];
+            modelProposal.DeleteModelEntityProposals.Add(deleteProposal);
+        }
 
-        await unitOfWork.SaveChangesAsync(ct);
-
-        return modelProposal.ToContract();
+        return modelProposal;
     }
 
     private static async Task<Dictionary<int, TEntity>> GetExistingEntities<TId, TEntity>(

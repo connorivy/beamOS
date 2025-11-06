@@ -2,6 +2,7 @@ using System.ClientModel;
 using System.Text;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using Microsoft.SemanticKernel;
@@ -13,6 +14,7 @@ namespace BeamOs.Ai;
 
 internal class GithubModelsChatCommandHandler(
     CreateModelProposalCommandHandler createModelProposalCommandHandler,
+    IStructuralAnalysisUnitOfWork unitOfWork,
     IQueryHandler<Guid, ModelInfoResponse> modelInfoQueryHandler
 ) : ICommandHandler<ModelResourceRequest<GithubModelsChatRequest>, GithubModelsChatResponse>
 {
@@ -65,6 +67,7 @@ internal class GithubModelsChatCommandHandler(
             new() { ModelId = command.ModelId, Body = aiApiPlugin.GetModelProposalData() },
             ct
         );
+        await unitOfWork.SaveChangesAsync(ct);
 
         if (proposalResult.IsError)
         {

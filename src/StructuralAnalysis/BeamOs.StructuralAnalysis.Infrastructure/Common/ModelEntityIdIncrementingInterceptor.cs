@@ -60,8 +60,7 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
 
             var currentModel =
                 await context
-                    .Models.AsSplitQuery()
-                    .Where(m => m.Id == entityInfoGroup.Key)
+                    .Models.Where(m => m.Id == entityInfoGroup.Key)
                     .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new InvalidOperationException(
                     $"Could not find model with id {entityInfoGroup.Key} when trying to assign ids to new entities."
@@ -133,6 +132,7 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
             currentModel.MaxMomentLoadId = entityTypeToMaxIdDict[typeof(MomentLoad)];
             currentModel.MaxLoadCaseId = entityTypeToMaxIdDict[typeof(LoadCase)];
             currentModel.MaxLoadCombinationId = entityTypeToMaxIdDict[typeof(LoadCombination)];
+            currentModel.MaxModelProposalId = entityTypeToMaxIdDict[typeof(ModelProposal)];
             currentModel.LastModified = timeProvider.GetUtcNow();
         }
 

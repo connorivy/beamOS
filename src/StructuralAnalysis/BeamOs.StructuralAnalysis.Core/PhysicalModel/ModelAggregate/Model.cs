@@ -1,13 +1,9 @@
 using BeamOs.Common.Domain.Models;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.EnvelopeResultSets;
-using BeamOs.StructuralAnalysis.Domain.AnalyticalResults.ResultSetAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCombinations;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
-using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
@@ -25,7 +21,28 @@ internal class Model : BeamOsEntity<ModelId>
     public string Name { get; set; }
     public string Description { get; set; }
     public ModelSettings Settings { get; set; }
-    public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset LastModified
+    {
+        get;
+        set
+        {
+            if (
+                this.Settings.WorkflowSettings.ModelingMode is ModelingMode.BimFirstSource
+                && this.Settings.WorkflowSettings.BimFirstModelIds is not null
+            )
+            {
+                this.AddEvent(
+                    new BimFirstSourceModelUpdatedEvent(
+                        this.Id,
+                        this.Settings.WorkflowSettings.BimFirstModelIds,
+                        value,
+                        field
+                    )
+                );
+            }
+            field = value;
+        }
+    } = DateTimeOffset.UtcNow;
 
     // public Octree? NodeOctree { get; private set; }
     // public OctreeId? NodeOctreeId { get; set; }
@@ -62,6 +79,9 @@ internal class Model : BeamOsEntity<ModelId>
     public IList<ModelProposal>? ModelProposals { get; set; }
     public int MaxModelProposalId { get; set; }
 
+    public Model BimSourceModel { get; set; }
+    public ModelId? BimSourceModelId { get; set; }
+
     // public void AddNode(Node node)
     // {
     //     this.Nodes ??= [];
@@ -88,6 +108,23 @@ internal class Model : BeamOsEntity<ModelId>
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     protected Model() { }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+}
+
+internal class BimFirstSourceModelByElement1d : Model
+{
+    public BimFirstSourceModelByElement1d(
+        string name,
+        string description,
+        ModelSettings settings,
+        ModelId? id = null
+    )
+        : base(name, description, settings, id) { }
+
+    [Obsolete("EF Core Constructor", true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    protected BimFirstSourceModelByElement1d() { }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

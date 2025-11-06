@@ -15,7 +15,8 @@
       CanRotateAboutX: false,
       CanRotateAboutY: false,
       CanRotateAboutZ: true
-    }
+    },
+    Metadata: null
   },
   Error: null,
   IsError: false,

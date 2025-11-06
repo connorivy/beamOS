@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.Common.Domain.Models;
 using BeamOs.Identity;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.EnvelopeResultSets;
 using BeamOs.StructuralAnalysis.Application.AnalyticalResults.NodeResults;
@@ -78,11 +79,9 @@ public static partial class DependencyInjection
         // _ = services.AddScoped<IStructuralAnalysisUnitOfWork, UnitOfWork>();
 
         services.AddQueryHandlers();
-        // services.AddObjectThatImplementInterface<IAssemblyMarkerInfrastructure>(
-        //     typeof(IQueryHandler<,>),
-        //     ServiceLifetime.Scoped,
-        //     false
-        // );
+        var domainEventHandlerProvider = new DomainEventHandlerProvider();
+        services.AddDomainEventHandlers(domainEventHandlerProvider);
+        services.AddSingleton(domainEventHandlerProvider);
 
         return services;
     }
@@ -114,35 +113,36 @@ public static partial class DependencyInjection
 
 #if Postgres
     private static void AddDb(this IServiceCollection services, string connectionString) =>
-        _ = services.AddDbContext<StructuralAnalysisDbContext>(options =>
-            options
-                .UseNpgsql(
-                    connectionString,
-                    o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
-                )
-                // .AddInterceptors(new ModelLastModifiedUpdater(TimeProvider.System))
-                .AddInterceptors(new ModelEntityIdIncrementingInterceptor(TimeProvider.System))
-                .AddInterceptors(
-                    new ModelProposalEntityIdIncrementingInterceptor(TimeProvider.System)
-                )
-                .UseExceptionProcessor()
-                // .UseModel(StructuralAnalysisDbContextModel.Instance)
+        _ = services.AddDbContext<StructuralAnalysisDbContext>(
+            (sp, options) =>
+                options
+                    .UseNpgsql(
+                        connectionString,
+                        o => o.MigrationsAssembly(typeof(IAssemblyMarkerInfrastructure).Assembly)
+                    )
+                    .AddInterceptors(
+                        new ModelEntityIdIncrementingInterceptor(TimeProvider.System),
+                        new ModelProposalEntityIdIncrementingInterceptor(TimeProvider.System),
+                        new PublishDomainEventsInterceptor(sp)
+                    )
+                    .UseExceptionProcessor()
+                    // .UseModel(StructuralAnalysisDbContextModel.Instance)
 #if DEBUG
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
-                .LogTo(Console.WriteLine, LogLevel.Error)
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors()
+                    .LogTo(Console.WriteLine, LogLevel.Error)
 #endif
 #if !DEBUG
-                .UseLoggerFactory(
-                    LoggerFactory.Create(builder =>
-                    {
-                        builder.AddFilter((category, level) => level >= LogLevel.Error);
-                    })
-                )
+                    .UseLoggerFactory(
+                        LoggerFactory.Create(builder =>
+                        {
+                            builder.AddFilter((category, level) => level >= LogLevel.Error);
+                        })
+                    )
 #endif
-                .ConfigureWarnings(warnings =>
-                    warnings.Log(RelationalEventId.PendingModelChangesWarning)
-                )
+                    .ConfigureWarnings(warnings =>
+                        warnings.Log(RelationalEventId.PendingModelChangesWarning)
+                    )
         );
 #endif
 
@@ -246,4 +246,23 @@ public static partial class DependencyInjection
         AsSelf = true
     )]
     public static partial IServiceCollection AddQueryHandlers(this IServiceCollection services);
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(DomainEventHandlerBase<>),
+        CustomHandler = nameof(AddDomainEventHandler)
+    )]
+    public static partial IServiceCollection AddDomainEventHandlers(
+        this IServiceCollection services,
+        DomainEventHandlerProvider typeProvider
+    );
+
+    private static void AddDomainEventHandler<TEventHandler, TEvent>(
+        this IServiceCollection services,
+        DomainEventHandlerProvider typeProvider
+    )
+        where TEventHandler : DomainEventHandlerBase<TEvent>
+        where TEvent : IDomainEvent
+    {
+        typeProvider.RegisterHandler<TEvent, TEventHandler>(services);
+    }
 }

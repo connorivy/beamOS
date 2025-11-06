@@ -60,4 +60,11 @@ internal static partial class DependencyInjection
         AsSelf = true
     )]
     public static partial IServiceCollection AddQueryHandlers(this IServiceCollection services);
+
+    // [GenerateServiceRegistrations(
+    //     AssignableTo = typeof(IQueryHandler<,>),
+    //     Lifetime = ServiceLifetime.Scoped,
+    //     AsSelf = true
+    // )]
+    // public static partial void AddNotificationHandlers(this IServiceCollection services);
 }

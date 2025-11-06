@@ -3,6 +3,7 @@ using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.SectionProfiles;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Riok.Mapperly.Abstractions;
 
@@ -64,6 +65,15 @@ internal static partial class CreateSectionProfileCommandMapper
     public static partial SectionProfile ToDomainObject(
         this ModelResourceRequest<CreateSectionProfileRequest> command
     );
+
+    public static SectionProfile ToDomainObject(
+        this CreateSectionProfileRequest sectionProfileRequest,
+        ModelId modelId
+    ) =>
+        new ModelResourceRequest<CreateSectionProfileRequest>(
+            modelId,
+            sectionProfileRequest
+        ).ToDomainObject();
 
     [MapNestedProperties(nameof(ModelResourceRequest<>.Body))]
     [MapProperty("Body." + nameof(CreateSectionProfileRequest.AreaInternal), "Area")]

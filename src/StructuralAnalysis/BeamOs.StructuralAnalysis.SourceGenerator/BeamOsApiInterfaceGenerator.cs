@@ -87,7 +87,7 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
             }
             var requestType = baseEndpointType.TypeArguments[0].ToDisplayString();
             var returnType = baseEndpointType.TypeArguments[1].ToDisplayString();
-            var commandHandlerType = symbol.Constructors.Single().Parameters.Single().Type;
+            var ctorParameters = symbol.Constructors.Single().Parameters;
 
             api.AppendLine(
                 $"   public Task<ApiResponse<{returnType}>> {symbol.Name}({requestType} request, CancellationToken ct = default);"
@@ -95,13 +95,13 @@ public class BeamOsApiInterfaceGenerator : IIncrementalGenerator
             AddToInMemoryImpl(
                 inMemoryImpl,
                 symbol,
-                commandHandlerType,
+                ctorParameters,
                 baseEndpointType.TypeArguments[0],
                 baseEndpointType.TypeArguments[1]
             );
             apiClientBuilder.AddMethodAtRoute(
                 symbol,
-                commandHandlerType,
+                ctorParameters,
                 baseEndpointType.TypeArguments[0],
                 baseEndpointType.TypeArguments[1]
             );
@@ -179,7 +179,7 @@ public sealed class InMemoryApiClient2(IServiceProvider serviceProvider) : IStru
     private static void AddToInMemoryImpl(
         StringBuilder inMemoryImpl,
         INamedTypeSymbol symbol,
-        ITypeSymbol commandHandlerType,
+        IList<IParameterSymbol> ctorArgs,
         ITypeSymbol requestType,
         ITypeSymbol returnType
     )
@@ -197,9 +197,20 @@ public sealed class InMemoryApiClient2(IServiceProvider serviceProvider) : IStru
             @$"
     public async Task<ApiResponse<{returnType}>> {symbol.Name}({requestType} request, CancellationToken ct = default) 
     {{
-        using var scope = serviceProvider.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<{commandHandlerType.ToDisplayString()}>();
-        var endpoint = new {symbol.ToDisplayString()}(handler);
+        using var scope = serviceProvider.CreateScope();"
+        );
+
+        StringBuilder ctorArgsBuilder = new();
+        foreach (var ctorArg in ctorArgs)
+        {
+            inMemoryImpl.AppendLine(
+                $"var arg_{ctorArg.Name} = scope.ServiceProvider.GetRequiredService<{ctorArg.Type.ToDisplayString()}>();"
+            );
+        }
+
+        inMemoryImpl.AppendLine(
+            @$"
+        var endpoint = new {symbol.ToDisplayString()}({string.Join(", ", ctorArgs.Select(arg => $"arg_{arg.Name}"))});
         await semaphore.WaitAsync(ct);
         Result<{returnType}> response;
         try 

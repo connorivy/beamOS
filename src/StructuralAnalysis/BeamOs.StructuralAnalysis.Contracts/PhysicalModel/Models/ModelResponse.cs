@@ -60,23 +60,68 @@ public record ModelResponseHydrated(
 public record ModelSettings
 {
     public required UnitSettings UnitSettings { get; init; }
-    public required AnalysisSettings AnalysisSettings { get; init; }
-    public required bool YAxisUp { get; init; }
+    public AnalysisSettings AnalysisSettings { get; init; } = new();
+    public WorkflowSettings WorkflowSettings
+    {
+        get;
+        init
+        {
+            if (value is not null)
+            {
+                field = value;
+            }
+        }
+    }
+    public bool YAxisUp { get; init; }
 
-    public ModelSettings() { }
+    [JsonConstructor]
+    public ModelSettings()
+    {
+        this.WorkflowSettings = new() { ModelingMode = ModelingMode.BimFirst };
+    }
 
     // [JsonConstructor]
     [SetsRequiredMembers]
     public ModelSettings(
         UnitSettings unitSettings,
         AnalysisSettings? analysisSettings = null,
+        WorkflowSettings? workflowSettings = null,
         bool yAxisUp = true
     )
     {
         this.UnitSettings = unitSettings;
         this.AnalysisSettings = analysisSettings ?? new();
+        this.WorkflowSettings = workflowSettings ?? new() { ModelingMode = ModelingMode.BimFirst };
         this.YAxisUp = yAxisUp;
     }
+}
+
+public record WorkflowSettings
+{
+    public required ModelingMode ModelingMode { get; init; }
+
+    /// <summary>
+    /// The ID of the BIM source model, if applicable. This only applies when the ModelingMode is BimFirst.
+    /// If the BimSourceModelId is set, it indicates that this model is linked to a specific BIM model.
+    /// If it is null, it indicates that a new BIM source model should be created.
+    /// </summary>
+    public Guid? BimSourceModelId { get; init; }
+
+    /// <summary>
+    /// If the ModelingMode is BimFirst_BimSource, this list contains the IDs of all models that are
+    /// configured as BIM First models linked to this BIM source model.
+    /// </summary>
+    public IList<Guid>? BimFirstModelIds { get; init; }
+
+    public WorkflowSettings() { }
+}
+
+public enum ModelingMode : byte
+{
+    Undefined = 0,
+    BimFirst = 1,
+    Independent = 2,
+    BimFirstSource = 3,
 }
 
 public record AnalysisSettings

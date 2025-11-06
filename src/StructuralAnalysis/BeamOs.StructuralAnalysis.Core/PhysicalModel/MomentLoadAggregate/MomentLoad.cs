@@ -6,7 +6,9 @@ using MathNet.Spatial.Euclidean;
 
 namespace BeamOs.StructuralAnalysis.Domain.PhysicalModel.MomentLoadAggregate;
 
-internal class MomentLoad : BeamOsModelEntity<MomentLoadId>
+internal class MomentLoad
+    : BeamOsModelEntity<MomentLoadId>,
+        IBeamOsModelEntity<MomentLoadId, MomentLoad>
 {
     public MomentLoad(
         ModelId modelId,
@@ -82,6 +84,14 @@ internal class MomentLoad : BeamOsModelEntity<MomentLoadId>
         TorqueUnit torqueUnit,
         LoadCombination loadCombination
     ) => this.GetScaledTorque(direction, loadCombination).As(torqueUnit);
+
+    public bool MemberwiseEquals(MomentLoad other)
+    {
+        return this.NodeId == other.NodeId
+            && this.LoadCaseId == other.LoadCaseId
+            && this.Torque.Equals(other.Torque, new Torque(.00001, TorqueUnit.NewtonMeter))
+            && this.AxisDirection.Equals(other.AxisDirection);
+    }
 
     [Obsolete("EF Core Constructor", true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -23,9 +23,6 @@ internal class NodeDefinitionConfiguration : IEntityTypeConfiguration<NodeDefini
 {
     public void Configure(EntityTypeBuilder<NodeDefinition> builder)
     {
-        builder.HasKey(n => new { n.Id, n.ModelId });
-        builder.Property(n => n.Id).ValueGeneratedNever();
-
         builder
             .UseTphMappingStrategy()
             .HasDiscriminator(el => el.NodeType)
