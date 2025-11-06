@@ -6,8 +6,12 @@ public partial class BimFirstTutorialTests : ReactPageTest
 {
     private static readonly SemaphoreSlim TutorialPageCreationLock = new(1, 1);
     private static Guid? modelId;
+    private static Guid? bimSourceModelId;
     private Guid ModelId =>
         modelId ?? throw new InvalidOperationException("Model ID has not been initialized.");
+    private Guid BimSourceModelId =>
+        bimSourceModelId
+        ?? throw new InvalidOperationException("Bim Source Model ID has not been initialized.");
 
     [Before(TUnit.Core.HookType.Test)]
     public async Task TutorialPage_ShouldLoadSuccessfully()
@@ -19,7 +23,14 @@ public partial class BimFirstTutorialTests : ReactPageTest
 
             try
             {
-                modelId ??= await this.PageContext.CreateTutorial();
+                if (modelId is null)
+                {
+                    var modelResponse = await this.PageContext.CreateTutorial();
+                    modelId = modelResponse.Id;
+                    bimSourceModelId =
+                        modelResponse.Settings.WorkflowSettings.BimSourceModelId
+                        ?? throw new InvalidOperationException("Bim Source Modal ID is null.");
+                }
             }
             finally
             {
@@ -27,6 +38,8 @@ public partial class BimFirstTutorialTests : ReactPageTest
             }
         }
 
-        await this.Page.GotoAsync($"/tutorial?modelId={modelId}");
+        await this.Page.GotoAsync(
+            $"/tutorial?modelId={modelId}&bimSourceModelId={bimSourceModelId}"
+        );
     }
 }

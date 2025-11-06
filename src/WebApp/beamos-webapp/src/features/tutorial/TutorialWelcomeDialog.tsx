@@ -9,11 +9,13 @@ import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import { StepButton, Tooltip } from "@mui/material"
 import type { IStructuralAnalysisApiClientV1 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import { LengthUnit } from "../../utils/type-extensions/UnitTypeContracts"
 
 type TutorialWelcomeDialogProps = {
   open: boolean
   onClose: () => void
-  modelId: string | null
+  modelId: string
+  bimSourceModelId: string
   apiClient: IStructuralAnalysisApiClientV1
 }
 
@@ -61,9 +63,9 @@ const getSteps = (props: StepContentProps) => [
           A Revit plugin is in development that users will be able to use to send their data into BeamOS. For the purpose of this tutorial, you can import some sample data below.
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
-          <Button 
-            onClick={props.onImport} 
-            variant="contained" 
+          <Button
+            onClick={props.onImport}
+            variant="contained"
             color="primary"
             disabled={props.isImporting || !props.modelId}
             aria-label="import"
@@ -121,6 +123,7 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
   open,
   onClose,
   modelId,
+  bimSourceModelId,
   apiClient,
 }) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -161,116 +164,26 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
     setImportCompleted(false)
     try {
       console.log("Starting import of Kassimali_Example3_8 data for model:", modelId)
-      
-      // Create a model proposal with all the data instead of adding directly to the model
-      await apiClient.createModelProposal(modelId, {
-        description: "Tutorial sample data - Kassimali Example 3.8",
-        createNodeProposals: [
-          {
-            id: 1,
-            locationPoint: { x: 12, y: 16, z: 0, lengthUnit: 2 }, // Foot = 2
-            restraint: { canTranslateAlongX: true, canTranslateAlongY: true, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-          },
-          {
-            id: 2,
-            locationPoint: { x: 0, y: 0, z: 0, lengthUnit: 2 },
-            restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-          },
-          {
-            id: 3,
-            locationPoint: { x: 12, y: 0, z: 0, lengthUnit: 2 },
-            restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-          },
-          {
-            id: 4,
-            locationPoint: { x: 24, y: 0, z: 0, lengthUnit: 2 },
-            restraint: { canTranslateAlongX: false, canTranslateAlongY: false, canTranslateAlongZ: false, canRotateAboutX: false, canRotateAboutY: false, canRotateAboutZ: true },
-          },
-        ],
-        createMaterialProposals: [
-          {
-            id: 992,
-            modulusOfElasticity: 29000,
-            modulusOfRigidity: 1,
-            pressureUnit: 4, // KilopoundForcePerSquareInch = 4
-          },
-        ],
-        createSectionProfileProposals: [
-          {
-            id: 8,
-            name: "8",
-            lengthUnit: 1, // Inch = 1
-            area: 8,
-            strongAxisMomentOfInertia: 1,
-            weakAxisMomentOfInertia: 1,
-            polarMomentOfInertia: 1,
-            strongAxisShearArea: 1,
-            weakAxisShearArea: 1,
-            strongAxisPlasticSectionModulus: 1,
-            weakAxisPlasticSectionModulus: 1,
-          },
-          {
-            id: 6,
-            name: "6",
-            lengthUnit: 1,
-            area: 6,
-            strongAxisMomentOfInertia: 1,
-            weakAxisMomentOfInertia: 1,
-            polarMomentOfInertia: 1,
-            strongAxisShearArea: 1,
-            weakAxisShearArea: 1,
-            strongAxisPlasticSectionModulus: 1,
-            weakAxisPlasticSectionModulus: 1,
-          },
-        ],
-        loadCaseProposals: [
-          { id: 1, name: "Load Case 1" },
-        ],
-        loadCombinationProposals: [
-          { id: 1, loadCaseFactors: { "1": 1.0 } },
-          { id: 2, loadCaseFactors: { "1": 1.0 } },
-        ],
-        pointLoadProposals: [
-          {
-            id: 1,
-            nodeId: 1,
-            loadCaseId: 1,
-            force: { value: 150, unit: 1 }, // KilopoundForce = 1
-            direction: { x: 1, y: 0, z: 0 },
-          },
-          {
-            id: 2,
-            nodeId: 1,
-            loadCaseId: 1,
-            force: { value: 300, unit: 1 },
-            direction: { x: 0, y: -1, z: 0 },
-          },
-        ],
-        createElement1dProposals: [
-          {
-            id: 1,
-            startNodeId: { proposedId: 2, existingId: undefined },
-            endNodeId: { proposedId: 1, existingId: undefined },
-            materialId: { proposedId: 992, existingId: undefined },
-            sectionProfileId: { proposedId: 8, existingId: undefined },
-          },
-          {
-            id: 2,
-            startNodeId: { proposedId: 3, existingId: undefined },
-            endNodeId: { proposedId: 1, existingId: undefined },
-            materialId: { proposedId: 992, existingId: undefined },
-            sectionProfileId: { proposedId: 6, existingId: undefined },
-          },
-          {
-            id: 3,
-            startNodeId: { proposedId: 4, existingId: undefined },
-            endNodeId: { proposedId: 1, existingId: undefined },
-            materialId: { proposedId: 992, existingId: undefined },
-            sectionProfileId: { proposedId: 8, existingId: undefined },
-          },
-        ],
-      })
 
+      await apiClient.putSourceModel(bimSourceModelId, {
+        element1dsToAddOrUpdateByExternalId: [
+          {
+            externalId: "Element-1",
+            startNodeLocation: { x: 0, y: 0, z: 0, lengthUnit: LengthUnit.Foot },
+            endNodeLocation: { x: 12, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
+          },
+          {
+            externalId: "Element-2",
+            startNodeLocation: { x: 12, y: 0, z: 0, lengthUnit: LengthUnit.Foot },
+            endNodeLocation: { x: 12, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
+          },
+          {
+            externalId: "Element-3",
+            startNodeLocation: { x: 24, y: 0, z: 0, lengthUnit: LengthUnit.Foot },
+            endNodeLocation: { x: 12, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
+          }
+        ]
+      })
       console.log("Sample data imported successfully as model proposal")
       setImportCompleted(true)
     } catch (error) {
@@ -326,14 +239,14 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
           </Button>
         )}
         {activeStep < steps.length - 1 && (
-          <Tooltip 
+          <Tooltip
             title={isNextDisabled ? "Please import sample data before proceeding" : ""}
             arrow
           >
             <span>
-              <Button 
-                onClick={handleNext} 
-                variant="contained" 
+              <Button
+                onClick={handleNext}
+                variant="contained"
                 aria-label="next"
                 disabled={isNextDisabled}
               >

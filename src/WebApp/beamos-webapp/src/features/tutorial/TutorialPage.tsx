@@ -15,6 +15,7 @@ const TutorialPage = () => {
   const apiClient = useApiClient()
   const [searchParams] = useSearchParams();
   const [modelId, setModelId] = useState<string | null>(searchParams.get("modelId"))
+  const [bimSourceModelId, setBimSourceModelId] = useState<string | null>(searchParams.get("bimSourceModelId"))
   const [dialogOpen, setDialogOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const canvasId = "tutorial-canvas"
@@ -42,13 +43,23 @@ const TutorialPage = () => {
             analysisSettings: {
               element1DAnalysisType: 1,
             },
+          },
+          options: {
+            isTempModel: true
           }
         }
 
-        const response = await apiClient.createTempModel(request)
-        if (response.id) {
-          setModelId(response.id)
+        const response = await apiClient.createModel(request)
+        if (!response.id) {
+          throw new Error("Model ID not found in response")
         }
+        setModelId(response.id)
+        const bimSourceModelId = response.settings.workflowSettings?.bimSourceModelId;
+        console.log("response:", response);
+        if (!bimSourceModelId) {
+          throw new Error("BIM Source Model ID not found in response");
+        }
+        setBimSourceModelId(bimSourceModelId);
       } catch (error) {
         console.error("Error creating tutorial model:", error)
       }
@@ -75,12 +86,17 @@ const TutorialPage = () => {
           <ResultViewer canvasId={canvasId} onOpen={() => { setSidebarOpen(true); }} onClose={() => { setSidebarOpen(false); }} />
         </ResponsiveSecondarySidebar>
       </ResponsiveIconSidebarLayout>
-      <TutorialWelcomeDialog 
-        open={dialogOpen} 
-        onClose={handleDialogClose} 
-        modelId={modelId}
-        apiClient={apiClient}
-      />
+      {modelId && bimSourceModelId ? (
+        <TutorialWelcomeDialog
+          open={dialogOpen}
+          onClose={handleDialogClose}
+          modelId={modelId}
+          bimSourceModelId={bimSourceModelId}
+          apiClient={apiClient}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   )
 }

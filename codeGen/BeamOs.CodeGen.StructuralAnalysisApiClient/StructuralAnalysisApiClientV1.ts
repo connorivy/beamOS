@@ -195,12 +195,6 @@ export interface IStructuralAnalysisApiClientV1 {
     rejectModelProposal(id: number, modelId: string): Promise<boolean>;
 
     /**
-     * @param body (optional) 
-     * @return OK
-     */
-    createTempModel(body: CreateModelRequest | undefined): Promise<ModelResponse>;
-
-    /**
      * @return OK
      */
     deleteModel(modelId: string): Promise<boolean>;
@@ -1826,47 +1820,6 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
     }
 
     /**
-     * @param body (optional) 
-     * @return OK
-     */
-    createTempModel(body: CreateModelRequest | undefined): Promise<ModelResponse> {
-        let url_ = this.baseUrl + "/api/models/temp";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateTempModel(_response);
-        });
-    }
-
-    protected processCreateTempModel(response: Response): Promise<ModelResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ModelResponse;
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ModelResponse>(null as any);
-    }
-
-    /**
      * @return OK
      */
     deleteModel(modelId: string): Promise<boolean> {
@@ -3391,8 +3344,15 @@ export interface CreateMaterialRequest2 {
     [key: string]: any;
 }
 
+export interface CreateModelOptions {
+    isTempModel?: boolean;
+
+    [key: string]: any;
+}
+
 export interface CreateModelRequest {
     id?: string | undefined;
+    options?: CreateModelOptions;
     name: string;
     description: string;
     settings: ModelSettings;

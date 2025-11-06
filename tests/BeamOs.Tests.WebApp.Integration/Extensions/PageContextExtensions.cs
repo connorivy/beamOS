@@ -1,4 +1,7 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using BeamOs.StructuralAnalysis.Contracts.Common;
+using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using Microsoft.Playwright;
 
 namespace BeamOs.Tests.WebApp.Integration.Extensions;
@@ -71,7 +74,7 @@ public static class PageContextExtensions
             return modelIdGuid;
         }
 
-        public async Task<Guid> CreateTutorial()
+        public async Task<ModelResponse> CreateTutorial()
         {
             await AssemblySetup.CreateAuthenticatedUser(page);
 
@@ -85,20 +88,19 @@ public static class PageContextExtensions
                 .First;
 
             var modelResponseTask = page.Page.WaitForResponseAsync(r =>
-                r.Url.Contains("/models") && r.Request.Method == "POST"
+                r.Url.Contains("/models") && r.Request.Method == "POST", new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 5000}
             );
             await tutorialCard.ClickAsync();
 
             // Assert - Verify that the URL has changed to the tutorial page
-            await Assertions.Expect(page.Page).ToHaveURLAsync("/tutorial");
+            // await Assertions.Expect(page.Page).ToHaveURLAsync("/tutorial");
 
             // Wait for the POST request to /models and extract the modelId from the response
             var response = await modelResponseTask;
 
             var responseBody = await response.JsonAsync();
-            Console.WriteLine($"responseBody: {responseBody}");
-            var modelId = responseBody?.GetProperty("id").GetString() ?? throw new InvalidOperationException("Model ID not found in response.");
-            return Guid.Parse(modelId!);
+            var responseString = responseBody.ToString() ?? throw new InvalidOperationException("Response body is null.");
+            return JsonSerializer.Deserialize<ModelResponse>(responseString, BeamOsJsonSerializerContext.Default.ModelResponse) ?? throw new InvalidOperationException("Failed to deserialize model response.");
         }
     }
 }

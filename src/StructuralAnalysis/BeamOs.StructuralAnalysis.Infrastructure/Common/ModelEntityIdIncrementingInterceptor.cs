@@ -12,6 +12,8 @@ namespace BeamOs.StructuralAnalysis.Infrastructure.Common;
 internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
     : SaveChangesInterceptor
 {
+    private static readonly SemaphoreSlim semaphore = new(1, 1);
+
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
@@ -38,6 +40,7 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
             return await base.SavingChangesAsync(eventData, result, cancellationToken);
         }
 
+        await semaphore.WaitAsync(cancellationToken);
         foreach (
             var entityInfoGroup in addedModelEntities
                 .Select(e => new
@@ -136,6 +139,7 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
             currentModel.LastModified = timeProvider.GetUtcNow();
         }
 
+        semaphore.Release();
         return result;
     }
 }

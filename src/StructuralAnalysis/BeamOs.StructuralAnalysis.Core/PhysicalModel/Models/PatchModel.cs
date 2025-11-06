@@ -64,6 +64,28 @@ internal sealed class PatchModelCommandHandler(
                 description: $"Model with id '{req.ModelId}' was not found."
             );
         }
+        if (model.Materials is null || model.Materials.Count == 0)
+        {
+            return BeamOsError.InvalidOperation(
+                description: "Model must have at least one material defined."
+            );
+        }
+        var defaultMaterial = model.Materials[0];
+        if (
+            model.SectionProfiles is null
+            || model.SectionProfiles.Count == 0
+            || model.SectionProfilesFromLibrary is null
+            || model.SectionProfilesFromLibrary.Count == 0
+        )
+        {
+            return BeamOsError.InvalidOperation(
+                description: "Model must have at least one section profile defined."
+            );
+        }
+        var defaultSectionProfile =
+            model.SectionProfiles.FirstOrDefault<SectionProfileInfoBase>()
+            ?? model.SectionProfilesFromLibrary.First();
+
         modelRepository.Attach(model);
 
         var octree = new Octree(model.Id);
@@ -194,7 +216,13 @@ internal sealed class PatchModelCommandHandler(
             }
             else
             {
-                element1d = new Element1d(model.Id, startNode.Id, endNode.Id, 1, 1)
+                element1d = new Element1d(
+                    model.Id,
+                    startNode.Id,
+                    endNode.Id,
+                    defaultMaterial.Id,
+                    defaultSectionProfile.Id
+                )
                 {
                     StartNode = startNode,
                     EndNode = endNode,

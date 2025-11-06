@@ -3,6 +3,7 @@ namespace BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 public record CreateModelRequest : ModelInfoData
 {
     public Guid? Id { get; init; }
+    public CreateModelOptions Options { get; init; } = new();
 }
 
 public record ModelInfoData
@@ -16,4 +17,9 @@ public record ModelInfo : ModelInfoData
 {
     public required Guid Id { get; init; }
     public required DateTimeOffset LastModified { get; init; }
+}
+
+public record CreateModelOptions
+{
+    public bool IsTempModel { get; init; }
 }

@@ -5,6 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import AppBarMain from "../components/AppBarMain";
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import FunctionsIcon from '@mui/icons-material/Functions';
+import ChangeHistoryIcon from '@mui/icons-material/ChangeHistory';
 
 const drawerWidth = 220;
 
@@ -17,6 +18,7 @@ import { selectModelResponseByCanvasId } from "../features/editors/editorsSlice"
 import { handleRunAnalysis } from "../features/results-viewing/handleRunAnalysis";
 import { useApiClient } from "../features/api-client/ApiClientContext";
 import { useEditors } from "../features/editors/EditorContext";
+import { ProposalsView } from "../features/proposals/ProposalsView";
 
 const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React.ReactNode }> = ({ canvasId, children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,6 +33,7 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
     const icons = [
         { id: "physical", label: "Physical Model", icon: <ApartmentIcon /> },
         { id: "analytical", label: "Analytical Model", icon: <FunctionsIcon /> },
+        { id: "proposals", label: "Model Proposals", icon: <ChangeHistoryIcon /> },
     ];
 
     // Handle icon click for sidebar selection and mobile toggle
@@ -52,6 +55,7 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
     const sidebarContents: Record<string, React.ReactNode> = {
         physical: <SelectionInfo canvasId={canvasId} />,
         analytical: hasResults ? <ResultsInfo canvasId={canvasId} /> : <Calculate canvasId={canvasId} />,
+        proposals: <ProposalsView canvasId={canvasId} />,
     };
 
     return (

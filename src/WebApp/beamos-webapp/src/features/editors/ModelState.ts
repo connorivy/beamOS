@@ -23,6 +23,7 @@ import type {
   DeflectionDiagramResponse,
   ShearDiagramResponse,
   MomentDiagramResponse,
+  ModelProposalData,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 
 export type ModelState = {
@@ -41,6 +42,7 @@ export type ModelState = {
   momentLoads: Record<number, MomentLoadData>
   pointLoads: Record<number, PointLoadData>
   resultSets: Partial<Record<number, ResultSetData>>
+  proposals: Record<number, ModelProposalData>
 }
 
 export type ResultSetData = {
@@ -199,5 +201,6 @@ export function ToModelState(model: ModelResponse): ModelState {
     momentLoads: MomentLoadsToMap(model.momentLoads ?? []),
     pointLoads: PointLoadsToMap(model.pointLoads ?? []),
     resultSets: ResultSetsToMap(model.resultSets ?? []),
+    proposals: model.proposals ?? [],
   }
 }

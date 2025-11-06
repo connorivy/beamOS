@@ -17,7 +17,7 @@ internal abstract class BeamOsModelEntity<TId> : BeamOsEntity<TId>, IBeamOsModel
     }
 
     public virtual ModelId ModelId { get; protected set; }
-    public Model? Model { get; private set; }
+    public Model? Model { get; set; }
 
     [Obsolete("EF Ctor")]
     public BeamOsModelEntity() { }

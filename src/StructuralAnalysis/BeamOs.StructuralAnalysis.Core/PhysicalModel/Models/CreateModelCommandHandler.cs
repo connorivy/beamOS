@@ -30,7 +30,15 @@ internal class CreateModelCommandHandler(
             return value.Error;
         }
 
-        modelRepository.Add(model);
+        if (command.Options.IsTempModel)
+        {
+            modelRepository.AddTempModel(model);
+        }
+        else
+        {
+            modelRepository.Add(model);
+        }
+
         try
         {
             await unitOfWork.SaveChangesAsync(ct);
@@ -85,6 +93,28 @@ internal class CreateModelCommandHandler(
             bimSourceModel.Name = $"BIM Source Model for {model.Name}";
             bimSourceModel.Description =
                 $"This is an auto-generated BIM Source Model for {model.Name}. When you push changes from your BIM model, they will be applied to this model and then a change model request will be created for {model.Name}.";
+            var defaultMaterial = new Material(bimSourceModel.Id, new(), new())
+            {
+                Model = bimSourceModel,
+            };
+            var defaultSectionProfile = new SectionProfile(
+                bimSourceModel.Id,
+                "Unset Section Profile",
+                new(),
+                new(),
+                new(),
+                new(),
+                new(),
+                new(),
+                null,
+                null
+            )
+            {
+                Model = bimSourceModel,
+            };
+            bimSourceModel.Materials = [defaultMaterial];
+            bimSourceModel.SectionProfiles = [defaultSectionProfile];
+
             modelRepository.Add(bimSourceModel);
         }
         bimSourceModel.Settings.WorkflowSettings.BimFirstModelIds ??= [];
