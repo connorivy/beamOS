@@ -87,14 +87,12 @@ internal sealed class PutSourceModelCommandHandler(
             var startNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
-                nodeStore,
                 elementByLoc.StartNodeLocation.ToDomain(),
                 existingNodeIds
             );
             var endNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
-                nodeStore,
                 elementByLoc.EndNodeLocation.ToDomain(),
                 existingNodeIds
             );
@@ -134,6 +132,7 @@ internal sealed class PutSourceModelCommandHandler(
                 };
                 element1dRepository.Add(element1d);
             }
+            element1d.ExternalId = elementByLoc.ExternalId;
         }
 
         foreach (var nodeId in nodeStore.Keys.Where(e => !existingNodeIds.Contains(e)))
@@ -156,29 +155,24 @@ internal sealed class PutSourceModelCommandHandler(
     private async Task<NodeDefinition> GetOrAddNodeAtLocation(
         ModelId modelId,
         Octree octree,
-        Dictionary<NodeId, NodeDefinition> nodeStore,
         Point location,
         HashSet<NodeId> existingNodeIds
     )
     {
-        var nodeIds = octree.FindNodeIdsWithin(
+        var nodes = octree.FindNodesWithin(
             location,
             toleranceMeters: new Length(1, LengthUnit.Inch).Meters
         );
 
-        if (nodeIds.Count == 0)
+        if (nodes.Count > 0)
         {
-            var node = new Node(modelId, location, Restraint.Free);
-            nodeDefinitionRepository.Add(node);
-            return node;
+            existingNodeIds.Add(nodes[0].Id);
+            return nodes[0];
         }
-        else
-        {
-            var nodeId = nodeIds.First();
-            existingNodeIds.Add(nodeId);
-            var node = nodeStore[nodeId];
-            await nodeDefinitionRepository.Put(node);
-            return node;
-        }
+
+        var node = new Node(modelId, location, Restraint.Free);
+        nodeDefinitionRepository.Add(node);
+        octree.Add(node);
+        return node;
     }
 }

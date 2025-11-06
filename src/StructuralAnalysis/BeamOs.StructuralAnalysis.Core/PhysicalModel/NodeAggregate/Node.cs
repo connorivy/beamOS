@@ -172,6 +172,8 @@ internal abstract class NodeDefinition
 
 internal readonly record struct NodeIdAndLocation(NodeId NodeId, Point LocationPoint);
 
+internal readonly record struct NodeAndLocation(NodeDefinition Node, Point LocationPoint);
+
 internal interface INode3D
 {
     public Point GetLocationPoint(

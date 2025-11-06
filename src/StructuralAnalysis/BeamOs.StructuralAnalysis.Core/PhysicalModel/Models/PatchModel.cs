@@ -162,13 +162,11 @@ internal sealed class PatchModelCommandHandler(
             var startNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
-                nodeStore,
                 elementByLoc.StartNodeLocation.ToDomain()
             );
             var endNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
-                nodeStore,
                 elementByLoc.EndNodeLocation.ToDomain()
             );
 
@@ -247,26 +245,22 @@ internal sealed class PatchModelCommandHandler(
     private async Task<NodeDefinition> GetOrAddNodeAtLocation(
         ModelId modelId,
         Octree octree,
-        Dictionary<NodeId, NodeDefinition> nodeStore,
         Point location
     )
     {
-        var nodeIds = octree.FindNodeIdsWithin(
+        var nodes = octree.FindNodesWithin(
             location,
             toleranceMeters: new Length(1, LengthUnit.Inch).Meters
         );
 
-        if (nodeIds.Count == 0)
+        if (nodes.Count > 0)
         {
-            var node = new Node(modelId, location, Restraint.Free);
-            nodeDefinitionRepository.Add(node);
-            return node;
+            return nodes[0];
         }
-        else
-        {
-            var node = nodeStore[nodeIds[0]];
-            await nodeDefinitionRepository.Put(node);
-            return node;
-        }
+
+        var node = new Node(modelId, location, Restraint.Free);
+        nodeDefinitionRepository.Add(node);
+        octree.Add(node);
+        return node;
     }
 }

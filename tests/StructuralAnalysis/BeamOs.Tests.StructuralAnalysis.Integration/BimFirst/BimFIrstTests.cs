@@ -142,6 +142,14 @@ public class BimFirstTests(ApiClientKey client)
         var newModelProposalResponse = await this.ModelClient.Proposals.GetModelProposalsAsync();
         newModelProposalResponse.ThrowIfError();
         newModelProposalResponse.Value.Should().HaveCount(1);
+
+        var modelProposal = await this
+            .ModelClient.Proposals[newModelProposalResponse.Value.First().Id]
+            .GetModelProposalAsync();
+        modelProposal.ThrowIfError();
+
+        modelProposal.Value.CreateNodeProposals.Should().HaveCount(4);
+        modelProposal.Value.CreateElement1dProposals.Should().HaveCount(4);
     }
 
     [Test]

@@ -59,7 +59,7 @@ internal abstract class IndividualNodeVisitingRule(ModelRepairContext context) :
     )
     {
         var nearbyNodes = modelProposalBuilder
-            .Octree.FindNodeIdsWithin(nodeLocation, tolerance.Meters, node.Id)
+            .Octree.FindNodesWithin(nodeLocation, tolerance.Meters, node.Id)
             .Select(modelProposalBuilder.NodeStore.ApplyExistingProposal)
             .Distinct()
             .Where(n => n.Id != node.Id)
