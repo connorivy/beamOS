@@ -66,6 +66,7 @@ internal sealed class PatchModelCommandHandler(
                 description: $"Model with id '{req.ModelId}' was not found."
             );
         }
+        modelRepository.Attach(model);
 
         var octree = new Octree(model.Id);
         var element1dStore = model.Element1ds?.ToDictionary(e => e.Id) ?? [];

@@ -24,8 +24,10 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 
-internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelRepository)
-    : ICommandHandler<ModelResourceRequest<DiffModelRequest>, ModelDiffData>
+internal sealed partial class GetModelDiffCommandHandler(
+    IModelRepository modelRepository,
+    GetModelDiffWithDomainModelsCommandHandler getModelDiffWithDomainModelsCommandHandler
+) : ICommandHandler<ModelResourceRequest<DiffModelRequest>, ModelDiffData>
 {
     public async Task<Result<ModelDiffData>> ExecuteAsync(
         ModelResourceRequest<DiffModelRequest> req,
@@ -72,10 +74,64 @@ internal sealed partial class GetModelDiffCommandHandler(IModelRepository modelR
             );
         }
 
+        return await getModelDiffWithDomainModelsCommandHandler.ExecuteAsync(
+            (sourceModel, targetModel),
+            ct
+        );
+    }
+
+    private static IEnumerable<(T? SourceEntity, T? TargetEntity)> ComputeDiff<TId, T>(
+        IEnumerable<T> sourceEntities,
+        IEnumerable<T> targetEntities,
+        Func<T, int> keySelector
+    )
+        where T : class, IBeamOsModelEntity<TId, T>
+        where TId : struct, IIntBasedId
+    {
+        var diffs = new List<EntityDiff<T>>();
+
+        var sourceDict = sourceEntities.ToDictionary(keySelector);
+        var targetDict = targetEntities.ToDictionary(keySelector);
+
+        // Find removed entities (in source but not in target)
+        foreach (var sourceEntity in sourceEntities)
+        {
+            var key = keySelector(sourceEntity);
+            if (!targetDict.ContainsKey(key))
+            {
+                yield return (sourceEntity, null);
+            }
+        }
+
+        // Find added and modified entities
+        foreach (var targetEntity in targetEntities)
+        {
+            var key = keySelector(targetEntity);
+            if (!sourceDict.TryGetValue(key, out var sourceEntity))
+            {
+                yield return (null, targetEntity);
+            }
+            else if (!sourceEntity.MemberwiseEquals(targetEntity))
+            {
+                yield return (sourceEntity, targetEntity);
+            }
+        }
+    }
+}
+
+internal sealed partial class GetModelDiffWithDomainModelsCommandHandler
+    : ICommandHandler<(Model sourceModel, Model targetModel), ModelDiffData>
+{
+    public async Task<Result<ModelDiffData>> ExecuteAsync(
+        (Model sourceModel, Model targetModel) req,
+        CancellationToken ct = default
+    )
+    {
+        var (sourceModel, targetModel) = req;
         var response = new ModelDiffData
         {
-            BaseModelId = sourceModelId,
-            TargetModelId = targetModelId,
+            BaseModelId = sourceModel.Id,
+            TargetModelId = targetModel.Id,
             Nodes =
             [
                 .. ComputeDiff<NodeId, Node>(

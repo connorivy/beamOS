@@ -97,7 +97,6 @@ public class BimFirstTests(ApiClientKey client)
     }
 
     [Test]
-    [DependsOn(nameof(BimFirstModel_ShouldHaveCreatedSelfAndBimFirstSourceModel))]
     public async Task PushInitialBimModel_ShouldCreateBimModelAndProposal()
     {
         var modelProposalResponse = await this.ModelClient.Proposals.GetModelProposalsAsync();

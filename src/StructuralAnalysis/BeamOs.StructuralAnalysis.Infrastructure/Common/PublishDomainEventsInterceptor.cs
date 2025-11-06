@@ -72,12 +72,14 @@ public class PublishDomainEventsInterceptor(IServiceProvider serviceProvider)
             Console.WriteLine(
                 $"Publishing domain event: {domainEvent.GetType().Name} for entity: {domainEvent.GetType().Name}"
             );
-            using var scope = serviceProvider.CreateScope();
+            // using var scope = serviceProvider.CreateScope();
             var notificationHandlerProvider =
-                scope.ServiceProvider.GetRequiredService<DomainEventHandlerProvider>();
+                // scope.ServiceProvider.GetRequiredService<DomainEventHandlerProvider>();
+                serviceProvider.GetRequiredService<DomainEventHandlerProvider>();
             var handler = notificationHandlerProvider.GetOptionalHandler(
                 domainEvent.GetType(),
-                scope.ServiceProvider
+                // scope.ServiceProvider
+                serviceProvider
             );
             if (handler is not null)
             {

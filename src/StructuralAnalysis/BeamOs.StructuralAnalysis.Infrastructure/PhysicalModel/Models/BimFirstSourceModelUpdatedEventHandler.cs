@@ -6,30 +6,57 @@ using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeamOs.StructuralAnalysis.Infrastructure;
 
 internal sealed class BimFirstSourceModelUpdatedEventHandler(
-    GetModelDiffCommandHandler getModelDiffCommandHandler,
+    StructuralAnalysisDbContext dbContext,
+    GetModelDiffWithDomainModelsCommandHandler getModelDiffCommandHandler,
     CreateModelProposalFromDiffCommandHandler createModelProposalFromDiffCommandHandler
 ) : DomainEventHandlerBase<BimFirstSourceModelUpdatedEvent>
 {
-    public override bool HandleAfterChangesSaved => true;
+    // public override bool HandleAfterChangesSaved => true;
 
     public override async Task HandleAsync(
         BimFirstSourceModelUpdatedEvent notification,
         CancellationToken ct = default
     )
     {
-        var diffRequest = new DiffModelRequest { TargetModelId = notification.SourceModelId };
+        // var sourceModel =
+        //     await modelRepository.GetSingle(notification.SourceModelId, ct)
+        //     ?? throw new InvalidOperationException(
+        //         $"Source model with id {notification.SourceModelId} not found"
+        //     );
+
+        // if (sourceModel.Nodes is null || sourceModel.Element1ds is null)
+        // {
+        //     throw new InvalidOperationException(
+        //         "Source model must have nodes and element1ds loaded to compute diff"
+        //     );
+        // }
+
+        var sourceModel =
+            dbContext.Models.Local.FirstOrDefault(m => m.Id == notification.SourceModelId)
+            ?? throw new InvalidOperationException(
+                $"Source model with id {notification.SourceModelId} not found in local DbContext cache"
+            );
+
         foreach (var bimFirstModelId in notification.SubscribedModelIds)
         {
+            var targetModel =
+                dbContext.Models.Local.FirstOrDefault(m => m.Id == bimFirstModelId)
+                ?? await dbContext
+                    .Models.AsNoTracking()
+                    .Include(e => e.Nodes)
+                    .Include(e => e.Element1ds)
+                    .FirstOrDefaultAsync(m => m.Id == bimFirstModelId, ct)
+                ?? throw new InvalidOperationException(
+                    $"Target model with id {bimFirstModelId} not found in local DbContext cache"
+                );
+
             var diffResult = await getModelDiffCommandHandler.ExecuteAsync(
-                new ModelResourceRequest<DiffModelRequest>()
-                {
-                    ModelId = bimFirstModelId,
-                    Body = diffRequest,
-                },
+                (sourceModel, targetModel),
                 ct
             );
             diffResult.ThrowIfError();

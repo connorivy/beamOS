@@ -28,8 +28,7 @@ internal class CreateModelProposalCommandHandler(
     INodeDefinitionRepository nodeRepository,
     IElement1dRepository element1dRepository,
     IMaterialRepository materialRepository,
-    ISectionProfileRepository sectionProfileRepository,
-    IStructuralAnalysisUnitOfWork unitOfWork
+    ISectionProfileRepository sectionProfileRepository
 ) : ICommandHandler<ModelResourceRequest<ModelProposalData>, ModelProposalResponse>
 {
     public async Task<Result<ModelProposalResponse>> ExecuteAsync(
@@ -42,7 +41,7 @@ internal class CreateModelProposalCommandHandler(
         {
             return BeamOsError.NotFound(description: $"Model with id {command.ModelId} not found");
         }
-        modelRepository.Attach(model);
+
         var modelProposal = command.Body.ToProposalDomain(model);
         modelProposal.NodeProposals = [];
         modelProposal.Element1dProposals = [];
@@ -166,7 +165,7 @@ internal class CreateModelProposalCommandHandler(
             modelProposal.DeleteModelEntityProposals.Add(deleteProposal);
         }
 
-        await unitOfWork.SaveChangesAsync(ct);
+        // await unitOfWork.SaveChangesAsync(ct);
 
         return modelProposal.ToContract();
     }
