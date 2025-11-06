@@ -74,20 +74,28 @@ public static class PageContextExtensions
                 var responseBody = await response.TextAsync();
                 throw new InvalidOperationException($"Model creation failed with status {response.Status}: {responseBody}");
             }
-
-            // wait for the page url to look something like {http}://localhost:{port}/models/{guid}
+            
+            // Get the model ID from the response body
+            var responseBodyJson = await response.JsonAsync();
+            var responseString = responseBodyJson.ToString() ?? throw new InvalidOperationException("Response body is null.");
+            var modelResponse = System.Text.Json.JsonSerializer.Deserialize<ModelResponse>(responseString, BeamOsJsonSerializerContext.Default.ModelResponse) 
+                ?? throw new InvalidOperationException("Failed to deserialize model response.");
+            
+            if (modelResponse.Id == Guid.Empty)
+            {
+                throw new InvalidOperationException("Model creation returned empty GUID.");
+            }
+            
+            // Wait for the dialog to close and navigation to complete
             // Use Expect().ToHaveURLAsync() instead of WaitForURLAsync() because this is a SPA navigation
             // that doesn't trigger a full page load event
+            var expectedUrl = new Regex($"^(http|https)://localhost:\\d+/models/{modelResponse.Id}$");
             await Assertions.Expect(page.Page).ToHaveURLAsync(
-                new Regex("^(http|https)://localhost:\\d+/models/[0-9a-fA-F-]{36}$"),
+                expectedUrl,
                 new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 15_000 }
             );
 
-            // get the model id from the url
-            var url = page.Page.Url;
-            var modelId = url.Split('/').Last();
-            var modelIdGuid = Guid.Parse(modelId);
-            return modelIdGuid;
+            return modelResponse.Id;
         }
 
         public async Task<ModelResponse> CreateTutorial()
