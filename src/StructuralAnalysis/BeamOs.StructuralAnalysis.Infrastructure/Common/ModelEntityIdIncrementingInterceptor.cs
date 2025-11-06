@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
