@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
@@ -16,13 +15,12 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
-using StructuralShapes.Contracts;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithoutTrailingSlash)]
 [BeamOsEndpointType(Http.Post)]
-[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PatchModel(PatchModelCommandHandler createModelCommandHandler)
     : BeamOsModelResourceBaseEndpoint<PatchModelRequest, PatchModelResponse>
 {
@@ -164,13 +162,11 @@ internal sealed class PatchModelCommandHandler(
             var startNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
-                nodeStore,
                 elementByLoc.StartNodeLocation.ToDomain()
             );
             var endNode = await this.GetOrAddNodeAtLocation(
                 model.Id,
                 octree,
-                nodeStore,
                 elementByLoc.EndNodeLocation.ToDomain()
             );
 
@@ -249,26 +245,22 @@ internal sealed class PatchModelCommandHandler(
     private async Task<NodeDefinition> GetOrAddNodeAtLocation(
         ModelId modelId,
         Octree octree,
-        Dictionary<NodeId, NodeDefinition> nodeStore,
         Point location
     )
     {
-        var nodeIds = octree.FindNodeIdsWithin(
+        var nodes = octree.FindNodesWithin(
             location,
             toleranceMeters: new Length(1, LengthUnit.Inch).Meters
         );
 
-        if (nodeIds.Count == 0)
+        if (nodes.Count > 0)
         {
-            var node = new Node(modelId, location, Restraint.Free);
-            nodeDefinitionRepository.Add(node);
-            return node;
+            return nodes[0];
         }
-        else
-        {
-            var node = nodeStore[nodeIds[0]];
-            await nodeDefinitionRepository.Put(node);
-            return node;
-        }
+
+        var node = new Node(modelId, location, Restraint.Free);
+        nodeDefinitionRepository.Add(node);
+        octree.Add(node);
+        return node;
     }
 }

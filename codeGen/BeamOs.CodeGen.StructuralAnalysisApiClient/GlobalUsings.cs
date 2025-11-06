@@ -24,6 +24,7 @@ global using ListOfModelProposalInfo = System.Collections.Generic.List<BeamOs.St
 global using LoadCase = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCases.LoadCase;
 global using LoadCombination = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.LoadCombinations.LoadCombination;
 global using MaterialResponse = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Materials.MaterialResponse;
+global using ModelDiffData2 = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelDiffData;
 global using ModelDiffResponse2 = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelDiffData;
 global using ModelEntityResponse = BeamOs.StructuralAnalysis.Contracts.Common.ModelEntityResponse;
 global using ModelProposal = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models.ModelProposal;

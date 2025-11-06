@@ -154,7 +154,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    createModelProposalFromDiff(modelId: string, body: ModelDiffResponse | null | undefined): Promise<ModelProposalResponse>;
+    createModelProposalFromDiff(modelId: string, body: ModelDiffData | null | undefined): Promise<ModelProposalResponse>;
 
     /**
      * @param body (optional) 
@@ -226,7 +226,13 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    getModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse2>;
+    getModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffData2>;
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putSourceModel(modelId: string, body: PutModelRequest | null | undefined): Promise<PutModelResponse>;
 
     /**
      * @param body (optional) 
@@ -1488,7 +1494,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    createModelProposalFromDiff(modelId: string, body: ModelDiffResponse | null | undefined): Promise<ModelProposalResponse> {
+    createModelProposalFromDiff(modelId: string, body: ModelDiffData | null | undefined): Promise<ModelProposalResponse> {
         let url_ = this.baseUrl + "/api/models/{modelId}/proposals/from-diff";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2030,7 +2036,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    getModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffResponse2> {
+    getModelDiff(modelId: string, body: DiffModelRequest | null | undefined): Promise<ModelDiffData2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/diff";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -2053,13 +2059,13 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
         });
     }
 
-    protected processGetModelDiff(response: Response): Promise<ModelDiffResponse2> {
+    protected processGetModelDiff(response: Response): Promise<ModelDiffData2> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ModelDiffResponse2;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ModelDiffData2;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2067,7 +2073,51 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ModelDiffResponse2>(null as any);
+        return Promise.resolve<ModelDiffData2>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    putSourceModel(modelId: string, body: PutModelRequest | null | undefined): Promise<PutModelResponse> {
+        let url_ = this.baseUrl + "/api/models/{modelId}/source";
+        if (modelId === undefined || modelId === null)
+            throw new Error("The parameter 'modelId' must be defined.");
+        url_ = url_.replace("{modelId}", encodeURIComponent("" + modelId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPutSourceModel(_response);
+        });
+    }
+
+    protected processPutSourceModel(response: Response): Promise<PutModelResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PutModelResponse;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PutModelResponse>(null as any);
     }
 
     /**
@@ -3556,43 +3606,49 @@ export interface Element1dResultResponse {
 }
 
 export interface EntityDiffOfElement1dResponse {
-    status: number;
-    entity: Element1dResponse2 | undefined;
+    status?: number;
+    targetEntity: Element1dResponse2 | undefined;
+    sourceEntity: Element1dResponse2 | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfMaterialResponse {
-    status: number;
-    entity: MaterialResponse2 | undefined;
+    status?: number;
+    targetEntity: MaterialResponse2 | undefined;
+    sourceEntity: MaterialResponse2 | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfMomentLoadResponse {
-    status: number;
-    entity: MomentLoadResponse | undefined;
+    status?: number;
+    targetEntity: MomentLoadResponse | undefined;
+    sourceEntity: MomentLoadResponse | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfNodeResponse {
-    status: number;
-    entity: NodeResponse | undefined;
+    status?: number;
+    targetEntity: NodeResponse | undefined;
+    sourceEntity: NodeResponse | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfPointLoadResponse {
-    status: number;
-    entity: PointLoadResponse | undefined;
+    status?: number;
+    targetEntity: PointLoadResponse | undefined;
+    sourceEntity: PointLoadResponse | undefined;
 
     [key: string]: any;
 }
 
 export interface EntityDiffOfSectionProfileResponse {
-    status: number;
-    entity: SectionProfileResponse | undefined;
+    status?: number;
+    targetEntity: SectionProfileResponse | undefined;
+    sourceEntity: SectionProfileResponse | undefined;
 
     [key: string]: any;
 }
@@ -3720,7 +3776,9 @@ export interface MaterialResponse2 {
     [key: string]: any;
 }
 
-export interface ModelDiffResponse {
+export interface ModelDiffData {
+    baseModelId: string;
+    targetModelId: string;
     nodes?: EntityDiffOfNodeResponse[];
     element1ds?: EntityDiffOfElement1dResponse[];
     materials?: EntityDiffOfMaterialResponse[];
@@ -3731,7 +3789,9 @@ export interface ModelDiffResponse {
     [key: string]: any;
 }
 
-export interface ModelDiffResponse2 {
+export interface ModelDiffData2 {
+    baseModelId: string;
+    targetModelId: string;
     nodes?: EntityDiffOfNodeResponse[];
     element1ds?: EntityDiffOfElement1dResponse[];
     materials?: EntityDiffOfMaterialResponse[];
@@ -4184,6 +4244,18 @@ export interface PutMaterialRequest {
     modulusOfElasticity: number;
     modulusOfRigidity: number;
     pressureUnit: number;
+
+    [key: string]: any;
+}
+
+export interface PutModelRequest {
+    element1dsToAddOrUpdateByExternalId?: Element1dByLocationRequest[] | undefined;
+    options?: PatchOperationOptions;
+
+    [key: string]: any;
+}
+
+export interface PutModelResponse {
 
     [key: string]: any;
 }

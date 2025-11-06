@@ -27,7 +27,7 @@ public class OctreeTests
         var node = CreateNode(1, 2, 3);
         octree.Add(node);
 
-        var found = octree.FindNodeIdsWithin(new Point(1, 2, 3, LengthUnit.Meter), 0.01);
+        var found = octree.FindNodesWithin(new Point(1, 2, 3, LengthUnit.Meter), 0.01);
         found.Should().Contain(n => n.Id == node.Id);
     }
 
@@ -38,7 +38,7 @@ public class OctreeTests
         var node = CreateNode(20, 0, 0);
         octree.Add(node);
 
-        var found = octree.FindNodeIdsWithin(new Point(20, 0, 0, LengthUnit.Meter), 0.01);
+        var found = octree.FindNodesWithin(new Point(20, 0, 0, LengthUnit.Meter), 0.01);
         found.Should().Contain(n => n.Id == node.Id);
     }
 
@@ -53,7 +53,7 @@ public class OctreeTests
         octree.Add(node2);
         octree.Add(node3);
 
-        var found = octree.FindNodeIdsWithin(new Point(1, 2, 3, LengthUnit.Meter), 0.05);
+        var found = octree.FindNodesWithin(new Point(1, 2, 3, LengthUnit.Meter), 0.05);
         found.Should().Contain(n => n.Id == node1.Id);
         found.Should().NotContain(n => n.Id == node2.Id);
         found.Should().NotContain(n => n.Id == node3.Id);
@@ -70,7 +70,7 @@ public class OctreeTests
         octree.Add(node2);
         octree.Add(node3);
 
-        var found = octree.FindNodeIdsWithin(new Point(1, 2, 3, LengthUnit.Meter), 1);
+        var found = octree.FindNodesWithin(new Point(1, 2, 3, LengthUnit.Meter), 1);
         found.Should().Contain(n => n.Id == node1.Id);
         found.Should().Contain(n => n.Id == node2.Id);
         found.Should().NotContain(n => n.Id == node3.Id);

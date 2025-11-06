@@ -14,7 +14,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
 
     public Point Center { get; private set; }
     public double Length { get; private set; }
-    public List<NodeIdAndLocation> Objects { get; private set; }
+    public List<NodeAndLocation> Objects { get; private set; }
     public OctreeNode[]? Children { get; private set; }
     public int Depth { get; private set; }
 
@@ -38,23 +38,23 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
     }
 
     // Remove ToPoint3D, use Point directly
-    internal void Insert(NodeId nodeId, Point position)
+    internal void Insert(NodeDefinition node, Point position)
     {
         if (this.Children != null)
         {
             int index = this.GetChildIndex(position);
-            this.Children[index].Insert(nodeId, position);
+            this.Children[index].Insert(node, position);
             return;
         }
 
-        this.Objects.Add(new(nodeId, position));
+        this.Objects.Add(new(node, position));
         if (this.Objects.Count > MaxObjects && this.Depth < MaxDepth)
         {
             this.Subdivide();
             foreach (var obj in this.Objects.ToList())
             {
                 this.Children![this.GetChildIndex(obj.LocationPoint)]
-                    .Insert(obj.NodeId, obj.LocationPoint);
+                    .Insert(obj.Node, obj.LocationPoint);
             }
             this.Objects.Clear();
         }
@@ -75,7 +75,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
                         this.Center.X.Meters + (dx * offset),
                         this.Center.Y.Meters + (dy * offset),
                         this.Center.Z.Meters + (dz * offset),
-                        this.Center.X.Unit
+                        LengthUnit.Meter
                     );
                     int childIndex = 0;
                     if (dx > 0)
@@ -133,10 +133,10 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
             this.Center.X.Unit
         );
 
-    public void FindNodeIdsWithin(
+    public void FindNodesWithin(
         Point search,
         double tolerance,
-        List<NodeId> result,
+        List<NodeDefinition> result,
         params Span<NodeId> nodeIdsToIgnore
     )
     {
@@ -145,14 +145,14 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
             return;
         }
 
-        foreach (var node in this.Objects)
+        foreach (var nodeInfo in this.Objects)
         {
-            if (nodeIdsToIgnore.Contains(node.NodeId))
+            if (nodeIdsToIgnore.Contains(nodeInfo.Node.Id))
             {
                 continue;
             }
 
-            Point loc = node.LocationPoint;
+            Point loc = nodeInfo.LocationPoint;
             double dist = Math.Sqrt(
                 Math.Pow(loc.X.Meters - search.X.Meters, 2)
                     + Math.Pow(loc.Y.Meters - search.Y.Meters, 2)
@@ -160,14 +160,14 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
             );
             if (dist <= tolerance)
             {
-                result.Add(node.NodeId);
+                result.Add(nodeInfo.Node);
             }
         }
         if (this.Children != null)
         {
             foreach (OctreeNode child in this.Children)
             {
-                child.FindNodeIdsWithin(search, tolerance, result, nodeIdsToIgnore);
+                child.FindNodesWithin(search, tolerance, result, nodeIdsToIgnore);
             }
         }
     }
@@ -199,7 +199,7 @@ internal class OctreeNode : BeamOsEntity<OctreeNodeId>
         // If this is a leaf node
         if (this.Children == null)
         {
-            int removed = this.Objects.RemoveAll(n => n.NodeId == nodeId);
+            int removed = this.Objects.RemoveAll(n => n.Node.Id == nodeId);
             Debug.Assert(
                 removed <= 1,
                 "Octree node should not contain more than one node with the same NodeId."
@@ -266,7 +266,7 @@ internal class Octree : BeamOsEntity<OctreeId>
         {
             this.Root = ExpandRootToFit(this.Root, position);
         }
-        this.Root.Insert(node.Id, position);
+        this.Root.Insert(node, position);
     }
 
     public void Add(
@@ -282,7 +282,7 @@ internal class Octree : BeamOsEntity<OctreeId>
         {
             this.Root = ExpandRootToFit(this.Root, position);
         }
-        this.Root.Insert(node.Id, position);
+        this.Root.Insert(node, position);
     }
 
     public void Remove(NodeId nodeId, Point? location)
@@ -327,7 +327,7 @@ internal class Octree : BeamOsEntity<OctreeId>
             oldCenter.X.Meters + offsetX,
             oldCenter.Y.Meters + offsetY,
             oldCenter.Z.Meters + offsetZ,
-            oldCenter.X.Unit
+            LengthUnit.Meter
         );
         OctreeNode newRoot = new(newCenter, newLength);
         newRoot.Subdivide();
@@ -349,19 +349,19 @@ internal class Octree : BeamOsEntity<OctreeId>
         return newRoot;
     }
 
-    public List<NodeId> FindNodeIdsWithin(
+    public List<NodeDefinition> FindNodesWithin(
         Point searchPoint,
         double toleranceMeters,
         params Span<NodeId> nodeIdsToIgnore
     )
     {
-        List<NodeId> result = [];
+        List<NodeDefinition> result = [];
         if (this.Root is null)
         {
             return result;
         }
 
-        this.Root.FindNodeIdsWithin(searchPoint, toleranceMeters, result, nodeIdsToIgnore);
+        this.Root.FindNodesWithin(searchPoint, toleranceMeters, result, nodeIdsToIgnore);
         return result;
     }
 }

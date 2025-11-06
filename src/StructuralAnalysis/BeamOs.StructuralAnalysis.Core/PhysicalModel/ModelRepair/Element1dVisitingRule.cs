@@ -27,7 +27,7 @@ internal abstract class Element1dVisitingRule(ModelRepairContext context) : IMod
             );
 
             var nearbyStartNodes = this
-                .Context.ModelProposalBuilder.Octree.FindNodeIdsWithin(
+                .Context.ModelProposalBuilder.Octree.FindNodesWithin(
                     startNodeLocation,
                     tolerance.Meters,
                     startNode.Id
@@ -37,7 +37,7 @@ internal abstract class Element1dVisitingRule(ModelRepairContext context) : IMod
                 .Where(node => node.Id != startNode.Id)
                 .ToList();
             var nearbyEndNodes = this
-                .Context.ModelProposalBuilder.Octree.FindNodeIdsWithin(
+                .Context.ModelProposalBuilder.Octree.FindNodesWithin(
                     endNodeLocation,
                     tolerance.Meters,
                     endNode.Id

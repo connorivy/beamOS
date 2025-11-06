@@ -16,58 +16,44 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
     CreateModelProposalFromDiffCommandHandler createModelProposalFromDiffCommandHandler
 ) : DomainEventHandlerBase<BimFirstSourceModelUpdatedEvent>
 {
-    // public override bool HandleAfterChangesSaved => true;
-
     public override async Task HandleAsync(
         BimFirstSourceModelUpdatedEvent notification,
         CancellationToken ct = default
     )
     {
-        // var sourceModel =
-        //     await modelRepository.GetSingle(notification.SourceModelId, ct)
-        //     ?? throw new InvalidOperationException(
-        //         $"Source model with id {notification.SourceModelId} not found"
-        //     );
-
-        // if (sourceModel.Nodes is null || sourceModel.Element1ds is null)
-        // {
-        //     throw new InvalidOperationException(
-        //         "Source model must have nodes and element1ds loaded to compute diff"
-        //     );
-        // }
-
+        // local version with local changes applied
         var sourceModel =
             dbContext.Models.Local.FirstOrDefault(m => m.Id == notification.SourceModelId)
             ?? throw new InvalidOperationException(
                 $"Source model with id {notification.SourceModelId} not found in local DbContext cache"
             );
 
+        // persistent version from database
+        var currentBimFirstSourceModel =
+            await dbContext
+                .Models.AsNoTracking()
+                .Include(e => e.Nodes)
+                .Include(e => e.Element1ds)
+                .FirstOrDefaultAsync(m => m.Id == notification.SourceModelId, ct)
+            ?? throw new InvalidOperationException(
+                $"Source model with id {notification.SourceModelId} not found in database"
+            );
+
+        var diffResult = await getModelDiffCommandHandler.ExecuteAsync(
+            (currentBimFirstSourceModel, sourceModel),
+            ct
+        );
+        diffResult.ThrowIfError();
+
+        var filteredDiff = this.RemoveNonGeometryChanges(diffResult.Value);
+        if (filteredDiff is null)
+        {
+            // No geometry changes detected
+            return;
+        }
+
         foreach (var bimFirstModelId in notification.SubscribedModelIds)
         {
-            var targetModel =
-                dbContext.Models.Local.FirstOrDefault(m => m.Id == bimFirstModelId)
-                ?? await dbContext
-                    .Models.AsNoTracking()
-                    .Include(e => e.Nodes)
-                    .Include(e => e.Element1ds)
-                    .FirstOrDefaultAsync(m => m.Id == bimFirstModelId, ct)
-                ?? throw new InvalidOperationException(
-                    $"Target model with id {bimFirstModelId} not found in local DbContext cache"
-                );
-
-            var diffResult = await getModelDiffCommandHandler.ExecuteAsync(
-                (sourceModel, targetModel),
-                ct
-            );
-            diffResult.ThrowIfError();
-
-            var filteredDiff = this.RemoveNonGeometryChanges(diffResult.Value);
-            if (filteredDiff is null)
-            {
-                // No geometry changes detected
-                continue;
-            }
-
             var modelProposalResult = await createModelProposalFromDiffCommandHandler.ExecuteAsync(
                 new ModelResourceRequest<ModelDiffData>()
                 {
