@@ -373,5 +373,10 @@ public sealed class StructuralAnalysisApiClientV2 : IStructuralAnalysisApiClient
         ModelResourceRequest<DiffModelRequest> request,
         CancellationToken ct = default
     ) => apiClientV1.GetModelDiffAsync(request.ModelId, request.Body, ct);
+
+    public Task<ApiResponse<PutModelResponse>> PutSourceModel(
+        ModelResourceRequest<PutModelRequest> request,
+        CancellationToken ct = default
+    ) => apiClientV1.PutSourceModelAsync(request.ModelId, request.Body, ct);
 }
 #endif

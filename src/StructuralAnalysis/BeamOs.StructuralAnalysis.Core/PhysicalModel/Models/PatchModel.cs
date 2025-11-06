@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
@@ -16,13 +15,12 @@ using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
-using StructuralShapes.Contracts;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
 
 [BeamOsRoute(RouteConstants.ModelRoutePrefixWithoutTrailingSlash)]
 [BeamOsEndpointType(Http.Post)]
-[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Authenticated)]
+[BeamOsRequiredAuthorizationLevel(UserAuthorizationLevel.Contributor)]
 internal class PatchModel(PatchModelCommandHandler createModelCommandHandler)
     : BeamOsModelResourceBaseEndpoint<PatchModelRequest, PatchModelResponse>
 {
