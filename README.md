@@ -17,6 +17,16 @@ To run this project, simply:
     - this will generate the testing reports (code coverage and mutation score) that are linked on the test explorer dashboard
 1. set BeamOS.WebAppas startup project and run
 
+#### Testing
+
+To run the webapp integration tests:
+```bash
+export BEAMOS_ROOT=$(pwd)
+./scripts/test-webapp.sh
+```
+
+For detailed testing documentation, see [docs/WEBAPP_TESTING.md](docs/WEBAPP_TESTING.md).
+
 #### What to expect
 
 You will be greeted with a lacking (although I prefer the term minimal) UI that shows a simple default structure which is automatically seeded to the SQL Server database.
