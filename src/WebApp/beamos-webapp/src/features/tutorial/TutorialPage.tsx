@@ -138,7 +138,13 @@ const TutorialPage = () => {
             popover: {
               title: "Explore the Model",
               description:
-                "Great! The model proposal is now displayed in the editor. You can explore the model, inspect elements, and get familiar with the BeamOS interface.",
+                "Great! The model proposal is now displayed in the editor. You can explore the model, inspect elements, and get familiar with the BeamOS interface. When you're ready, you can accept or reject the proposal using the icons next to it.",
+            },
+            onNextClick: () => {
+              // Close the driver when next is clicked
+              console.log("Destroying driver...");
+              driverObj.destroy();
+              console.log("Driver destroyed");
             },
             onHighlighted: (popover, { config, state }) => {
               if (currentButton) {

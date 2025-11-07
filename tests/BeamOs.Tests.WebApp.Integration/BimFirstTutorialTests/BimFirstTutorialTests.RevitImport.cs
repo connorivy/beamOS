@@ -75,8 +75,19 @@ public partial class BimFirstTutorialTests : ReactPageTest
         var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
         await nextStep.ClickAsync();
 
+        // Wait for the driver to close completely
+        await this.Page.WaitForTimeoutAsync(1000);
+        
+        // Wait for driver popover to disappear
+        var driverPopover = this.Page.Locator(".driver-popover");
+        await this.Expect(driverPopover).Not.ToBeVisibleAsync(new() { Timeout = 5_000 });
+
         var acceptProposalButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "accept" });
         await acceptProposalButton.ClickAsync();
+
+        // Click the Accept button in the confirmation dialog
+        var acceptDialogButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "Accept" });
+        await acceptDialogButton.ClickAsync();
 
         var modelProposals = await AssemblySetup
             .BeamOsResultApiClient.Models[this.ModelId]
