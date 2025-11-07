@@ -78,7 +78,7 @@ const TutorialPage = () => {
       let currentButton: HTMLElement | null = null;
       const driverObj = driver({
         allowClose: false,
-        // showButtons: ['close'],
+        showButtons: undefined,
         steps: [
           {
             element: "#model-proposals-view",
@@ -104,13 +104,6 @@ const TutorialPage = () => {
             },
           },
           {
-            // element: () => {
-            //   var label = document.getElementById("proposal-select-label");
-            //   if (!label?.parentElement?.parentElement) {
-            //     throw new Error("Label element not found");
-            //   }
-            //   return label.parentElement.parentElement;
-            // },
             element: "#model-proposals-select",
             popover: {
               title: "Select Model Proposal",
@@ -135,36 +128,39 @@ const TutorialPage = () => {
                   console.log("Clicked proposal select label");
                   setTimeout(() => {
                     driverObj.moveNext();
-                  }, 200);
+                  }, 100);
                 }
               }
             },
           },
           {
-            element: 'ul.MuiMenu-list',
+            element: "#tutorial-canvas",
             popover: {
-              title: "Select Model Proposal",
+              title: "Explore the Model",
               description:
-                "Use this dropdown to select the model proposal created from the sample data. Selecting it will display the proposal in the editor.",
+                "Great! The model proposal is now displayed in the editor. You can explore the model, inspect elements, and get familiar with the BeamOS interface.",
             },
-            onHighlighted: () => {
+            onHighlighted: (popover, { config, state }) => {
               if (currentButton) {
                 currentButton.onclick = null;
               }
-              var allProposals = document
-                .querySelectorAll('#model-proposals-select ul li')
-
-              for (const prop of allProposals) {
-                if (!prop.textContent?.trim().includes('No Selection')) {
-                  currentButton = prop as HTMLElement;
-                  break;
+              currentButton = document.getElementById("tutorial-canvas");
+              if (currentButton) {
+                currentButton.onclick = () => {
+                  setTimeout(() => {
+                    driverObj.moveNext();
+                  }, 5000);
                 }
               }
-              if (currentButton) {
-                currentButton.onclick = () => driverObj.moveNext();
-              }
-            },
-          },
+              const firstButton = document.createElement("button");
+              firstButton.innerText = "Go to First";
+              popover.footerButtons.appendChild(firstButton);
+
+              firstButton.addEventListener("click", () => {
+                driverObj.drive(0);
+              });
+            }
+          }
         ]
       })
 
