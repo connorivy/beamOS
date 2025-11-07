@@ -20,8 +20,8 @@ export type ModelInfoResponseSerializable = {
   description: string
   settings: {
     unitSettings: UnitSettings
-    analysisSettings: AnalysisSettings
-    yAxisUp: boolean
+    analysisSettings?: AnalysisSettings
+    yAxisUp?: boolean
   }
   lastModified: string
   role: string

@@ -620,7 +620,7 @@ export class EditorApi implements IEditorApiAlpha {
     // if (body.yAxisUp == this.config.yAxisUp) {
     //     return Promise.resolve(ResultFactory.Success());
     // }
-    this.config.yAxisUp = body.yAxisUp
+    this.config.yAxisUp = body.yAxisUp ?? false
 
     if (this.gridGroup !== undefined) {
       this.sceneRoot.remove(this.gridGroup)
