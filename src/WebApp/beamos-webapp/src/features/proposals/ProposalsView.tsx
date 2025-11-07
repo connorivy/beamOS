@@ -1,7 +1,8 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { modelProposalsLoaded, selectModelResponseByCanvasId } from "../editors/editorsSlice"
 import React from "react"
-import { FormControl, InputLabel, Select, MenuItem, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
+import { List, ListItem, ListItemButton, ListItemText } from "@mui/material"
 import { useApiClient } from "../api-client/ApiClientContext"
 import { useEditors } from "../editors/EditorContext"
 
@@ -22,51 +23,55 @@ export function ProposalsView({ canvasId }: { canvasId: string }) {
     const editorState = useAppSelector(state => state.editors[canvasId])
 
     if (proposalIds.length === 0) {
-        return <Typography variant="body1" color="textSecondary">No Model Proposals</Typography>
+        return <Typography variant="body1" color="textSecondary">No Model Proposals</Typography>;
     }
 
     // Get proposal names (assuming modelResponse.proposals is an object with id keys)
     const proposalOptions = proposalIds.map(id => ({
         id,
         name: modelResponse?.proposals?.[id]?.name ?? `Proposal ${id}`
-    }))
+    }));
 
-    const [selectedProposalId, setSelectedProposalId] = React.useState<number | null>(null)
+    const [selectedProposalId, setSelectedProposalId] = React.useState<number | null>(null);
 
     async function handleProposalChange(value: number | null) {
-        setSelectedProposalId(value)
-        await beamOsEditor.api.clearModelProposals()
+        setSelectedProposalId(value);
+        await beamOsEditor.api.clearModelProposals();
         if (value === null) {
-            return
+            return;
         }
         if (!editorState.remoteModelId) {
-            throw new Error("Remote Model ID is not set in the editor state.")
+            throw new Error("Remote Model ID is not set in the editor state.");
         }
 
-        var proposal = await apiClient.getModelProposal(value, editorState.remoteModelId)
+        var proposal = await apiClient.getModelProposal(value, editorState.remoteModelId);
         dispatch(modelProposalsLoaded({ canvasId, proposals: [proposal] }));
-        await beamOsEditor.api.displayModelProposal(proposal)
+        await beamOsEditor.api.displayModelProposal(proposal);
     }
 
     return (
-        <FormControl fullWidth variant="outlined" size="small">
-            <InputLabel id="proposal-select-label">Model Proposal</InputLabel>
-            <Select
-                labelId="proposal-select-label"
-                id="proposal-select"
-                value={selectedProposalId}
-                label="Model Proposal"
-                onChange={(e) => void handleProposalChange(e.target.value ? Number(e.target.value) : null)}
-            >
-                <MenuItem value={""}>
-                    <em>-- No Selection --</em>
-                </MenuItem>
+        <div className="p-2" id="model-proposals-select">
+            <Typography variant="h6" gutterBottom>Model Proposals</Typography>
+            <List>
+                <ListItem disablePadding key="none">
+                    <ListItemButton
+                        selected={selectedProposalId === null}
+                        onClick={() => void handleProposalChange(null)}
+                    >
+                        <ListItemText primary={<em>-- No Selection --</em>} />
+                    </ListItemButton>
+                </ListItem>
                 {proposalOptions.map(option => (
-                    <MenuItem key={option.id} value={option.id}>
-                        {option.name}
-                    </MenuItem>
+                    <ListItem disablePadding key={option.id}>
+                        <ListItemButton
+                            selected={selectedProposalId === option.id}
+                            onClick={() => void handleProposalChange(option.id)}
+                        >
+                            <ListItemText primary={option.name} />
+                        </ListItemButton>
+                    </ListItem>
                 ))}
-            </Select>
-        </FormControl>
-    )
+            </List>
+        </div>
+    );
 }

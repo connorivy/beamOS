@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
+import { driver } from "driver.js"
 import { RemoteEditorComponent } from "../editors/EditorComponent"
-import TutorialWelcomeDialog from "./TutorialWelcomeDialog"
+import TutorialWelcomeDialog, { TutorialDialogExitType } from "./TutorialWelcomeDialog"
 import { useApiClient } from "../api-client/ApiClientContext"
 import type {
   CreateModelRequest,
@@ -10,6 +11,7 @@ import ResponsiveSecondarySidebar from "../../components/ResponsiveSecondarySide
 import ResultViewer from "../results-viewing/ResultViewer"
 import { AngleUnit, ForceUnit, LengthUnit } from "../../utils/type-extensions/UnitTypeContracts"
 import { useSearchParams } from "react-router"
+import "driver.js/dist/driver.css";
 
 const TutorialPage = () => {
   const apiClient = useApiClient()
@@ -70,8 +72,104 @@ const TutorialPage = () => {
     setDialogOpen(true)
   }, [apiClient, searchParams])
 
-  const handleDialogClose = () => {
+  const handleDialogClose = (exitType: TutorialDialogExitType) => {
     setDialogOpen(false)
+    if (exitType === "completed") {
+      let currentButton: HTMLElement | null = null;
+      const driverObj = driver({
+        allowClose: false,
+        // showButtons: ['close'],
+        steps: [
+          {
+            element: "#model-proposals-view",
+            popover: {
+              title: "View Model Proposals",
+              description:
+                "Importing this sample data has created a model proposal for your review. Click here to view and interact with it.",
+            },
+            onHighlighted: () => {
+              if (currentButton) {
+                currentButton.onclick = null;
+              }
+              currentButton = document.getElementById("model-proposals-view");
+              console.log("currentButton:", currentButton);
+              if (currentButton) {
+                currentButton.onclick = () => {
+                  console.log("Clicked model proposals view");
+                  setTimeout(() => {
+                    driverObj.moveNext();
+                  }, 200);
+                }
+              }
+            },
+          },
+          {
+            // element: () => {
+            //   var label = document.getElementById("proposal-select-label");
+            //   if (!label?.parentElement?.parentElement) {
+            //     throw new Error("Label element not found");
+            //   }
+            //   return label.parentElement.parentElement;
+            // },
+            element: "#model-proposals-select",
+            popover: {
+              title: "Select Model Proposal",
+              description:
+                "Use this dropdown to select the model proposal created from the sample data. Selecting it will display the proposal in the editor.",
+            },
+            onHighlighted: () => {
+              if (currentButton) {
+                currentButton.onclick = null;
+              }
+              var allProposals = document
+                .querySelectorAll('#model-proposals-select ul li')
+
+              for (const prop of allProposals) {
+                if (!prop.textContent?.trim().includes('No Selection')) {
+                  currentButton = prop as HTMLElement;
+                  break;
+                }
+              }
+              if (currentButton) {
+                currentButton.onclick = () => {
+                  console.log("Clicked proposal select label");
+                  setTimeout(() => {
+                    driverObj.moveNext();
+                  }, 200);
+                }
+              }
+            },
+          },
+          {
+            element: 'ul.MuiMenu-list',
+            popover: {
+              title: "Select Model Proposal",
+              description:
+                "Use this dropdown to select the model proposal created from the sample data. Selecting it will display the proposal in the editor.",
+            },
+            onHighlighted: () => {
+              if (currentButton) {
+                currentButton.onclick = null;
+              }
+              var allProposals = document
+                .querySelectorAll('#model-proposals-select ul li')
+
+              for (const prop of allProposals) {
+                if (!prop.textContent?.trim().includes('No Selection')) {
+                  currentButton = prop as HTMLElement;
+                  break;
+                }
+              }
+              if (currentButton) {
+                currentButton.onclick = () => driverObj.moveNext();
+              }
+            },
+          },
+        ]
+      })
+
+      driverObj.drive()
+    }
   }
 
   return (
@@ -88,6 +186,7 @@ const TutorialPage = () => {
       </ResponsiveIconSidebarLayout>
       {modelId && bimSourceModelId ? (
         <TutorialWelcomeDialog
+          canvasId={canvasId}
           open={dialogOpen}
           onClose={handleDialogClose}
           modelId={modelId}

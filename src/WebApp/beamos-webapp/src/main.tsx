@@ -35,7 +35,7 @@ if (container) {
           </StoreProvider>
         </ApiClientProvider>
       </ThemeProvider>
-    </StrictMode>,
+    </StrictMode >,
   )
 } else {
   throw new Error(

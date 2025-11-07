@@ -9,6 +9,7 @@ using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Infrastructure;
 using BeamOs.StructuralAnalysis.Sdk;
 using Microsoft.AspNetCore.Http.Metadata;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -121,6 +122,15 @@ app.MapEndpoints<IAssemblyMarkerAi>();
 app.UseCors();
 app.MapOpenApi();
 app.MapScalarApiReference();
+
+app.MapDelete(
+    "/models/tutorials",
+    async (StructuralAnalysisDbContext dbContext) =>
+    {
+        await dbContext.Models.Where(m => m.Name.Contains("Tutorial")).ExecuteDeleteAsync();
+        return Results.Ok();
+    }
+);
 #endif
 
 try

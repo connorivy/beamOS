@@ -10,10 +10,15 @@ import Box from "@mui/material/Box"
 import { StepButton, Tooltip } from "@mui/material"
 import type { IStructuralAnalysisApiClientV1 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import { LengthUnit } from "../../utils/type-extensions/UnitTypeContracts"
+import { modelProposalsLoaded } from "../editors/editorsSlice"
+import { useAppDispatch } from "../../app/hooks"
+
+export type TutorialDialogExitType = "completed" | "cancelled"
 
 type TutorialWelcomeDialogProps = {
+  canvasId: string
   open: boolean
-  onClose: () => void
+  onClose: (exitType: TutorialDialogExitType) => void
   modelId: string
   bimSourceModelId: string
   apiClient: IStructuralAnalysisApiClientV1
@@ -120,6 +125,7 @@ const getSteps = (props: StepContentProps) => [
 ]
 
 const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
+  canvasId,
   open,
   onClose,
   modelId,
@@ -129,6 +135,7 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
   const [activeStep, setActiveStep] = useState(0)
   const [isImporting, setIsImporting] = useState(false)
   const [importCompleted, setImportCompleted] = useState(false)
+  const dispatch = useAppDispatch()
 
   const steps = getSteps({
     isImporting,
@@ -151,7 +158,7 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
 
   const handleClose = () => {
     setActiveStep(0)
-    onClose()
+    onClose("cancelled")
   }
 
   const handleImportSampleData = async () => {
@@ -184,8 +191,13 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
           }
         ]
       })
-      console.log("Sample data imported successfully as model proposal")
+      var proposals = await apiClient.getModelProposals(modelId)
+      if (proposals && proposals.length > 0) {
+        dispatch(modelProposalsLoaded({ canvasId, proposals }))
+      }
       setImportCompleted(true)
+      close()
+      onClose("completed")
     } catch (error) {
       console.error("Error importing sample data:", error)
     } finally {

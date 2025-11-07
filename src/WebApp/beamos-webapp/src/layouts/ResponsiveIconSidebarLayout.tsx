@@ -31,9 +31,9 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
 
     // Icon sidebar items
     const icons = [
-        { id: "physical", label: "Physical Model", icon: <ApartmentIcon /> },
-        { id: "analytical", label: "Analytical Model", icon: <FunctionsIcon /> },
-        { id: "proposals", label: "Model Proposals", icon: <ChangeHistoryIcon /> },
+        { id: "physical", label: "Physical Model", icon: <ApartmentIcon />, elementId: "physical-model-view" },
+        { id: "analytical", label: "Analytical Model", icon: <FunctionsIcon />, elementId: "analytical-model-view" },
+        { id: "proposals", label: "Model Proposals", icon: <ChangeHistoryIcon />, elementId: "model-proposals-view" },
     ];
 
     // Handle icon click for sidebar selection and mobile toggle
@@ -69,6 +69,7 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
                         {icons.map(icon => (
                             <Tooltip key={icon.id} title={icon.label} placement="right" arrow>
                                 <IconButton
+                                    id={icon.elementId}
                                     onClick={() => { handleIconClick(icon.id); }}
                                     onKeyDown={handleKeyDown}
                                     aria-label={icon.label}
@@ -94,6 +95,7 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
                 {/* Main Sidebar Content with left shadow for separation */}
                 {isMobile ? (
                     <Drawer
+                        id="main-sidebar"
                         anchor="left"
                         open={sidebarOpen}
                         onClose={() => { setSidebarOpen(false); }}
@@ -113,9 +115,11 @@ const ResponsiveIconSidebarLayout: React.FC<{ canvasId: string, children?: React
                         {sidebarContents[selectedSidebar]}
                     </Drawer>
                 ) : (
-                    <DarkPaper className="w-96 shadow-lg">
-                        {sidebarContents[selectedSidebar]}
-                    </DarkPaper>
+                    <div id="main-sidebar">
+                        <DarkPaper className="w-96 shadow-lg">
+                            {sidebarContents[selectedSidebar]}
+                        </DarkPaper>
+                    </div>
                 )}
                 {/* Main Content */}
                 <div className="h-full w-full relative">
