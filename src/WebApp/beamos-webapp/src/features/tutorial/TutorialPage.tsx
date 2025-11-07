@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { driver } from "driver.js"
+import { driver, PopoverDOM } from "driver.js"
 import { RemoteEditorComponent } from "../editors/EditorComponent"
 import TutorialWelcomeDialog, { TutorialDialogExitType } from "./TutorialWelcomeDialog"
 import { useApiClient } from "../api-client/ApiClientContext"
@@ -76,9 +76,14 @@ const TutorialPage = () => {
     setDialogOpen(false)
     if (exitType === "completed") {
       let currentButton: HTMLElement | null = null;
+      let popover: PopoverDOM | null = null;
       const driverObj = driver({
         allowClose: false,
-        showButtons: undefined,
+        showButtons: ["next", "close"],
+        onPopoverRender: (pop, { }) => {
+          popover = pop;
+          popover.nextButton.style.display = "none";
+        },
         steps: [
           {
             element: "#model-proposals-view",
@@ -140,27 +145,53 @@ const TutorialPage = () => {
               description:
                 "Great! The model proposal is now displayed in the editor. You can explore the model, inspect elements, and get familiar with the BeamOS interface.",
             },
-            onHighlighted: (popover, { config, state }) => {
+            onHighlighted: () => {
               if (currentButton) {
                 currentButton.onclick = null;
               }
-              currentButton = document.getElementById("tutorial-canvas");
-              if (currentButton) {
-                currentButton.onclick = () => {
-                  setTimeout(() => {
-                    driverObj.moveNext();
-                  }, 5000);
+              if (popover) {
+                popover.nextButton.style.display = "block";
+                popover.nextButton.addEventListener("click", () => {
+                  driverObj.moveNext();
+                  popover!.nextButton.style.display = "none";
+                });
+              }
+            }
+          },
+          {
+            element: () => {
+              var allProposals = document
+                .querySelectorAll('#model-proposals-select ul li')
+
+              for (const prop of allProposals) {
+                if (!prop.textContent?.trim().includes('No Selection')) {
+                  return prop as Element;
                 }
               }
-              const firstButton = document.createElement("button");
-              firstButton.innerText = "Go to First";
-              popover.footerButtons.appendChild(firstButton);
 
-              firstButton.addEventListener("click", () => {
-                driverObj.drive(0);
-              });
-            }
-          }
+              return document.getElementById('model-proposals-select') || document.body;
+            },
+            popover: {
+              title: "Accept Model Proposal",
+              description:
+                "If you are satisfied with the model proposal, you can accept it to integrate the proposed changes into your main model.",
+            },
+            onHighlighted: () => {
+              if (currentButton) {
+                currentButton.onclick = null;
+              }
+              var allProposals = document
+                .querySelectorAll('#model-proposals-select ul li')
+
+              for (const prop of allProposals) {
+                if (!prop.textContent?.trim().includes('No Selection')) {
+                  // todo: disable the reject button
+                  // todo: add event listener to accept button to advance driver
+                  break;
+                }
+              }
+            },
+          },
         ]
       })
 
