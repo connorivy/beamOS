@@ -48,7 +48,7 @@ public partial class BimFirstTutorialTests : ReactPageTest
         modelProposalsAfter.Value.Count.Should().Be(1);
 
         await this.ViewModelProposal_ShouldSucceed();
-        // await this.AcceptModelProposal_ShouldSucceed();
+        await this.AcceptModelProposal_ShouldSucceed();
     }
 
     private async Task ViewModelProposal_ShouldSucceed()
@@ -70,23 +70,23 @@ public partial class BimFirstTutorialTests : ReactPageTest
         // todo: assert that the model proposal is displayed in the 3D view
     }
 
-    // private async Task AcceptModelProposal_ShouldSucceed()
-    // {
-    //     var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
-    //     await nextStep.ClickAsync();
+    private async Task AcceptModelProposal_ShouldSucceed()
+    {
+        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+        await nextStep.ClickAsync();
 
-    //     var acceptProposalButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "accept" });
-    //     await acceptProposalButton.ClickAsync();
+        var acceptProposalButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "accept" });
+        await acceptProposalButton.ClickAsync();
 
-    //     var modelProposals = await AssemblySetup
-    //         .BeamOsResultApiClient.Models[this.ModelId]
-    //         .Proposals.GetModelProposalsAsync();
-    //     modelProposals.ThrowIfError();
-    //     modelProposals.Value.Count.Should().Be(0);
+        var modelProposals = await AssemblySetup
+            .BeamOsResultApiClient.Models[this.ModelId]
+            .Proposals.GetModelProposalsAsync();
+        modelProposals.ThrowIfError();
+        modelProposals.Value.Count.Should().Be(0);
 
-    //     var model = await AssemblySetup.BeamOsResultApiClient.Models[this.ModelId].GetModelAsync();
-    //     model.ThrowIfError();
-    //     model.Value.Nodes.Should().NotBeEmpty();
-    //     model.Value.Element1ds.Should().NotBeEmpty();
-    // }
+        var model = await AssemblySetup.BeamOsResultApiClient.Models[this.ModelId].GetModelAsync();
+        model.ThrowIfError();
+        model.Value.Nodes.Should().NotBeEmpty();
+        model.Value.Element1ds.Should().NotBeEmpty();
+    }
 }
