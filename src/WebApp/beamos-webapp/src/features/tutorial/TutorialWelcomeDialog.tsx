@@ -196,7 +196,6 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
         dispatch(modelProposalsLoaded({ canvasId, proposals }))
       }
       setImportCompleted(true)
-      close()
       onClose("completed")
     } catch (error) {
       console.error("Error importing sample data:", error)
