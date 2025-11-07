@@ -61,23 +61,12 @@ public record ModelSettings
 {
     public required UnitSettings UnitSettings { get; init; }
     public AnalysisSettings AnalysisSettings { get; init; } = new();
-    public WorkflowSettings WorkflowSettings
-    {
-        get;
-        init
-        {
-            if (value is not null)
-            {
-                field = value;
-            }
-        }
-    }
+    public WorkflowSettings? WorkflowSettings { get; init; }
     public bool YAxisUp { get; init; }
 
     [JsonConstructor]
     public ModelSettings()
     {
-        this.WorkflowSettings = new() { ModelingMode = ModelingMode.BimFirst };
     }
 
     // [JsonConstructor]
@@ -91,7 +80,7 @@ public record ModelSettings
     {
         this.UnitSettings = unitSettings;
         this.AnalysisSettings = analysisSettings ?? new();
-        this.WorkflowSettings = workflowSettings ?? new() { ModelingMode = ModelingMode.BimFirst };
+        this.WorkflowSettings = workflowSettings;
         this.YAxisUp = yAxisUp;
     }
 }

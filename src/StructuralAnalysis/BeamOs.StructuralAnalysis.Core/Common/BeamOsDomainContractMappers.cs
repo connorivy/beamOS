@@ -66,6 +66,24 @@ internal static partial class BeamOsDomainContractMappers
         this Domain.PhysicalModel.ModelAggregate.AnalysisSettings source
     );
 
+    public static Domain.PhysicalModel.ModelAggregate.WorkflowSettings ToDomain(
+        this WorkflowSettings? source
+    )
+    {
+        if (source is null)
+        {
+            return new Domain.PhysicalModel.ModelAggregate.WorkflowSettings
+            {
+                ModelingMode = ModelingMode.BimFirst
+            };
+        }
+        
+        return new Domain.PhysicalModel.ModelAggregate.WorkflowSettings
+        {
+            ModelingMode = source.ModelingMode
+        };
+    }
+
     public static partial Domain.PhysicalModel.ModelAggregate.ModelSettings ToDomain(
         this ModelSettings source
     );

@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using BeamOs.StructuralAnalysis.Domain.Common;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -61,13 +62,23 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 .GroupBy(info => info.Type)
                 .ToArray();
 
-            var currentModel =
-                await context
-                    .Models.Where(m => m.Id == entityInfoGroup.Key)
-                    .FirstOrDefaultAsync(cancellationToken)
-                ?? throw new InvalidOperationException(
+            // First try to find the model in the ChangeTracker (in case it's being added in the same transaction)
+            var currentModel = context
+                .ChangeTracker.Entries<Model>()
+                .FirstOrDefault(e => e.Entity.Id == entityInfoGroup.Key)
+                ?.Entity;
+            
+            // If not found in ChangeTracker, try to load from database
+            currentModel ??= await context
+                .Models.Where(m => m.Id == entityInfoGroup.Key)
+                .FirstOrDefaultAsync(cancellationToken);
+            
+            if (currentModel is null)
+            {
+                throw new InvalidOperationException(
                     $"Could not find model with id {entityInfoGroup.Key} when trying to assign ids to new entities."
                 );
+            }
 
             // idResults ??= new
             // {
