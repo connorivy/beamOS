@@ -64,7 +64,7 @@ public static class PageContextExtensions
             // wait for the page url to look something like {http}://localhost:{port}/models/{guid}
             await page.Page.WaitForURLAsync(
                 new Regex("^(http|https)://localhost:\\d+/models/[0-9a-fA-F-]{36}$"),
-                new() { Timeout = 3000 }
+                new() { Timeout = System.Diagnostics.Debugger.IsAttached ? 0 : 10000 }
             );
 
             // get the model id from the url

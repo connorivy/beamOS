@@ -124,6 +124,9 @@ const CreateModelDialog: React.FC<CreateModelDialogProps> = ({
             analysisSettings: {
               element1DAnalysisType: analysisType,
             },
+            workflowSettings: {
+              modelingMode: 2, // Independent mode
+            },
           },
         },
       )
