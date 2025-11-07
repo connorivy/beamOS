@@ -30,7 +30,7 @@ internal class CreateModelCommandHandler(
             return value.Error;
         }
 
-        if (command.Options.IsTempModel)
+        if (command.Options?.IsTempModel == true)
         {
             modelRepository.AddTempModel(model);
         }
