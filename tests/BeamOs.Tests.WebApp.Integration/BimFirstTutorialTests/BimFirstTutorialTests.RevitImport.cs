@@ -39,7 +39,7 @@ public partial class BimFirstTutorialTests : ReactPageTest
         await this.Page.WaitForTimeoutAsync(100);
 
         // Wait for the import to complete (button should be enabled again)
-        await this.Expect(importData).Not.ToBeDisabledAsync(new() { Timeout = 10_000 });
+        await this.Expect(importData).Not.ToBeDisabledAsync(new() { Timeout = 3_000 });
 
         var modelProposalsAfter = await AssemblySetup
             .BeamOsResultApiClient.Models[this.ModelId]

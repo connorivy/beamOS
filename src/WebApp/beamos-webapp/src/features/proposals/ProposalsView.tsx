@@ -1,15 +1,25 @@
-import { useAppSelector } from "../../app/hooks"
-import { selectModelResponseByCanvasId } from "../editors/editorsSlice"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { modelProposalsLoaded, selectModelResponseByCanvasId } from "../editors/editorsSlice"
 import React from "react"
-import { FormControl, InputLabel, Select, MenuItem, Typography, SelectChangeEvent } from "@mui/material"
+import { FormControl, InputLabel, Select, MenuItem, Typography } from "@mui/material"
+import { useApiClient } from "../api-client/ApiClientContext"
+import { useEditors } from "../editors/EditorContext"
 
 export function ProposalsView({ canvasId }: { canvasId: string }) {
+    const apiClient = useApiClient()
     const modelResponse = useAppSelector(state =>
         selectModelResponseByCanvasId(state, canvasId)
+    )
+    const editor = useAppSelector(state =>
+        state.editors[canvasId]
     )
     const proposalIds: number[] = [
         ...Object.keys(modelResponse?.proposals ?? {}).map(id => Number(id))
     ]
+    const dispatch = useAppDispatch()
+    const editors = useEditors()
+    const beamOsEditor = editors[canvasId]
+    const editorState = useAppSelector(state => state.editors[canvasId])
 
     if (proposalIds.length === 0) {
         return <Typography variant="body1" color="textSecondary">No Model Proposals</Typography>
@@ -21,13 +31,21 @@ export function ProposalsView({ canvasId }: { canvasId: string }) {
         name: modelResponse?.proposals?.[id]?.name ?? `Proposal ${id}`
     }))
 
-    const [selectedProposalId, setSelectedProposalId] = React.useState<string>("")
+    const [selectedProposalId, setSelectedProposalId] = React.useState<number | null>(null)
 
-    function handleProposalChange(e: SelectChangeEvent) {
-        const value = e.target.value
+    async function handleProposalChange(value: number | null) {
         setSelectedProposalId(value)
-        // Stub: call a function when proposal changes
-        // onProposalChange(value === "" ? null : Number(value)) // can be implemented later
+        await beamOsEditor.api.clearModelProposals()
+        if (value === null) {
+            return
+        }
+        if (!editorState.remoteModelId) {
+            throw new Error("Remote Model ID is not set in the editor state.")
+        }
+
+        var proposal = await apiClient.getModelProposal(value, editorState.remoteModelId)
+        dispatch(modelProposalsLoaded({ canvasId, proposals: [proposal] }));
+        await beamOsEditor.api.displayModelProposal(proposal)
     }
 
     return (
@@ -38,13 +56,13 @@ export function ProposalsView({ canvasId }: { canvasId: string }) {
                 id="proposal-select"
                 value={selectedProposalId}
                 label="Model Proposal"
-                onChange={handleProposalChange}
+                onChange={(e) => void handleProposalChange(e.target.value ? Number(e.target.value) : null)}
             >
-                <MenuItem value="">
+                <MenuItem value={""}>
                     <em>-- No Selection --</em>
                 </MenuItem>
                 {proposalOptions.map(option => (
-                    <MenuItem key={option.id} value={option.id.toString()}>
+                    <MenuItem key={option.id} value={option.id}>
                         {option.name}
                     </MenuItem>
                 ))}

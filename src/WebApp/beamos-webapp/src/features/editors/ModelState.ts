@@ -1,3 +1,4 @@
+import { ModelProposalResponse } from "../../../../../../codeGen/BeamOs.CodeGen.EditorApi/EditorApiAlpha"
 import type {
   Element1dData,
   Element1dResponse,
@@ -182,6 +183,16 @@ export function ResultSetsToMap(
   return resultSetMap
 }
 
+export function ModelProposalsToMap(
+  proposals: ModelProposalResponse[],
+): Record<number, ModelProposalResponse> {
+  const proposalMap: Record<number, ModelProposalResponse> = {}
+  for (const proposal of proposals) {
+    proposalMap[proposal.id] = proposal
+  }
+  return proposalMap
+}
+
 export function ToModelState(model: ModelResponse): ModelState {
   return {
     id: model.id,
@@ -201,6 +212,6 @@ export function ToModelState(model: ModelResponse): ModelState {
     momentLoads: MomentLoadsToMap(model.momentLoads ?? []),
     pointLoads: PointLoadsToMap(model.pointLoads ?? []),
     resultSets: ResultSetsToMap(model.resultSets ?? []),
-    proposals: model.proposals ?? [],
+    proposals: [],
   }
 }

@@ -29,15 +29,20 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
             );
 
         // persistent version from database
-        var currentBimFirstSourceModel =
-            await dbContext
-                .Models.AsNoTracking()
-                .Include(e => e.Nodes)
-                .Include(e => e.Element1ds)
-                .FirstOrDefaultAsync(m => m.Id == notification.SourceModelId, ct)
-            ?? throw new InvalidOperationException(
-                $"Source model with id {notification.SourceModelId} not found in database"
-            );
+        var currentBimFirstSourceModel = await dbContext
+            .Models.AsNoTracking()
+            .Include(e => e.Nodes)
+            .Include(e => e.Element1ds)
+            .FirstOrDefaultAsync(m => m.Id == notification.SourceModelId, ct);
+
+        // If no persistent version exists, this is the first time the model is created
+        // so we just want to diff against an empty model
+        currentBimFirstSourceModel ??= new Model(
+            sourceModel.Name,
+            sourceModel.Description,
+            sourceModel.Settings,
+            sourceModel.Id
+        );
 
         var diffResult = await getModelDiffCommandHandler.ExecuteAsync(
             (currentBimFirstSourceModel, sourceModel),

@@ -31,9 +31,12 @@ import type {
   DeflectionDiagramResponse,
   ShearDiagramResponse,
   MomentDiagramResponse,
+  ModelProposalResponse,
+  ModelProposalInfo,
 } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
 import type { NodeResultData } from "./ModelState"
-import { ToModelState, type ModelState } from "./ModelState"
+import { ModelProposalsToMap, ToModelState, type ModelState } from "./ModelState"
+import { ModelProposalDisplayer } from "../three-js-editor/ModelProposalDisplayer"
 
 // Define the shape of the editor state for a single editor
 export type EditorState = {
@@ -148,6 +151,33 @@ export const editorsSlice = createAppSlice({
         editor.model = ToModelState(action.payload.model)
         if (action.payload.remoteModelId) {
           editor.remoteModelId = action.payload.remoteModelId
+        }
+      },
+    ),
+    modelProposalsLoaded: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          canvasId: string
+          proposals: ModelProposalInfo[]
+        }>,
+      ) => {
+        const editor =
+          action.payload.canvasId in state
+            ? state[action.payload.canvasId]
+            : null
+        if (!editor) {
+          throw new Error(
+            `Editor for canvasId ${action.payload.canvasId} does not exist. Ensure addEditor is dispatched before modelProposalsLoaded.`,
+          )
+        }
+        if (!editor.model) {
+          throw new Error(
+            `Model response for canvasId ${action.payload.canvasId} is null. Ensure modelLoaded is dispatched before modelProposalsLoaded.`,
+          )
+        }
+        for (const proposalInfo of action.payload.proposals) {
+          editor.model.proposals[proposalInfo.id] = proposalInfo
         }
       },
     ),
@@ -1029,6 +1059,7 @@ export const {
   removeMomentLoadById,
   moveNode,
   modelLoaded,
+  modelProposalsLoaded,
   // analytical reducers
   addResultsSet,
   addNodeResults,

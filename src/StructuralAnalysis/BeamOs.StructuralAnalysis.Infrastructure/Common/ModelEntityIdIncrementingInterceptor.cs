@@ -62,9 +62,7 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 .ToArray();
 
             var currentModel =
-                await context
-                    .Models.Where(m => m.Id == entityInfoGroup.Key)
-                    .FirstOrDefaultAsync(cancellationToken)
+                await context.Models.FindAsync([entityInfoGroup.Key], cancellationToken)
                 ?? throw new InvalidOperationException(
                     $"Could not find model with id {entityInfoGroup.Key} when trying to assign ids to new entities."
                 );

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useAppDispatch } from "../../app/hooks"
-import { addEditor, removeEditor, modelLoaded, addShearForceDiagrams, addMomentDiagrams, addDeflectionDiagrams, setSelectedResultSetId } from "./editorsSlice"
+import { addEditor, removeEditor, modelLoaded, addShearForceDiagrams, addMomentDiagrams, addDeflectionDiagrams, setSelectedResultSetId, modelProposalsLoaded } from "./editorsSlice"
 import { BeamOsEditor } from "../three-js-editor/BeamOsEditor"
 import { EventsApi } from "./EventsApi"
 import { useApiClient } from "../api-client/ApiClientContext"
@@ -117,6 +117,11 @@ export const RemoteEditorComponent = ({
           }
         }
         dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: modelResponse.resultSets[0].id }))
+      }
+
+      var proposals = await apiClient.getModelProposals(modelId)
+      if (proposals && proposals.length > 0) {
+        dispatch(modelProposalsLoaded({ canvasId, proposals }))
       }
     }
     fetchModel().catch(console.error)
