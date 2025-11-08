@@ -49,7 +49,6 @@ public partial class BimFirstTutorialTests : ReactPageTest
 
         await this.ViewModelProposal_ShouldSucceed();
         await this.AcceptModelProposal_ShouldSucceed();
-        await this.ExploreModel_ShouldSucceed();
         await this.AddAnalyticalInfo_ShouldSucceed();
         await this.ImportBimGeometryChanges_ShouldSucceed();
         await this.ViewSecondModelProposal_ShouldSucceed();
@@ -111,16 +110,6 @@ public partial class BimFirstTutorialTests : ReactPageTest
         model.ThrowIfError();
         model.Value.Nodes.Should().NotBeEmpty();
         model.Value.Element1ds.Should().NotBeEmpty();
-    }
-
-    private async Task ExploreModel_ShouldSucceed()
-    {
-        // The "Explore the Model" step appears after accepting the first proposal
-        // This step just requires clicking the "next" button on the driver.js popover
-        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
-        await nextStep.ClickAsync();
-        // delay for driver js to move to next step
-        await Task.Delay(750);
     }
 
     private async Task AddAnalyticalInfo_ShouldSucceed()
