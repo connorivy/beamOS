@@ -56,9 +56,11 @@ public partial class BimFirstTutorialTests : ReactPageTest
         // select the model proposal tab
         var modelProposalsTab = this.Page.GetByRole(
             AriaRole.Button,
-            new() { Name = "model proposals" }
+            new() { Name = "Model Proposals", Exact = true }
         );
         await modelProposalsTab.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         // select the model proposal
         var modelProposalButton = this.Page.GetByRole(
@@ -66,6 +68,8 @@ public partial class BimFirstTutorialTests : ReactPageTest
             new() { NameRegex = new System.Text.RegularExpressions.Regex(@"^Proposal \d+$") }
         );
         await modelProposalButton.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         // todo: assert that the model proposal is displayed in the 3D view
     }
@@ -74,9 +78,23 @@ public partial class BimFirstTutorialTests : ReactPageTest
     {
         var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
         await nextStep.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         var acceptProposalButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "accept" });
         await acceptProposalButton.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
+
+        var acceptDialog = this.Page.GetByRole(AriaRole.Dialog);
+        await this.Expect(acceptDialog).ToBeVisibleAsync(new() { Timeout = 3_000 });
+        var confirmAcceptButton = acceptDialog.GetByRole(
+            AriaRole.Button,
+            new() { Name = "accept" }
+        );
+        await confirmAcceptButton.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         var modelProposals = await AssemblySetup
             .BeamOsResultApiClient.Models[this.ModelId]

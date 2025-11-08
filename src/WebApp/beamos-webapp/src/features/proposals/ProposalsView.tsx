@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { modelProposalsLoaded, selectModelResponseByCanvasId } from "../editors/editorsSlice"
+import { modelLoaded, modelProposalsLoaded, selectModelResponseByCanvasId } from "../editors/editorsSlice"
 import React from "react"
 import { Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box } from "@mui/material"
 import { List, ListItem, ListItemButton, ListItemText } from "@mui/material"
@@ -9,32 +9,32 @@ import { useApiClient } from "../api-client/ApiClientContext"
 import { useEditors } from "../editors/EditorContext"
 
 export function ProposalsView({ canvasId }: { canvasId: string }) {
-    const apiClient = useApiClient()
+    // All hooks must be called before any return
+    const apiClient = useApiClient();
     const modelResponse = useAppSelector(state =>
         selectModelResponseByCanvasId(state, canvasId)
-    )
+    );
     const proposalIds: number[] = [
         ...Object.keys(modelResponse?.proposals ?? {}).map(id => Number(id))
-    ]
-    const dispatch = useAppDispatch()
-    const editors = useEditors()
-    const beamOsEditor = editors[canvasId]
-    const editorState = useAppSelector(state => state.editors[canvasId])
-
-    if (proposalIds.length === 0) {
-        return <Typography variant="body1" color="textSecondary">No Model Proposals</Typography>;
-    }
-
-    // Get proposal names (assuming modelResponse.proposals is an object with id keys)
-    const proposalOptions = proposalIds.map(id => ({
-        id,
-        name: modelResponse?.proposals?.[id]?.name ?? `Proposal ${id}`
-    }));
-
+    ];
+    const dispatch = useAppDispatch();
+    const editors = useEditors();
+    const beamOsEditor = editors[canvasId];
+    const editorState = useAppSelector(state => state.editors[canvasId]);
     const [selectedProposalId, setSelectedProposalId] = React.useState<number | null>(null);
     const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
     const [confirmAction, setConfirmAction] = React.useState<'accept' | 'reject' | null>(null);
     const [isProcessing, setIsProcessing] = React.useState(false);
+
+    // Get proposal names (assuming modelResponse.proposals is an object with id keys)
+    const proposalOptions: { id: number; name: string }[] = proposalIds.map(id => ({
+        id,
+        name: modelResponse?.proposals?.[id]?.name ?? `Proposal ${id}`
+    }));
+
+    if (proposalIds.length === 0) {
+        return <Typography variant="body1" color="textSecondary">No Model Proposals</Typography>;
+    }
 
     async function handleProposalChange(value: number | null) {
         setSelectedProposalId(value);
@@ -51,9 +51,21 @@ export function ProposalsView({ canvasId }: { canvasId: string }) {
         await beamOsEditor.api.displayModelProposal(proposal);
     }
 
-    function handleAcceptClick() {
-        setConfirmAction('accept');
-        setConfirmDialogOpen(true);
+    async function handleAcceptClick() {
+        if (!selectedProposalId || !editorState.remoteModelId) {
+            return;
+        }
+        setIsProcessing(true);
+        try {
+            var response = await apiClient.acceptModelProposal(editorState.remoteModelId, selectedProposalId, null);
+            await beamOsEditor.api.clearModelProposals();
+            dispatch(modelLoaded({ canvasId, model: response }));
+            setSelectedProposalId(null);
+        } catch (error) {
+            console.error('Error accepting proposal:', error);
+        } finally {
+            setIsProcessing(false);
+        }
     }
 
     function handleRejectClick() {
@@ -80,7 +92,7 @@ export function ProposalsView({ canvasId }: { canvasId: string }) {
             } else {
                 await apiClient.rejectModelProposal(selectedProposalId, editorState.remoteModelId);
             }
-            
+
             // Clear the proposal from the view
             await beamOsEditor.api.clearModelProposals();
             setSelectedProposalId(null);
@@ -106,29 +118,31 @@ export function ProposalsView({ canvasId }: { canvasId: string }) {
                             <ListItemText primary={<em>-- No Selection --</em>} />
                         </ListItemButton>
                     </ListItem>
-                    {proposalOptions.map(option => (
-                        <ListItem 
-                            disablePadding 
+                    {proposalOptions.map((option: { id: number; name: string }) => (
+                        <ListItem
+                            disablePadding
                             key={option.id}
                             secondaryAction={
                                 selectedProposalId === option.id ? (
                                     <Box>
-                                        <IconButton 
-                                            edge="end" 
+                                        <IconButton
+                                            edge="end"
                                             aria-label="accept"
-                                            onClick={handleAcceptClick}
+                                            onClick={() => void handleAcceptClick()}
                                             color="success"
                                             size="small"
+                                            disabled={isProcessing}
                                         >
                                             <CheckIcon />
                                         </IconButton>
-                                        <IconButton 
-                                            edge="end" 
+                                        <IconButton
+                                            edge="end"
                                             aria-label="reject"
                                             onClick={handleRejectClick}
                                             color="error"
                                             size="small"
                                             sx={{ ml: 1 }}
+                                            disabled={isProcessing}
                                         >
                                             <CloseIcon />
                                         </IconButton>
@@ -147,37 +161,33 @@ export function ProposalsView({ canvasId }: { canvasId: string }) {
                 </List>
             </div>
 
-            <Dialog 
-                open={confirmDialogOpen} 
+            <Dialog
+                open={confirmDialogOpen && confirmAction === 'reject'}
                 onClose={handleDialogClose}
                 maxWidth="sm"
                 fullWidth
             >
-                <DialogTitle>
-                    {confirmAction === 'accept' ? 'Accept Proposal' : 'Reject Proposal'}
-                </DialogTitle>
+                <DialogTitle>Reject Proposal</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        {confirmAction === 'accept' 
-                            ? 'Are you sure you want to accept this proposal? This will apply all changes to your model.'
-                            : 'Are you sure you want to reject this proposal? This will discard all proposed changes.'}
+                        Are you sure you want to reject this proposal? This will discard all proposed changes.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button 
-                        onClick={handleDialogClose} 
+                    <Button
+                        onClick={handleDialogClose}
                         disabled={isProcessing}
                     >
                         Cancel
                     </Button>
-                    <Button 
-                        onClick={() => void handleDialogConfirm()} 
+                    <Button
+                        onClick={() => void handleDialogConfirm()}
                         variant="contained"
-                        color={confirmAction === 'accept' ? 'primary' : 'error'}
+                        color="error"
                         disabled={isProcessing}
-                        aria-label={confirmAction === 'accept' ? 'accept' : 'reject'}
+                        aria-label="reject"
                     >
-                        {isProcessing ? 'Processing...' : (confirmAction === 'accept' ? 'Accept' : 'Reject')}
+                        {isProcessing ? 'Processing...' : 'Reject'}
                     </Button>
                 </DialogActions>
             </Dialog>
