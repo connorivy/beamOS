@@ -141,7 +141,7 @@ public partial class BimFirstTutorialTests : ReactPageTest
     {
         // After importing BIM geometry changes, a second proposal would be created
         // This step involves selecting and viewing that second proposal
-        
+
         // TODO: Wait for second proposal to be created, then select it
         // For now, we'll just add the structure for this step
         await Task.Delay(750);
@@ -150,7 +150,7 @@ public partial class BimFirstTutorialTests : ReactPageTest
     private async Task AcceptSecondModelProposal_ShouldSucceed()
     {
         // After viewing the second proposal, accept it to integrate the changes
-        
+
         // TODO: Add logic to accept the second proposal
         // For now, we'll just add the structure for this step
         await Task.Delay(750);
