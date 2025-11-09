@@ -224,12 +224,20 @@ internal sealed class PatchModelCommandHandler(
             }
             else
             {
+                // Verify that the LoadCase exists
+                var loadCaseId = new LoadCaseId(pointLoadRequest.LoadCaseId);
+                if (!loadCaseStore.ContainsKey(loadCaseId))
+                {
+                    return BeamOsError.NotFound(
+                        description: $"LoadCase with id '{pointLoadRequest.LoadCaseId}' was not found."
+                    );
+                }
+                
                 // Create new PointLoad
                 // If Id is > 0, use it; otherwise let EF Core assign one
                 PointLoadId? pointLoadId = hasId ? new PointLoadId(pointLoadRequest.Id!.Value) : null;
                 
                 var nodeId = new NodeId(pointLoadRequest.NodeId);
-                var loadCaseId = new LoadCaseId(pointLoadRequest.LoadCaseId);
                 
                 pointLoad = new PointLoad(
                     model.Id,

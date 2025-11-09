@@ -213,32 +213,29 @@ const TutorialPage = () => {
                 popover.nextButton.style.display = "block";
                 popover.nextButton.addEventListener("click", async () => {
                   // Add LoadCase and PointLoads via patchModel endpoint
+                  console.log("Next button clicked, modelId:", modelId);
                   if (modelId) {
-                    try {
-                      console.log("Patching model with LoadCase and PointLoads, modelId:", modelId);
-                      const result = await apiClient.patchModel(modelId, {
-                        loadCases: [
-                          { id: 1, name: "Load Case 1" }
-                        ],
-                        pointLoads: [
-                          {
-                            force: { value: 150, unit: ForceUnit.KilopoundForce },
-                            direction: { x: 1, y: 0, z: 0 },
-                            nodeId: 1,
-                            loadCaseId: 1,
-                          },
-                          {
-                            force: { value: 300, unit: ForceUnit.KilopoundForce },
-                            direction: { x: 0, y: -1, z: 0 },
-                            nodeId: 1,
-                            loadCaseId: 1,
-                          },
-                        ]
-                      });
-                      console.log("PatchModel result:", result);
-                    } catch (error) {
-                      console.error("Error patching model:", error);
-                    }
+                    console.log("Patching model with LoadCase and PointLoads");
+                    const result = await apiClient.patchModel(modelId, {
+                      loadCases: [
+                        { id: 1, name: "Load Case 1" }
+                      ],
+                      pointLoads: [
+                        {
+                          force: { value: 150, unit: ForceUnit.KilopoundForce },
+                          direction: { x: 1, y: 0, z: 0 },
+                          nodeId: 1,
+                          loadCaseId: 1,
+                        },
+                        {
+                          force: { value: 300, unit: ForceUnit.KilopoundForce },
+                          direction: { x: 0, y: -1, z: 0 },
+                          nodeId: 1,
+                          loadCaseId: 1,
+                        },
+                      ]
+                    });
+                    console.log("PatchModel result:", result);
                   } else {
                     console.error("Model ID is not available");
                   }
