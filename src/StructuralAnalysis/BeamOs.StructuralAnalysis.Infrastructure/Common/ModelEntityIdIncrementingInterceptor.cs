@@ -75,10 +75,13 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
             //     MaxLoadCombinationId = 0,
             // };
 
+            // Node and InternalNode share the same table (NodeDefinitions) so they must share the same ID sequence
+            var maxNodeDefinitionId = Math.Max(currentModel.MaxNodeId, currentModel.MaxInternalNodeId);
+            
             Dictionary<Type, int> entityTypeToMaxIdDict = new()
             {
-                { typeof(Node), currentModel.MaxNodeId },
-                { typeof(InternalNode), currentModel.MaxInternalNodeId },
+                { typeof(Node), maxNodeDefinitionId },
+                { typeof(InternalNode), maxNodeDefinitionId },
                 { typeof(Element1d), currentModel.MaxElement1dId },
                 { typeof(Material), currentModel.MaxMaterialId },
                 { typeof(SectionProfile), currentModel.MaxSectionProfileId },
@@ -124,8 +127,13 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 maxAutoAssignedId = Math.Max(maxAutoAssignedId, maxIdManuallyAssigned);
             }
 
-            currentModel.MaxNodeId = entityTypeToMaxIdDict[typeof(Node)];
-            currentModel.MaxInternalNodeId = entityTypeToMaxIdDict[typeof(InternalNode)];
+            // Update both MaxNodeId and MaxInternalNodeId to the same value since they share the same table
+            var finalMaxNodeDefinitionId = Math.Max(
+                entityTypeToMaxIdDict[typeof(Node)],
+                entityTypeToMaxIdDict[typeof(InternalNode)]
+            );
+            currentModel.MaxNodeId = finalMaxNodeDefinitionId;
+            currentModel.MaxInternalNodeId = finalMaxNodeDefinitionId;
             currentModel.MaxElement1dId = entityTypeToMaxIdDict[typeof(Element1d)];
             currentModel.MaxMaterialId = entityTypeToMaxIdDict[typeof(Material)];
             currentModel.MaxSectionProfileId = entityTypeToMaxIdDict[typeof(SectionProfile)];
