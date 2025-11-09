@@ -50,7 +50,7 @@ public partial class BimFirstTutorialTests : ReactPageTest
         await this.ViewModelProposal_ShouldSucceed();
         await this.AcceptModelProposal_ShouldSucceed();
         // await this.AddAnalyticalInfo_ShouldSucceed();
-        // await this.ImportBimGeometryChanges_ShouldSucceed();
+        await this.ImportBimGeometryChanges_ShouldSucceed();
         // await this.ViewSecondModelProposal_ShouldSucceed();
         // await this.AcceptSecondModelProposal_ShouldSucceed();
     }
@@ -106,53 +106,68 @@ public partial class BimFirstTutorialTests : ReactPageTest
         model.Value.Element1ds.Should().NotBeEmpty();
     }
 
-    // private async Task AddAnalyticalInfo_ShouldSucceed()
-    // {
-    //     // The "Add Analytical Info" step is a tutorial step that just requires clicking next
-    //     // In a real scenario, this would involve adding loads and supports
-    //     var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
-    //     await nextStep.ClickAsync();
-    //     // delay for driver js to move to next step
-    //     await Task.Delay(750);
+    private async Task AddAnalyticalInfo_ShouldSucceed()
+    {
+        // The "Add Analytical Info" step is a tutorial step that just requires clicking next
+        // In a real scenario, this would involve adding loads and supports
+        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+        await nextStep.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
-    //     var modelResponse = await AssemblySetup
-    //         .BeamOsResultApiClient.Models[this.ModelId]
-    //         .GetModelAsync();
-    //     modelResponse.ThrowIfError();
-    //     modelResponse.Value.PointLoads.Should().NotBeEmpty();
-    //     modelResponse.Value.PointLoads.Count.Should().Be(1);
-    //     modelResponse.Value.PointLoads.First().NodeId.Should().Be(1);
-    // }
+        var modelResponse = await AssemblySetup
+            .BeamOsResultApiClient.Models[this.ModelId]
+            .GetModelAsync();
+        modelResponse.ThrowIfError();
+        modelResponse.Value.PointLoads.Should().NotBeEmpty();
+        modelResponse.Value.PointLoads.Count.Should().Be(1);
+        modelResponse.Value.PointLoads.First().NodeId.Should().Be(1);
+    }
 
-    // private async Task ImportBimGeometryChanges_ShouldSucceed()
-    // {
-    //     // The "Import BIM Geometry Changes" step simulates updating the BIM model
-    //     // This involves importing new/changed geometry to create a second proposal
-    //     var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
-    //     await nextStep.ClickAsync();
-    //     // delay for driver js to move to next step
-    //     await Task.Delay(750);
+    private async Task ImportBimGeometryChanges_ShouldSucceed()
+    {
+        // The "Import BIM Geometry Changes" step simulates updating the BIM model
+        // This involves importing new/changed geometry to create a second proposal
+        
+        // Wait a bit to ensure the first proposal acceptance has fully completed
+        await Task.Delay(500);
+        
+        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+        await nextStep.ClickAsync();
+        // delay for driver js to move to next step and for the API call to complete
+        await Task.Delay(2000);
 
-    //     // TODO: In the future, actually import changed BIM data here to create a second proposal
-    //     // For now, we just verify the step navigation works
-    // }
+        // Verify that a second proposal was created
+        var modelProposals = await AssemblySetup
+            .BeamOsResultApiClient.Models[this.ModelId]
+            .Proposals.GetModelProposalsAsync();
+        modelProposals.ThrowIfError();
+        modelProposals.Value.Count.Should().Be(1, "a second proposal should be created after importing BIM geometry changes");
+    }
 
-    // private async Task ViewSecondModelProposal_ShouldSucceed()
-    // {
-    //     // After importing BIM geometry changes, a second proposal would be created
-    //     // This step involves selecting and viewing that second proposal
+    private async Task ViewSecondModelProposal_ShouldSucceed()
+    {
+        // After importing BIM geometry changes, a second proposal would be created
+        // This step involves selecting and viewing that second proposal
 
-    //     // TODO: Wait for second proposal to be created, then select it
-    //     // For now, we'll just add the structure for this step
-    //     await Task.Delay(750);
-    // }
+        // Wait for the UI to update
+        await Task.Delay(300);
 
-    // private async Task AcceptSecondModelProposal_ShouldSucceed()
-    // {
-    //     // After viewing the second proposal, accept it to integrate the changes
+        // Click on the proposal dropdown area to view the proposals
+        // But DON'T click the accept button - just select the proposal to view it
+        var proposalSelect = this.Page.Locator("#model-proposals-select");
+        await proposalSelect.ClickAsync();
+        
+        // delay for driver js to move to next step and for the proposal to load
+        await Task.Delay(750);
+    }
 
-    //     // TODO: Add logic to accept the second proposal
-    //     // For now, we'll just add the structure for this step
-    //     await Task.Delay(750);
-    // }
+    private async Task AcceptSecondModelProposal_ShouldSucceed()
+    {
+        // After viewing the second proposal, accept it to integrate the changes
+
+        // TODO: Add logic to accept the second proposal
+        // For now, we'll just add the structure for this step
+        await Task.Delay(750);
+    }
 }
