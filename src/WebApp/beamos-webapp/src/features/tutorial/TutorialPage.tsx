@@ -103,7 +103,7 @@ const TutorialPage = () => {
                   console.log("Clicked model proposals view");
                   setTimeout(() => {
                     driverObj.moveNext();
-                  }, 200);
+                  }, 50);
                 }
               }
             },
@@ -220,7 +220,7 @@ const TutorialPage = () => {
             }
           },
           {
-            element: "#tutorial-canvas",
+            element: "#model-proposals-select",
             popover: {
               title: "Import BIM Geometry Changes",
               description: "As your BIM model evolves, you can push those changes to beamOS where they can be reviewed as model proposals",

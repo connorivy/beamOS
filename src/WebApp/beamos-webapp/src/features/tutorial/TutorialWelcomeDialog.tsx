@@ -59,15 +59,20 @@ const getSteps = (props: StepContentProps) => [
     content: (
       <>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          BeamOS is designed to be <strong>BIM-first</strong>. This means that your BIM model is the source of truth for your BeamOS geometry.
+          BeamOS is designed to be <strong>BIM-first</strong>. This means that
+          your BIM model is the source of truth for your BeamOS geometry.
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          You are not supposed to do your geometry modeling in BeamOS. The only modeling that you do in BeamOS is to make slight adjustments for connectivity.
+          You are not supposed to do your geometry modeling in BeamOS. The only
+          modeling that you do in BeamOS is to make slight adjustments for
+          connectivity.
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          A Revit plugin is in development that users will be able to use to send their data into BeamOS. For the purpose of this tutorial, you can import some sample data below.
+          A Revit plugin is in development that users will be able to use to
+          send their data into BeamOS. For the purpose of this tutorial, you can
+          import some sample data below.
         </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
           <Button
             onClick={props.onImport}
             variant="contained"
@@ -79,7 +84,11 @@ const getSteps = (props: StepContentProps) => [
           </Button>
         </Box>
         {props.importCompleted && (
-          <Typography variant="body2" color="success.main" sx={{ textAlign: 'center' }}>
+          <Typography
+            variant="body2"
+            color="success.main"
+            sx={{ textAlign: "center" }}
+          >
             ✓ Sample data imported successfully
           </Typography>
         )}
@@ -170,26 +179,71 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
     setIsImporting(true)
     setImportCompleted(false)
     try {
-      console.log("Starting import of Kassimali_Example3_8 data for model:", modelId)
+      console.log(
+        "Starting import of Kassimali_Example3_8 data for model:",
+        modelId,
+      )
 
+      await apiClient.createNode(bimSourceModelId, {
+        id: 1,
+        locationPoint: { x: 12, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
+        restraint: {
+          canTranslateAlongX: true,
+          canTranslateAlongY: true,
+          canTranslateAlongZ: true,
+          canRotateAboutX: true,
+          canRotateAboutY: true,
+          canRotateAboutZ: true,
+        },
+      })
       await apiClient.putSourceModel(bimSourceModelId, {
         element1dsToAddOrUpdateByExternalId: [
           {
             externalId: "Element-1",
-            startNodeLocation: { x: 0, y: 0, z: 0, lengthUnit: LengthUnit.Foot },
-            endNodeLocation: { x: 12, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
+            startNodeLocation: {
+              x: 0,
+              y: 0,
+              z: 0,
+              lengthUnit: LengthUnit.Foot,
+            },
+            endNodeLocation: {
+              x: 12,
+              y: 16,
+              z: 0,
+              lengthUnit: LengthUnit.Foot,
+            },
           },
           {
             externalId: "Element-2",
-            startNodeLocation: { x: 12, y: 0, z: 0, lengthUnit: LengthUnit.Foot },
-            endNodeLocation: { x: 12, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
+            startNodeLocation: {
+              x: 12,
+              y: 0,
+              z: 0,
+              lengthUnit: LengthUnit.Foot,
+            },
+            endNodeLocation: {
+              x: 12,
+              y: 16,
+              z: 0,
+              lengthUnit: LengthUnit.Foot,
+            },
           },
           {
             externalId: "Element-3",
-            startNodeLocation: { x: 24, y: 0, z: 0, lengthUnit: LengthUnit.Foot },
-            endNodeLocation: { x: 12, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
-          }
-        ]
+            startNodeLocation: {
+              x: 24,
+              y: 0,
+              z: 0,
+              lengthUnit: LengthUnit.Foot,
+            },
+            endNodeLocation: {
+              x: 12,
+              y: 16,
+              z: 0,
+              lengthUnit: LengthUnit.Foot,
+            },
+          },
+        ],
       })
       var proposals = await apiClient.getModelProposals(modelId)
       if (proposals && proposals.length > 0) {
@@ -251,7 +305,11 @@ const TutorialWelcomeDialog: React.FC<TutorialWelcomeDialogProps> = ({
         )}
         {activeStep < steps.length - 1 && (
           <Tooltip
-            title={isNextDisabled ? "Please import sample data before proceeding" : ""}
+            title={
+              isNextDisabled
+                ? "Please import sample data before proceeding"
+                : ""
+            }
             arrow
           >
             <span>

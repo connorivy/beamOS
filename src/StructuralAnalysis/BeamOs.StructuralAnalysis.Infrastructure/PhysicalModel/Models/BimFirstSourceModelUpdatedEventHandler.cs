@@ -79,8 +79,8 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
         {
             if (nodeDiff.Status != DiffStatus.Modified)
             {
-                // added or removed nodes are geometry changes
-                nodesWithGeometryChanges.Add(nodeDiff);
+                // just adding or removing a node isn't a geometry change. If an element1d is added or removed,
+                // that will be captured there
                 continue;
             }
             _ =
@@ -107,7 +107,7 @@ internal sealed class BimFirstSourceModelUpdatedEventHandler(
         {
             if (element1dDiff.Status != DiffStatus.Modified)
             {
-                // added or removed nodes are geometry changes
+                // added or removed elements are geometry changes
                 element1dsWithGeometryChanges.Add(element1dDiff);
                 continue;
             }

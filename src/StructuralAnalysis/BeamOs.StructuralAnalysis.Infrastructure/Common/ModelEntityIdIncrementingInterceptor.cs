@@ -56,11 +56,6 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 .GroupBy(i => i.Type)
                 .ToDictionary(info => info.Key, info => info.Select(i => i.Id).ToHashSet());
 
-            var entitiesWithDefaultIds = entityInfoGroup
-                .Where(info => info.Id == 0)
-                .GroupBy(info => info.Type)
-                .ToArray();
-
             var currentModel =
                 await context.Models.FindAsync([entityInfoGroup.Key], cancellationToken)
                 ?? throw new InvalidOperationException(
@@ -95,9 +90,10 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                 { typeof(ModelProposal), currentModel.MaxModelProposalId },
             };
 
-            foreach (var entityInfoByType in entitiesWithDefaultIds)
+            foreach (var entityTypeGroup in entityInfoGroup.GroupBy(i => i.Type))
             {
-                var entityType = entityInfoByType.Key;
+                var maxIdManuallyAssigned = 0;
+                var entityType = entityTypeGroup.Key;
                 if (!entityTypeToMaxIdDict.ContainsKey(entityType))
                 {
                     throw new InvalidOperationException(
@@ -105,20 +101,27 @@ internal class ModelEntityIdIncrementingInterceptor(TimeProvider timeProvider)
                     );
                 }
 
-                ref int maxId = ref CollectionsMarshal.GetValueRefOrNullRef(
+                ref int maxAutoAssignedId = ref CollectionsMarshal.GetValueRefOrNullRef(
                     entityTypeToMaxIdDict,
                     entityType
                 );
 
                 HashSet<int>? takenIds = entityTypeToTakenIdsDict.GetValueOrDefault(entityType);
-                foreach (var entityInfo in entityInfoByType)
+                foreach (var entityInfo in entityTypeGroup)
                 {
+                    if (entityInfo.Id > 0)
+                    {
+                        maxIdManuallyAssigned = Math.Max(maxIdManuallyAssigned, entityInfo.Id);
+                        continue;
+                    }
+
                     do
                     {
-                        maxId++;
-                    } while (takenIds?.Contains(maxId) ?? false);
-                    entityInfo.Entity.SetIntId(maxId);
+                        maxAutoAssignedId++;
+                    } while (takenIds?.Contains(maxAutoAssignedId) ?? false);
+                    entityInfo.Entity.SetIntId(maxAutoAssignedId);
                 }
+                maxAutoAssignedId = Math.Max(maxAutoAssignedId, maxIdManuallyAssigned);
             }
 
             currentModel.MaxNodeId = entityTypeToMaxIdDict[typeof(Node)];

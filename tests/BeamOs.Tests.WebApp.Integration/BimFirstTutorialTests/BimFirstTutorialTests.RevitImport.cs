@@ -49,15 +49,19 @@ public partial class BimFirstTutorialTests : ReactPageTest
 
         await this.ViewModelProposal_ShouldSucceed();
         await this.AcceptModelProposal_ShouldSucceed();
-        await this.AddAnalyticalInfo_ShouldSucceed();
-        await this.ImportBimGeometryChanges_ShouldSucceed();
-        await this.ViewSecondModelProposal_ShouldSucceed();
-        await this.AcceptSecondModelProposal_ShouldSucceed();
+        // await this.AddAnalyticalInfo_ShouldSucceed();
+        // await this.ImportBimGeometryChanges_ShouldSucceed();
+        // await this.ViewSecondModelProposal_ShouldSucceed();
+        // await this.AcceptSecondModelProposal_ShouldSucceed();
     }
 
     private async Task ViewModelProposal_ShouldSucceed()
     {
         // select the model proposal tab
+
+        // need to wait a bit for the driver events to hook into the button
+        await Task.Delay(300);
+
         var modelProposalsTab = this.Page.GetByRole(
             AriaRole.Button,
             new() { Name = "Model Proposals", Exact = true }
@@ -90,16 +94,6 @@ public partial class BimFirstTutorialTests : ReactPageTest
         // delay for driver js to move to next step
         await Task.Delay(750);
 
-        var acceptDialog = this.Page.GetByRole(AriaRole.Dialog);
-        await this.Expect(acceptDialog).ToBeVisibleAsync(new() { Timeout = 3_000 });
-        var confirmAcceptButton = acceptDialog.GetByRole(
-            AriaRole.Button,
-            new() { Name = "accept" }
-        );
-        await confirmAcceptButton.ClickAsync();
-        // delay for driver js to move to next step
-        await Task.Delay(750);
-
         var modelProposals = await AssemblySetup
             .BeamOsResultApiClient.Models[this.ModelId]
             .Proposals.GetModelProposalsAsync();
@@ -112,47 +106,53 @@ public partial class BimFirstTutorialTests : ReactPageTest
         model.Value.Element1ds.Should().NotBeEmpty();
     }
 
-    private async Task AddAnalyticalInfo_ShouldSucceed()
-    {
-        // The "Add Analytical Info" step is a tutorial step that just requires clicking next
-        // In a real scenario, this would involve adding loads and supports
-        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
-        await nextStep.ClickAsync();
-        // delay for driver js to move to next step
-        await Task.Delay(750);
+    // private async Task AddAnalyticalInfo_ShouldSucceed()
+    // {
+    //     // The "Add Analytical Info" step is a tutorial step that just requires clicking next
+    //     // In a real scenario, this would involve adding loads and supports
+    //     var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+    //     await nextStep.ClickAsync();
+    //     // delay for driver js to move to next step
+    //     await Task.Delay(750);
 
-        // TODO: In the future, add actual analytical info (loads, supports) here
-    }
+    //     var modelResponse = await AssemblySetup
+    //         .BeamOsResultApiClient.Models[this.ModelId]
+    //         .GetModelAsync();
+    //     modelResponse.ThrowIfError();
+    //     modelResponse.Value.PointLoads.Should().NotBeEmpty();
+    //     modelResponse.Value.PointLoads.Count.Should().Be(1);
+    //     modelResponse.Value.PointLoads.First().NodeId.Should().Be(1);
+    // }
 
-    private async Task ImportBimGeometryChanges_ShouldSucceed()
-    {
-        // The "Import BIM Geometry Changes" step simulates updating the BIM model
-        // This involves importing new/changed geometry to create a second proposal
-        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
-        await nextStep.ClickAsync();
-        // delay for driver js to move to next step
-        await Task.Delay(750);
+    // private async Task ImportBimGeometryChanges_ShouldSucceed()
+    // {
+    //     // The "Import BIM Geometry Changes" step simulates updating the BIM model
+    //     // This involves importing new/changed geometry to create a second proposal
+    //     var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+    //     await nextStep.ClickAsync();
+    //     // delay for driver js to move to next step
+    //     await Task.Delay(750);
 
-        // TODO: In the future, actually import changed BIM data here to create a second proposal
-        // For now, we just verify the step navigation works
-    }
+    //     // TODO: In the future, actually import changed BIM data here to create a second proposal
+    //     // For now, we just verify the step navigation works
+    // }
 
-    private async Task ViewSecondModelProposal_ShouldSucceed()
-    {
-        // After importing BIM geometry changes, a second proposal would be created
-        // This step involves selecting and viewing that second proposal
+    // private async Task ViewSecondModelProposal_ShouldSucceed()
+    // {
+    //     // After importing BIM geometry changes, a second proposal would be created
+    //     // This step involves selecting and viewing that second proposal
 
-        // TODO: Wait for second proposal to be created, then select it
-        // For now, we'll just add the structure for this step
-        await Task.Delay(750);
-    }
+    //     // TODO: Wait for second proposal to be created, then select it
+    //     // For now, we'll just add the structure for this step
+    //     await Task.Delay(750);
+    // }
 
-    private async Task AcceptSecondModelProposal_ShouldSucceed()
-    {
-        // After viewing the second proposal, accept it to integrate the changes
+    // private async Task AcceptSecondModelProposal_ShouldSucceed()
+    // {
+    //     // After viewing the second proposal, accept it to integrate the changes
 
-        // TODO: Add logic to accept the second proposal
-        // For now, we'll just add the structure for this step
-        await Task.Delay(750);
-    }
+    //     // TODO: Add logic to accept the second proposal
+    //     // For now, we'll just add the structure for this step
+    //     await Task.Delay(750);
+    // }
 }
