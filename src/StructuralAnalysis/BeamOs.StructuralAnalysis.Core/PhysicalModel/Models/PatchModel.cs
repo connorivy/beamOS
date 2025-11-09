@@ -1,19 +1,24 @@
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Materials;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Nodes;
+using BeamOs.StructuralAnalysis.Application.PhysicalModel.PointLoads;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.SectionProfiles;
 using BeamOs.StructuralAnalysis.Contracts.Common;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Models;
 using BeamOs.StructuralAnalysis.Contracts.PhysicalModel.Nodes;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.Element1dAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.LoadCases;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.MaterialAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.ModelAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.NodeAggregate;
+using BeamOs.StructuralAnalysis.Domain.PhysicalModel.PointLoadAggregate;
 using BeamOs.StructuralAnalysis.Domain.PhysicalModel.SectionProfileAggregate;
 
 namespace BeamOs.StructuralAnalysis.Api.Endpoints.PhysicalModel.Models;
@@ -37,6 +42,8 @@ internal sealed class PatchModelCommandHandler(
     IMaterialRepository materialRepository,
     ISectionProfileRepository sectionProfileRepository,
     ISectionProfileFromLibraryRepository sectionProfileFromLibraryRepository,
+    ILoadCaseRepository loadCaseRepository,
+    IPointLoadRepository pointLoadRepository,
     IStructuralAnalysisUnitOfWork unitOfWork
 ) : ICommandHandler<ModelResourceRequest<PatchModelRequest>, PatchModelResponse>
 {
@@ -55,7 +62,9 @@ internal sealed class PatchModelCommandHandler(
             nameof(Model.Element1ds),
             nameof(Model.Materials),
             nameof(Model.SectionProfiles),
-            nameof(Model.SectionProfilesFromLibrary)
+            nameof(Model.SectionProfilesFromLibrary),
+            nameof(Model.LoadCases),
+            nameof(Model.PointLoads)
         );
 
         if (model is null)
@@ -97,6 +106,8 @@ internal sealed class PatchModelCommandHandler(
         var sectionProfileStore = (model.SectionProfiles ?? [])
             .Concat<SectionProfileInfoBase>(model.SectionProfilesFromLibrary ?? [])
             .ToDictionary(sp => sp.Id);
+        var loadCaseStore = (model.LoadCases ?? []).ToDictionary(lc => lc.Id);
+        var pointLoadStore = (model.PointLoads ?? []).ToDictionary(pl => pl.Id);
 
         foreach (Node node in model.Nodes ?? [])
         {
@@ -175,6 +186,62 @@ internal sealed class PatchModelCommandHandler(
                 sectionProfile.SetIntId(sectionProfileRequest.Id);
             }
             await this.AddToRepo(sectionProfile);
+        }
+
+        // Process LoadCases
+        foreach (var loadCaseContract in req.Body.LoadCases ?? [])
+        {
+            LoadCase loadCase;
+            // Check if we should use an existing LoadCase or create a new one
+            // If Id is provided and > 0 and exists in store, we skip it (assume it's already there)
+            // Otherwise, create a new LoadCase
+            if (loadCaseContract.Id > 0 && loadCaseStore.ContainsKey(new LoadCaseId(loadCaseContract.Id)))
+            {
+                // LoadCase already exists, skip
+                continue;
+            }
+            else
+            {
+                // Create new LoadCase
+                // If Id is > 0, use it; otherwise let EF Core assign one
+                var loadCaseId = loadCaseContract.Id > 0 ? new LoadCaseId(loadCaseContract.Id) : (LoadCaseId?)null;
+                loadCase = new LoadCase(model.Id, loadCaseContract.Name, loadCaseId);
+                loadCaseRepository.Add(loadCase);
+                loadCaseStore[loadCase.Id] = loadCase;
+            }
+        }
+
+        // Process PointLoads
+        foreach (var pointLoadRequest in req.Body.PointLoads ?? [])
+        {
+            PointLoad pointLoad;
+            // Check if we should use an existing PointLoad or create a new one
+            var hasId = pointLoadRequest.Id.HasValue && pointLoadRequest.Id.Value > 0;
+            if (hasId && pointLoadStore.ContainsKey(new PointLoadId(pointLoadRequest.Id!.Value)))
+            {
+                // PointLoad already exists, skip or update
+                continue;
+            }
+            else
+            {
+                // Create new PointLoad
+                // If Id is > 0, use it; otherwise let EF Core assign one
+                PointLoadId? pointLoadId = hasId ? new PointLoadId(pointLoadRequest.Id!.Value) : null;
+                
+                var nodeId = new NodeId(pointLoadRequest.NodeId);
+                var loadCaseId = new LoadCaseId(pointLoadRequest.LoadCaseId);
+                
+                pointLoad = new PointLoad(
+                    model.Id,
+                    nodeId,
+                    loadCaseId,
+                    pointLoadRequest.Force.MapToForce(),
+                    pointLoadRequest.Direction.ToDomain(),
+                    pointLoadId
+                );
+                pointLoadRepository.Add(pointLoad);
+                pointLoadStore[pointLoad.Id] = pointLoad;
+            }
         }
 
         var response = new PatchModelResponse() { Element1dsToAddOrUpdateByExternalIdResults = [] };
