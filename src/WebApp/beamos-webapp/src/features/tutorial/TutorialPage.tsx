@@ -133,7 +133,7 @@ const TutorialPage = () => {
                   console.log("Clicked proposal select label");
                   setTimeout(() => {
                     driverObj.moveNext();
-                  }, 100);
+                  }, 50);
                 }
               }
             },
@@ -186,8 +186,84 @@ const TutorialPage = () => {
               for (const prop of allProposals) {
                 if (!prop.textContent?.trim().includes('No Selection')) {
                   // todo: disable the reject button
-                  // todo: add event listener to accept button to advance driver
+                  var acceptButton = prop.querySelector('button[aria-label="accept"]')
+                  if (!acceptButton) {
+                    console.error("Accept button not found on proposal item.");
+                    return;
+                  }
+                  currentButton = acceptButton as HTMLElement;
+                  currentButton.onclick = () => {
+                    driverObj.moveNext();
+                  }
                   break;
+                }
+              }
+            },
+          },
+          {
+            popover: {
+              title: "Add Analytical Info",
+              description: "You can add analytical information such as loads and supports to your model. For this tutorial, we'll simulate this step.",
+            },
+            onHighlighted: () => {
+              if (currentButton) {
+                currentButton.onclick = null;
+              }
+              if (popover) {
+                popover.nextButton.style.display = "block";
+                popover.nextButton.addEventListener("click", () => {
+                  driverObj.moveNext();
+                  // todo: add analytical info
+                  popover!.nextButton.style.display = "none";
+                });
+              }
+            }
+          },
+          {
+            element: "#tutorial-canvas",
+            popover: {
+              title: "Import BIM Geometry Changes",
+              description: "As your BIM model evolves, you can push those changes to beamOS where they can be reviewed as model proposals",
+            },
+            onHighlighted: () => {
+              if (currentButton) {
+                currentButton.onclick = null;
+              }
+              if (popover) {
+                popover.nextButton.style.display = "block";
+                popover.nextButton.addEventListener("click", () => {
+                  driverObj.moveNext();
+                  popover!.nextButton.style.display = "none";
+                });
+              }
+            }
+          },
+          {
+            element: "#model-proposals-select",
+            popover: {
+              title: "Select Model Proposal",
+              description:
+                "Use this dropdown to select the model proposal created from the sample data. Selecting it will display the proposal in the editor.",
+            },
+            onHighlighted: () => {
+              if (currentButton) {
+                currentButton.onclick = null;
+              }
+              var allProposals = document
+                .querySelectorAll('#model-proposals-select ul li')
+
+              for (const prop of allProposals) {
+                if (!prop.textContent?.trim().includes('No Selection')) {
+                  currentButton = prop as HTMLElement;
+                  break;
+                }
+              }
+              if (currentButton) {
+                currentButton.onclick = () => {
+                  console.log("Clicked proposal select label");
+                  setTimeout(() => {
+                    driverObj.moveNext();
+                  }, 50);
                 }
               }
             },

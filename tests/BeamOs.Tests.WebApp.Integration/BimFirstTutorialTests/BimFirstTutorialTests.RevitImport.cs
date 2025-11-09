@@ -49,6 +49,10 @@ public partial class BimFirstTutorialTests : ReactPageTest
 
         await this.ViewModelProposal_ShouldSucceed();
         await this.AcceptModelProposal_ShouldSucceed();
+        await this.AddAnalyticalInfo_ShouldSucceed();
+        await this.ImportBimGeometryChanges_ShouldSucceed();
+        await this.ViewSecondModelProposal_ShouldSucceed();
+        await this.AcceptSecondModelProposal_ShouldSucceed();
     }
 
     private async Task ViewModelProposal_ShouldSucceed()
@@ -56,9 +60,11 @@ public partial class BimFirstTutorialTests : ReactPageTest
         // select the model proposal tab
         var modelProposalsTab = this.Page.GetByRole(
             AriaRole.Button,
-            new() { Name = "model proposals" }
+            new() { Name = "Model Proposals", Exact = true }
         );
         await modelProposalsTab.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         // select the model proposal
         var modelProposalButton = this.Page.GetByRole(
@@ -66,6 +72,8 @@ public partial class BimFirstTutorialTests : ReactPageTest
             new() { NameRegex = new System.Text.RegularExpressions.Regex(@"^Proposal \d+$") }
         );
         await modelProposalButton.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         // todo: assert that the model proposal is displayed in the 3D view
     }
@@ -74,9 +82,23 @@ public partial class BimFirstTutorialTests : ReactPageTest
     {
         var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
         await nextStep.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         var acceptProposalButton = this.Page.GetByRole(AriaRole.Button, new() { Name = "accept" });
         await acceptProposalButton.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
+
+        var acceptDialog = this.Page.GetByRole(AriaRole.Dialog);
+        await this.Expect(acceptDialog).ToBeVisibleAsync(new() { Timeout = 3_000 });
+        var confirmAcceptButton = acceptDialog.GetByRole(
+            AriaRole.Button,
+            new() { Name = "accept" }
+        );
+        await confirmAcceptButton.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
         var modelProposals = await AssemblySetup
             .BeamOsResultApiClient.Models[this.ModelId]
@@ -88,5 +110,49 @@ public partial class BimFirstTutorialTests : ReactPageTest
         model.ThrowIfError();
         model.Value.Nodes.Should().NotBeEmpty();
         model.Value.Element1ds.Should().NotBeEmpty();
+    }
+
+    private async Task AddAnalyticalInfo_ShouldSucceed()
+    {
+        // The "Add Analytical Info" step is a tutorial step that just requires clicking next
+        // In a real scenario, this would involve adding loads and supports
+        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+        await nextStep.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
+
+        // TODO: In the future, add actual analytical info (loads, supports) here
+    }
+
+    private async Task ImportBimGeometryChanges_ShouldSucceed()
+    {
+        // The "Import BIM Geometry Changes" step simulates updating the BIM model
+        // This involves importing new/changed geometry to create a second proposal
+        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+        await nextStep.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
+
+        // TODO: In the future, actually import changed BIM data here to create a second proposal
+        // For now, we just verify the step navigation works
+    }
+
+    private async Task ViewSecondModelProposal_ShouldSucceed()
+    {
+        // After importing BIM geometry changes, a second proposal would be created
+        // This step involves selecting and viewing that second proposal
+
+        // TODO: Wait for second proposal to be created, then select it
+        // For now, we'll just add the structure for this step
+        await Task.Delay(750);
+    }
+
+    private async Task AcceptSecondModelProposal_ShouldSucceed()
+    {
+        // After viewing the second proposal, accept it to integrate the changes
+
+        // TODO: Add logic to accept the second proposal
+        // For now, we'll just add the structure for this step
+        await Task.Delay(750);
     }
 }

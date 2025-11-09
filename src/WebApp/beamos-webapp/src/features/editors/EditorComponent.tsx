@@ -1,10 +1,65 @@
-import { useEffect, useRef } from "react"
+import { Dispatch, useEffect, useRef } from "react"
 import { useAppDispatch } from "../../app/hooks"
 import { addEditor, removeEditor, modelLoaded, addShearForceDiagrams, addMomentDiagrams, addDeflectionDiagrams, setSelectedResultSetId, modelProposalsLoaded } from "./editorsSlice"
 import { BeamOsEditor } from "../three-js-editor/BeamOsEditor"
 import { EventsApi } from "./EventsApi"
 import { useApiClient } from "../api-client/ApiClientContext"
 import { useEditors } from "./EditorContext"
+import { IStructuralAnalysisApiClientV1, ModelResponse } from "../../../../../../codeGen/BeamOs.CodeGen.StructuralAnalysisApiClient/StructuralAnalysisApiClientV1"
+import { Action } from "@reduxjs/toolkit"
+
+export async function handleModelResponse({
+  modelResponse,
+  canvasId,
+  modelId,
+  editor,
+  apiClient,
+  dispatch,
+  signal,
+}: {
+  modelResponse: ModelResponse
+  canvasId: string
+  modelId: string
+  editor: BeamOsEditor
+  apiClient: IStructuralAnalysisApiClientV1,
+  dispatch: Dispatch<Action>
+  signal: AbortSignal
+}) {
+  if (signal.aborted) return;
+
+  dispatch(modelLoaded({ canvasId, model: modelResponse, remoteModelId: modelId }))
+
+  await editor.api.setSettings(modelResponse.settings)
+  await editor.api.createModel(modelResponse)
+
+  if (signal.aborted) return
+
+  if (modelResponse.resultSets && modelResponse.resultSets.length > 0) {
+    for (const resultSet of modelResponse.resultSets ?? []) {
+      if (signal.aborted) return;
+
+      const diagramResponse = await apiClient.getDiagrams(modelId, resultSet.id, "kn-m")
+
+      if (signal.aborted) return;
+
+      if (diagramResponse.shearDiagrams) {
+        dispatch(addShearForceDiagrams({ canvasId, resultSetId: resultSet.id, shearForceResults: diagramResponse.shearDiagrams }))
+      }
+      if (diagramResponse.momentDiagrams) {
+        dispatch(addMomentDiagrams({ canvasId, resultSetId: resultSet.id, momentResults: diagramResponse.momentDiagrams }))
+      }
+      if (diagramResponse.deflectionDiagrams) {
+        dispatch(addDeflectionDiagrams({ canvasId, resultSetId: resultSet.id, deflectionResults: diagramResponse.deflectionDiagrams }))
+      }
+    }
+    dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: modelResponse.resultSets[0].id }))
+  }
+
+  const proposals = await apiClient.getModelProposals(modelId)
+  if (proposals && proposals.length > 0) {
+    dispatch(modelProposalsLoaded({ canvasId, proposals }))
+  }
+}
 
 type EditorComponentProps = {
   isReadOnly?: boolean
@@ -73,63 +128,32 @@ export const RemoteEditorComponent = ({
   const editors = useEditors()
 
   useEffect(() => {
-    let cancelled = false
+    const abortController = new AbortController();
+    const signal = abortController.signal;
 
     const fetchModel = async () => {
-      const modelResponse = await apiClient.getModel(modelId)
-
-      if (cancelled) {
-        return
-      }
-
-      dispatch(modelLoaded({ canvasId, model: modelResponse, remoteModelId: modelId }))
-
-      const editor = canvasId in editors ? editors[canvasId] : null
+      const modelResponse = await apiClient.getModel(modelId);
+      const editor = canvasId in editors ? editors[canvasId] : null;
       if (!editor) {
-        console.error("Editor not ready for canvasId:", canvasId)
-        return
+        console.error("Editor not ready for canvasId:", canvasId);
+        return;
       }
-
-      await editor.api.setSettings(modelResponse.settings)
-      await editor.api.createModel(modelResponse)
-
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (cancelled) return
-
-      if (modelResponse.resultSets && modelResponse.resultSets.length > 0) {
-        for (const resultSet of modelResponse.resultSets ?? []) {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (cancelled) break
-
-          const diagramResponse = await apiClient.getDiagrams(modelId, resultSet.id, "kn-m")
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (cancelled) break
-
-          if (diagramResponse.shearDiagrams) {
-            dispatch(addShearForceDiagrams({ canvasId, resultSetId: resultSet.id, shearForceResults: diagramResponse.shearDiagrams }))
-          }
-          if (diagramResponse.momentDiagrams) {
-            dispatch(addMomentDiagrams({ canvasId, resultSetId: resultSet.id, momentResults: diagramResponse.momentDiagrams }))
-          }
-          if (diagramResponse.deflectionDiagrams) {
-            dispatch(addDeflectionDiagrams({ canvasId, resultSetId: resultSet.id, deflectionResults: diagramResponse.deflectionDiagrams }))
-          }
-        }
-        dispatch(setSelectedResultSetId({ canvasId: canvasId, selectedResultSetId: modelResponse.resultSets[0].id }))
-      }
-
-      var proposals = await apiClient.getModelProposals(modelId)
-      if (proposals && proposals.length > 0) {
-        dispatch(modelProposalsLoaded({ canvasId, proposals }))
-      }
-    }
-    fetchModel().catch(console.error)
+      await handleModelResponse({
+        modelResponse,
+        canvasId,
+        modelId,
+        editor,
+        apiClient,
+        dispatch,
+        signal,
+      });
+    };
+    fetchModel().catch(console.error);
 
     return () => {
-      cancelled = true
-    }
-  }, [apiClient, canvasId, dispatch, editors, modelId])
+      abortController.abort();
+    };
+  }, [apiClient, canvasId, dispatch, editors, modelId]);
 
   return (
     <EditorComponent
