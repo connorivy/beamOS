@@ -23,6 +23,7 @@
 namespace BeamOs.CodeGen.StructuralAnalysisApiClient
 {
     using System = global::System;
+    using CreatePointLoadRequest2 = BeamOs.StructuralAnalysis.Contracts.PhysicalModel.PointLoads.CreatePointLoadRequest;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
 
