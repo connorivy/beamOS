@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-**beamOS** is an open-source, test-first structural analysis program written in C# with a Blazor WebAssembly frontend. It implements the Direct Stiffness Method for structural analysis and provides a web-based interface for creating and analyzing structural models.
+**beamOS** is an open-source, test-first structural analysis program written in C# with a React frontend. It implements the Direct Stiffness Method for structural analysis and provides a web-based interface for creating and analyzing structural models.
 
 ### Technology Stack
 - **Backend**: .NET 9.0 with C# and ASP.NET Core
-- **Frontend**: Blazor Server Components with TypeScript/JavaScript
+- **Frontend**: React with TypeScript
 - **Database**: PostgreSQL (default), SQLite (optional), In-Memory (testing)
 - **Testing**: TUnit and Playwright (integration tests)
 - **Build Tools**: dotnet CLI, npm, and Rollup.js
@@ -24,55 +24,18 @@
 - Node.js >= 20 (verify with `node --version`)
 - Git
 
-### Essential Build Order
-**ALWAYS follow this exact sequence to avoid build failures:**
-
-1. **First-time setup or after clean:**
-   ```bash
-   # Install .NET tools
-   dotnet tool restore
-
-   # Install Node.js dependencies
-   cd src/WebApp/BeamOs.WebApp.Components
-   npm install
-   ```
-
-2. **Build JavaScript components FIRST:**
-   ```bash
-   # CRITICAL: Must run before any .NET build
-   cd src/WebApp/BeamOs.WebApp.Components
-   npm run build
-   ```
-
-3. **Build .NET projects in Release mode:**
-   ```bash
-   cd /workspaces/beamOS
-   dotnet build -c Release
-   ```
-
-### Common Build Issues & Solutions
-
-**Error: BLAZOR105 - Multiple JS files found**
-- **Solution**: Run the 'deepClean.sh' script in scripts/ to remove all bin/obj folders, then build again.
-
-**Error: BLAZOR106 - JS module file not found**
-- **Cause**: JavaScript components not built before .NET build
-- **Solution**: This is a transient error that will resolve after the first build. Just run the command again and it will work.
-
-**Error: Cannot find referenced project**
-- **Cause**: Missing project references or clean build state
-- **Solution**: Run `dotnet restore` then rebuild
-
-**Error: Assembly conflicts with GenerateServiceRegistrationsAttribute**
-- **Cause**: Code generation conflicts
-- **Solution**: This is expected during code generation builds; warnings can be ignored
-
 ## Testing & Validation
 
 ### Running Tests
 ```bash
 # Run all tests
-dotnet test
+./scripts/test-all.sh
+
+# Run only web tests
+./scripts/test-webapp.sh **{add optional test filter here}**
+
+# Run all tests except web tests
+dotnet test ./BeamOs.NonWebTests.slnf **{add optional test filter here}**
 
 # Run specific test project
 dotnet test tests/StructuralAnalysis/BeamOs.Tests.StructuralAnalysis.Unit/
@@ -85,6 +48,9 @@ dotnet test -- --treenode-filter /*/*/*/*Beam*
 # Run tests with coverage
 dotnet-coverage collect "dotnet test" -f cobertura -s ./CodeCov.runsettings
 ```
+
+### Debugging Tests
+All failing tests will create a log file that shows detailed information about the failure. The web tests will also capture a playwright trace file when a web test fails. The issue that is causing the failure can often be found by looking at either the console output or the network logs captured in the trace file.
 
 ### Code Formatting
 ```bash
@@ -112,8 +78,7 @@ Some integration tests require additional setup:
    - `BeamOs.StructuralAnalysis.Contracts` - DTOs and interfaces
 
 2. **WebApp** (`src/WebApp/`) - User interface
-   - `BeamOs.WebApp` - Main web application
-   - `BeamOs.WebApp.Components` - Blazor components and UI logic
+   - `beamos-webApp` - Main React web application
 
 3. **Common** (`src/Common/`) - Shared utilities and base classes
 4. **Identity** (`src/Identity/`) - User authentication and authorization
