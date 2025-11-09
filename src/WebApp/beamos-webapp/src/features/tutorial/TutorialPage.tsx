@@ -231,7 +231,65 @@ const TutorialPage = () => {
               }
               if (popover) {
                 popover.nextButton.style.display = "block";
-                popover.nextButton.addEventListener("click", () => {
+                popover.nextButton.addEventListener("click", async () => {
+                  // Simulate Revit pushing updated geometry - move endpoint one 3 feet in X direction
+                  if (bimSourceModelId) {
+                    try {
+                      // Update the elements in the source model to reflect the new geometry
+                      // All three elements connect to endpoint one (originally at 12, 16, 0), now at (15, 16, 0)
+                      await apiClient.putSourceModel(bimSourceModelId, {
+                        element1dsToAddOrUpdateByExternalId: [
+                          {
+                            externalId: "Element-1",
+                            startNodeLocation: {
+                              x: 0,
+                              y: 0,
+                              z: 0,
+                              lengthUnit: LengthUnit.Foot,
+                            },
+                            endNodeLocation: {
+                              x: 15, // Changed from 12 to 15 (moved 3 feet in X)
+                              y: 16,
+                              z: 0,
+                              lengthUnit: LengthUnit.Foot,
+                            },
+                          },
+                          {
+                            externalId: "Element-2",
+                            startNodeLocation: {
+                              x: 12,
+                              y: 0,
+                              z: 0,
+                              lengthUnit: LengthUnit.Foot,
+                            },
+                            endNodeLocation: {
+                              x: 15, // Changed from 12 to 15 (moved 3 feet in X)
+                              y: 16,
+                              z: 0,
+                              lengthUnit: LengthUnit.Foot,
+                            },
+                          },
+                          {
+                            externalId: "Element-3",
+                            startNodeLocation: {
+                              x: 24,
+                              y: 0,
+                              z: 0,
+                              lengthUnit: LengthUnit.Foot,
+                            },
+                            endNodeLocation: {
+                              x: 15, // Changed from 12 to 15 (moved 3 feet in X)
+                              y: 16,
+                              z: 0,
+                              lengthUnit: LengthUnit.Foot,
+                            },
+                          },
+                        ],
+                      });
+                    } catch (error) {
+                      console.error("Error updating BIM source model:", error);
+                    }
+                  }
                   driverObj.moveNext();
                   popover!.nextButton.style.display = "none";
                 });
