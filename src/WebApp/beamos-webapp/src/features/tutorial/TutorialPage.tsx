@@ -231,7 +231,80 @@ const TutorialPage = () => {
               }
               if (popover) {
                 popover.nextButton.style.display = "block";
-                popover.nextButton.addEventListener("click", () => {
+                popover.nextButton.addEventListener("click", async () => {
+                  // Simulate updated BIM geometry - move node 1 from (12, 16, 0) to (16, 16, 0)
+                  console.log("Import BIM Geometry Changes - Starting putSourceModel call");
+                  console.log("bimSourceModelId:", bimSourceModelId);
+                  console.log("modelId:", modelId);
+                  try {
+                    if (bimSourceModelId) {
+                      console.log("Calling putSourceModel...");
+                      await apiClient.putSourceModel(bimSourceModelId, {
+                      element1dsToAddOrUpdateByExternalId: [
+                        {
+                          externalId: "Element-1",
+                          startNodeLocation: {
+                            x: 0,
+                            y: 0,
+                            z: 0,
+                            lengthUnit: LengthUnit.Foot,
+                          },
+                          endNodeLocation: {
+                            x: 16,
+                            y: 16,
+                            z: 0,
+                            lengthUnit: LengthUnit.Foot,
+                          },
+                        },
+                        {
+                          externalId: "Element-2",
+                          startNodeLocation: {
+                            x: 12,
+                            y: 0,
+                            z: 0,
+                            lengthUnit: LengthUnit.Foot,
+                          },
+                          endNodeLocation: {
+                            x: 16,
+                            y: 16,
+                            z: 0,
+                            lengthUnit: LengthUnit.Foot,
+                          },
+                        },
+                        {
+                          externalId: "Element-3",
+                          startNodeLocation: {
+                            x: 24,
+                            y: 0,
+                            z: 0,
+                            lengthUnit: LengthUnit.Foot,
+                          },
+                          endNodeLocation: {
+                            x: 16,
+                            y: 16,
+                            z: 0,
+                            lengthUnit: LengthUnit.Foot,
+                          },
+                        },
+                      ],
+                      });
+                      console.log("putSourceModel completed successfully");
+                      
+                      // Get the proposals and accept the latest one
+                      console.log("Getting model proposals...");
+                      const proposals = await apiClient.getModelProposals(modelId);
+                      console.log("proposals:", proposals);
+                      if (proposals && proposals.length > 0) {
+                        // Find the most recent proposal (assuming it's the last in the array)
+                        const latestProposal = proposals[proposals.length - 1];
+                        console.log("Accepting proposal:", latestProposal.id);
+                        await apiClient.acceptModelProposal(modelId, latestProposal.id);
+                        console.log("Proposal accepted successfully");
+                      }
+                    }
+                  } catch (error) {
+                    console.error("Error in Import BIM Geometry Changes:", error);
+                  }
                   driverObj.moveNext();
                   popover!.nextButton.style.display = "none";
                 });
