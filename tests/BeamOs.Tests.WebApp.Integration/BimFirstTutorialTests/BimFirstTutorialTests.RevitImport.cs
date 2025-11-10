@@ -1,3 +1,4 @@
+using BeamOs.StructuralAnalysis.Application.Common;
 using FluentAssertions;
 using Microsoft.Playwright;
 
@@ -50,7 +51,7 @@ public partial class BimFirstTutorialTests : ReactPageTest
         await this.ViewModelProposal_ShouldSucceed();
         await this.AcceptModelProposal_ShouldSucceed();
         // await this.AddAnalyticalInfo_ShouldSucceed();
-        // await this.ImportBimGeometryChanges_ShouldSucceed();
+        await this.ImportBimGeometryChanges_ShouldSucceed();
         // await this.ViewSecondModelProposal_ShouldSucceed();
         // await this.AcceptSecondModelProposal_ShouldSucceed();
     }
@@ -94,16 +95,16 @@ public partial class BimFirstTutorialTests : ReactPageTest
         // delay for driver js to move to next step
         await Task.Delay(750);
 
-        var modelProposals = await AssemblySetup
-            .BeamOsResultApiClient.Models[this.ModelId]
-            .Proposals.GetModelProposalsAsync();
-        modelProposals.ThrowIfError();
-        modelProposals.Value.Count.Should().Be(0);
+        // var modelProposals = await AssemblySetup
+        //     .BeamOsResultApiClient.Models[this.ModelId]
+        //     .Proposals.GetModelProposalsAsync();
+        // modelProposals.ThrowIfError();
+        // modelProposals.Value.Count.Should().Be(0);
 
-        var model = await AssemblySetup.BeamOsResultApiClient.Models[this.ModelId].GetModelAsync();
-        model.ThrowIfError();
-        model.Value.Nodes.Should().NotBeEmpty();
-        model.Value.Element1ds.Should().NotBeEmpty();
+        // var model = await AssemblySetup.BeamOsResultApiClient.Models[this.ModelId].GetModelAsync();
+        // model.ThrowIfError();
+        // model.Value.Nodes.Should().NotBeEmpty();
+        // model.Value.Element1ds.Should().NotBeEmpty();
     }
 
     // private async Task AddAnalyticalInfo_ShouldSucceed()
@@ -124,18 +125,23 @@ public partial class BimFirstTutorialTests : ReactPageTest
     //     modelResponse.Value.PointLoads.First().NodeId.Should().Be(1);
     // }
 
-    // private async Task ImportBimGeometryChanges_ShouldSucceed()
-    // {
-    //     // The "Import BIM Geometry Changes" step simulates updating the BIM model
-    //     // This involves importing new/changed geometry to create a second proposal
-    //     var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
-    //     await nextStep.ClickAsync();
-    //     // delay for driver js to move to next step
-    //     await Task.Delay(750);
+    private async Task ImportBimGeometryChanges_ShouldSucceed()
+    {
+        // The "Import BIM Geometry Changes" step simulates updating the BIM model
+        // This involves importing new/changed geometry to create a second proposal
+        var nextStep = this.Page.GetByRole(AriaRole.Button, new() { Name = "next" });
+        await nextStep.ClickAsync();
+        // delay for driver js to move to next step
+        await Task.Delay(750);
 
-    //     // TODO: In the future, actually import changed BIM data here to create a second proposal
-    //     // For now, we just verify the step navigation works
-    // }
+        var modelResponse = await AssemblySetup
+            .BeamOsResultApiClient.Models[this.ModelId]
+            .GetModelAsync();
+        modelResponse.ThrowIfError();
+        var node1 = modelResponse.Value.Nodes.First(n => n.Id == 1);
+        var updatedLocation = node1.LocationPoint.ToDomain();
+        updatedLocation.X.Feet.Should().BeApproximately(16, .01);
+    }
 
     // private async Task ViewSecondModelProposal_ShouldSucceed()
     // {

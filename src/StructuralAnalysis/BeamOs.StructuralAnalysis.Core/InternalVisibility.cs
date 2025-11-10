@@ -9,3 +9,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("BeamOs.Tests.Architecture")]
 [assembly: InternalsVisibleTo("BeamOs.Benchmarks")]
 [assembly: InternalsVisibleTo("BeamOs.Tests.Runtime.TestRunner")]
+[assembly: InternalsVisibleTo("BeamOs.Tests.WebApp.Integration")]
