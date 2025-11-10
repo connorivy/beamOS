@@ -238,21 +238,8 @@ const TutorialPage = () => {
                   console.log("modelId:", modelId);
                   try {
                     if (bimSourceModelId) {
-                      console.log("Calling putNode to update node 1...");
-                      // Update node 1 to new location
-                      await apiClient.putNode(bimSourceModelId, 1, {
-                      locationPoint: { x: 16, y: 16, z: 0, lengthUnit: LengthUnit.Foot },
-                      restraint: {
-                        canTranslateAlongX: true,
-                        canTranslateAlongY: true,
-                        canTranslateAlongZ: true,
-                        canRotateAboutX: true,
-                        canRotateAboutY: true,
-                        canRotateAboutZ: true,
-                      },
-                    });
-                    console.log("Calling putSourceModel...");
-                    await apiClient.putSourceModel(bimSourceModelId, {
+                      console.log("Calling putSourceModel...");
+                      await apiClient.putSourceModel(bimSourceModelId, {
                       element1dsToAddOrUpdateByExternalId: [
                         {
                           externalId: "Element-1",
@@ -300,19 +287,20 @@ const TutorialPage = () => {
                           },
                         },
                       ],
-                    });
-                    console.log("putSourceModel completed successfully");
-                    
-                    // Get the proposals and accept the latest one
-                    console.log("Getting model proposals...");
-                    const proposals = await apiClient.getModelProposals(modelId);
-                    console.log("proposals:", proposals);
-                    if (proposals && proposals.length > 0) {
-                      // Find the most recent proposal (assuming it's the last in the array)
-                      const latestProposal = proposals[proposals.length - 1];
-                      console.log("Accepting proposal:", latestProposal.id);
-                      await apiClient.acceptModelProposal(modelId, latestProposal.id);
-                      console.log("Proposal accepted successfully");
+                      });
+                      console.log("putSourceModel completed successfully");
+                      
+                      // Get the proposals and accept the latest one
+                      console.log("Getting model proposals...");
+                      const proposals = await apiClient.getModelProposals(modelId);
+                      console.log("proposals:", proposals);
+                      if (proposals && proposals.length > 0) {
+                        // Find the most recent proposal (assuming it's the last in the array)
+                        const latestProposal = proposals[proposals.length - 1];
+                        console.log("Accepting proposal:", latestProposal.id);
+                        await apiClient.acceptModelProposal(modelId, latestProposal.id);
+                        console.log("Proposal accepted successfully");
+                      }
                     }
                   } catch (error) {
                     console.error("Error in Import BIM Geometry Changes:", error);
