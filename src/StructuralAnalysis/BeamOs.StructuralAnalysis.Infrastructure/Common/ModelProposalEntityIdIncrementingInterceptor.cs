@@ -81,13 +81,10 @@ internal class ModelProposalEntityIdIncrementingInterceptor(TimeProvider timePro
                 //     MaxLoadCombinationId = 0,
                 // };
 
-                // NodeProposal and InternalNodeProposal both create NodeDefinition entities that share the same table
-                var maxNodeProposalId = Math.Max(currentModelProposal.MaxNodeId, currentModelProposal.MaxInternalNodeId);
-                
                 Dictionary<Type, int> entityTypeToMaxIdDict = new()
                 {
-                    { typeof(NodeProposal), maxNodeProposalId },
-                    { typeof(InternalNodeProposal), maxNodeProposalId },
+                    { typeof(NodeProposal), currentModelProposal.MaxNodeId },
+                    { typeof(InternalNodeProposal), currentModelProposal.MaxInternalNodeId },
                     { typeof(Element1dProposal), currentModelProposal.MaxElement1dId },
                     { typeof(MaterialProposal), currentModelProposal.MaxMaterialId },
                     { typeof(SectionProfileProposal), currentModelProposal.MaxSectionProfileId },
@@ -128,13 +125,10 @@ internal class ModelProposalEntityIdIncrementingInterceptor(TimeProvider timePro
                     }
                 }
 
-                // Update both MaxNodeId and MaxInternalNodeId to the same value since they will create entities in the same table
-                var finalMaxNodeProposalId = Math.Max(
-                    entityTypeToMaxIdDict[typeof(NodeProposal)],
-                    entityTypeToMaxIdDict[typeof(InternalNodeProposal)]
-                );
-                currentModelProposal.MaxNodeId = finalMaxNodeProposalId;
-                currentModelProposal.MaxInternalNodeId = finalMaxNodeProposalId;
+                currentModelProposal.MaxNodeId = entityTypeToMaxIdDict[typeof(NodeProposal)];
+                currentModelProposal.MaxInternalNodeId = entityTypeToMaxIdDict[
+                    typeof(InternalNodeProposal)
+                ];
                 currentModelProposal.MaxElement1dId = entityTypeToMaxIdDict[
                     typeof(Element1dProposal)
                 ];
