@@ -102,20 +102,46 @@ internal class CreateModelProposalFromDiffCommandHandler(
             }
         }
 
+        // Build lookup sets for newly added entities in this diff
+        var addedNodeIds = diffData.Nodes
+            .Where(n => n.Status == DiffStatus.Added)
+            .Select(n => n.TargetEntity.Id)
+            .ToHashSet();
+        var addedMaterialIds = diffData.Materials
+            .Where(m => m.Status == DiffStatus.Added)
+            .Select(m => m.TargetEntity.Id)
+            .ToHashSet();
+        var addedSectionProfileIds = diffData.SectionProfiles
+            .Where(s => s.Status == DiffStatus.Added)
+            .Select(s => s.TargetEntity.Id)
+            .ToHashSet();
+
         // Process element1ds
-        // Note: Currently assumes all referenced entities (nodes, materials, section profiles) exist in the model.
-        // Future enhancement: Check if referenced IDs are in the diff's added entities and use ProposedID.Proposed() instead.
         foreach (var element1dDiff in diffData.Element1ds)
         {
             switch (element1dDiff.Status)
             {
                 case DiffStatus.Added:
+                    // Check if referenced entities are being added in this diff - if so, use Proposed, otherwise Existing
+                    var startNodeId = addedNodeIds.Contains(element1dDiff.TargetEntity.StartNodeId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.StartNodeId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.StartNodeId);
+                    var endNodeId = addedNodeIds.Contains(element1dDiff.TargetEntity.EndNodeId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.EndNodeId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.EndNodeId);
+                    var materialId = addedMaterialIds.Contains(element1dDiff.TargetEntity.MaterialId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.MaterialId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.MaterialId);
+                    var sectionProfileId = addedSectionProfileIds.Contains(element1dDiff.TargetEntity.SectionProfileId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.SectionProfileId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.SectionProfileId);
+                    
                     modelProposalData.CreateElement1dProposals.Add(
                         Element1dProposalBase.Create(
-                            ProposedID.Existing(element1dDiff.TargetEntity.StartNodeId),
-                            ProposedID.Existing(element1dDiff.TargetEntity.EndNodeId),
-                            ProposedID.Existing(element1dDiff.TargetEntity.MaterialId),
-                            ProposedID.Existing(element1dDiff.TargetEntity.SectionProfileId),
+                            startNodeId,
+                            endNodeId,
+                            materialId,
+                            sectionProfileId,
                             element1dDiff.TargetEntity.SectionProfileRotation,
                             element1dDiff.TargetEntity.Metadata,
                             element1dDiff.TargetEntity.Id
@@ -123,13 +149,27 @@ internal class CreateModelProposalFromDiffCommandHandler(
                     );
                     break;
                 case DiffStatus.Modified:
+                    // For modified elements, check if referenced entities are being added in this diff
+                    var modStartNodeId = addedNodeIds.Contains(element1dDiff.TargetEntity.StartNodeId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.StartNodeId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.StartNodeId);
+                    var modEndNodeId = addedNodeIds.Contains(element1dDiff.TargetEntity.EndNodeId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.EndNodeId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.EndNodeId);
+                    var modMaterialId = addedMaterialIds.Contains(element1dDiff.TargetEntity.MaterialId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.MaterialId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.MaterialId);
+                    var modSectionProfileId = addedSectionProfileIds.Contains(element1dDiff.TargetEntity.SectionProfileId)
+                        ? ProposedID.Proposed(element1dDiff.TargetEntity.SectionProfileId)
+                        : ProposedID.Existing(element1dDiff.TargetEntity.SectionProfileId);
+                    
                     modelProposalData.ModifyElement1dProposals.Add(
                         Element1dProposalBase.Modify(
                             element1dDiff.TargetEntity.Id,
-                            ProposedID.Existing(element1dDiff.TargetEntity.StartNodeId),
-                            ProposedID.Existing(element1dDiff.TargetEntity.EndNodeId),
-                            ProposedID.Existing(element1dDiff.TargetEntity.MaterialId),
-                            ProposedID.Existing(element1dDiff.TargetEntity.SectionProfileId),
+                            modStartNodeId,
+                            modEndNodeId,
+                            modMaterialId,
+                            modSectionProfileId,
                             element1dDiff.TargetEntity.SectionProfileRotation,
                             element1dDiff.TargetEntity.Metadata
                         )

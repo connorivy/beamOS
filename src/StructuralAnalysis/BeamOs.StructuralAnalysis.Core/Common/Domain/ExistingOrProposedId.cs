@@ -40,7 +40,7 @@ internal class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
     public (TId id, TEntity? entity) ToIdAndEntity<TEntity>(
         Dictionary<TProposedId, TEntity>? proposedIdToEntityDict
     )
-        where TEntity : class
+        where TEntity : BeamOsEntity<TId>
     {
         if (this.ExistingId is not null)
         {
@@ -62,7 +62,7 @@ internal class ExistingOrProposedId<TId, TProposedId> : BeamOSValueObject
                 $"ProposedId {this.ProposedId} not found in dictionary."
             );
         }
-        return (default, entity);
+        return (entity.Id, entity);
     }
 
     [Obsolete("EF Core Constructor", true)]
