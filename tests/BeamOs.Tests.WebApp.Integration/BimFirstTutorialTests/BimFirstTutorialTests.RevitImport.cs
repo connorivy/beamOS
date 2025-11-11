@@ -38,7 +38,8 @@ public partial class BimFirstTutorialTests : ReactPageTest
         await this.Page.WaitForTimeoutAsync(100);
 
         // Wait for the import dialog to disappear
-        await this.Expect(importData).Not.ToBeVisibleAsync(new() { Timeout = 3_000 });
+        await this.Expect(importData)
+            .Not.ToBeVisibleAsync(new() { Timeout = AssemblySetup._3000msOr0 });
 
         var modelProposalsAfter = await AssemblySetup
             .BeamOsResultApiClient.Models[this.ModelId]
@@ -94,17 +95,16 @@ public partial class BimFirstTutorialTests : ReactPageTest
         // delay for driver js to move to next step
         await Task.Delay(750);
 
-        // currently failing, but will be fixed by another change
-        // var modelProposals = await AssemblySetup
-        //     .BeamOsResultApiClient.Models[this.ModelId]
-        //     .Proposals.GetModelProposalsAsync();
-        // modelProposals.ThrowIfError();
-        // modelProposals.Value.Count.Should().Be(0);
+        var modelProposals = await AssemblySetup
+            .BeamOsResultApiClient.Models[this.ModelId]
+            .Proposals.GetModelProposalsAsync();
+        modelProposals.ThrowIfError();
+        modelProposals.Value.Count.Should().Be(0);
 
-        // var model = await AssemblySetup.BeamOsResultApiClient.Models[this.ModelId].GetModelAsync();
-        // model.ThrowIfError();
-        // model.Value.Nodes.Should().NotBeEmpty();
-        // model.Value.Element1ds.Should().NotBeEmpty();
+        var model = await AssemblySetup.BeamOsResultApiClient.Models[this.ModelId].GetModelAsync();
+        model.ThrowIfError();
+        model.Value.Nodes.Should().NotBeEmpty();
+        model.Value.Element1ds.Should().NotBeEmpty();
     }
 
     private async Task AddAnalyticalInfo_ShouldSucceed()

@@ -151,10 +151,12 @@ const TutorialPage = () => {
               }
               if (popover) {
                 popover.nextButton.style.display = "block";
-                popover.nextButton.addEventListener("click", () => {
+                const handler = () => {
                   driverObj.moveNext();
                   popover!.nextButton.style.display = "none";
-                });
+                  popover!.nextButton.removeEventListener("click", handler);
+                };
+                popover!.nextButton.addEventListener("click", handler);
               }
             }
           },
@@ -211,7 +213,7 @@ const TutorialPage = () => {
               }
               if (popover) {
                 popover.nextButton.style.display = "block";
-                popover.nextButton.addEventListener("click", async () => {
+                const handler = async () => {
                   // Add LoadCase and PointLoads via patchModel endpoint
                   console.log("Next button clicked, modelId:", modelId);
                   if (modelId) {
@@ -241,7 +243,10 @@ const TutorialPage = () => {
                   }
                   driverObj.moveNext();
                   popover!.nextButton.style.display = "none";
-                });
+                  popover!.nextButton.removeEventListener("click", handler);
+                };
+                console.log("Adding LoadCase and PointLoads");
+                popover!.nextButton.addEventListener("click", handler);
               }
             }
           },

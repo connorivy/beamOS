@@ -1,7 +1,7 @@
+using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.Common.Api;
 using BeamOs.Common.Application;
 using BeamOs.Common.Contracts;
-using BeamOs.Application.Common.Mappers.UnitValueDtoMappers;
 using BeamOs.StructuralAnalysis.Application.Common;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.Element1ds;
 using BeamOs.StructuralAnalysis.Application.PhysicalModel.LoadCases;
@@ -153,13 +153,6 @@ internal sealed class PatchModelCommandHandler(
         foreach (var sectionProfileRequest in req.Body.SectionProfileFromLibraryRequests ?? [])
         {
             SectionProfileInfoBase sectionProfile;
-            // if (
-            //     sectionProfileRequest.Id.HasValue
-            //     && sectionProfileStore.ContainsKey(sectionProfileRequest.Id.Value)
-            // )
-            // {
-            //     sectionProfile = sectionProfileStore[sectionProfileRequest.Id.Value];
-            // }
             if (
                 sectionProfileStore.TryGetValue(
                     sectionProfileRequest.Id,
@@ -188,67 +181,60 @@ internal sealed class PatchModelCommandHandler(
             await this.AddToRepo(sectionProfile);
         }
 
-        // Process LoadCases
         foreach (var loadCaseContract in req.Body.LoadCases ?? [])
         {
             LoadCase loadCase;
             // Check if we should use an existing LoadCase or create a new one
             // If Id is provided and > 0 and exists in store, we skip it (assume it's already there)
             // Otherwise, create a new LoadCase
-            if (loadCaseContract.Id > 0 && loadCaseStore.ContainsKey(new LoadCaseId(loadCaseContract.Id)))
+            if (
+                loadCaseContract.Id > 0
+                && loadCaseStore.TryGetValue(loadCaseContract.Id, out var existingLoadCase)
+            )
             {
-                // LoadCase already exists, skip
-                continue;
+                loadCase = existingLoadCase;
+                await loadCaseRepository.Put(loadCase);
             }
             else
             {
                 // Create new LoadCase
                 // If Id is > 0, use it; otherwise let EF Core assign one
-                var loadCaseId = loadCaseContract.Id > 0 ? new LoadCaseId(loadCaseContract.Id) : (LoadCaseId?)null;
+                var loadCaseId =
+                    loadCaseContract.Id > 0
+                        ? new LoadCaseId(loadCaseContract.Id)
+                        : (LoadCaseId?)null;
                 loadCase = new LoadCase(model.Id, loadCaseContract.Name, loadCaseId);
                 loadCaseRepository.Add(loadCase);
-                loadCaseStore[loadCase.Id] = loadCase;
             }
         }
 
-        // Process PointLoads
         foreach (var pointLoadRequest in req.Body.PointLoads ?? [])
         {
             PointLoad pointLoad;
-            // Check if we should use an existing PointLoad or create a new one
-            var hasId = pointLoadRequest.Id.HasValue && pointLoadRequest.Id.Value > 0;
-            if (hasId && pointLoadStore.ContainsKey(new PointLoadId(pointLoadRequest.Id!.Value)))
+            if (
+                pointLoadRequest.Id > 0
+                && pointLoadStore.TryGetValue(pointLoadRequest.Id!.Value, out var existingPointLoad)
+            )
             {
-                // PointLoad already exists, skip or update
-                continue;
+                pointLoad = existingPointLoad;
+                await pointLoadRepository.Put(pointLoad);
             }
             else
             {
-                // Verify that the LoadCase exists
-                var loadCaseId = new LoadCaseId(pointLoadRequest.LoadCaseId);
-                if (!loadCaseStore.ContainsKey(loadCaseId))
-                {
-                    return BeamOsError.NotFound(
-                        description: $"LoadCase with id '{pointLoadRequest.LoadCaseId}' was not found."
-                    );
-                }
-                
-                // Create new PointLoad
-                // If Id is > 0, use it; otherwise let EF Core assign one
-                PointLoadId? pointLoadId = hasId ? new PointLoadId(pointLoadRequest.Id!.Value) : null;
-                
+                PointLoadId? pointLoadId =
+                    pointLoadRequest.Id > 0 ? new PointLoadId(pointLoadRequest.Id.Value) : null;
+
                 var nodeId = new NodeId(pointLoadRequest.NodeId);
-                
+
                 pointLoad = new PointLoad(
                     model.Id,
                     nodeId,
-                    loadCaseId,
+                    pointLoadRequest.LoadCaseId,
                     pointLoadRequest.Force.MapToForce(),
                     pointLoadRequest.Direction.ToDomain(),
                     pointLoadId
                 );
                 pointLoadRepository.Add(pointLoad);
-                pointLoadStore[pointLoad.Id] = pointLoad;
             }
         }
 
