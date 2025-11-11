@@ -207,46 +207,53 @@ const TutorialPage = () => {
               title: "Add Analytical Info",
               description: "You can add analytical information such as loads and supports to your model. For this tutorial, we'll simulate this step.",
             },
-            onHighlighted: () => {
+            onHighlighted: async () => {
               if (currentButton) {
                 currentButton.onclick = null;
               }
+              
+              // Add LoadCase and PointLoads via patchModel endpoint
+              // Do this immediately when the step is highlighted, before any button interaction
+              console.log("onHighlighted called for Add Analytical Info step, modelId:", modelId);
+              if (modelId) {
+                console.log("Patching model with LoadCase and PointLoads");
+                try {
+                  const result = await apiClient.patchModel(modelId, {
+                    loadCases: [
+                      { id: 1, name: "Load Case 1" }
+                    ],
+                    pointLoads: [
+                      {
+                        force: { value: 150, unit: ForceUnit.KilopoundForce },
+                        direction: { x: 1, y: 0, z: 0 },
+                        nodeId: 1,
+                        loadCaseId: 1,
+                      },
+                      {
+                        force: { value: 300, unit: ForceUnit.KilopoundForce },
+                        direction: { x: 0, y: -1, z: 0 },
+                        nodeId: 1,
+                        loadCaseId: 1,
+                      },
+                    ]
+                  });
+                  console.log("PatchModel result:", result);
+                } catch (error) {
+                  console.error("Error patching model:", error);
+                }
+              } else {
+                console.error("Model ID is not available");
+              }
+              
+              // Now set up the next button to just move to the next step
               if (popover) {
                 popover.nextButton.style.display = "block";
-                const handler = async () => {
-                  // Add LoadCase and PointLoads via patchModel endpoint
-                  console.log("Next button clicked, modelId:", modelId);
-                  if (modelId) {
-                    console.log("Patching model with LoadCase and PointLoads");
-                    const result = await apiClient.patchModel(modelId, {
-                      loadCases: [
-                        { id: 1, name: "Load Case 1" }
-                      ],
-                      pointLoads: [
-                        {
-                          force: { value: 150, unit: ForceUnit.KilopoundForce },
-                          direction: { x: 1, y: 0, z: 0 },
-                          nodeId: 1,
-                          loadCaseId: 1,
-                        },
-                        {
-                          force: { value: 300, unit: ForceUnit.KilopoundForce },
-                          direction: { x: 0, y: -1, z: 0 },
-                          nodeId: 1,
-                          loadCaseId: 1,
-                        },
-                      ]
-                    });
-                    console.log("PatchModel result:", result);
-                  } else {
-                    console.error("Model ID is not available");
-                  }
+                const handler = () => {
+                  console.log("Next button clicked, moving to next step");
                   driverObj.moveNext();
                   popover!.nextButton.style.display = "none";
-                  popover!.nextButton.removeEventListener("click", handler);
                 };
-                console.log("Adding LoadCase and PointLoads");
-                popover!.nextButton.addEventListener("click", handler);
+                popover!.nextButton.onclick = handler;
               }
             }
           },
