@@ -225,11 +225,12 @@ internal sealed class PatchModelCommandHandler(
                     pointLoadRequest.Id > 0 ? new PointLoadId(pointLoadRequest.Id.Value) : null;
 
                 var nodeId = new NodeId(pointLoadRequest.NodeId);
+                var loadCaseId = new LoadCaseId(pointLoadRequest.LoadCaseId);
 
                 pointLoad = new PointLoad(
                     model.Id,
                     nodeId,
-                    pointLoadRequest.LoadCaseId,
+                    loadCaseId,
                     pointLoadRequest.Force.MapToForce(),
                     pointLoadRequest.Direction.ToDomain(),
                     pointLoadId
