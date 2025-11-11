@@ -313,7 +313,7 @@ export interface IStructuralAnalysisApiClientV1 {
      * @param body (optional) 
      * @return OK
      */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse2>;
+    createPointLoad(modelId: string, body: CreatePointLoadRequest2 | null | undefined): Promise<PointLoadResponse2>;
 
     /**
      * @param body (optional) 
@@ -2696,7 +2696,7 @@ export class StructuralAnalysisApiClientV1 implements IStructuralAnalysisApiClie
      * @param body (optional) 
      * @return OK
      */
-    createPointLoad(modelId: string, body: CreatePointLoadRequest | null | undefined): Promise<PointLoadResponse2> {
+    createPointLoad(modelId: string, body: CreatePointLoadRequest2 | null | undefined): Promise<PointLoadResponse2> {
         let url_ = this.baseUrl + "/api/models/{modelId}/point-loads";
         if (modelId === undefined || modelId === null)
             throw new Error("The parameter 'modelId' must be defined.");
@@ -3407,6 +3407,16 @@ export interface CreatePointLoadRequest {
     [key: string]: any;
 }
 
+export interface CreatePointLoadRequest2 {
+    nodeId: number;
+    loadCaseId: number;
+    force: Force;
+    direction: Vector3;
+    id?: number | undefined;
+
+    [key: string]: any;
+}
+
 export interface CreateSectionProfileFromLibraryRequest {
     id: number;
     library: number;
@@ -4083,6 +4093,8 @@ export interface PatchModelRequest {
     sectionProfileFromLibraryRequests?: CreateSectionProfileFromLibraryRequest[] | undefined;
     sectionProfileRequests?: CreateSectionProfileRequest[] | undefined;
     element1dsToAddOrUpdateByExternalId?: Element1dByLocationRequest[] | undefined;
+    loadCases?: LoadCase[] | undefined;
+    pointLoads?: CreatePointLoadRequest[] | undefined;
     options?: PatchOperationOptions;
 
     [key: string]: any;

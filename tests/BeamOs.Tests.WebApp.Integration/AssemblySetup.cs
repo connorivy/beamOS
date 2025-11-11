@@ -19,6 +19,7 @@ public class AssemblySetup
     public static BeamOsResultApiClient BeamOsResultApiClient { get; private set; }
     private static HttpClient? client;
     public static bool Initialized { get; set; }
+    public static int _3000msOr0 => System.Diagnostics.Debugger.IsAttached ? 0 : 3000;
 
     [Before(TUnit.Core.HookType.Assembly)]
     public static async Task Setup()
