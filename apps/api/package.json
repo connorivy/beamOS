@@ -1,0 +1,22 @@
+{
+  "name": "@beamos/api",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "dev:test": "PORT=3001 bun --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "test:unit": "bun test test/unit",
+    "test:integration": "bun test test/integration",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun run src/db/migrate.ts"
+  },
+  "dependencies": {
+    "@beamos/contracts": "workspace:*",
+    "drizzle-orm": "^0.43.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.0"
+  }
+}

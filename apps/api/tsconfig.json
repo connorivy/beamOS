@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@enterprise-api/*": ["../../../enterprise/api/src/endpoints/*"],
+      "@beamos-api-plugin-types": ["src/plugins/types.ts"]
+    },
+    "outDir": "dist",
+    "noEmit": false,
+    "types": ["bun-types", "node"]
+  },
+  "include": ["src", "test", "drizzle.config.ts"]
+}
