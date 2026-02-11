@@ -1,19 +1,17 @@
 import { defineEndpoint, getUserReqSchema, getUserResSchema } from "@beamos/contracts";
-import { eq } from "drizzle-orm";
-import { db } from "../db/client";
-import { users } from "../db/schema";
+import type { AppContext } from "../services/types";
 
 export const getUser = defineEndpoint({
   method: "GET",
   path: "/api/users/:id",
   req: getUserReqSchema,
   res: getUserResSchema,
-  async handler(req) {
-    const row = await db.select().from(users).where(eq(users.id, req.params.id)).limit(1);
-    if (row.length === 0) {
+  async handler(req, ctx: AppContext) {
+    const user = await ctx.services.userRepository.getById(req.params.id);
+    if (!user) {
       return { id: req.params.id, name: "Unknown" };
     }
 
-    return row[0];
+    return user;
   },
 });

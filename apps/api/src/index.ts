@@ -7,3 +7,4 @@ await ensureSeedData();
 const server = createServer();
 
 console.log(`API listening on http://127.0.0.1:${server.port}`);
+console.log("api env vars ", process.env);

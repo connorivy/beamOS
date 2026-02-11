@@ -15,10 +15,10 @@ const toErrorBody = (message: string, issues?: unknown) => ({
   issues,
 });
 
-export const runEndpoints = async (
+export const runEndpoints = async <Ctx extends { requestId: string }>(
   req: Request,
-  endpoints: Endpoint<unknown, unknown>[],
-  requestId: string,
+  endpoints: Endpoint<unknown, unknown, Ctx>[],
+  context: Ctx,
 ): Promise<Response> => {
   const url = new URL(req.url);
 
@@ -44,7 +44,7 @@ export const runEndpoints = async (
         query: Object.fromEntries(url.searchParams.entries()),
       });
 
-      const result = await endpoint.handler(parsedReq, { requestId });
+      const result = await endpoint.handler(parsedReq, context);
       const parsedRes = endpoint.res.parse(result);
       return json(parsedRes);
     } catch (error) {

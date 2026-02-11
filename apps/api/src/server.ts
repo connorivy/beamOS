@@ -1,8 +1,10 @@
 import { runEndpoints } from "./lib/endpoint-runtime";
 import { apiPlugins } from "./plugins/registry";
-import { collectPluginEndpoints } from "./plugins/types";
+import { buildServices, collectPluginEndpoints } from "./plugins/types";
+import { createDefaultServices } from "./services/default-services";
 
 const endpoints = collectPluginEndpoints(apiPlugins);
+const services = buildServices(createDefaultServices(), apiPlugins);
 
 export const createServer = () => {
   return Bun.serve({
@@ -18,7 +20,7 @@ export const createServer = () => {
       }
 
       const requestId = crypto.randomUUID();
-      return runEndpoints(req, endpoints, requestId);
+      return runEndpoints(req, endpoints, { requestId, services });
     },
   });
 };
