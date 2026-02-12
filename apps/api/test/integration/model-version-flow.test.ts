@@ -8,10 +8,10 @@ if (!process.env.DB_URI) {
 
 const { bootstrapDb } = await import("../../src/db/bootstrap");
 const { db } = await import("../../src/db/client");
-const { drizzleModelRepository } = await import("../../src/models/model-repository");
-const { drizzleModelVersionRepository } = await import(
-  "../../src/model-revisions/model-version-repository"
-);
+const { drizzleModelRepository } =
+  await import("../../src/models/model-repository");
+const { drizzleModelVersionRepository } =
+  await import("../../src/model-revisions/model-revision-repository");
 const { ModelAggregate } = await import("../../src/models/model-aggregate");
 
 beforeAll(async () => {
@@ -44,17 +44,19 @@ describe("model version flow integration", () => {
 
     await drizzleModelRepository.save(model);
 
-    const mainRootRevision = await drizzleModelVersionRepository.commitRevision({
-      id: randomUUID(),
-      modelId,
-      branchName: mainBranch,
-      name: model.name,
-      parentRevisionId: null,
-      secondParentRevisionId: null,
-      authorId,
-      message: "Initial model revision on main",
-      nodes: model.nodes.map((node) => node.toSnapshot()),
-    });
+    const mainRootRevision = await drizzleModelVersionRepository.commitRevision(
+      {
+        id: randomUUID(),
+        modelId,
+        branchName: mainBranch,
+        name: model.name,
+        parentRevisionId: null,
+        secondParentRevisionId: null,
+        authorId,
+        message: "Initial model revision on main",
+        nodes: model.nodes.map((node) => node.toSnapshot()),
+      },
+    );
 
     await drizzleModelVersionRepository.createBranch({
       modelId,
@@ -88,10 +90,8 @@ describe("model version flow integration", () => {
       nodes: branchNodes,
     });
 
-    const mainHeadBeforeMerge = await drizzleModelVersionRepository.getBranchHead(
-      modelId,
-      mainBranch,
-    );
+    const mainHeadBeforeMerge =
+      await drizzleModelVersionRepository.getBranchHead(modelId, mainBranch);
     expect(mainHeadBeforeMerge?.headRevisionId).toBe(mainRootRevision.id);
 
     const mergeRevision = await drizzleModelVersionRepository.commitRevision({
@@ -109,14 +109,10 @@ describe("model version flow integration", () => {
     model.replaceNodes(mergeRevision.nodes.map((node) => node.toSnapshot()));
     await drizzleModelRepository.save(model);
 
-    const mainHeadAfterMerge = await drizzleModelVersionRepository.getBranchHead(
-      modelId,
-      mainBranch,
-    );
-    const featureHeadAfterMerge = await drizzleModelVersionRepository.getBranchHead(
-      modelId,
-      featureBranch,
-    );
+    const mainHeadAfterMerge =
+      await drizzleModelVersionRepository.getBranchHead(modelId, mainBranch);
+    const featureHeadAfterMerge =
+      await drizzleModelVersionRepository.getBranchHead(modelId, featureBranch);
     const persistedMergeRevision =
       await drizzleModelVersionRepository.getRevisionById(mergeRevision.id);
     const mergedModel = await drizzleModelRepository.getById(modelId);
@@ -124,7 +120,9 @@ describe("model version flow integration", () => {
     expect(mainHeadAfterMerge?.headRevisionId).toBe(mergeRevision.id);
     expect(featureHeadAfterMerge?.headRevisionId).toBe(featureRevision.id);
     expect(persistedMergeRevision?.parentRevisionId).toBe(mainRootRevision.id);
-    expect(persistedMergeRevision?.secondParentRevisionId).toBe(featureRevision.id);
+    expect(persistedMergeRevision?.secondParentRevisionId).toBe(
+      featureRevision.id,
+    );
     expect(persistedMergeRevision?.nodes).toHaveLength(3);
 
     const mergedNodeNames = mergedModel?.nodes.map((node) => node.name).sort();

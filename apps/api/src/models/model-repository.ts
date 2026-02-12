@@ -9,7 +9,6 @@ import {
 } from "../db/schema";
 import { ModelAggregate } from "./model-aggregate";
 import { modelMapper } from "./model-mapper";
-import type { ModelRepository } from "../services/types";
 import type { ModelDomainEvent } from "./model-events";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
@@ -31,6 +30,32 @@ const applyNodeChanges = (input: {
       name: change.name,
     });
   }
+};
+
+const applyModelChanges = (input: {
+  currentName: string;
+  changes: { op: string; payload: unknown }[];
+}): string => {
+  let name = input.currentName;
+
+  for (const change of input.changes) {
+    if (change.op === "delete") {
+      continue;
+    }
+
+    name = extractModelName(change.payload, name);
+  }
+
+  return name;
+};
+
+export type ModelRepository = {
+  getById: (input: {
+    modelId: string;
+    revisionId?: string;
+    draftId?: string;
+  }) => Promise<ModelAggregate | undefined>;
+  save: (model: ModelAggregate) => Promise<ModelAggregate>;
 };
 
 export const drizzleModelRepository: ModelRepository = {
@@ -62,6 +87,15 @@ export const drizzleModelRepository: ModelRepository = {
         return undefined;
       }
 
+      const orderedDraftChanges = [...draftChangeRows].sort((a, b) => {
+        const timeDiff = a.createdAt.getTime() - b.createdAt.getTime();
+        if (timeDiff !== 0) {
+          return timeDiff;
+        }
+
+        return a.id.localeCompare(b.id);
+      });
+
       const baseRevisions = await loadRevisionHistory({
         revisionId: draftRows[0].parentRevisionId,
         secondRevisionId: draftRows[0].secondParentRevisionId,
@@ -74,7 +108,7 @@ export const drizzleModelRepository: ModelRepository = {
       applyNodeChanges({
         modelId: input.modelId,
         current: nodesById,
-        changes: draftChangeRows
+        changes: orderedDraftChanges
           .filter((change) => change.entityType === "node")
           .map((change) => ({
             nodeId: change.entityId,
@@ -83,9 +117,19 @@ export const drizzleModelRepository: ModelRepository = {
           })),
       });
 
+      const modelName = applyModelChanges({
+        currentName: draftRows[0].modelName,
+        changes: orderedDraftChanges
+          .filter((change) => change.entityType === "model")
+          .map((change) => ({
+            op: change.op,
+            payload: change.payload,
+          })),
+      });
+
       return ModelAggregate.rehydrate({
         id: input.modelId,
-        name: draftRows[0].modelName,
+        name: modelName,
         nodes: Array.from(nodesById.values()),
         sourceDraftId: input.draftId,
       });
@@ -108,9 +152,14 @@ export const drizzleModelRepository: ModelRepository = {
         revisions,
       });
 
+      const modelName = await buildModelNameFromRevisions({
+        initialName: revisions[revisions.length - 1].modelName,
+        revisions,
+      });
+
       return ModelAggregate.rehydrate({
         id: input.modelId,
-        name: revisions[revisions.length - 1].modelName,
+        name: modelName,
         nodes: Array.from(nodesById.values()),
         sourceRevisionId: input.revisionId,
       });
@@ -274,6 +323,55 @@ const extractNodeName = (payload: unknown): string => {
   return "";
 };
 
+const extractModelName = (payload: unknown, fallback: string): string => {
+  if (payload && typeof payload === "object") {
+    const name = (payload as { name?: unknown }).name;
+    if (typeof name === "string" && name.trim().length > 0) {
+      return name;
+    }
+  }
+
+  return fallback;
+};
+
+const buildModelNameFromRevisions = async (input: {
+  initialName: string;
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<string> => {
+  if (input.revisions.length === 0) {
+    return input.initialName;
+  }
+
+  const revisionIds = input.revisions.map((revision) => revision.id);
+  const revisionOrder = new Map(
+    input.revisions.map((revision, index) => [revision.id, index]),
+  );
+
+  const changeRows = await db
+    .select()
+    .from(revisionChanges)
+    .where(inArray(revisionChanges.revisionId, revisionIds));
+
+  changeRows.sort((a, b) => {
+    const orderA = revisionOrder.get(a.revisionId ?? "") ?? 0;
+    const orderB = revisionOrder.get(b.revisionId ?? "") ?? 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return a.createdAt.getTime() - b.createdAt.getTime();
+  });
+
+  return applyModelChanges({
+    currentName: input.initialName,
+    changes: changeRows
+      .filter((change) => change.entityType === "model")
+      .map((change) => ({
+        op: change.op,
+        payload: change.payload,
+      })),
+  });
+};
+
 const buildRevisionChanges = (input: {
   modelId: string;
   revisionId: string | null;
@@ -283,6 +381,26 @@ const buildRevisionChanges = (input: {
   const now = new Date();
 
   return input.events.map((event) => {
+    if (event.type === "model_renamed") {
+      const payload = {
+        id: event.modelId,
+        name: event.name,
+      };
+
+      const entity = RevisionChangeEntity.create({
+        id: crypto.randomUUID(),
+        revisionId: input.revisionId,
+        draftId: input.draftId,
+        entityType: "model",
+        entityId: event.modelId,
+        op: "upsert",
+        payload,
+        createdAt: now,
+      });
+
+      return revisionChangeMapper.toPersistence(entity);
+    }
+
     if (event.type === "node_added") {
       const payload = {
         id: event.node.id,
@@ -304,6 +422,27 @@ const buildRevisionChanges = (input: {
       return revisionChangeMapper.toPersistence(entity);
     }
 
-    throw new Error(`Unsupported model domain event: ${event.type}`);
+    if (event.type === "node_updated") {
+      const payload = {
+        id: event.node.id,
+        modelId: input.modelId,
+        name: event.node.name,
+      };
+
+      const entity = RevisionChangeEntity.create({
+        id: crypto.randomUUID(),
+        revisionId: input.revisionId,
+        draftId: input.draftId,
+        entityType: "node",
+        entityId: event.node.id,
+        op: "upsert",
+        payload,
+        createdAt: now,
+      });
+
+      return revisionChangeMapper.toPersistence(entity);
+    }
+
+    throw new Error(`Unsupported model domain event: ${event}`);
   });
 };

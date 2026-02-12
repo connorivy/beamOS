@@ -1,5 +1,5 @@
 import { assertUuid } from "../lib/uuid";
-import { NodeEntity, type NodeSnapshot } from "./node-entity";
+import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import type { ModelDomainEvent } from "./model-events";
 
 export type ModelSnapshot = {
@@ -39,19 +39,23 @@ export class ModelAggregate {
   readonly id: string;
 
   static create(snapshot: {
-    id: string;
     name: string;
     nodes?: NodeSnapshot[];
     sourceRevisionId?: string | null;
     sourceDraftId?: string | null;
   }): ModelAggregate {
-    return new ModelAggregate({
-      id: snapshot.id,
+    const model = new ModelAggregate({
+      id: Bun.randomUUIDv7(),
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
       sourceRevisionId: snapshot.sourceRevisionId ?? null,
       sourceDraftId: snapshot.sourceDraftId ?? null,
     });
+    model._domainEvents.push({
+      type: "model_created",
+      payload: model.toSnapshot(),
+    });
+    return model;
   }
 
   static rehydrate(snapshot: {
@@ -88,7 +92,16 @@ export class ModelAggregate {
 
   rename(name: string): void {
     this.assertName(name);
-    this._name = name.trim();
+    const next = name.trim();
+    if (next === this._name) {
+      return;
+    }
+
+    this._name = next;
+    this._domainEvents.push({
+      type: "model_renamed",
+      payload: this.toSnapshot(),
+    });
   }
 
   addNode(node: NodeSnapshot): void {
@@ -100,7 +113,25 @@ export class ModelAggregate {
     this._nodes.push(entity);
     this._domainEvents.push({
       type: "node_added",
-      node: entity.toSnapshot(),
+      payload: entity.toSnapshot(),
+    });
+  }
+
+  updateNode(input: { nodeId: string; name: string }): void {
+    const node = this._nodes.find((current) => current.id === input.nodeId);
+    if (!node) {
+      throw new Error("Node does not exist");
+    }
+
+    const nextName = input.name.trim();
+    if (node.name === nextName) {
+      return;
+    }
+
+    node.rename(nextName);
+    this._domainEvents.push({
+      type: "node_updated",
+      payload: node.toSnapshot(),
     });
   }
 
@@ -136,5 +167,4 @@ export class ModelAggregate {
       throw new Error("Node does not belong to this model");
     }
   }
-
 }

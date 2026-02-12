@@ -1,20 +1,22 @@
 import type { User } from "@beamos/contracts";
-import type { ModelAggregate } from "../models/model-aggregate";
 import type { ModelBranchHeadAggregate } from "../model-branch-heads/model-branch-head-aggregate";
 import type { ModelRevisionAggregate } from "../model-revisions/model-revision-aggregate";
 import type { ModelRevisionDraftAggregate } from "../model-revision-drafts/model-revision-draft-aggregate";
+import type { NodeSnapshot } from "../nodes/node-entity";
+import { ModelRepository } from "src/models/model-repository";
+
+export type DomainEvent =
+  | {
+      type: "node_added";
+      payload: NodeSnapshot;
+    }
+  | {
+      type: "node_deleted";
+      payload: NodeSnapshot;
+    };
 
 export type UserRepository = {
   getById: (id: string) => Promise<User | undefined>;
-};
-
-export type ModelRepository = {
-  getById: (input: {
-    modelId: string;
-    revisionId?: string;
-    draftId?: string;
-  }) => Promise<ModelAggregate | undefined>;
-  save: (model: ModelAggregate) => Promise<ModelAggregate>;
 };
 
 export type ModelRevisionCommitInput = {
@@ -26,7 +28,7 @@ export type ModelRevisionCommitInput = {
   secondParentRevisionId?: string | null;
   authorId: string;
   message: string;
-  nodes: { nodeId: string; name: string; op?: "upsert" | "delete" }[];
+  nodes: NodeSnapshot[];
 };
 
 export type ModelRevisionDraftInput = {
@@ -47,6 +49,10 @@ export type ModelRevisionRepository = {
   getDraftById: (
     draftId: string,
   ) => Promise<ModelRevisionDraftAggregate | undefined>;
+  save: (input: {
+    revision: ModelRevisionAggregate;
+    newRevision?: boolean;
+  }) => Promise<ModelRevisionAggregate | ModelRevisionDraftAggregate>;
   getBranchHead: (
     modelId: string,
     branchName: string,

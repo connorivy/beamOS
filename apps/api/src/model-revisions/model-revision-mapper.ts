@@ -3,6 +3,7 @@ import {
   ModelRevisionAggregate,
   type ModelRevisionSnapshot,
 } from "./model-revision-aggregate";
+import type { NodeSnapshot } from "../nodes/node-entity";
 
 export const modelRevisionMapper = {
   toDomain(
@@ -20,11 +21,11 @@ export const modelRevisionMapper = {
       createdAt: row.createdAt,
       nodes: changeRows
         .filter((change) => change.entityType === "node")
+        .filter((change) => change.op !== "delete")
         .map((change) => ({
-          revisionId: row.id,
-          nodeId: change.entityId,
+          id: change.entityId,
+          modelId: row.modelId,
           name: extractNodeName(change.payload),
-          op: change.op === "delete" ? "delete" : "upsert",
         })),
     });
   },
@@ -53,7 +54,7 @@ export const modelRevisionMapper = {
     secondParentRevisionId: string | null;
     authorId: string;
     message: string;
-    nodes: { nodeId: string; name: string; op?: "upsert" | "delete" }[];
+    nodes: NodeSnapshot[];
   }): ModelRevisionAggregate {
     const snapshot: ModelRevisionSnapshot = {
       id: input.id,
@@ -65,10 +66,9 @@ export const modelRevisionMapper = {
       message: input.message,
       createdAt: new Date(),
       nodes: input.nodes.map((node) => ({
-        revisionId: input.id,
-        nodeId: node.nodeId,
+        id: node.id,
+        modelId: node.modelId,
         name: node.name,
-        op: node.op ?? "upsert",
       })),
     };
 

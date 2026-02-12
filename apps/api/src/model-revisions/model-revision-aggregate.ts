@@ -1,8 +1,6 @@
-import {
-  NodeRevisionAggregate,
-  type NodeRevisionSnapshot,
-} from "../node-revisions/node-revision-aggregate";
+import { DomainEvent } from "src/services/types";
 import { assertUuid } from "../lib/uuid";
+import { NodeEntity, NodeSnapshot } from "../nodes/node-entity";
 
 export type ModelRevisionSnapshot = {
   id: string;
@@ -13,7 +11,7 @@ export type ModelRevisionSnapshot = {
   authorId: string;
   message: string;
   createdAt: Date;
-  nodes: NodeRevisionSnapshot[];
+  nodes: NodeSnapshot[];
 };
 
 export class ModelRevisionAggregate {
@@ -23,7 +21,8 @@ export class ModelRevisionAggregate {
   private _authorId: string;
   private _message: string;
   private _createdAt: Date;
-  private _nodes: NodeRevisionAggregate[];
+  private _nodes: NodeEntity[];
+  private _domainEvents: DomainEvent[];
 
   private constructor(snapshot: ModelRevisionSnapshot) {
     assertUuid(snapshot.id, "id");
@@ -32,7 +31,10 @@ export class ModelRevisionAggregate {
     assertUuid(snapshot.authorId, "authorId");
     this.assertRequired(snapshot.message, "message");
     this.assertOptionalUuid(snapshot.parentRevisionId, "parentRevisionId");
-    this.assertOptionalUuid(snapshot.secondParentRevisionId, "secondParentRevisionId");
+    this.assertOptionalUuid(
+      snapshot.secondParentRevisionId,
+      "secondParentRevisionId",
+    );
 
     this.id = snapshot.id;
     this.modelId = snapshot.modelId;
@@ -43,12 +45,10 @@ export class ModelRevisionAggregate {
     this._message = snapshot.message.trim();
     this._createdAt = snapshot.createdAt;
     this._nodes = snapshot.nodes.map((node) => {
-      if (node.revisionId !== snapshot.id) {
-        throw new Error("Node does not belong to revision");
-      }
-
-      return NodeRevisionAggregate.rehydrate(node);
+      this.assertNodeModelId(node.modelId);
+      return NodeEntity.rehydrate(node);
     });
+    this._domainEvents = [];
   }
 
   readonly id: string;
@@ -86,8 +86,36 @@ export class ModelRevisionAggregate {
     return this._createdAt;
   }
 
-  get nodes(): readonly NodeRevisionAggregate[] {
+  get nodes(): readonly NodeEntity[] {
     return this._nodes;
+  }
+
+  addNode(node: NodeEntity): void {
+    assertUuid(node.id, "nodeId");
+    this.assertNodeModelId(node.modelId);
+    this.assertRequired(node.name, "name");
+    if (this._nodes.some((existing) => existing.id === node.id)) {
+      throw new Error("Node already exists");
+    }
+    const entity = NodeEntity.create(node);
+    this._nodes.push(entity);
+    this._domainEvents.push({
+      type: "node_added",
+      payload: entity.toSnapshot(),
+    });
+  }
+
+  deleteNode(nodeId: string): void {
+    assertUuid(nodeId, "nodeId");
+    const index = this._nodes.findIndex((node) => node.id === nodeId);
+    if (index < 0) {
+      throw new Error("Node does not exist");
+    }
+    const [removed] = this._nodes.splice(index, 1);
+    this._domainEvents.push({
+      type: "node_deleted",
+      payload: removed.toSnapshot(),
+    });
   }
 
   toSnapshot(): ModelRevisionSnapshot {
@@ -104,9 +132,21 @@ export class ModelRevisionAggregate {
     };
   }
 
+  pullDomainEvents(): DomainEvent[] {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
+  }
+
   private assertRequired(value: string, field: string): void {
     if (value.trim().length === 0) {
       throw new Error(`${field} is required`);
+    }
+  }
+
+  private assertNodeModelId(nodeModelId: string): void {
+    if (nodeModelId !== this.modelId) {
+      throw new Error("Node does not belong to this model");
     }
   }
 

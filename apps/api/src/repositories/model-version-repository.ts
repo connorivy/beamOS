@@ -1,1 +1,1 @@
-export { drizzleModelVersionRepository } from "../model-revisions/model-version-repository";
+export { drizzleModelVersionRepository } from "../model-revisions/model-revision-repository";

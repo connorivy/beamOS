@@ -1,5 +1,5 @@
 import { drizzleModelRepository } from "../models/model-repository";
-import { drizzleModelVersionRepository } from "../model-revisions/model-version-repository";
+import { drizzleModelVersionRepository } from "../model-revisions/model-revision-repository";
 import { drizzleUserRepository } from "../repositories/user-repository";
 import type { AppServices } from "./types";
 
