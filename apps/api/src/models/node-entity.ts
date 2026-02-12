@@ -6,32 +6,28 @@ export type NodeSnapshot = {
   name: string;
 };
 
-export class NodeAggregate {
-  private _modelId: string;
+export class NodeEntity {
   private _name: string;
 
   private constructor(snapshot: NodeSnapshot) {
     assertUuid(snapshot.id, "id");
-    this.assertModelId(snapshot.modelId);
+    assertUuid(snapshot.modelId, "modelId");
     this.assertName(snapshot.name);
 
     this.id = snapshot.id;
-    this._modelId = snapshot.modelId;
+    this.modelId = snapshot.modelId;
     this._name = snapshot.name.trim();
   }
 
   readonly id: string;
+  readonly modelId: string;
 
-  static create(snapshot: NodeSnapshot): NodeAggregate {
-    return new NodeAggregate(snapshot);
+  static create(snapshot: NodeSnapshot): NodeEntity {
+    return new NodeEntity(snapshot);
   }
 
-  static rehydrate(snapshot: NodeSnapshot): NodeAggregate {
-    return new NodeAggregate(snapshot);
-  }
-
-  get modelId(): string {
-    return this._modelId;
+  static rehydrate(snapshot: NodeSnapshot): NodeEntity {
+    return new NodeEntity(snapshot);
   }
 
   get name(): string {
@@ -43,15 +39,10 @@ export class NodeAggregate {
     this._name = name.trim();
   }
 
-  moveToModel(modelId: string): void {
-    this.assertModelId(modelId);
-    this._modelId = modelId;
-  }
-
   toSnapshot(): NodeSnapshot {
     return {
       id: this.id,
-      modelId: this._modelId,
+      modelId: this.modelId,
       name: this._name,
     };
   }
@@ -60,9 +51,5 @@ export class NodeAggregate {
     if (name.trim().length === 0) {
       throw new Error("Node name is required");
     }
-  }
-
-  private assertModelId(modelId: string): void {
-    assertUuid(modelId, "modelId");
   }
 }

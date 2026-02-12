@@ -1,10 +1,10 @@
-import {
-  NodeRevisionAggregate,
-  type NodeRevisionSnapshot,
-} from "../node-revisions/node-revision-aggregate";
 import { assertUuid } from "../lib/uuid";
+import {
+  NodeRevisionDraftAggregate,
+  type NodeRevisionDraftSnapshot,
+} from "../node-revision-drafts/node-revision-draft-aggregate";
 
-export type ModelRevisionSnapshot = {
+export type ModelRevisionDraftSnapshot = {
   id: string;
   modelId: string;
   name: string;
@@ -13,26 +13,31 @@ export type ModelRevisionSnapshot = {
   authorId: string;
   message: string;
   createdAt: Date;
-  nodes: NodeRevisionSnapshot[];
+  updatedAt: Date;
+  nodes: NodeRevisionDraftSnapshot[];
 };
 
-export class ModelRevisionAggregate {
+export class ModelRevisionDraftAggregate {
   private _name: string;
   private _parentRevisionId: string | null;
   private _secondParentRevisionId: string | null;
   private _authorId: string;
   private _message: string;
   private _createdAt: Date;
-  private _nodes: NodeRevisionAggregate[];
+  private _updatedAt: Date;
+  private _nodes: NodeRevisionDraftAggregate[];
 
-  private constructor(snapshot: ModelRevisionSnapshot) {
+  private constructor(snapshot: ModelRevisionDraftSnapshot) {
     assertUuid(snapshot.id, "id");
     assertUuid(snapshot.modelId, "modelId");
     this.assertRequired(snapshot.name, "name");
     assertUuid(snapshot.authorId, "authorId");
     this.assertRequired(snapshot.message, "message");
     this.assertOptionalUuid(snapshot.parentRevisionId, "parentRevisionId");
-    this.assertOptionalUuid(snapshot.secondParentRevisionId, "secondParentRevisionId");
+    this.assertOptionalUuid(
+      snapshot.secondParentRevisionId,
+      "secondParentRevisionId",
+    );
 
     this.id = snapshot.id;
     this.modelId = snapshot.modelId;
@@ -42,24 +47,29 @@ export class ModelRevisionAggregate {
     this._authorId = snapshot.authorId;
     this._message = snapshot.message.trim();
     this._createdAt = snapshot.createdAt;
+    this._updatedAt = snapshot.updatedAt;
     this._nodes = snapshot.nodes.map((node) => {
-      if (node.revisionId !== snapshot.id) {
-        throw new Error("Node does not belong to revision");
+      if (node.draftId !== snapshot.id) {
+        throw new Error("Node does not belong to draft");
       }
 
-      return NodeRevisionAggregate.rehydrate(node);
+      return NodeRevisionDraftAggregate.rehydrate(node);
     });
   }
 
   readonly id: string;
   readonly modelId: string;
 
-  static create(snapshot: ModelRevisionSnapshot): ModelRevisionAggregate {
-    return new ModelRevisionAggregate(snapshot);
+  static create(
+    snapshot: ModelRevisionDraftSnapshot,
+  ): ModelRevisionDraftAggregate {
+    return new ModelRevisionDraftAggregate(snapshot);
   }
 
-  static rehydrate(snapshot: ModelRevisionSnapshot): ModelRevisionAggregate {
-    return new ModelRevisionAggregate(snapshot);
+  static rehydrate(
+    snapshot: ModelRevisionDraftSnapshot,
+  ): ModelRevisionDraftAggregate {
+    return new ModelRevisionDraftAggregate(snapshot);
   }
 
   get name(): string {
@@ -86,11 +96,39 @@ export class ModelRevisionAggregate {
     return this._createdAt;
   }
 
-  get nodes(): readonly NodeRevisionAggregate[] {
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
+
+  get nodes(): readonly NodeRevisionDraftAggregate[] {
     return this._nodes;
   }
 
-  toSnapshot(): ModelRevisionSnapshot {
+  rename(name: string): void {
+    this.assertRequired(name, "name");
+    this._name = name.trim();
+  }
+
+  updateMessage(message: string): void {
+    this.assertRequired(message, "message");
+    this._message = message.trim();
+  }
+
+  replaceNodes(nodes: NodeRevisionDraftSnapshot[]): void {
+    this._nodes = nodes.map((node) => {
+      if (node.draftId !== this.id) {
+        throw new Error("Node does not belong to draft");
+      }
+
+      return NodeRevisionDraftAggregate.rehydrate(node);
+    });
+  }
+
+  touch(updatedAt = new Date()): void {
+    this._updatedAt = updatedAt;
+  }
+
+  toSnapshot(): ModelRevisionDraftSnapshot {
     return {
       id: this.id,
       modelId: this.modelId,
@@ -100,6 +138,7 @@ export class ModelRevisionAggregate {
       authorId: this._authorId,
       message: this._message,
       createdAt: this._createdAt,
+      updatedAt: this._updatedAt,
       nodes: this._nodes.map((node) => node.toSnapshot()),
     };
   }

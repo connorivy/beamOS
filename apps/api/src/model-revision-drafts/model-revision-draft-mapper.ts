@@ -1,15 +1,15 @@
-import { modelRevisions, revisionChanges } from "../db/schema";
+import { modelRevisionDrafts, revisionChanges } from "../db/schema";
 import {
-  ModelRevisionAggregate,
-  type ModelRevisionSnapshot,
-} from "./model-revision-aggregate";
+  ModelRevisionDraftAggregate,
+  type ModelRevisionDraftSnapshot,
+} from "./model-revision-draft-aggregate";
 
-export const modelRevisionMapper = {
+export const modelRevisionDraftMapper = {
   toDomain(
-    row: typeof modelRevisions.$inferSelect,
+    row: typeof modelRevisionDrafts.$inferSelect,
     changeRows: (typeof revisionChanges.$inferSelect)[],
-  ): ModelRevisionAggregate {
-    return ModelRevisionAggregate.rehydrate({
+  ): ModelRevisionDraftAggregate {
+    return ModelRevisionDraftAggregate.rehydrate({
       id: row.id,
       modelId: row.modelId,
       name: row.modelName,
@@ -18,10 +18,11 @@ export const modelRevisionMapper = {
       authorId: row.authorId,
       message: row.message,
       createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
       nodes: changeRows
         .filter((change) => change.entityType === "node")
         .map((change) => ({
-          revisionId: row.id,
+          draftId: row.id,
           nodeId: change.entityId,
           name: extractNodeName(change.payload),
           op: change.op === "delete" ? "delete" : "upsert",
@@ -30,8 +31,8 @@ export const modelRevisionMapper = {
   },
 
   toPersistence(
-    aggregate: ModelRevisionAggregate,
-  ): typeof modelRevisions.$inferInsert {
+    aggregate: ModelRevisionDraftAggregate,
+  ): typeof modelRevisionDrafts.$inferInsert {
     const snapshot = aggregate.toSnapshot();
     return {
       id: snapshot.id,
@@ -42,10 +43,11 @@ export const modelRevisionMapper = {
       authorId: snapshot.authorId,
       message: snapshot.message,
       createdAt: snapshot.createdAt,
+      updatedAt: snapshot.updatedAt,
     };
   },
 
-  fromCommitInput(input: {
+  fromDraftInput(input: {
     id: string;
     modelId: string;
     name: string;
@@ -54,8 +56,9 @@ export const modelRevisionMapper = {
     authorId: string;
     message: string;
     nodes: { nodeId: string; name: string; op?: "upsert" | "delete" }[];
-  }): ModelRevisionAggregate {
-    const snapshot: ModelRevisionSnapshot = {
+  }): ModelRevisionDraftAggregate {
+    const now = new Date();
+    const snapshot: ModelRevisionDraftSnapshot = {
       id: input.id,
       modelId: input.modelId,
       name: input.name,
@@ -63,16 +66,17 @@ export const modelRevisionMapper = {
       secondParentRevisionId: input.secondParentRevisionId,
       authorId: input.authorId,
       message: input.message,
-      createdAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
       nodes: input.nodes.map((node) => ({
-        revisionId: input.id,
+        draftId: input.id,
         nodeId: node.nodeId,
         name: node.name,
         op: node.op ?? "upsert",
       })),
     };
 
-    return ModelRevisionAggregate.create(snapshot);
+    return ModelRevisionDraftAggregate.create(snapshot);
   },
 };
 

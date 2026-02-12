@@ -1,5 +1,6 @@
-import { NodeAggregate, type NodeSnapshot } from "../nodes/node-aggregate";
 import { assertUuid } from "../lib/uuid";
+import { NodeEntity, type NodeSnapshot } from "./node-entity";
+import type { ModelDomainEvent } from "./model-events";
 
 export type ModelSnapshot = {
   id: string;
@@ -9,9 +10,18 @@ export type ModelSnapshot = {
 
 export class ModelAggregate {
   private _name: string;
-  private _nodes: NodeAggregate[];
+  private _nodes: NodeEntity[];
+  private _domainEvents: ModelDomainEvent[];
+  private _sourceRevisionId: string | null;
+  private _sourceDraftId: string | null;
 
-  private constructor(snapshot: ModelSnapshot) {
+  private constructor(snapshot: {
+    id: string;
+    name: string;
+    nodes: NodeSnapshot[];
+    sourceRevisionId?: string | null;
+    sourceDraftId?: string | null;
+  }) {
     assertUuid(snapshot.id, "id");
     this.assertName(snapshot.name);
 
@@ -19,8 +29,11 @@ export class ModelAggregate {
     this._name = snapshot.name.trim();
     this._nodes = snapshot.nodes.map((node) => {
       this.assertNodeModelId(node.modelId);
-      return NodeAggregate.rehydrate(node);
+      return NodeEntity.rehydrate(node);
     });
+    this._domainEvents = [];
+    this._sourceRevisionId = snapshot.sourceRevisionId ?? null;
+    this._sourceDraftId = snapshot.sourceDraftId ?? null;
   }
 
   readonly id: string;
@@ -29,11 +42,15 @@ export class ModelAggregate {
     id: string;
     name: string;
     nodes?: NodeSnapshot[];
+    sourceRevisionId?: string | null;
+    sourceDraftId?: string | null;
   }): ModelAggregate {
     return new ModelAggregate({
       id: snapshot.id,
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
+      sourceRevisionId: snapshot.sourceRevisionId ?? null,
+      sourceDraftId: snapshot.sourceDraftId ?? null,
     });
   }
 
@@ -41,11 +58,15 @@ export class ModelAggregate {
     id: string;
     name: string;
     nodes?: NodeSnapshot[];
+    sourceRevisionId?: string | null;
+    sourceDraftId?: string | null;
   }): ModelAggregate {
     return new ModelAggregate({
       id: snapshot.id,
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
+      sourceRevisionId: snapshot.sourceRevisionId ?? null,
+      sourceDraftId: snapshot.sourceDraftId ?? null,
     });
   }
 
@@ -53,8 +74,16 @@ export class ModelAggregate {
     return this._name;
   }
 
-  get nodes(): readonly NodeAggregate[] {
+  get nodes(): readonly NodeEntity[] {
     return this._nodes;
+  }
+
+  get sourceRevisionId(): string | null {
+    return this._sourceRevisionId;
+  }
+
+  get sourceDraftId(): string | null {
+    return this._sourceDraftId;
   }
 
   rename(name: string): void {
@@ -62,10 +91,23 @@ export class ModelAggregate {
     this._name = name.trim();
   }
 
+  addNode(node: NodeSnapshot): void {
+    this.assertNodeModelId(node.modelId);
+    if (this._nodes.some((existing) => existing.id === node.id)) {
+      throw new Error("Node already exists");
+    }
+    const entity = NodeEntity.create(node);
+    this._nodes.push(entity);
+    this._domainEvents.push({
+      type: "node_added",
+      node: entity.toSnapshot(),
+    });
+  }
+
   replaceNodes(nodes: NodeSnapshot[]): void {
     this._nodes = nodes.map((node) => {
       this.assertNodeModelId(node.modelId);
-      return NodeAggregate.rehydrate(node);
+      return NodeEntity.rehydrate(node);
     });
   }
 
@@ -75,6 +117,12 @@ export class ModelAggregate {
       name: this._name,
       nodes: this._nodes.map((node) => node.toSnapshot()),
     };
+  }
+
+  pullDomainEvents(): ModelDomainEvent[] {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
   }
 
   private assertName(name: string): void {
@@ -88,4 +136,5 @@ export class ModelAggregate {
       throw new Error("Node does not belong to this model");
     }
   }
+
 }
