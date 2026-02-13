@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { db } from "./client";
+import { getDb } from "./client";
 import {
   modelBranchHeads,
   modelRevisions,
@@ -13,30 +13,30 @@ const INITIAL_REVISION_ID = "30000000-0000-4000-8000-000000000001";
 const SYSTEM_AUTHOR_ID = "40000000-0000-4000-8000-000000000001";
 
 export const ensureSeedData = async () => {
-  const existing = await db
+  const existing = await getDb()
     .select()
     .from(users)
     .where(eq(users.id, USER_ID))
     .limit(1);
   if (existing.length === 0) {
-    await db.insert(users).values({ id: USER_ID, name: "Ada Lovelace" });
+    await getDb().insert(users).values({ id: USER_ID, name: "Ada Lovelace" });
   }
 
-  const existingModel = await db
+  const existingModel = await getDb()
     .select()
     .from(models)
     .where(eq(models.id, MODEL_ID))
     .limit(1);
 
   if (existingModel.length === 0) {
-    await db.insert(models).values({
+    await getDb().insert(models).values({
       id: MODEL_ID,
       name: "Default Model",
     });
   }
 
 
-  const mainHead = await db
+  const mainHead = await getDb()
     .select()
     .from(modelBranchHeads)
     .where(
@@ -51,7 +51,7 @@ export const ensureSeedData = async () => {
     return;
   }
 
-  const [modelRow] = await db
+  const [modelRow] = await getDb()
     .select()
     .from(models)
     .where(eq(models.id, MODEL_ID))
@@ -61,7 +61,7 @@ export const ensureSeedData = async () => {
     return;
   }
 
-  await db.insert(modelRevisions).values({
+  await getDb().insert(modelRevisions).values({
     id: INITIAL_REVISION_ID,
     modelId: modelRow.id,
     modelName: modelRow.name,
@@ -72,7 +72,7 @@ export const ensureSeedData = async () => {
   });
 
 
-  await db.insert(modelBranchHeads).values({
+  await getDb().insert(modelBranchHeads).values({
     modelId: modelRow.id,
     branchName: "main",
     headRevisionId: INITIAL_REVISION_ID,

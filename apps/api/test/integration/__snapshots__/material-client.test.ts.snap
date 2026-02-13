@@ -1,0 +1,46 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`typed material api client integration batch creates materials and snapshots get responses 1`] = `
+{
+  "id": "<db-id>",
+  "modelId": "<model-id>",
+  "pressureE": {
+    "unit": "Pascal",
+    "value": 125000,
+  },
+  "pressureG": {
+    "unit": "Pascal",
+    "value": 85000,
+  },
+}
+`;
+
+exports[`typed material api client integration batch creates materials and snapshots get responses 2`] = `
+{
+  "id": "<db-id>",
+  "modelId": "<model-id>",
+  "pressureE": {
+    "unit": "Pascal",
+    "value": 101324.66370467292,
+  },
+  "pressureG": {
+    "unit": "Pascal",
+    "value": 101325,
+  },
+}
+`;
+
+exports[`typed material api client integration batch creates materials and snapshots get responses 3`] = `
+{
+  "id": "<db-id>",
+  "modelId": "<model-id>",
+  "pressureE": {
+    "unit": "Pascal",
+    "value": 96258.75,
+  },
+  "pressureG": {
+    "unit": "Pascal",
+    "value": 95000,
+  },
+}
+`;

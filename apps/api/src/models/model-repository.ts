@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { eq, inArray } from "drizzle-orm";
-import { db } from "../db/client";
+import { getDb } from "../db/client";
 import {
   modelRevisionDrafts,
   modelRevisions,
@@ -60,7 +60,7 @@ export type ModelRepository = {
 
 export const drizzleModelRepository: ModelRepository = {
   async getById(input) {
-    const modelRows = await db
+    const modelRows = await getDb()
       .select()
       .from(models)
       .where(eq(models.id, input.modelId))
@@ -72,12 +72,12 @@ export const drizzleModelRepository: ModelRepository = {
 
     if (input.draftId) {
       const [draftRows, draftChangeRows] = await Promise.all([
-        db
+        getDb()
           .select()
           .from(modelRevisionDrafts)
           .where(eq(modelRevisionDrafts.id, input.draftId))
           .limit(1),
-        db
+        getDb()
           .select()
           .from(revisionChanges)
           .where(eq(revisionChanges.draftId, input.draftId)),
@@ -175,7 +175,7 @@ export const drizzleModelRepository: ModelRepository = {
       (event) => event.type !== "model_created",
     );
 
-    const savedModel = await db.transaction(async (tx) => {
+    const savedModel = await getDb().transaction(async (tx) => {
       const row = await tx
         .insert(models)
         .values(persistence)
@@ -239,7 +239,7 @@ const loadRevisionHistory = async (input: {
     }
     visited.add(id);
 
-    const rows = await db
+    const rows = await getDb()
       .select()
       .from(modelRevisions)
       .where(eq(modelRevisions.id, id))
@@ -282,7 +282,7 @@ const buildNodesFromRevisions = async (input: {
     input.revisions.map((revision, index) => [revision.id, index]),
   );
 
-  const changeRows = await db
+  const changeRows = await getDb()
     .select()
     .from(revisionChanges)
     .where(inArray(revisionChanges.revisionId, revisionIds));
@@ -350,7 +350,7 @@ const buildModelNameFromRevisions = async (input: {
     input.revisions.map((revision, index) => [revision.id, index]),
   );
 
-  const changeRows = await db
+  const changeRows = await getDb()
     .select()
     .from(revisionChanges)
     .where(inArray(revisionChanges.revisionId, revisionIds));

@@ -3,12 +3,12 @@ import { assertUuid } from "../common/uuid";
 export type NodeSnapshot = {
   id: string;
   modelId: string;
-  name: string;
+  nodeTypeDescriminator: "external" | "internal";
 };
 
-export class NodeEntity {
-  private _name: string;
+export type NodeLocationDefinition = {};
 
+export class NodeEntity {
   private constructor(snapshot: NodeSnapshot) {
     assertUuid(snapshot.id, "id");
     assertUuid(snapshot.modelId, "modelId");
@@ -16,7 +16,7 @@ export class NodeEntity {
 
     this.id = snapshot.id;
     this.modelId = snapshot.modelId;
-    this._name = snapshot.name.trim();
+    this.name = snapshot.name.trim();
   }
 
   readonly id: string;
@@ -30,26 +30,16 @@ export class NodeEntity {
     return new NodeEntity(snapshot);
   }
 
-  get name(): string {
-    return this._name;
-  }
-
   rename(name: string): void {
     this.assertName(name);
-    this._name = name.trim();
+    this.name = name.trim();
   }
 
   toSnapshot(): NodeSnapshot {
     return {
       id: this.id,
       modelId: this.modelId,
-      name: this._name,
+      name: this.name,
     };
-  }
-
-  private assertName(name: string): void {
-    if (name.trim().length === 0) {
-      throw new Error("Node name is required");
-    }
   }
 }

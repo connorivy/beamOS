@@ -26,6 +26,7 @@
         "@elysiajs/openapi": "^1.4.14",
         "drizzle-orm": "^1.0.0-beta.9-e89174b",
         "elysia": "^1.4.25",
+        "unitsnet-js": "^4.0.5",
         "zod": "^4.3.6",
         "zod-to-json-schema": "^3.25.1",
       },
@@ -762,6 +763,8 @@
     "undici": ["undici@5.29.0", "", { "dependencies": { "@fastify/busboy": "^2.0.0" } }, "sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg=="],
 
     "undici-types": ["undici-types@7.16.0", "", {}, "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw=="],
+
+    "unitsnet-js": ["unitsnet-js@4.0.5", "", {}, "sha512-OskLf5BXUidV86BUkOYedxXqpgt6r2dtEanHS5fDehlR9i3JjwNeOf+qRjOv0kgNto/3BG0BqOCTGhnidjRFWg=="],
 
     "update-browserslist-db": ["update-browserslist-db@1.2.3", "", { "dependencies": { "escalade": "^3.2.0", "picocolors": "^1.1.1" }, "peerDependencies": { "browserslist": ">= 4.21.0" }, "bin": { "update-browserslist-db": "cli.js" } }, "sha512-Js0m9cx+qOgDxo0eMiFGEueWztz+d4+M3rGlmKPT+T4IS/jP4ylw3Nwpu6cpTTP8R1MAC1kF4VbdLt3ARf209w=="],
 

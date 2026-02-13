@@ -6,6 +6,7 @@ import {
   uuid,
   jsonb,
   integer,
+  doublePrecision,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
@@ -139,4 +140,14 @@ export const modelBranchHeads = pgTable(
   }),
 );
 
+export const materials = pgTable("materials", {
+  id: uuid("id").primaryKey(),
+  modelId: uuid("model_id")
+    .notNull()
+    .references(() => models.id),
+  pressureESi: doublePrecision("pressure_e_si").notNull(),
+  pressureGSi: doublePrecision("pressure_g_si").notNull(),
+});
+
 export type Model = InferSelectModel<typeof models>;
+export type Material = InferSelectModel<typeof materials>;

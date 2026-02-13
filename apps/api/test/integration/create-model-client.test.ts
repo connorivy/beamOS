@@ -1,44 +1,19 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
-import type { createAppAndMigrate as CreateAppAndMigrate } from "../../src/server";
-import { GenericContainer, Wait } from "testcontainers";
+import {
+  setupIntegrationApp,
+  teardownIntegrationApp,
+} from "./shared-test-app";
 
-type AppServer = NonNullable<
-  Awaited<ReturnType<typeof CreateAppAndMigrate>>["server"]
->;
-
-let server: AppServer | undefined;
 let baseUrl = "";
 
-const postgres = await new GenericContainer("postgres:17-alpine")
-  .withEnvironment({ POSTGRES_USER: "beamos" })
-  .withEnvironment({ POSTGRES_PASSWORD: "beamos" })
-  .withEnvironment({ POSTGRES_DB: "beamos" })
-  .withExposedPorts(5432)
-  .withWaitStrategy(
-    Wait.forLogMessage("database system is ready to accept connections", 2),
-  )
-  .start();
-
 beforeAll(async () => {
-  const dbUri = `postgres://beamos:beamos@${postgres.getHost()}:${postgres.getMappedPort(5432)}/beamos`;
-  process.env.DB_URI = dbUri;
-  const { createAppAndMigrate } = await import("../../src/server");
-  const app = await createAppAndMigrate();
-  app.listen(0);
-
-  if (!app.server) {
-    throw new Error("Failed to start test API server");
-  }
-
-  server = app.server;
-  baseUrl = `http://127.0.0.1:${server.port}`;
+  baseUrl = await setupIntegrationApp();
 }, 10_000);
 
 afterAll(async () => {
-  server?.stop(true);
-  await postgres?.stop();
+  await teardownIntegrationApp();
 }, 10_000);
 
 describe("typed openapi client integration", () => {

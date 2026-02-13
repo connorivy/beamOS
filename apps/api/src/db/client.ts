@@ -1,11 +1,19 @@
 import { drizzle } from "drizzle-orm/bun-sql";
 
-const databaseUrl = process.env.DB_URI;
+let client: ReturnType<typeof drizzle> | undefined;
+let clientUri: string | undefined;
 
-if (!databaseUrl) {
-  throw new Error(
-    "DATABASE_URL must be set to a PostgreSQL connection string.",
-  );
-}
+export const getDb = () => {
+  const databaseUrl = process.env.DB_URI;
 
-export const db = drizzle(databaseUrl);
+  if (!databaseUrl) {
+    throw new Error("DB_URI must be set to a PostgreSQL connection string.");
+  }
+
+  if (!client || clientUri !== databaseUrl) {
+    client = drizzle(databaseUrl);
+    clientUri = databaseUrl;
+  }
+
+  return client;
+};

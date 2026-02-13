@@ -1,22 +1,22 @@
 import { sql } from "drizzle-orm";
-import { db } from "./client";
+import { getDb } from "./client";
 
 export const bootstrapDb = async () => {
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY NOT NULL,
       name TEXT NOT NULL
     );
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS models (
       id UUID PRIMARY KEY NOT NULL,
       name TEXT NOT NULL
     );
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS model_revisions (
       id UUID PRIMARY KEY NOT NULL,
       model_id UUID NOT NULL REFERENCES models(id),
@@ -29,7 +29,7 @@ export const bootstrapDb = async () => {
     );
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS model_revision_drafts (
       id UUID PRIMARY KEY NOT NULL,
       model_id UUID NOT NULL REFERENCES models(id),
@@ -43,7 +43,7 @@ export const bootstrapDb = async () => {
     );
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS node_revisions (
       revision_id UUID NOT NULL REFERENCES model_revisions(id),
       node_id UUID NOT NULL,
@@ -53,7 +53,7 @@ export const bootstrapDb = async () => {
     );
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS node_revision_drafts (
       draft_id UUID NOT NULL REFERENCES model_revision_drafts(id),
       node_id UUID NOT NULL,
@@ -63,7 +63,7 @@ export const bootstrapDb = async () => {
     );
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS revision_changes (
       id UUID PRIMARY KEY NOT NULL,
       revision_id UUID REFERENCES model_revisions(id),
@@ -77,18 +77,27 @@ export const bootstrapDb = async () => {
     );
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     ALTER TABLE revision_changes
     ADD COLUMN IF NOT EXISTS schema_version INTEGER NOT NULL DEFAULT 1;
   `);
 
-  await db.execute(sql`
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS model_branch_heads (
       model_id UUID NOT NULL REFERENCES models(id),
       branch_name TEXT NOT NULL,
       head_revision_id UUID NOT NULL REFERENCES model_revisions(id),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       PRIMARY KEY (model_id, branch_name)
+    );
+  `);
+
+  await getDb().execute(sql`
+    CREATE TABLE IF NOT EXISTS materials (
+      id UUID PRIMARY KEY NOT NULL,
+      model_id UUID NOT NULL REFERENCES models(id),
+      pressure_e_si DOUBLE PRECISION NOT NULL,
+      pressure_g_si DOUBLE PRECISION NOT NULL
     );
   `);
 };

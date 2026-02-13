@@ -8,19 +8,20 @@
     "dev:test": "PORT=3001 bun --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
     "test:unit": "sh -c 'if [ -d test/unit ] && rg -q --glob \"*.test.*\" --glob \"*.spec.*\" --files test/unit; then bun test test/unit; else echo \"No API unit tests found; skipping.\"; fi'",
-    "test:integration": "bun test test/integration",
+    "test:integration": "bun test --only-failures test/integration",
     "test": "bun run test:unit && bun run test:integration",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run src/db/migrate.ts"
   },
   "dependencies": {
     "@beamos/contracts": "workspace:*",
+    "@beamos/openapi-client": "workspace:*",
     "@elysiajs/openapi": "^1.4.14",
     "drizzle-orm": "^1.0.0-beta.9-e89174b",
     "elysia": "^1.4.25",
+    "unitsnet-js": "^4.0.5",
     "zod": "^4.3.6",
-    "zod-to-json-schema": "^3.25.1",
-    "@beamos/openapi-client": "workspace:*"
+    "zod-to-json-schema": "^3.25.1"
   },
   "devDependencies": {
     "@testcontainers/postgresql": "10.28.0",

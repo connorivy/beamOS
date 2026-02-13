@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { db } from "../db/client";
+import { getDb } from "../db/client";
 import {
   modelBranchHeads,
   modelRevisionDrafts,
@@ -18,7 +18,7 @@ import type { DomainEvent, ModelRevisionRepository } from "../common/types";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
-    const revisionRows = await db
+    const revisionRows = await getDb()
       .select()
       .from(modelRevisions)
       .where(eq(modelRevisions.id, revisionId))
@@ -52,12 +52,12 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
 
   async getDraftById(draftId) {
     const [draftRows, draftChangeRows] = await Promise.all([
-      db
+      getDb()
         .select()
         .from(modelRevisionDrafts)
         .where(eq(modelRevisionDrafts.id, draftId))
         .limit(1),
-      db
+      getDb()
         .select()
         .from(revisionChanges)
         .where(eq(revisionChanges.draftId, draftId)),
@@ -114,7 +114,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     const events = revision.pullDomainEvents();
 
     if (newRevision) {
-      return db.transaction(async (tx) => {
+      return getDb().transaction(async (tx) => {
         const revisionRow = await tx
           .insert(modelRevisions)
           .values(modelRevisionMapper.toPersistence(revision))
@@ -143,7 +143,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       });
     }
 
-    return db.transaction(async (tx) => {
+    return getDb().transaction(async (tx) => {
       const now = new Date();
       const draftRows = await tx
         .select()
@@ -218,7 +218,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
   },
 
   async getBranchHead(modelId, branchName) {
-    const rows = await db
+    const rows = await getDb()
       .select()
       .from(modelBranchHeads)
       .where(
@@ -237,7 +237,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
   },
 
   async listBranchHeads(modelId) {
-    const rows = await db
+    const rows = await getDb()
       .select()
       .from(modelBranchHeads)
       .where(eq(modelBranchHeads.modelId, modelId));
@@ -249,7 +249,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     const aggregate = modelBranchHeadMapper.fromInput(input);
     const persistence = modelBranchHeadMapper.toPersistence(aggregate);
 
-    await db
+    await getDb()
       .insert(modelBranchHeads)
       .values({
         modelId: persistence.modelId,
@@ -268,7 +268,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async saveDraft(input) {
     const now = new Date();
 
-    return db.transaction(async (tx) => {
+    return getDb().transaction(async (tx) => {
       const existingRows = await tx
         .select()
         .from(modelRevisionDrafts)
@@ -362,7 +362,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
   },
 
   async commitDraft(input) {
-    return db.transaction(async (tx) => {
+    return getDb().transaction(async (tx) => {
       const [draftRows, draftChangeRows] = await Promise.all([
         tx
           .select()
@@ -479,7 +479,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
 
     const snapshot = aggregate.toSnapshot();
 
-    return db.transaction(async (tx) => {
+    return getDb().transaction(async (tx) => {
       const revisionRow = await tx
         .insert(modelRevisions)
         .values(modelRevisionMapper.toPersistence(aggregate))
@@ -638,7 +638,7 @@ const loadRevisionHistory = async (input: {
     }
     visited.add(id);
 
-    const rows = await db
+    const rows = await getDb()
       .select()
       .from(modelRevisions)
       .where(eq(modelRevisions.id, id))
@@ -681,7 +681,7 @@ const buildNodesFromRevisions = async (input: {
     input.revisions.map((revision, index) => [revision.id, index]),
   );
 
-  const changeRows = await db
+  const changeRows = await getDb()
     .select()
     .from(revisionChanges)
     .where(inArray(revisionChanges.revisionId, revisionIds));
