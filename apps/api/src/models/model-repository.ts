@@ -171,6 +171,9 @@ export const drizzleModelRepository: ModelRepository = {
   async save(model) {
     const persistence = modelMapper.toPersistence(model);
     const events = model.pullDomainEvents();
+    const revisionEvents = events.filter(
+      (event) => event.type !== "model_created",
+    );
 
     const savedModel = await db.transaction(async (tx) => {
       const row = await tx
@@ -184,7 +187,7 @@ export const drizzleModelRepository: ModelRepository = {
         })
         .returning();
 
-      if (events.length > 0) {
+      if (revisionEvents.length > 0) {
         const targetRevisionId = model.sourceRevisionId;
         const targetDraftId = model.sourceDraftId;
 
@@ -198,7 +201,7 @@ export const drizzleModelRepository: ModelRepository = {
           modelId: model.id,
           revisionId: targetRevisionId,
           draftId: targetDraftId,
-          events,
+          events: revisionEvents,
         });
 
         if (changeRows.length > 0) {

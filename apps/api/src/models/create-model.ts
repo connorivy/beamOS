@@ -48,7 +48,7 @@ export const createModel = defineEndpoint({
       version: {
         modelId: savedModel.id,
         branchName: "hello",
-        revisionId: "",
+        revisionId: Bun.randomUUIDv7(),
         revisionsAhead: 0,
         revisionsBehind: 0,
         inProgressRevisionId: Bun.randomUUIDv7(),

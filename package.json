@@ -9,13 +9,14 @@
     "dev": "concurrently -n api,web -c green,blue \"bun run --cwd apps/api dev\" \"bun run --cwd apps/web dev\"",
     "dev:api": "bun run --cwd apps/api dev",
     "dev:web": "bun run --cwd apps/web dev",
-    "build": "bun run --cwd packages/contracts build && bun run --cwd apps/api build && bun run --cwd apps/web build",
+    "build": "bun run --cwd packages/contracts build && bun run --cwd packages/openapi-client build && bun run --cwd apps/api build && bun run --cwd apps/web build",
     "test": "bun run test:unit && bun run test:integration",
     "test:unit": "bun run --cwd apps/api test:unit && bun run --cwd apps/web test:unit",
     "test:integration": "bun run --cwd apps/api test:integration",
     "test:e2e": "playwright test",
     "db:generate": "bun run --cwd apps/api db:generate",
-    "db:migrate": "bun run --cwd apps/api db:migrate"
+    "db:migrate": "bun run --cwd apps/api db:migrate",
+    "openapi:generate-client": "bun run scripts/generate-openapi-client.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.1",
