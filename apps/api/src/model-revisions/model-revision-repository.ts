@@ -14,7 +14,7 @@ import { ModelRevisionAggregate } from "./model-revision-aggregate";
 import { modelRevisionMapper } from "./model-revision-mapper";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
-import type { DomainEvent, ModelRevisionRepository } from "../services/types";
+import type { DomainEvent, ModelRevisionRepository } from "../common/types";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {

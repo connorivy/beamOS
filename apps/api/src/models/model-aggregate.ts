@@ -1,4 +1,4 @@
-import { assertUuid } from "../lib/uuid";
+import { assertUuid } from "../common/uuid";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import type { ModelDomainEvent } from "./model-events";
 

@@ -1,5 +1,5 @@
-import { DomainEvent } from "src/services/types";
-import { assertUuid } from "../lib/uuid";
+import { DomainEvent } from "src/common/types";
+import { assertUuid } from "../common/uuid";
 import { NodeEntity, NodeSnapshot } from "../nodes/node-entity";
 
 export type ModelRevisionSnapshot = {

@@ -20,22 +20,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/users/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiUsersById"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/models": {
         parameters: {
             query?: never;
@@ -121,31 +105,6 @@ export interface operations {
         };
         requestBody?: never;
         responses: never;
-    };
-    getApiUsersById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        id: string;
-                        name: string;
-                    };
-                };
-            };
-        };
     };
     postApiModels: {
         parameters: {
@@ -270,9 +229,7 @@ export interface operations {
                         version: {
                             /** Format: uuid */
                             modelId: string;
-                            /** Format: uuid */
                             revisionId: string | null;
-                            /** Format: uuid */
                             draftId: string | null;
                         };
                     };
@@ -339,9 +296,7 @@ export interface operations {
                         version: {
                             /** Format: uuid */
                             modelId: string;
-                            /** Format: uuid */
                             revisionId: string | null;
-                            /** Format: uuid */
                             draftId: string | null;
                         };
                     };
@@ -405,9 +360,7 @@ export interface operations {
                         version: {
                             /** Format: uuid */
                             modelId: string;
-                            /** Format: uuid */
                             revisionId: string | null;
-                            /** Format: uuid */
                             draftId: string | null;
                         };
                     };

@@ -1,4 +1,4 @@
-import { assertUuid } from "../lib/uuid";
+import { assertUuid } from "../common/uuid";
 
 export type ModelBranchHeadSnapshot = {
   modelId: string;
@@ -29,7 +29,9 @@ export class ModelBranchHeadAggregate {
     return new ModelBranchHeadAggregate(snapshot);
   }
 
-  static rehydrate(snapshot: ModelBranchHeadSnapshot): ModelBranchHeadAggregate {
+  static rehydrate(
+    snapshot: ModelBranchHeadSnapshot,
+  ): ModelBranchHeadAggregate {
     return new ModelBranchHeadAggregate(snapshot);
   }
 

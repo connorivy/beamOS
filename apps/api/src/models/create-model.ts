@@ -1,6 +1,6 @@
 import { defineEndpoint } from "@beamos/contracts";
 import { ModelAggregate } from "../models/model-aggregate";
-import type { AppContext } from "../services/types";
+import type { AppContext } from "../common/types";
 import { z } from "zod";
 
 const uuidSchema = z.uuid();

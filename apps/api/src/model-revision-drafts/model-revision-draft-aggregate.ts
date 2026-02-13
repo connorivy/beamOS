@@ -1,4 +1,4 @@
-import { assertUuid } from "../lib/uuid";
+import { assertUuid } from "../common/uuid";
 import {
   NodeRevisionDraftAggregate,
   type NodeRevisionDraftSnapshot,

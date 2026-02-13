@@ -1,4 +1,4 @@
-import { assertUuid } from "../lib/uuid";
+import { assertUuid } from "../common/uuid";
 
 export type RevisionChangeSnapshot = {
   id: string;

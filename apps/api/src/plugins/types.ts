@@ -1,5 +1,5 @@
 import type { Endpoint } from "@beamos/contracts";
-import type { AppContext, AppServices } from "../services/types";
+import type { AppContext, AppServices } from "../common/types";
 
 export type ApiPlugin = {
   id: string;

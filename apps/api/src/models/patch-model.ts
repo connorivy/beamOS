@@ -3,11 +3,9 @@ import {
   patchModelReqSchema,
   patchModelResSchema,
 } from "@beamos/contracts";
-import {
-  loadModelForTarget,
-  toVersionRef,
-} from "../endpoints/model-version-target";
-import type { AppContext } from "../services/types";
+import { httpError } from "../common/http-utils";
+import { toVersionRef } from "../common/version-utils";
+import type { AppContext } from "../common/types";
 
 export const patchModel = defineEndpoint({
   method: "PATCH",
@@ -15,11 +13,14 @@ export const patchModel = defineEndpoint({
   req: patchModelReqSchema,
   res: patchModelResSchema,
   async handler(req, ctx: AppContext) {
-    const model = await loadModelForTarget({
+    const model = await ctx.services.modelRepository.getById({
       modelId: req.params.modelId,
-      target: req.body.target,
-      ctx,
+      revisionId: req.body.target.revisionId,
+      draftId: req.body.target.draftId,
     });
+    if (!model) {
+      throw httpError("Model or target revision/draft not found", 404);
+    }
 
     model.rename(req.body.name);
     const savedModel = await ctx.services.modelRepository.save(model);

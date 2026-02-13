@@ -6,8 +6,8 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 import { bootstrapDb } from "./db/bootstrap";
 import { apiPlugins } from "./plugins/registry";
 import { buildServices, collectPluginEndpoints } from "./plugins/types";
-import type { AppContext } from "./services/types";
-import { createDefaultServices } from "./services/default-services";
+import type { AppContext } from "./common/types";
+import { createDefaultServices } from "./services";
 
 const endpoints = collectPluginEndpoints(apiPlugins);
 const services = buildServices(createDefaultServices(), apiPlugins);

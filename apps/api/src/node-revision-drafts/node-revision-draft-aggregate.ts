@@ -1,4 +1,4 @@
-import { assertUuid } from "../lib/uuid";
+import { assertUuid } from "../common/uuid";
 
 export type NodeRevisionDraftSnapshot = {
   draftId: string;
@@ -28,7 +28,9 @@ export class NodeRevisionDraftAggregate {
   readonly draftId: string;
   readonly nodeId: string;
 
-  static create(snapshot: NodeRevisionDraftSnapshot): NodeRevisionDraftAggregate {
+  static create(
+    snapshot: NodeRevisionDraftSnapshot,
+  ): NodeRevisionDraftAggregate {
     return new NodeRevisionDraftAggregate(snapshot);
   }
 
