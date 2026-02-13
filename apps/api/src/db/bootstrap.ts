@@ -70,10 +70,16 @@ export const bootstrapDb = async () => {
       draft_id UUID REFERENCES model_revision_drafts(id),
       entity_type TEXT NOT NULL,
       entity_id UUID NOT NULL,
+      schema_version INTEGER NOT NULL DEFAULT 1,
       op TEXT NOT NULL,
       payload JSONB NOT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
+  `);
+
+  await db.execute(sql`
+    ALTER TABLE revision_changes
+    ADD COLUMN IF NOT EXISTS schema_version INTEGER NOT NULL DEFAULT 1;
   `);
 
   await db.execute(sql`

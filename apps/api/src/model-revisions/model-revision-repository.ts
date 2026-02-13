@@ -57,7 +57,10 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .from(modelRevisionDrafts)
         .where(eq(modelRevisionDrafts.id, draftId))
         .limit(1),
-      db.select().from(revisionChanges).where(eq(revisionChanges.draftId, draftId)),
+      db
+        .select()
+        .from(revisionChanges)
+        .where(eq(revisionChanges.draftId, draftId)),
     ]);
 
     if (!draftRows[0]) {
@@ -322,6 +325,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           draftId: input.id,
           entityType: "node",
           entityId: node.nodeId,
+          schemaVersion: 1,
           op: node.op,
           payload: {
             id: node.nodeId,
@@ -544,6 +548,7 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
       draftId: input.draftId,
       entityType: "node",
       entityId: node.nodeId,
+      schemaVersion: 1,
       op: node.op,
       payload: {
         id: node.nodeId,

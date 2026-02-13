@@ -5,6 +5,7 @@ import {
   primaryKey,
   uuid,
   jsonb,
+  integer,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
@@ -105,6 +106,7 @@ export const revisionChanges = pgTable("revision_changes", {
   draftId: uuid("draft_id").references(() => modelRevisionDrafts.id),
   entityType: text("entity_type").notNull(),
   entityId: uuid("entity_id").notNull(),
+  schemaVersion: integer("schema_version").notNull().default(1),
   op: text("op").notNull(),
   payload: jsonb("payload").notNull(),
   createdAt: timestamp("created_at", {
