@@ -1,9 +1,12 @@
 import type { Endpoint } from "@beamos/contracts";
-import type { AppContext, AppServices } from "../common/types";
+import type { z } from "zod";
+import type { AppServices } from "../common/types";
+
+type AnyEndpoint = Endpoint<z.ZodType<any, any, any>, z.ZodType<any, any, any>, any>;
 
 export type ApiPlugin = {
   id: string;
-  endpoints: Endpoint<any, any, AppContext>[];
+  endpoints: AnyEndpoint[];
   extendServices?: (services: AppServices) => AppServices;
 };
 
@@ -11,7 +14,7 @@ export const defineApiPlugin = (plugin: ApiPlugin) => plugin;
 
 export const collectPluginEndpoints = (
   plugins: ApiPlugin[],
-): Endpoint<any, any, AppContext>[] => {
+): AnyEndpoint[] => {
   return plugins.flatMap((plugin) => plugin.endpoints);
 };
 

@@ -6,7 +6,6 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 import { bootstrapDb } from "./db/bootstrap";
 import { apiPlugins } from "./plugins/registry";
 import { buildServices, collectPluginEndpoints } from "./plugins/types";
-import type { AppContext } from "./common/types";
 import { createDefaultServices } from "./services";
 
 const endpoints = collectPluginEndpoints(apiPlugins);
@@ -64,7 +63,13 @@ const getSchemaShape = (
   return {};
 };
 
-const toRouteSchema = (endpoint: Endpoint<unknown, unknown, AppContext>) => {
+type AnyEndpoint = Endpoint<
+  z.ZodType<any, any, any>,
+  z.ZodType<any, any, any>,
+  any
+>;
+
+const toRouteSchema = (endpoint: AnyEndpoint) => {
   const reqShape = getSchemaShape(endpoint.req);
 
   return {
@@ -77,10 +82,7 @@ const toRouteSchema = (endpoint: Endpoint<unknown, unknown, AppContext>) => {
   };
 };
 
-const pluginIdByEndpoint = new Map<
-  Endpoint<unknown, unknown, AppContext>,
-  string
->();
+const pluginIdByEndpoint = new Map<AnyEndpoint, string>();
 for (const plugin of apiPlugins) {
   for (const endpoint of plugin.endpoints) {
     pluginIdByEndpoint.set(endpoint, plugin.id);

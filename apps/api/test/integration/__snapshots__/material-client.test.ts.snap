@@ -3,7 +3,6 @@
 exports[`typed material api client integration batch creates materials and snapshots get responses 1`] = `
 {
   "id": "<db-id>",
-  "modelId": "<model-id>",
   "pressureE": {
     "unit": "Pascal",
     "value": 125000,
@@ -12,13 +11,13 @@ exports[`typed material api client integration batch creates materials and snaps
     "unit": "Pascal",
     "value": 85000,
   },
+  "revisionId": "<revision-id>",
 }
 `;
 
 exports[`typed material api client integration batch creates materials and snapshots get responses 2`] = `
 {
   "id": "<db-id>",
-  "modelId": "<model-id>",
   "pressureE": {
     "unit": "Pascal",
     "value": 101324.66370467292,
@@ -27,13 +26,13 @@ exports[`typed material api client integration batch creates materials and snaps
     "unit": "Pascal",
     "value": 101325,
   },
+  "revisionId": "<revision-id>",
 }
 `;
 
 exports[`typed material api client integration batch creates materials and snapshots get responses 3`] = `
 {
   "id": "<db-id>",
-  "modelId": "<model-id>",
   "pressureE": {
     "unit": "Pascal",
     "value": 96258.75,
@@ -42,5 +41,6 @@ exports[`typed material api client integration batch creates materials and snaps
     "unit": "Pascal",
     "value": 95000,
   },
+  "revisionId": "<revision-id>",
 }
 `;

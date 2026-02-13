@@ -84,7 +84,7 @@ export interface paths {
         patch: operations["patchApiModelsByModelId"];
         trace?: never;
     };
-    "/api/materials/batch-create-material": {
+    "/api/models/{modelId}/branches/{branchName}/materials/batch": {
         parameters: {
             query?: never;
             header?: never;
@@ -93,7 +93,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["postApiMaterialsBatch-create-material"];
+        post: operations["postApiModelsByModelIdBranchesByBranchNameMaterialsBatch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -400,20 +400,21 @@ export interface operations {
             };
         };
     };
-    "postApiMaterialsBatch-create-material": {
+    postApiModelsByModelIdBranchesByBranchNameMaterialsBatch: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                modelId: string;
+                branchName: string;
+            };
             cookie?: never;
         };
         requestBody: {
             content: {
                 "application/json": {
                     materials: {
-                        tempId: string;
-                        /** Format: uuid */
-                        modelId: string;
+                        tempId?: string;
                         pressureE: {
                             value: number;
                             /** @enum {string} */
@@ -428,9 +429,7 @@ export interface operations {
                 };
                 "application/x-www-form-urlencoded": {
                     materials: {
-                        tempId: string;
-                        /** Format: uuid */
-                        modelId: string;
+                        tempId?: string;
                         pressureE: {
                             value: number;
                             /** @enum {string} */
@@ -445,9 +444,7 @@ export interface operations {
                 };
                 "multipart/form-data": {
                     materials: {
-                        tempId: string;
-                        /** Format: uuid */
-                        modelId: string;
+                        tempId?: string;
                         pressureE: {
                             value: number;
                             /** @enum {string} */
@@ -474,7 +471,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             /** Format: uuid */
-                            modelId: string;
+                            revisionId: string;
                             pressureE: {
                                 value: number;
                                 /** @constant */
@@ -516,7 +513,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             /** Format: uuid */
-                            modelId: string;
+                            revisionId: string;
                             pressureE: {
                                 value: number;
                                 /** @constant */

@@ -6,7 +6,7 @@ export const materialMapper = {
   toDomain(row: MaterialRow): MaterialEntity {
     return MaterialEntity.rehydrate({
       id: row.id,
-      modelId: row.modelId,
+      revisionId: row.revisionId,
       pressureE: Pressure.FromPascals(row.pressureESi),
       pressureG: Pressure.FromPascals(row.pressureGSi),
     });
@@ -15,7 +15,7 @@ export const materialMapper = {
   toPersistence(aggregate: MaterialEntity): typeof materials.$inferInsert {
     return {
       id: aggregate.id,
-      modelId: aggregate.modelId,
+      revisionId: aggregate.revisionId,
       pressureESi: aggregate.pressureE.Pascals,
       pressureGSi: aggregate.pressureG.Pascals,
     };

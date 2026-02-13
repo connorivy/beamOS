@@ -95,7 +95,7 @@ export const bootstrapDb = async () => {
   await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS materials (
       id UUID PRIMARY KEY NOT NULL,
-      model_id UUID NOT NULL REFERENCES models(id),
+      revision_id UUID NOT NULL REFERENCES model_revisions(id),
       pressure_e_si DOUBLE PRECISION NOT NULL,
       pressure_g_si DOUBLE PRECISION NOT NULL
     );

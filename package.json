@@ -6,8 +6,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently -n api,web -c green,blue \"bun run --cwd apps/api dev\" \"bun run --cwd apps/web dev\"",
-    "dev:api": "bun run --cwd apps/api dev",
+    "db:start": "docker compose up -d --wait db",
+    "dev": "concurrently -n api,web -c green,blue \"bun run dev:api\" \"bun run dev:web\"",
+    "dev:api": "bun run db:start && DB_URI=${DB_URI:-postgresql://beamos:beamos@${DB_HOST:-127.0.0.1}:${DB_PORT:-5432}/beamos} PORT=${PORT:-3001} bun run --cwd apps/api dev",
     "dev:web": "bun run --cwd apps/web dev",
     "build": "bun run --cwd packages/contracts build && bun run --cwd packages/openapi-client build && bun run --cwd apps/api build && bun run --cwd apps/web build",
     "test": "bun run test:unit && bun run test:integration && bun run test:e2e",

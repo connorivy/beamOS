@@ -2,10 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import { PressureUnits } from "unitsnet-js";
-import {
-  setupIntegrationApp,
-  teardownIntegrationApp,
-} from "./shared-test-app";
+import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
@@ -39,20 +36,25 @@ describe("typed material api client integration", () => {
     }
 
     const modelId = createModelResponse.data.model.id;
+    const branchName = createModelResponse.data.version.branchName;
     const batchCreateResponse = await client.POST(
-      "/api/materials/batch-create-material",
+      "/api/models/{modelId}/branches/{branchName}/materials/batch",
       {
+        params: {
+          path: {
+            modelId,
+            branchName,
+          },
+        },
         body: {
           materials: [
             {
               tempId: tempIds[0],
-              modelId,
               pressureE: { value: 1.25, unit: PressureUnits.Bars },
               pressureG: { value: 85, unit: PressureUnits.Kilopascals },
             },
             {
               tempId: tempIds[1],
-              modelId,
               pressureE: {
                 value: 14.6959,
                 unit: PressureUnits.PoundsForcePerSquareInch,
@@ -61,7 +63,6 @@ describe("typed material api client integration", () => {
             },
             {
               tempId: tempIds[2],
-              modelId,
               pressureE: { value: 0.95, unit: PressureUnits.Atmospheres },
               pressureG: { value: 950, unit: PressureUnits.Hectopascals },
             },
@@ -105,7 +106,7 @@ describe("typed material api client integration", () => {
       expect({
         ...getResponse.data.material,
         id: "<db-id>",
-        modelId: "<model-id>",
+        revisionId: "<revision-id>",
       }).toMatchSnapshot();
     }
   });
@@ -128,21 +129,29 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
+    const revisionId = createModelResponse.data.version.revisionId;
     const modelId = createModelResponse.data.model.id;
+    const branchName = createModelResponse.data.version.branchName;
     const batchCreateResponse = await client.POST(
-      "/api/materials/batch-create-material",
+      "/api/models/{modelId}/branches/{branchName}/materials/batch",
       {
+        params: {
+          path: {
+            modelId,
+            branchName,
+          },
+        },
         body: {
           materials: [
             {
               tempId: "dup-1",
-              modelId,
+              revisionId,
               pressureE: { value: 1, unit: PressureUnits.Bars },
               pressureG: { value: 1, unit: PressureUnits.Bars },
             },
             {
               tempId: "dup-1",
-              modelId,
+              revisionId,
               pressureE: { value: 2, unit: PressureUnits.Bars },
               pressureG: { value: 2, unit: PressureUnits.Bars },
             },

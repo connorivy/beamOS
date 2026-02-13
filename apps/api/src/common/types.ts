@@ -30,6 +30,7 @@ export type ModelRevisionCommitInput = {
   authorId: string;
   message: string;
   nodes: NodeSnapshot[];
+  includeModelChange?: boolean;
 };
 
 export type ModelRevisionDraftInput = {

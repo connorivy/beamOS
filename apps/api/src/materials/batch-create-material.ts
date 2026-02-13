@@ -12,19 +12,18 @@ const uuidV7Schema = z
 
 const pressureDtoSchema = z.object({
   value: z.number().finite(),
-  unit: z.nativeEnum(PressureUnits),
+  unit: z.enum(PressureUnits),
 });
 
 const materialInputSchema = z.object({
-  tempId: z.string().trim().min(1),
-  modelId: uuidV7Schema,
+  tempId: z.string().trim().min(1).optional(),
   pressureE: pressureDtoSchema,
   pressureG: pressureDtoSchema,
 });
 
 const materialResSchema = z.object({
   id: uuidV7Schema,
-  modelId: uuidV7Schema,
+  revisionId: uuidV7Schema,
   pressureE: z.object({
     value: z.number().finite(),
     unit: z.literal(PressureUnits.Pascals),
@@ -36,6 +35,10 @@ const materialResSchema = z.object({
 });
 
 export const batchCreateMaterialReqSchema = z.object({
+  params: z.object({
+    modelId: uuidV7Schema,
+    branchName: z.string().trim().min(1),
+  }),
   body: z.object({
     materials: z.array(materialInputSchema).min(1),
   }),
@@ -48,25 +51,28 @@ export const batchCreateMaterialResSchema = z.object({
 
 const toResponseMaterial = (material: MaterialEntity) => ({
   id: material.id,
-  modelId: material.modelId,
+  revisionId: material.revisionId,
   pressureE: {
     value: material.pressureE.Pascals,
-    unit: PressureUnits.Pascals,
+    unit: PressureUnits.Pascals as const,
   },
   pressureG: {
     value: material.pressureG.Pascals,
-    unit: PressureUnits.Pascals,
+    unit: PressureUnits.Pascals as const,
   },
 });
 
 export const batchCreateMaterial = defineEndpoint({
   method: "POST",
-  path: "/api/materials/batch-create-material",
+  path: "/api/models/:modelId/branches/:branchName/materials/batch",
   req: batchCreateMaterialReqSchema,
   res: batchCreateMaterialResSchema,
   async handler(req, ctx: AppContext) {
     const seenTempIds = new Set<string>();
     for (const material of req.body.materials) {
+      if (!material.tempId) {
+        continue;
+      }
       if (seenTempIds.has(material.tempId)) {
         throw httpError(`Duplicate tempId "${material.tempId}"`, 400);
       }
@@ -74,15 +80,34 @@ export const batchCreateMaterial = defineEndpoint({
     }
 
     const tempIdToId: Record<string, string> = {};
+    const { modelId, branchName } = req.params;
+    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+      modelId,
+      branchName,
+    );
+    if (!branch) {
+      throw httpError(
+        `Could not find branch ${branchName} on model with ID ${modelId}`,
+        404,
+      );
+    }
     const entities = req.body.materials.map((material) => {
       const id = Bun.randomUUIDv7();
-      tempIdToId[material.tempId] = id;
+      if (material.tempId) {
+        tempIdToId[material.tempId] = id;
+      }
 
       return MaterialEntity.create({
         id,
-        modelId: material.modelId,
-        pressureE: new Pressure(material.pressureE.value, material.pressureE.unit),
-        pressureG: new Pressure(material.pressureG.value, material.pressureG.unit),
+        revisionId: branch.headRevisionId,
+        pressureE: new Pressure(
+          material.pressureE.value,
+          material.pressureE.unit,
+        ),
+        pressureG: new Pressure(
+          material.pressureG.value,
+          material.pressureG.unit,
+        ),
       });
     });
 

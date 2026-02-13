@@ -18,7 +18,7 @@ export const getMaterialReqSchema = z.object({
 export const getMaterialResSchema = z.object({
   material: z.object({
     id: uuidV7Schema,
-    modelId: uuidV7Schema,
+    revisionId: uuidV7Schema,
     pressureE: z.object({
       value: z.number().finite(),
       unit: z.literal(PressureUnits.Pascals),
@@ -47,14 +47,14 @@ export const getMaterial = defineEndpoint({
     return {
       material: {
         id: material.id,
-        modelId: material.modelId,
+        revisionId: material.revisionId,
         pressureE: {
           value: material.pressureE.Pascals,
-          unit: PressureUnits.Pascals,
+          unit: PressureUnits.Pascals as const,
         },
         pressureG: {
           value: material.pressureG.Pascals,
-          unit: PressureUnits.Pascals,
+          unit: PressureUnits.Pascals as const,
         },
       },
     };

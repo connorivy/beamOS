@@ -6,17 +6,25 @@ export type DefaultEndpointContext = {
   requestId: string;
 };
 
-export type Endpoint<Req, Res, Ctx = DefaultEndpointContext> = {
+export type Endpoint<
+  ReqSchema extends z.ZodTypeAny,
+  ResSchema extends z.ZodTypeAny,
+  Ctx = DefaultEndpointContext,
+> = {
   method: HttpMethod;
   path: string;
-  req: z.ZodType<Req>;
-  res: z.ZodType<Res>;
-  handler: (req: Req, ctx: Ctx) => Promise<Res> | Res;
+  req: ReqSchema;
+  res: ResSchema;
+  handler: (
+    req: z.infer<ReqSchema>,
+    ctx: Ctx,
+  ) => Promise<z.infer<ResSchema>> | z.infer<ResSchema>;
 };
 
-export const defineEndpoint = <Req, Res, Ctx = DefaultEndpointContext>(
-  e: Endpoint<Req, Res, Ctx>,
+export const defineEndpoint = <
+  ReqSchema extends z.ZodTypeAny,
+  ResSchema extends z.ZodTypeAny,
+  Ctx = DefaultEndpointContext,
+>(
+  e: Endpoint<ReqSchema, ResSchema, Ctx>,
 ) => e;
-
-export type ReqOf<T> = T extends Endpoint<infer Req, unknown, unknown> ? Req : never;
-export type ResOf<T> = T extends Endpoint<unknown, infer Res, unknown> ? Res : never;

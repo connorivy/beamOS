@@ -3,7 +3,7 @@ import { Pressure } from "unitsnet-js";
 
 export type MaterialSnapshot = {
   id: string;
-  modelId: string;
+  revisionId: string;
   pressureE: Pressure;
   pressureG: Pressure;
 };
@@ -11,18 +11,18 @@ export type MaterialSnapshot = {
 export class MaterialEntity {
   private constructor(snapshot: MaterialSnapshot) {
     assertUuidV7(snapshot.id, "id");
-    assertUuidV7(snapshot.modelId, "modelId");
+    assertUuidV7(snapshot.revisionId, "revisionId");
     this.assertPressure(snapshot.pressureE, "pressureE");
     this.assertPressure(snapshot.pressureG, "pressureG");
 
     this.id = snapshot.id;
-    this.modelId = snapshot.modelId;
+    this.revisionId = snapshot.revisionId;
     this.pressureE = snapshot.pressureE;
     this.pressureG = snapshot.pressureG;
   }
 
   readonly id: string;
-  readonly modelId: string;
+  readonly revisionId: string;
   readonly pressureE: Pressure;
   readonly pressureG: Pressure;
 
@@ -37,7 +37,7 @@ export class MaterialEntity {
   toSnapshot(): MaterialSnapshot {
     return {
       id: this.id,
-      modelId: this.modelId,
+      revisionId: this.revisionId,
       pressureE: this.pressureE,
       pressureG: this.pressureG,
     };

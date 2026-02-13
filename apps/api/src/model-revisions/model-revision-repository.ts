@@ -485,6 +485,17 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .values(modelRevisionMapper.toPersistence(aggregate))
         .returning();
 
+      if (input.includeModelChange) {
+        const modelChangeRow = buildModelRevisionChangeRow({
+          modelId: snapshot.modelId,
+          modelName: snapshot.name,
+          revisionId: snapshot.id,
+          draftId: null,
+          op: snapshot.parentRevisionId ? "update" : "insert",
+        });
+        await tx.insert(revisionChanges).values(modelChangeRow);
+      }
+
       if (snapshot.nodes.length > 0) {
         const changeRows = buildRevisionChangeRowsFromNodes({
           modelId: snapshot.modelId,
@@ -595,6 +606,31 @@ const buildRevisionChangeRowsFromEvents = (input: {
       op: event.type === "node_deleted" ? "delete" : "insert",
     })),
   });
+
+const buildModelRevisionChangeRow = (input: {
+  modelId: string;
+  modelName: string;
+  revisionId: string | null;
+  draftId: string | null;
+  op: "insert" | "update";
+}): typeof revisionChanges.$inferInsert => {
+  const entity = RevisionChangeEntity.create({
+    id: crypto.randomUUID(),
+    revisionId: input.revisionId,
+    draftId: input.draftId,
+    entityType: "model",
+    entityId: input.modelId,
+    schemaVersion: 1,
+    op: input.op,
+    payload: {
+      id: input.modelId,
+      name: input.modelName,
+    },
+    createdAt: new Date(),
+  });
+
+  return revisionChangeMapper.toPersistence(entity);
+};
 
 const applyNodeChanges = (input: {
   modelId: string;

@@ -39,6 +39,16 @@ export const createModel = defineEndpoint({
       name: req.body.name,
     });
     const savedModel = await ctx.services.modelRepository.save(model);
+    const initialRevision = await ctx.services.modelRevisionRepository.commitRevision({
+      id: Bun.randomUUIDv7(),
+      modelId: savedModel.id,
+      branchName: "main",
+      name: savedModel.name,
+      authorId: req.body.authorId,
+      message: req.body.message,
+      nodes: [],
+      includeModelChange: true,
+    });
 
     return {
       model: {
@@ -47,11 +57,11 @@ export const createModel = defineEndpoint({
       },
       version: {
         modelId: savedModel.id,
-        branchName: "hello",
-        revisionId: Bun.randomUUIDv7(),
+        branchName: "main",
+        revisionId: initialRevision.id,
         revisionsAhead: 0,
         revisionsBehind: 0,
-        inProgressRevisionId: Bun.randomUUIDv7(),
+        inProgressRevisionId: initialRevision.id,
       },
     };
   },

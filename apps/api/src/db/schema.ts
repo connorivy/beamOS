@@ -142,9 +142,9 @@ export const modelBranchHeads = pgTable(
 
 export const materials = pgTable("materials", {
   id: uuid("id").primaryKey(),
-  modelId: uuid("model_id")
+  revisionId: uuid("revision_id")
     .notNull()
-    .references(() => models.id),
+    .references(() => modelRevisions.id),
   pressureESi: doublePrecision("pressure_e_si").notNull(),
   pressureGSi: doublePrecision("pressure_g_si").notNull(),
 });
