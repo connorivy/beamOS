@@ -100,7 +100,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         draftId: draft.id,
         nodeId: node.id,
         name: node.name,
-        op: "upsert",
+        op: "update",
       })),
     });
   },
@@ -288,7 +288,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           draftId: input.id,
           nodeId: node.nodeId,
           name: node.name,
-          op: node.op ?? "upsert",
+          op: node.op ?? "update",
         })),
       });
 
@@ -533,7 +533,7 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
   modelId: string;
   revisionId: string | null;
   draftId: string | null;
-  nodes: { nodeId: string; name: string; op: "upsert" | "delete" }[];
+  nodes: { nodeId: string; name: string; op: "insert" | "update" | "delete" }[];
 }): (typeof revisionChanges.$inferInsert)[] => {
   const now = new Date();
 
@@ -570,7 +570,7 @@ const buildRevisionChangeRowsFromNodes = (input: {
     nodes: input.nodes.map((node) => ({
       nodeId: node.id,
       name: node.name,
-      op: "upsert",
+      op: "update",
     })),
   });
 
@@ -587,7 +587,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
     nodes: input.events.map((event) => ({
       nodeId: event.payload.id,
       name: event.payload.name,
-      op: event.type === "node_deleted" ? "delete" : "upsert",
+      op: event.type === "node_deleted" ? "delete" : "insert",
     })),
   });
 

@@ -25,7 +25,12 @@ export const modelRevisionDraftMapper = {
           draftId: row.id,
           nodeId: change.entityId,
           name: extractNodeName(change.payload),
-          op: change.op === "delete" ? "delete" : "upsert",
+          op:
+            change.op === "delete"
+              ? "delete"
+              : change.op === "insert"
+                ? "insert"
+                : "update",
         })),
     });
   },
@@ -55,7 +60,11 @@ export const modelRevisionDraftMapper = {
     secondParentRevisionId: string | null;
     authorId: string;
     message: string;
-    nodes: { nodeId: string; name: string; op?: "upsert" | "delete" }[];
+    nodes: {
+      nodeId: string;
+      name: string;
+      op?: "insert" | "update" | "delete";
+    }[];
   }): ModelRevisionDraftAggregate {
     const now = new Date();
     const snapshot: ModelRevisionDraftSnapshot = {
@@ -72,7 +81,7 @@ export const modelRevisionDraftMapper = {
         draftId: input.id,
         nodeId: node.nodeId,
         name: node.name,
-        op: node.op ?? "upsert",
+        op: node.op ?? "update",
       })),
     };
 

@@ -77,7 +77,7 @@ export const nodeRevisions = pgTable(
       .references(() => modelRevisions.id),
     nodeId: uuid("node_id").notNull(),
     name: text("name").notNull(),
-    op: text("op").notNull().default("upsert"),
+    op: text("op").notNull().default("update"),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.revisionId, table.nodeId] }),
@@ -92,7 +92,7 @@ export const nodeRevisionDrafts = pgTable(
       .references(() => modelRevisionDrafts.id),
     nodeId: uuid("node_id").notNull(),
     name: text("name").notNull(),
-    op: text("op").notNull().default("upsert"),
+    op: text("op").notNull().default("update"),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.draftId, table.nodeId] }),

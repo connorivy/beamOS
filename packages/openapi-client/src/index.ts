@@ -1,5 +1,5 @@
 import createFetchClient from "openapi-fetch";
-import { paths } from "./schema";
+import { paths } from "./generated/schema";
 
 export type ApiPaths = paths;
 

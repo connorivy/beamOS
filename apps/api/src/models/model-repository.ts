@@ -396,7 +396,7 @@ const buildRevisionChanges = (input: {
         draftId: input.draftId,
         entityType: "model",
         entityId: event.modelId,
-        op: "upsert",
+        op: "update",
         payload,
         createdAt: now,
       });
@@ -417,7 +417,7 @@ const buildRevisionChanges = (input: {
         draftId: input.draftId,
         entityType: "node",
         entityId: event.node.id,
-        op: "upsert",
+        op: "insert",
         payload,
         createdAt: now,
       });
@@ -438,7 +438,7 @@ const buildRevisionChanges = (input: {
         draftId: input.draftId,
         entityType: "node",
         entityId: event.node.id,
-        op: "upsert",
+        op: "update",
         payload,
         createdAt: now,
       });

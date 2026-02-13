@@ -6,10 +6,11 @@ import { mkdir } from "node:fs/promises";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const rootDir = path.resolve(__dirname, "..");
+const packageDir = path.resolve(__dirname, "..");
+const rootDir = path.resolve(packageDir, "..", "..");
 const apiDir = path.join(rootDir, "apps", "api");
-const schemaPath = path.join(rootDir, "packages", "openapi-client", "src", "schema.d.ts");
-// const schemaPath = path.join(rootDir, "packages", "openapi-client", "src", "kiota");
+const schemaPath = path.join(packageDir, "src", "generated", "schema.d.ts");
+// const schemaPath = path.join(packageDir, "src", "kiota");
 const openApiUrl = "http://127.0.0.1:3001/openapi/json";
 
 function sleep(ms) {

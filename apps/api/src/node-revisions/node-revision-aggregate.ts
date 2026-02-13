@@ -4,17 +4,17 @@ export type NodeRevisionSnapshot = {
   revisionId: string;
   nodeId: string;
   name: string;
-  op: "upsert" | "delete";
+  op: "insert" | "update" | "delete";
 };
 
 export class NodeRevisionAggregate {
   private _name: string;
-  private _op: "upsert" | "delete";
+  private _op: "insert" | "update" | "delete";
 
   private constructor(snapshot: NodeRevisionSnapshot) {
     assertUuid(snapshot.revisionId, "revisionId");
     assertUuid(snapshot.nodeId, "nodeId");
-    if (snapshot.op === "upsert") {
+    if (snapshot.op !== "delete") {
       this.assertName(snapshot.name);
     }
     this.assertOp(snapshot.op);
@@ -40,7 +40,7 @@ export class NodeRevisionAggregate {
     return this._name;
   }
 
-  get op(): "upsert" | "delete" {
+  get op(): "insert" | "update" | "delete" {
     return this._op;
   }
 
@@ -60,7 +60,7 @@ export class NodeRevisionAggregate {
   }
 
   private assertOp(op: string): void {
-    if (op !== "upsert" && op !== "delete") {
+    if (op !== "insert" && op !== "update" && op !== "delete") {
       throw new Error("Model revision node op is invalid");
     }
   }

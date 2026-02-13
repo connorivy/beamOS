@@ -48,7 +48,7 @@ export const bootstrapDb = async () => {
       revision_id UUID NOT NULL REFERENCES model_revisions(id),
       node_id UUID NOT NULL,
       name TEXT NOT NULL,
-      op TEXT NOT NULL DEFAULT 'upsert',
+      op TEXT NOT NULL DEFAULT 'update',
       PRIMARY KEY (revision_id, node_id)
     );
   `);
@@ -58,7 +58,7 @@ export const bootstrapDb = async () => {
       draft_id UUID NOT NULL REFERENCES model_revision_drafts(id),
       node_id UUID NOT NULL,
       name TEXT NOT NULL,
-      op TEXT NOT NULL DEFAULT 'upsert',
+      op TEXT NOT NULL DEFAULT 'update',
       PRIMARY KEY (draft_id, node_id)
     );
   `);

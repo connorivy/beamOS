@@ -4,17 +4,17 @@ export type NodeRevisionDraftSnapshot = {
   draftId: string;
   nodeId: string;
   name: string;
-  op: "upsert" | "delete";
+  op: "insert" | "update" | "delete";
 };
 
 export class NodeRevisionDraftAggregate {
   private _name: string;
-  private _op: "upsert" | "delete";
+  private _op: "insert" | "update" | "delete";
 
   private constructor(snapshot: NodeRevisionDraftSnapshot) {
     assertUuid(snapshot.draftId, "draftId");
     assertUuid(snapshot.nodeId, "nodeId");
-    if (snapshot.op === "upsert") {
+    if (snapshot.op !== "delete") {
       this.assertName(snapshot.name);
     }
     this.assertOp(snapshot.op);
@@ -42,7 +42,7 @@ export class NodeRevisionDraftAggregate {
     return this._name;
   }
 
-  get op(): "upsert" | "delete" {
+  get op(): "insert" | "update" | "delete" {
     return this._op;
   }
 
@@ -67,7 +67,7 @@ export class NodeRevisionDraftAggregate {
   }
 
   private assertOp(op: string): void {
-    if (op !== "upsert" && op !== "delete") {
+    if (op !== "insert" && op !== "update" && op !== "delete") {
       throw new Error("Model revision draft node op is invalid");
     }
   }

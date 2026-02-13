@@ -39,7 +39,11 @@ export type ModelRevisionDraftInput = {
   secondParentRevisionId?: string | null;
   authorId: string;
   message: string;
-  nodes: { nodeId: string; name: string; op?: "upsert" | "delete" }[];
+  nodes: {
+    nodeId: string;
+    name: string;
+    op?: "insert" | "update" | "delete";
+  }[];
 };
 
 export type ModelRevisionRepository = {

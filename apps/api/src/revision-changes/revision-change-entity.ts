@@ -6,7 +6,7 @@ export type RevisionChangeSnapshot = {
   draftId?: string | null;
   entityType: string;
   entityId: string;
-  op: "upsert" | "delete";
+  op: "insert" | "update" | "delete";
   payload: Record<string, unknown>;
   createdAt: Date;
 };
@@ -41,7 +41,7 @@ export class RevisionChangeEntity {
   readonly draftId: string | null;
   readonly entityType: string;
   readonly entityId: string;
-  readonly op: "upsert" | "delete";
+  readonly op: "insert" | "update" | "delete";
   readonly createdAt: Date;
 
   static create(snapshot: RevisionChangeSnapshot): RevisionChangeEntity {
@@ -76,7 +76,7 @@ export class RevisionChangeEntity {
   }
 
   private assertOp(op: string): void {
-    if (op !== "upsert" && op !== "delete") {
+    if (op !== "insert" && op !== "update" && op !== "delete") {
       throw new Error("Revision change op is invalid");
     }
   }

@@ -5,7 +5,8 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "generate": "bun run scripts/generate-openapi-client.mjs",
+    "build": "rm -rf src/generated/* && bun run generate && tsc -p tsconfig.json"
   },
   "dependencies": {
     "openapi-fetch": "^0.15.0"

@@ -3,13 +3,20 @@ import { RevisionChangeEntity } from "./revision-change-entity";
 
 export const revisionChangeMapper = {
   toDomain(row: typeof revisionChanges.$inferSelect): RevisionChangeEntity {
+    const op =
+      row.op === "delete"
+        ? "delete"
+        : row.op === "insert"
+          ? "insert"
+          : "update";
+
     return RevisionChangeEntity.rehydrate({
       id: row.id,
       revisionId: row.revisionId,
       draftId: row.draftId,
       entityType: row.entityType,
       entityId: row.entityId,
-      op: row.op === "delete" ? "delete" : "upsert",
+      op,
       payload: row.payload as Record<string, unknown>,
       createdAt: row.createdAt,
     });

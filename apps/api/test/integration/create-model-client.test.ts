@@ -1,16 +1,14 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
-import {
-  PostgreSqlContainer,
-  StartedPostgreSqlContainer,
-} from "@testcontainers/postgresql";
 import type { createAppAndMigrate as CreateAppAndMigrate } from "../../src/server";
 import { GenericContainer, Wait } from "testcontainers";
 
-let server:
-  | ReturnType<Awaited<ReturnType<CreateAppAndMigrate>>["listen"]>
-  | undefined;
+type AppServer = NonNullable<
+  Awaited<ReturnType<typeof CreateAppAndMigrate>>["server"]
+>;
+
+let server: AppServer | undefined;
 let baseUrl = "";
 
 const postgres = await new GenericContainer("postgres:17-alpine")

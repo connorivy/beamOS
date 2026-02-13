@@ -24,7 +24,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      BEAMOS_API_ADDITIONAL_PLUGINS_MODULE: ${BEAMOS_API_ADDITIONAL_PLUGINS_MODULE:-../../../../../enterprise/api/src/plugins/additional-plugins.js}
+      BEAMOS_API_ADDITIONAL_PLUGINS_MODULE: ${BEAMOS_API_ADDITIONAL_PLUGINS_MODULE:-./additional-plugins.js}
       DB_URI: postgresql://beamos:beamos@db:5432/beamos
       PORT: ${PORT:-3001}
     command: >
@@ -43,7 +43,7 @@ services:
       api:
         condition: service_started
     environment:
-      BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE: ${BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE:-../../../enterprise/web/src/plugins/additional-plugins.ts}
+      BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE: ${BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE:-./additional-plugins.js}
       VITE_API_PROXY_TARGET: http://api:3001
     command: >
       sh -lc "bun install && bun run --cwd beamos/apps/web dev --host 0.0.0.0 --port 5173"

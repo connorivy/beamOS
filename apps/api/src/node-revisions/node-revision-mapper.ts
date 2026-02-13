@@ -3,11 +3,18 @@ import { NodeRevisionAggregate } from "./node-revision-aggregate";
 
 export const nodeRevisionMapper = {
   toDomain(row: typeof nodeRevisions.$inferSelect): NodeRevisionAggregate {
+    const op =
+      row.op === "delete"
+        ? "delete"
+        : row.op === "insert"
+          ? "insert"
+          : "update";
+
     return NodeRevisionAggregate.rehydrate({
       revisionId: row.revisionId,
       nodeId: row.nodeId,
       name: row.name,
-      op: row.op === "delete" ? "delete" : "upsert",
+      op,
     });
   },
 

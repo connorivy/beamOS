@@ -22,7 +22,7 @@ bun run dev
 
 ```bash
 bun run test            # unit + integration
-bun run test:e2e        # playwright
+bun run test:e2e        # playwright (auto-starts db + api + web)
 ```
 
 ## TDD Workflow
