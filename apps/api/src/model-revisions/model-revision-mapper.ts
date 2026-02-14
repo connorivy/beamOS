@@ -25,7 +25,7 @@ export const modelRevisionMapper = {
         .map((change) => ({
           id: change.entityId,
           modelId: row.modelId,
-          name: extractNodeName(change.payload),
+          nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         })),
       materials: [],
       sectionProfiles: [],
@@ -71,7 +71,7 @@ export const modelRevisionMapper = {
       nodes: input.nodes.map((node) => ({
         id: node.id,
         modelId: node.modelId,
-        name: node.name,
+        nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
       materials: [],
       sectionProfiles: [],
@@ -82,12 +82,16 @@ export const modelRevisionMapper = {
   },
 };
 
-const extractNodeName = (payload: unknown): string => {
+const extractNodeTypeDescriminator = (
+  payload: unknown,
+): "external" | "internal" => {
   if (payload && typeof payload === "object") {
-    const name = (payload as { name?: unknown }).name;
-    if (typeof name === "string") {
-      return name;
+    const nodeTypeDescriminator = (
+      payload as { nodeTypeDescriminator?: unknown }
+    ).nodeTypeDescriminator;
+    if (nodeTypeDescriminator === "external") {
+      return "external";
     }
   }
-  return "";
+  return "internal";
 };

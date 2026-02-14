@@ -26,7 +26,7 @@ export const getModelRevisionReqSchema = z.object({
 const nodeResSchema = z.object({
   id: uuidV7Schema,
   modelId: uuidV7Schema,
-  name: z.string().min(1),
+  nodeTypeDescriminator: z.enum(["external", "internal"]),
 });
 
 const materialResSchema = z.object({
@@ -115,7 +115,7 @@ export const getModelRevisionResSchema = z.object({
     secondParentRevisionId: uuidV7Schema.nullable(),
     authorId: z.uuid(),
     message: z.string().min(1),
-    createdAt: z.date(),
+    createdAt: z.iso.datetime(),
     nodes: z.array(nodeResSchema),
     materials: z.array(materialResSchema),
     sectionProfiles: z.array(sectionProfileResSchema),
@@ -155,11 +155,11 @@ export const getModelRevision = defineEndpoint({
         secondParentRevisionId: modelRevision.secondParentRevisionId,
         authorId: modelRevision.authorId,
         message: modelRevision.message,
-        createdAt: modelRevision.createdAt,
+        createdAt: modelRevision.createdAt.toISOString(),
         nodes: modelRevision.nodes.map((node) => ({
           id: node.id,
           modelId: node.modelId,
-          name: node.name,
+          nodeTypeDescriminator: node.toSnapshot().nodeTypeDescriminator,
         })),
         materials: modelRevision.materials.map((material) => ({
           id: material.id,

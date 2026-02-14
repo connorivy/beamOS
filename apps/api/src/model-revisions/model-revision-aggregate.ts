@@ -2,7 +2,7 @@ import { DomainEvent } from "src/common/types";
 import { assertUuid } from "../common/uuid";
 import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
 import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
-import { NodeEntity, NodeSnapshot } from "../nodes/node-entity";
+import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import {
   SectionProfileAggregate,
   type SectionProfileSnapshot,
@@ -123,10 +123,9 @@ export class ModelRevisionAggregate {
     return this._element1ds;
   }
 
-  addNode(node: NodeEntity): void {
+  addNode(node: NodeSnapshot): void {
     assertUuid(node.id, "nodeId");
     this.assertNodeModelId(node.modelId);
-    this.assertRequired(node.name, "name");
     if (this._nodes.some((existing) => existing.id === node.id)) {
       throw new Error("Node already exists");
     }

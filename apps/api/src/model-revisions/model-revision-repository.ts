@@ -24,6 +24,7 @@ import { element1dMapper } from "../element1ds/element1d-mapper";
 import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
+import type { NodeSnapshot } from "../nodes/node-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -61,7 +62,11 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       authorId: revision.authorId,
       message: revision.message,
       createdAt: revision.createdAt,
-      nodes: Array.from(nodesById.values()),
+      nodes: Array.from(nodesById.values()).map((node) => ({
+        id: node.id,
+        modelId: node.modelId,
+        nodeTypeDescriminator: node.nodeTypeDescriminator,
+      })),
       materials: Array.from(materialsById.values()),
       sectionProfiles: Array.from(sectionProfilesById.values()),
       element1ds: Array.from(element1dsById.values()),
@@ -103,6 +108,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .map((change) => ({
           nodeId: change.entityId,
           name: extractNodeName(change.payload),
+          nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
           op: change.op,
         })),
     });
@@ -146,7 +152,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         });
 
         if (changeRows.length > 0) {
-          await tx.insert(revisionChanges).values(changeRows);
+          await tx
+            .insert(revisionChanges)
+            .values(changeRows);
         }
 
         const persistedChangeRows = await tx
@@ -213,7 +221,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       });
 
       if (changeRows.length > 0) {
-        await tx.insert(revisionChanges).values(changeRows);
+        await tx
+          .insert(revisionChanges)
+          .values(changeRows as any);
       }
 
       const [savedDraftRows, savedChangeRows] = await Promise.all([
@@ -309,7 +319,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           draftId: input.id,
           nodeId: node.nodeId,
           name: node.name,
-          op: node.op ?? "update",
+          op: node.op === "upsert" ? "update" : (node.op ?? "update"),
         })),
       });
 
@@ -357,7 +367,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       });
 
       if (changeRows.length > 0) {
-        await tx.insert(revisionChanges).values(changeRows);
+        await tx
+          .insert(revisionChanges)
+          .values(changeRows as any);
       }
 
       const [savedDraftRows, savedChangeRows] = await Promise.all([
@@ -413,10 +425,10 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         message: draftSnapshot.message,
         nodes: draftSnapshot.nodes
           .filter((node) => node.op !== "delete")
-          .map((node) => ({
+          .map((node): NodeSnapshot => ({
             id: node.nodeId,
             modelId: draftSnapshot.modelId,
-            name: node.name,
+            nodeTypeDescriminator: "internal",
           })),
       });
 
@@ -439,7 +451,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       });
 
       if (changeRows.length > 0) {
-        await tx.insert(revisionChanges).values(changeRows);
+        await tx
+          .insert(revisionChanges)
+          .values(changeRows as any);
       }
 
       if (input.branchName) {
@@ -511,7 +525,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           draftId: null,
           op: snapshot.parentRevisionId ? "update" : "insert",
         });
-        await tx.insert(revisionChanges).values(modelChangeRow);
+        await tx
+          .insert(revisionChanges)
+          .values(modelChangeRow as any);
       }
 
       if (snapshot.nodes.length > 0) {
@@ -523,7 +539,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         });
 
         if (changeRows.length > 0) {
-          await tx.insert(revisionChanges).values(changeRows);
+          await tx
+            .insert(revisionChanges)
+            .values(changeRows as any);
         }
       }
 
@@ -566,7 +584,12 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
   modelId: string;
   revisionId: string | null;
   draftId: string | null;
-  nodes: { nodeId: string; name: string; op: "insert" | "update" | "delete" }[];
+  nodes: {
+    nodeId: string;
+    name?: string;
+    nodeTypeDescriminator?: "external" | "internal";
+    op: "insert" | "update" | "delete";
+  }[];
 }): (typeof revisionChanges.$inferInsert)[] => {
   const now = new Date();
 
@@ -582,7 +605,8 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
       payload: {
         id: node.nodeId,
         modelId: input.modelId,
-        name: node.name,
+        name: node.name ?? "",
+        nodeTypeDescriminator: node.nodeTypeDescriminator ?? "internal",
       },
       createdAt: now,
     });
@@ -595,7 +619,7 @@ const buildRevisionChangeRowsFromNodes = (input: {
   modelId: string;
   revisionId: string | null;
   draftId: string | null;
-  nodes: { id: string; modelId: string; name: string }[];
+  nodes: NodeSnapshot[];
 }): (typeof revisionChanges.$inferInsert)[] =>
   buildRevisionChangeRowsFromNodeOps({
     modelId: input.modelId,
@@ -603,7 +627,7 @@ const buildRevisionChangeRowsFromNodes = (input: {
     draftId: input.draftId,
     nodes: input.nodes.map((node) => ({
       nodeId: node.id,
-      name: node.name,
+      nodeTypeDescriminator: node.nodeTypeDescriminator,
       op: "update",
     })),
   });
@@ -620,7 +644,8 @@ const buildRevisionChangeRowsFromEvents = (input: {
     draftId: input.draftId,
     nodes: input.events.map((event) => ({
       nodeId: event.payload.id,
-      name: event.payload.name,
+      name: extractNodeName(event.payload),
+      nodeTypeDescriminator: extractNodeTypeDescriminator(event.payload),
       op: event.type === "node_deleted" ? "delete" : "insert",
     })),
   });
@@ -652,8 +677,21 @@ const buildModelRevisionChangeRow = (input: {
 
 const applyNodeChanges = (input: {
   modelId: string;
-  current: Map<string, { id: string; modelId: string; name: string }>;
-  changes: { nodeId: string; name: string; op: string }[];
+  current: Map<
+    string,
+    {
+      id: string;
+      modelId: string;
+      name: string;
+      nodeTypeDescriminator: "external" | "internal";
+    }
+  >;
+  changes: {
+    nodeId: string;
+    name?: string;
+    nodeTypeDescriminator?: "external" | "internal";
+    op: string;
+  }[];
 }) => {
   for (const change of input.changes) {
     if (change.op === "delete") {
@@ -664,7 +702,8 @@ const applyNodeChanges = (input: {
     input.current.set(change.nodeId, {
       id: change.nodeId,
       modelId: input.modelId,
-      name: change.name,
+      name: change.name ?? "",
+      nodeTypeDescriminator: change.nodeTypeDescriminator ?? "internal",
     });
   }
 };
@@ -725,7 +764,17 @@ const loadRevisionHistory = async (input: {
 const buildNodesFromRevisions = async (input: {
   modelId: string;
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, { id: string; modelId: string; name: string }>> => {
+}): Promise<
+  Map<
+    string,
+    {
+      id: string;
+      modelId: string;
+      name: string;
+      nodeTypeDescriminator: "external" | "internal";
+    }
+  >
+> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
@@ -751,7 +800,12 @@ const buildNodesFromRevisions = async (input: {
 
   const nodesById = new Map<
     string,
-    { id: string; modelId: string; name: string }
+    {
+      id: string;
+      modelId: string;
+      name: string;
+      nodeTypeDescriminator: "external" | "internal";
+    }
   >();
 
   applyNodeChanges({
@@ -762,6 +816,7 @@ const buildNodesFromRevisions = async (input: {
       .map((change) => ({
         nodeId: change.entityId,
         name: extractNodeName(change.payload),
+        nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         op: change.op,
       })),
   });
@@ -885,4 +940,19 @@ const extractNodeName = (payload: unknown): string => {
     }
   }
   return "";
+};
+
+const extractNodeTypeDescriminator = (
+  payload: unknown,
+): "external" | "internal" => {
+  if (payload && typeof payload === "object") {
+    const nodeTypeDescriminator = (
+      payload as { nodeTypeDescriminator?: unknown }
+    ).nodeTypeDescriminator;
+    if (nodeTypeDescriminator === "external") {
+      return "external";
+    }
+  }
+
+  return "internal";
 };

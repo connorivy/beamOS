@@ -1051,6 +1051,133 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
-        responses: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        modelRevision: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            modelId: string;
+                            name: string;
+                            parentRevisionId: string | null;
+                            secondParentRevisionId: string | null;
+                            /** Format: uuid */
+                            authorId: string;
+                            message: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                            nodes: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                modelId: string;
+                                /** @enum {string} */
+                                nodeTypeDescriminator: "external" | "internal";
+                            }[];
+                            materials: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                revisionId: string;
+                                pressureE: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "Pascal";
+                                };
+                                pressureG: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "Pascal";
+                                };
+                            }[];
+                            sectionProfiles: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                revisionId: string;
+                                name: string;
+                                /** @enum {string} */
+                                discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
+                                area: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "SquareMeter";
+                                };
+                                strongAxisMomentOfInertia: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "MeterToTheFourth";
+                                };
+                                weakAxisMomentOfInertia: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "MeterToTheFourth";
+                                };
+                                torsionalConstant: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "MeterToTheFourth";
+                                };
+                                warpingConstant: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "MeterToTheSixth";
+                                };
+                                strongAxisPlasticSectionModulus: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "CubicMeter";
+                                };
+                                weakAxisPlasticSectionModulus: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "CubicMeter";
+                                };
+                                strongAxisElasticSectionModulus: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "CubicMeter";
+                                };
+                                weakAxisElasticSectionModulus: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "CubicMeter";
+                                };
+                                strongAxisShearArea?: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "SquareMeter";
+                                };
+                                weakAxisShearArea?: {
+                                    value: number;
+                                    /** @constant */
+                                    unit: "SquareMeter";
+                                };
+                            }[];
+                            element1ds: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                revisionId: string;
+                                /** Format: uuid */
+                                startNodeId: string;
+                                /** Format: uuid */
+                                endNodeId: string;
+                                /** Format: uuid */
+                                materialId: string;
+                                /** Format: uuid */
+                                sectionProfileId: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+        };
     };
 }
