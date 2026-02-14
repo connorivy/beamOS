@@ -580,14 +580,14 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
   },
 
   async createRevisionAndUpdateBranchHead(input) {
-    const branch = await this.getBranchHead(input.modelId, input.branchName);
+    const branch = await drizzleModelVersionRepository.getBranchHead(input.modelId, input.branchName);
     if (!branch) {
       throw new Error(
         `Could not find branch ${input.branchName} on model with ID ${input.modelId}`,
       );
     }
 
-    const parentRevision = await this.getRevisionById(branch.headRevisionId);
+    const parentRevision = await drizzleModelVersionRepository.getRevisionById(branch.headRevisionId);
     if (!parentRevision) {
       throw new Error(
         `Could not find parent revision with ID ${branch.headRevisionId}`,
@@ -597,7 +597,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     const parentSnapshot = parentRevision.toSnapshot();
     const newRevisionId = crypto.randomUUID();
 
-    const revision = await this.commitRevision({
+    const revision = await drizzleModelVersionRepository.commitRevision({
       id: newRevisionId,
       modelId: input.modelId,
       branchName: input.branchName,
