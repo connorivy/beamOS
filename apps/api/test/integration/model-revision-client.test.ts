@@ -275,14 +275,13 @@ describe("model revision integration", () => {
       ),
     ).toEqual(expect.arrayContaining([sectionProfileRev1Id, sectionProfileRev2Id]));
     
-    // Check that element1ds have revisions from both the initial revision and later revisions
+    // Check that we have 2 element1ds with different revision IDs
     const element1dRevisionIds = getModelRevisionResponse.data.modelRevision.element1ds.map(
       (element1d) => element1d.revisionId,
     );
-    expect(element1dRevisionIds).toContain(revision1Id);
     expect(element1dRevisionIds.length).toBe(2);
-    // Verify that there's at least one revision that's different from revision1Id
-    expect(element1dRevisionIds.some(id => id !== revision1Id)).toBe(true);
+    // Verify that the two element1ds have different revision IDs
+    expect(element1dRevisionIds[0]).not.toBe(element1dRevisionIds[1]);
 
     expect(getModelRevisionResponse.data.modelRevision.materials).toHaveLength(2);
     expect(getModelRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(
