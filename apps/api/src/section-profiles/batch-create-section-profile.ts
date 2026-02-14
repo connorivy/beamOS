@@ -260,7 +260,7 @@ export const batchCreateSectionProfile = defineEndpoint({
     const newRevisionId = await ctx.services.modelRevisionRepository.createRevisionAndUpdateBranchHead({
       modelId,
       branchName,
-      authorId: "system", // TODO: get from auth context
+      authorId: Bun.randomUUIDv7(),
       message: "Add section profiles",
     });
 

@@ -77,7 +77,7 @@ export const batchCreateElement1d = defineEndpoint({
     const newRevisionId = await ctx.services.modelRevisionRepository.createRevisionAndUpdateBranchHead({
       modelId,
       branchName,
-      authorId: "system", // TODO: get from auth context
+      authorId: Bun.randomUUIDv7(),
       message: "Add element1ds",
     });
 

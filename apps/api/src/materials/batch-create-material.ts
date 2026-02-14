@@ -86,7 +86,7 @@ export const batchCreateMaterial = defineEndpoint({
     const newRevisionId = await ctx.services.modelRevisionRepository.createRevisionAndUpdateBranchHead({
       modelId,
       branchName,
-      authorId: "system", // TODO: get from auth context
+      authorId: Bun.randomUUIDv7(),
       message: "Add materials",
     });
 
