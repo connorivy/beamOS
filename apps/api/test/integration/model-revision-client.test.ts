@@ -8,9 +8,6 @@ import {
   VolumeUnits,
   WarpingMomentOfInertiaUnits,
 } from "unitsnet-js";
-import { getDb } from "../../src/db/client";
-import { modelBranchHeads, modelRevisions } from "../../src/db/schema";
-import { and, eq } from "drizzle-orm";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
@@ -45,7 +42,6 @@ describe("model revision integration", () => {
 
     const modelId = createModelResponse.data.model.id;
     const branchName = createModelResponse.data.version.branchName;
-    const revision1Id = createModelResponse.data.version.revisionId;
 
     const materialRev1Response = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/materials/batch",
@@ -143,32 +139,14 @@ describe("model revision integration", () => {
 
     expect(elementRev1Response.error).toBeUndefined();
     expect(elementRev1Response.response.status).toBe(200);
+    expect(elementRev1Response.data).toBeDefined();
 
-    const revision2Id = Bun.randomUUIDv7();
-    const now = new Date();
-    await getDb().insert(modelRevisions).values({
-      id: revision2Id,
-      modelId,
-      modelName: "Stacked Revision Model",
-      parentRevisionId: revision1Id,
-      secondParentRevisionId: null,
-      authorId: randomUUID(),
-      message: "Create second revision",
-      createdAt: now,
-    });
+    if (!elementRev1Response.data) {
+      throw new Error("Expected element1d batch response for revision 1");
+    }
 
-    await getDb()
-      .update(modelBranchHeads)
-      .set({
-        headRevisionId: revision2Id,
-        updatedAt: now,
-      })
-      .where(
-        and(
-          eq(modelBranchHeads.modelId, modelId),
-          eq(modelBranchHeads.branchName, branchName),
-        ),
-      );
+    const elementRev1RevisionId = elementRev1Response.data.element1ds[0]?.revisionId;
+    expect(elementRev1RevisionId).toBeDefined();
 
     const materialRev2Response = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/materials/batch",
@@ -269,6 +247,14 @@ describe("model revision integration", () => {
 
     expect(elementRev2Response.error).toBeUndefined();
     expect(elementRev2Response.response.status).toBe(200);
+    expect(elementRev2Response.data).toBeDefined();
+
+    if (!elementRev2Response.data) {
+      throw new Error("Expected element1d batch response for revision 2");
+    }
+
+    const elementRev2RevisionId = elementRev2Response.data.element1ds[0]?.revisionId;
+    expect(elementRev2RevisionId).toBeDefined();
 
     const getModelRevisionResponse = await client.GET(
       "/api/models/{modelId}/branches/{branchName}/revision",
@@ -290,7 +276,9 @@ describe("model revision integration", () => {
       throw new Error("Expected get model revision response");
     }
 
-    expect(getModelRevisionResponse.data.modelRevision.id).toBe(revision2Id);
+    expect(getModelRevisionResponse.data.modelRevision.id).toBe(
+      elementRev2RevisionId,
+    );
     expect(getModelRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
     expect(
       getModelRevisionResponse.data.modelRevision.materials.map(
@@ -308,7 +296,9 @@ describe("model revision integration", () => {
       getModelRevisionResponse.data.modelRevision.element1ds.map(
         (element1d) => element1d.revisionId,
       ),
-    ).toEqual(expect.arrayContaining([revision1Id, revision2Id]));
+    ).toEqual(
+      expect.arrayContaining([elementRev1RevisionId, elementRev2RevisionId]),
+    );
 
     expect(getModelRevisionResponse.data.modelRevision.materials).toHaveLength(
       2,

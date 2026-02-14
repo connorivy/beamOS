@@ -73,6 +73,20 @@ export const bootstrapDb = async () => {
   `);
 
   await getDb().execute(sql`
+    CREATE TABLE IF NOT EXISTS nodes (
+      id UUID PRIMARY KEY NOT NULL,
+      revision_id UUID NOT NULL REFERENCES model_revisions(id),
+      location_discriminator TEXT NOT NULL,
+      point_x DOUBLE PRECISION,
+      point_y DOUBLE PRECISION,
+      point_z DOUBLE PRECISION,
+      element1d_id UUID,
+      ratio_along_element1d DOUBLE PRECISION,
+      restraint JSONB NOT NULL
+    );
+  `);
+
+  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS materials (
       id UUID PRIMARY KEY NOT NULL,
       revision_id UUID NOT NULL REFERENCES model_revisions(id),

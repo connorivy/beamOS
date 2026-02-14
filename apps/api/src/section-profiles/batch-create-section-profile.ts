@@ -16,6 +16,7 @@ import { DbTransaction, getDb } from "../db/client";
 import { SectionProfileAggregate } from "./section-profile-aggregate";
 import { sectionProfileResponseSchema } from "./section-profile-response-schema";
 import { uuidV7Schema } from "src/common/uuid";
+import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
 
 const sectionProfileUnitsInputSchema = z.object({
   area: z.enum(AreaUnits),
@@ -180,7 +181,8 @@ export const batchCreateSectionProfile = defineEndpoint({
   res: batchCreateSectionProfileResSchema,
   async handler(req, ctx: AppContext) {
     return await getDb().transaction(async (tx) => {
-      return await batchCreateSectionProfileHandler(req, ctx, tx);
+      const revisionId = await createNewRevisionHandler(req, ctx, tx);
+      return await batchCreateSectionProfileHandler(req, ctx, tx, revisionId);
     });
   },
 });
@@ -230,6 +232,7 @@ async function batchCreateSectionProfileHandler(
   },
   ctx: AppContext,
   tx: DbTransaction,
+  revisionId: string,
 ) {
   const seenTempIds = new Set<string>();
 
@@ -246,18 +249,6 @@ async function batchCreateSectionProfileHandler(
   }
 
   const tempIdToId: Record<string, string> = {};
-  const { modelId, branchName } = req.params;
-  const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-    modelId,
-    branchName,
-  );
-
-  if (!branch) {
-    throw httpError(
-      `Could not find branch ${branchName} on model with ID ${modelId}`,
-      404,
-    );
-  }
 
   const entities = req.body.sectionProfiles.map((sectionProfile) => {
     const id = Bun.randomUUIDv7();
@@ -286,7 +277,7 @@ async function batchCreateSectionProfileHandler(
 
     return SectionProfileAggregate.create({
       id,
-      revisionId: branch.headRevisionId,
+      revisionId,
       name: sectionProfile.name,
       discriminator: sectionProfile.discriminator,
       area: converted.area,

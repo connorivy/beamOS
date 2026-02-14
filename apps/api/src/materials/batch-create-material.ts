@@ -9,6 +9,7 @@ import { MaterialEntity } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
 import { materialResponseSchema } from "./material-response-schema";
 import { createMaterialRequestSchema } from "./create-material-request-schema";
+import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
 
 export const batchCreateMaterialReqSchema = z.object({
   params: z.object({
@@ -46,7 +47,14 @@ export const batchCreateMaterial = defineEndpoint({
   async handler(req, ctx: AppContext) {
     const seenTempIds = new Set<string>();
     return await getDb().transaction(async (tx) => {
-      return await batchCreateMaterialHandler(req, seenTempIds, ctx, tx);
+      const revisionId = await createNewRevisionHandler(req, ctx, tx);
+      return await batchCreateMaterialHandler(
+        req,
+        seenTempIds,
+        ctx,
+        tx,
+        revisionId,
+      );
     });
   },
 });
@@ -56,6 +64,7 @@ export async function batchCreateMaterialHandler(
   seenTempIds: Set<string>,
   ctx: AppContext,
   tx: DbTransaction,
+  revisionId: string,
 ) {
   for (const material of req.body.materials) {
     if (!material.tempId) {
@@ -68,17 +77,7 @@ export async function batchCreateMaterialHandler(
   }
 
   const tempIdToId: Record<string, string> = {};
-  const { modelId, branchName } = req.params;
-  const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-    modelId,
-    branchName,
-  );
-  if (!branch) {
-    throw httpError(
-      `Could not find branch ${branchName} on model with ID ${modelId}`,
-      404,
-    );
-  }
+
   const entities = req.body.materials.map((material) => {
     const id = Bun.randomUUIDv7();
     if (material.tempId) {
@@ -87,7 +86,7 @@ export async function batchCreateMaterialHandler(
 
     return MaterialEntity.create({
       id,
-      revisionId: branch.headRevisionId,
+      revisionId,
       pressureE: new Pressure(
         material.pressureE.value,
         material.pressureE.unit,

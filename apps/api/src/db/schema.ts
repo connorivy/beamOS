@@ -110,6 +110,20 @@ export const modelBranchHeads = pgTable(
   }),
 );
 
+export const nodes = pgTable("nodes", {
+  id: uuid("id").primaryKey(),
+  revisionId: uuid("revision_id")
+    .notNull()
+    .references(() => modelRevisions.id),
+  locationDiscriminator: text("location_discriminator").notNull(),
+  pointX: doublePrecision("point_x"),
+  pointY: doublePrecision("point_y"),
+  pointZ: doublePrecision("point_z"),
+  element1dId: uuid("element1d_id"),
+  ratioAlongElement1d: doublePrecision("ratio_along_element1d"),
+  restraint: jsonb("restraint").notNull(),
+});
+
 export const materials = pgTable("materials", {
   id: uuid("id").primaryKey(),
   revisionId: uuid("revision_id")
@@ -163,6 +177,7 @@ export const element1ds = pgTable("element1ds", {
 });
 
 export type Model = InferSelectModel<typeof models>;
+export type Node = InferSelectModel<typeof nodes>;
 export type Material = InferSelectModel<typeof materials>;
 export type SectionProfile = InferSelectModel<typeof sectionProfiles>;
 export type Element1d = InferSelectModel<typeof element1ds>;

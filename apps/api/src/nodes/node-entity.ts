@@ -13,7 +13,6 @@ export type SpatialNodeSnapshot = {
   id: string;
   modelRevisionId: string;
   nodeType: "spatialNode";
-  nodeTypeDescriminator: "external" | "internal";
   point: NodePoint;
   restraint: NodeRestraint;
 };
@@ -22,7 +21,6 @@ export type InternalNodeSnapshot = {
   id: string;
   modelRevisionId: string;
   nodeType: "internalNode";
-  nodeTypeDescriminator: "external" | "internal";
   element1dId: string;
   distanceAlongElement1d: Ratio;
   restraint: NodeRestraint;
@@ -30,11 +28,11 @@ export type InternalNodeSnapshot = {
 
 type LegacyNodeSnapshot = {
   id: string;
-  nodeTypeDescriminator?: "external" | "internal";
   modelRevisionId?: string;
   restraint?: NodeRestraint;
   point?: Partial<NodePoint>;
   nodeType?: "spatialNode" | "internalNode";
+  nodeTypeDescriminator?: "external" | "internal";
   element1dId?: string;
   distanceAlongElement1d?: Ratio;
 };
@@ -43,7 +41,7 @@ export type NodeSnapshot = {
   id: string;
   modelRevisionId?: string;
   nodeType?: "spatialNode" | "internalNode";
-  nodeTypeDescriminator: "external" | "internal";
+  nodeTypeDescriminator?: "external" | "internal";
   point?: NodePoint;
   element1dId?: string;
   distanceAlongElement1d?: Ratio;
@@ -54,7 +52,6 @@ export class NodeEntity {
   private constructor(snapshot: LegacyNodeSnapshot) {
     assertUuid(snapshot.id, "id");
 
-    const nodeType = this.resolveNodeType(snapshot);
     const normalizedPoint = this.normalizePoint(snapshot.point);
     const normalizedRestraint = this.normalizeRestraint(snapshot.restraint);
     if (!snapshot.modelRevisionId) {
@@ -67,7 +64,11 @@ export class NodeEntity {
     this.modelRevisionId = modelRevisionId;
     this.restraint = normalizedRestraint;
 
-    if (nodeType === "internalNode") {
+    const isInternalNode =
+      snapshot.nodeType === "internalNode" ||
+      snapshot.nodeTypeDescriminator === "internal";
+
+    if (isInternalNode) {
       const element1dId = snapshot.element1dId ?? snapshot.id;
       assertUuid(element1dId, "element1dId");
       const distanceAlongElement1d =
@@ -112,7 +113,7 @@ export class NodeEntity {
         id: this.id,
         modelRevisionId: this.modelRevisionId,
         nodeType: "internalNode",
-        nodeTypeDescriminator: "internal",
+        nodeTypeDescriminator: this.nodeTypeDescriminator,
         element1dId: this.element1dId as string,
         distanceAlongElement1d: this.distanceAlongElement1d as Ratio,
         restraint: { ...this.restraint },
@@ -123,7 +124,7 @@ export class NodeEntity {
       id: this.id,
       modelRevisionId: this.modelRevisionId,
       nodeType: "spatialNode",
-      nodeTypeDescriminator: "external",
+      nodeTypeDescriminator: this.nodeTypeDescriminator,
       point: this.point as NodePoint,
       restraint: { ...this.restraint },
     };
@@ -133,20 +134,6 @@ export class NodeEntity {
     if (!(value instanceof Ratio) || !Number.isFinite(value.BaseValue)) {
       throw new Error(`${field} must be a finite Ratio`);
     }
-  }
-
-  private resolveNodeType(
-    snapshot: LegacyNodeSnapshot,
-  ): "spatialNode" | "internalNode" {
-    if (snapshot.nodeType) {
-      return snapshot.nodeType;
-    }
-
-    if (snapshot.nodeTypeDescriminator === "internal") {
-      return "internalNode";
-    }
-
-    return "spatialNode";
   }
 
   private normalizePoint(point: Partial<NodePoint> | undefined): NodePoint {

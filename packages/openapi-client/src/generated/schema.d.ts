@@ -36,22 +36,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/models/{modelId}/nodes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["postApiModelsByModelIdNodes"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/models/{modelId}/nodes/{nodeId}": {
         parameters: {
             query?: never;
@@ -66,6 +50,22 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["patchApiModelsByModelIdNodesByNodeId"];
+        trace?: never;
+    };
+    "/api/models/{modelId}/branches/{branchName}/nodes/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiModelsByModelIdBranchesByBranchNameNodesBatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/models/{modelId}": {
@@ -277,78 +277,6 @@ export interface operations {
             };
         };
     };
-    postApiModelsByModelIdNodes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                modelId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** Format: uuid */
-                    nodeId: string;
-                    name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
-                };
-                "application/x-www-form-urlencoded": {
-                    /** Format: uuid */
-                    nodeId: string;
-                    name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
-                };
-                "multipart/form-data": {
-                    /** Format: uuid */
-                    nodeId: string;
-                    name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
-                };
-            };
-        };
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        node: {
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            modelId: string;
-                            name: string;
-                        };
-                        version: {
-                            /** Format: uuid */
-                            modelId: string;
-                            revisionId: string | null;
-                            draftId: string | null;
-                        };
-                    };
-                };
-            };
-        };
-    };
     patchApiModelsByModelIdNodesByNodeId: {
         parameters: {
             query?: never;
@@ -403,13 +331,71 @@ export interface operations {
                             id: string;
                             /** Format: uuid */
                             modelId: string;
-                            name: string;
                         };
                         version: {
                             /** Format: uuid */
                             modelId: string;
                             revisionId: string | null;
                             draftId: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiModelsByModelIdBranchesByBranchNameNodesBatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modelId: string;
+                branchName: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    nodes: {
+                        tempId?: string;
+                        /** @enum {string} */
+                        nodeTypeDescriminator?: "external" | "internal";
+                    }[];
+                };
+                "application/x-www-form-urlencoded": {
+                    nodes: {
+                        tempId?: string;
+                        /** @enum {string} */
+                        nodeTypeDescriminator?: "external" | "internal";
+                    }[];
+                };
+                "multipart/form-data": {
+                    nodes: {
+                        tempId?: string;
+                        /** @enum {string} */
+                        nodeTypeDescriminator?: "external" | "internal";
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        nodes: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            modelId: string;
+                            /** @enum {string} */
+                            nodeTypeDescriminator: "external" | "internal";
+                        }[];
+                        tempIdToId: {
+                            [key: string]: string;
                         };
                     };
                 };

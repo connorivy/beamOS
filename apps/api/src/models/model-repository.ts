@@ -1,10 +1,12 @@
 import crypto from "crypto";
 import { eq, inArray } from "drizzle-orm";
+import { Ratio } from "unitsnet-js";
 import { getDb } from "../db/client";
 import {
   modelRevisionDrafts,
   modelRevisions,
   models,
+  nodes,
   revisionChanges,
 } from "../db/schema";
 import { ModelAggregate } from "./model-aggregate";
@@ -12,21 +14,13 @@ import { modelMapper } from "./model-mapper";
 import type { ModelDomainEvent } from "./model-events";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
+import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
 
 const applyNodeChanges = (input: {
-  current: Map<
-    string,
-    {
-      id: string;
-      modelRevisionId: string;
-      name: string;
-      nodeTypeDescriminator: "external" | "internal";
-    }
-  >;
+  current: Map<string, NodeSnapshot>;
   changes: {
     nodeId: string;
     modelRevisionId: string;
-    name: string;
     nodeTypeDescriminator: "external" | "internal";
     op: string;
   }[];
@@ -40,8 +34,22 @@ const applyNodeChanges = (input: {
     input.current.set(change.nodeId, {
       id: change.nodeId,
       modelRevisionId: change.modelRevisionId,
-      name: change.name,
-      nodeTypeDescriminator: change.nodeTypeDescriminator,
+      nodeType:
+        change.nodeTypeDescriminator === "external"
+          ? "spatialNode"
+          : "internalNode",
+      nodeTypeDescriminator: change.nodeTypeDescriminator ?? "internal",
+      point:
+        change.nodeTypeDescriminator === "external"
+          ? { x: 0, y: 0, z: 0 }
+          : undefined,
+      element1dId:
+        change.nodeTypeDescriminator === "external" ? undefined : change.nodeId,
+      distanceAlongElement1d:
+        change.nodeTypeDescriminator === "external"
+          ? undefined
+          : Ratio.FromDecimalFractions(0),
+      restraint: {},
     });
   }
 };
@@ -115,7 +123,6 @@ export const drizzleModelRepository: ModelRepository = {
         secondRevisionId: draftRows[0].secondParentRevisionId,
       });
       const nodesById = await buildNodesFromRevisions({
-        modelId: input.modelId,
         revisions: baseRevisions,
       });
 
@@ -126,7 +133,6 @@ export const drizzleModelRepository: ModelRepository = {
           .map((change) => ({
             nodeId: change.entityId,
             modelRevisionId: draftRows[0].id,
-            name: extractNodeName(change.payload),
             nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
             op: change.op,
           })),
@@ -163,7 +169,6 @@ export const drizzleModelRepository: ModelRepository = {
       }
 
       const nodesById = await buildNodesFromRevisions({
-        modelId: input.modelId,
         revisions,
       });
 
@@ -285,19 +290,8 @@ const loadRevisionHistory = async (input: {
 };
 
 const buildNodesFromRevisions = async (input: {
-  modelId: string;
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<
-  Map<
-    string,
-    {
-      id: string;
-      modelRevisionId: string;
-      name: string;
-      nodeTypeDescriminator: "external" | "internal";
-    }
-  >
-> => {
+}): Promise<Map<string, NodeSnapshot>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
@@ -306,6 +300,20 @@ const buildNodesFromRevisions = async (input: {
   const revisionOrder = new Map(
     input.revisions.map((revision, index) => [revision.id, index]),
   );
+
+  const nodeRows = await getDb()
+    .select()
+    .from(nodes)
+    .where(inArray(nodes.revisionId, revisionIds));
+
+  nodeRows.sort((a, b) => {
+    const orderA = revisionOrder.get(a.revisionId) ?? 0;
+    const orderB = revisionOrder.get(b.revisionId) ?? 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return a.id.localeCompare(b.id);
+  });
 
   const changeRows = await getDb()
     .select()
@@ -321,41 +329,72 @@ const buildNodesFromRevisions = async (input: {
     return a.entityId.localeCompare(b.entityId);
   });
 
-  const nodesById = new Map<
-    string,
-    {
-      id: string;
-      modelRevisionId: string;
-      name: string;
-      nodeTypeDescriminator: "external" | "internal";
-    }
-  >();
+  const nodesById = new Map<string, NodeSnapshot>();
+
+  for (const row of nodeRows) {
+    nodesById.set(row.id, toNodeSnapshotFromRow(row));
+  }
 
   applyNodeChanges({
     current: nodesById,
     changes: changeRows
-      .filter((change) => change.entityType === "node")
+      .filter((change) => change.entityType === "node" && change.op === "delete")
       .map((change) => ({
         nodeId: change.entityId,
         modelRevisionId:
           change.revisionId ?? input.revisions[input.revisions.length - 1].id,
-        name: extractNodeName(change.payload),
-        nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         op: change.op,
+        nodeTypeDescriminator: "internal",
       })),
   });
 
   return nodesById;
 };
 
-const extractNodeName = (payload: unknown): string => {
-  if (payload && typeof payload === "object") {
-    const name = (payload as { name?: unknown }).name;
-    if (typeof name === "string") {
-      return name;
+const toNodeSnapshotFromRow = (row: typeof nodes.$inferSelect): NodeSnapshot => {
+  const restraint = parseNodeRestraint(row.restraint);
+
+  if (row.locationDiscriminator === "internal") {
+    return {
+      id: row.id,
+      modelRevisionId: row.revisionId,
+      nodeType: "internalNode",
+      nodeTypeDescriminator: "internal",
+      element1dId: row.element1dId ?? row.id,
+      distanceAlongElement1d: Ratio.FromDecimalFractions(
+        row.ratioAlongElement1d ?? 0,
+      ),
+      restraint,
+    };
+  }
+
+  return {
+    id: row.id,
+    modelRevisionId: row.revisionId,
+    nodeType: "spatialNode",
+    nodeTypeDescriminator: "external",
+    point: {
+      x: row.pointX ?? 0,
+      y: row.pointY ?? 0,
+      z: row.pointZ ?? 0,
+    },
+    restraint,
+  };
+};
+
+const parseNodeRestraint = (value: unknown): NodeRestraint => {
+  if (!value || typeof value !== "object") {
+    return {};
+  }
+
+  const parsed: NodeRestraint = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (typeof entry === "boolean") {
+      parsed[key] = entry;
     }
   }
-  return "";
+
+  return parsed;
 };
 
 const extractNodeTypeDescriminator = (

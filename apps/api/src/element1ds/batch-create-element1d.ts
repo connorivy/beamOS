@@ -7,6 +7,7 @@ import { Element1dEntity } from "./element1d-entity";
 import { element1dResponseSchema } from "./element1d-response-schema";
 import { createElement1dRequestSchema } from "./create-element1d-request-schema";
 import { uuidV7Schema } from "src/common/uuid";
+import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
 
 export const batchCreateElement1dReqSchema = z.object({
   params: z.object({
@@ -39,7 +40,8 @@ export const batchCreateElement1d = defineEndpoint({
   res: batchCreateElement1dResSchema,
   async handler(req, ctx: AppContext) {
     return await getDb().transaction(async (tx) => {
-      return await batchCreateElement1dHandler(req, ctx, tx);
+      const revisionId = await createNewRevisionHandler(req, ctx, tx);
+      return await batchCreateElement1dHandler(req, ctx, tx, revisionId);
     });
   },
 });
@@ -48,6 +50,7 @@ async function batchCreateElement1dHandler(
   req: z.infer<typeof batchCreateElement1dReqSchema>,
   ctx: AppContext,
   tx: DbTransaction,
+  revisionId: string,
 ) {
   const seenTempIds = new Set<string>();
 
@@ -64,18 +67,6 @@ async function batchCreateElement1dHandler(
   }
 
   const tempIdToId: Record<string, string> = {};
-  const { modelId, branchName } = req.params;
-  const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-    modelId,
-    branchName,
-  );
-
-  if (!branch) {
-    throw httpError(
-      `Could not find branch ${branchName} on model with ID ${modelId}`,
-      404,
-    );
-  }
 
   const entities = req.body.element1ds.map((element1d) => {
     const id = Bun.randomUUIDv7();
@@ -86,7 +77,7 @@ async function batchCreateElement1dHandler(
 
     return Element1dEntity.create({
       id,
-      revisionId: branch.headRevisionId,
+      revisionId,
       startNodeId: element1d.startNodeId,
       endNodeId: element1d.endNodeId,
       materialId: element1d.materialId,

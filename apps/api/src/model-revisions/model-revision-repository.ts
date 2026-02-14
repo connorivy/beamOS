@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { and, eq, inArray, sql } from "drizzle-orm";
+import { Ratio } from "unitsnet-js";
 import { getDb } from "../db/client";
 import {
   element1ds,
@@ -7,6 +8,7 @@ import {
   modelBranchHeads,
   modelRevisionDrafts,
   modelRevisions,
+  nodes,
   revisionChanges,
   sectionProfiles,
 } from "../db/schema";
@@ -24,7 +26,7 @@ import { element1dMapper } from "../element1ds/element1d-mapper";
 import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
-import type { NodeSnapshot } from "../nodes/node-entity";
+import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -45,7 +47,6 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     const [nodesById, materialsById, sectionProfilesById, element1dsById] =
       await Promise.all([
         buildNodesFromRevisions({
-          modelId: revision.modelId,
           revisions,
         }),
         buildMaterialsFromRevisions({ revisions }),
@@ -62,12 +63,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       authorId: revision.authorId,
       message: revision.message,
       createdAt: revision.createdAt,
-      nodes: Array.from(nodesById.values()).map((node) => ({
-        id: node.id,
-        modelRevisionId: revision.id,
-        nodeType: "spatialNode",
-        nodeTypeDescriminator: node.nodeTypeDescriminator,
-      })),
+      nodes: Array.from(nodesById.values()),
       materials: Array.from(materialsById.values()),
       sectionProfiles: Array.from(sectionProfilesById.values()),
       element1ds: Array.from(element1dsById.values()),
@@ -97,18 +93,15 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       secondRevisionId: draft.secondParentRevisionId,
     });
     const nodesById = await buildNodesFromRevisions({
-      modelId: draft.modelId,
       revisions: baseRevisions,
     });
 
     applyNodeChanges({
-      modelId: draft.modelId,
       current: nodesById,
       changes: draftChangeRows
         .filter((change) => change.entityType === "node")
         .map((change) => ({
           nodeId: change.entityId,
-          name: extractNodeName(change.payload),
           nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
           op: change.op,
         })),
@@ -125,10 +118,8 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       createdAt: draft.createdAt,
       updatedAt: draft.updatedAt,
       nodes: Array.from(nodesById.values()).map((node): NodeSnapshot => ({
-        id: node.id,
+        ...node,
         modelRevisionId: draft.id,
-        nodeType: "spatialNode",
-        nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
     });
   },
@@ -687,19 +678,9 @@ const buildModelRevisionChangeRow = (input: {
 };
 
 const applyNodeChanges = (input: {
-  modelId: string;
-  current: Map<
-    string,
-    {
-      id: string;
-      modelId: string;
-      name: string;
-      nodeTypeDescriminator: "external" | "internal";
-    }
-  >;
+  current: Map<string, NodeSnapshot>;
   changes: {
     nodeId: string;
-    name?: string;
     nodeTypeDescriminator?: "external" | "internal";
     op: string;
   }[];
@@ -712,9 +693,23 @@ const applyNodeChanges = (input: {
 
     input.current.set(change.nodeId, {
       id: change.nodeId,
-      modelId: input.modelId,
-      name: change.name ?? "",
+      modelRevisionId: "",
+      nodeType:
+        change.nodeTypeDescriminator === "external"
+          ? "spatialNode"
+          : "internalNode",
       nodeTypeDescriminator: change.nodeTypeDescriminator ?? "internal",
+      point:
+        change.nodeTypeDescriminator === "external"
+          ? { x: 0, y: 0, z: 0 }
+          : undefined,
+      element1dId:
+        change.nodeTypeDescriminator === "external" ? undefined : change.nodeId,
+      distanceAlongElement1d:
+        change.nodeTypeDescriminator === "external"
+          ? undefined
+          : Ratio.FromDecimalFractions(0),
+      restraint: {},
     });
   }
 };
@@ -773,19 +768,8 @@ const loadRevisionHistory = async (input: {
 };
 
 const buildNodesFromRevisions = async (input: {
-  modelId: string;
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<
-  Map<
-    string,
-    {
-      id: string;
-      modelId: string;
-      name: string;
-      nodeTypeDescriminator: "external" | "internal";
-    }
-  >
-> => {
+}): Promise<Map<string, NodeSnapshot>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
@@ -795,12 +779,26 @@ const buildNodesFromRevisions = async (input: {
     input.revisions.map((revision, index) => [revision.id, index]),
   );
 
-  const changeRows = await getDb()
+  const nodeRows = await getDb()
+    .select()
+    .from(nodes)
+    .where(inArray(nodes.revisionId, revisionIds));
+
+  nodeRows.sort((a, b) => {
+    const orderA = revisionOrder.get(a.revisionId) ?? 0;
+    const orderB = revisionOrder.get(b.revisionId) ?? 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return a.id.localeCompare(b.id);
+  });
+
+  const nodeDeleteRows = await getDb()
     .select()
     .from(revisionChanges)
     .where(inArray(revisionChanges.revisionId, revisionIds));
 
-  changeRows.sort((a, b) => {
+  nodeDeleteRows.sort((a, b) => {
     const orderA = revisionOrder.get(a.revisionId ?? "") ?? 0;
     const orderB = revisionOrder.get(b.revisionId ?? "") ?? 0;
     if (orderA !== orderB) {
@@ -809,30 +807,71 @@ const buildNodesFromRevisions = async (input: {
     return a.entityId.localeCompare(b.entityId);
   });
 
-  const nodesById = new Map<
-    string,
-    {
-      id: string;
-      modelId: string;
-      name: string;
-      nodeTypeDescriminator: "external" | "internal";
-    }
-  >();
+  const nodesById = new Map<string, NodeSnapshot>();
+
+  for (const row of nodeRows) {
+    nodesById.set(row.id, toNodeSnapshotFromNodeRow(row));
+  }
 
   applyNodeChanges({
-    modelId: input.modelId,
     current: nodesById,
-    changes: changeRows
-      .filter((change) => change.entityType === "node")
+    changes: nodeDeleteRows
+      .filter((change) => change.entityType === "node" && change.op === "delete")
       .map((change) => ({
         nodeId: change.entityId,
-        name: extractNodeName(change.payload),
-        nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         op: change.op,
       })),
   });
 
   return nodesById;
+};
+
+const toNodeSnapshotFromNodeRow = (
+  row: typeof nodes.$inferSelect,
+): NodeSnapshot => {
+  const restraint = parseNodeRestraint(row.restraint);
+
+  if (row.locationDiscriminator === "internal") {
+    return {
+      id: row.id,
+      modelRevisionId: row.revisionId,
+      nodeType: "internalNode",
+      nodeTypeDescriminator: "internal",
+      element1dId: row.element1dId ?? row.id,
+      distanceAlongElement1d: Ratio.FromDecimalFractions(
+        row.ratioAlongElement1d ?? 0,
+      ),
+      restraint,
+    };
+  }
+
+  return {
+    id: row.id,
+    modelRevisionId: row.revisionId,
+    nodeType: "spatialNode",
+    nodeTypeDescriminator: "external",
+    point: {
+      x: row.pointX ?? 0,
+      y: row.pointY ?? 0,
+      z: row.pointZ ?? 0,
+    },
+    restraint,
+  };
+};
+
+const parseNodeRestraint = (value: unknown): NodeRestraint => {
+  if (!value || typeof value !== "object") {
+    return {};
+  }
+
+  const parsed: NodeRestraint = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (typeof entry === "boolean") {
+      parsed[key] = entry;
+    }
+  }
+
+  return parsed;
 };
 
 const buildMaterialsFromRevisions = async (input: {

@@ -80,7 +80,9 @@ export const getModelRevision = defineEndpoint({
         nodes: modelRevision.nodes.map((node) => ({
           id: node.id,
           modelId: modelRevision.modelId,
-          nodeTypeDescriminator: node.toSnapshot().nodeTypeDescriminator,
+          nodeTypeDescriminator:
+            node.toSnapshot().nodeTypeDescriminator ??
+            (node.nodeType === "internalNode" ? "internal" : "external"),
         })),
         materials: modelRevision.materials.map((material) => ({
           id: material.id,
