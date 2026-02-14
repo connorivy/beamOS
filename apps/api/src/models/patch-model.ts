@@ -1,8 +1,8 @@
+import { defineEndpoint } from "../contracts/endpoint";
 import {
-  defineEndpoint,
   patchModelReqSchema,
   patchModelResSchema,
-} from "@beamos/contracts";
+} from "../contracts/model-version-editing";
 import { httpError } from "../common/http-utils";
 import { toVersionRef } from "../common/version-utils";
 import type { AppContext } from "../common/types";

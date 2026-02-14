@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@beamos/contracts";
+import { defineEndpoint } from "../contracts/endpoint";
 import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";

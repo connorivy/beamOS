@@ -1,4 +1,4 @@
-import type { User } from "@beamos/contracts";
+import type { User } from "../contracts/user";
 import type { ModelBranchHeadAggregate } from "../model-branch-heads/model-branch-head-aggregate";
 import type { ModelRevisionAggregate } from "../model-revisions/model-revision-aggregate";
 import type { ModelRevisionDraftAggregate } from "../model-revision-drafts/model-revision-draft-aggregate";

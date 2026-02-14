@@ -1,4 +1,4 @@
-import type { Endpoint } from "@beamos/contracts";
+import type { Endpoint } from "../contracts/endpoint";
 import type { z } from "zod";
 import type { AppServices } from "../common/types";
 

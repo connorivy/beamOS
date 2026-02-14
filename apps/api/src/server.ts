@@ -1,4 +1,4 @@
-import type { Endpoint } from "@beamos/contracts";
+import type { Endpoint } from "./contracts/endpoint";
 import { Elysia } from "elysia";
 import { fromTypes, openapi } from "@elysiajs/openapi";
 import * as z from "zod";

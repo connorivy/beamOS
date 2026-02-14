@@ -1,12 +1,10 @@
-import {
-  defineEndpoint,
-  patchNodeReqSchema,
-} from "@beamos/contracts";
+import { defineEndpoint } from "../contracts/endpoint";
 import { z } from "zod";
 import { httpError } from "../common/http-utils";
 import { toVersionRef } from "../common/version-utils";
 import type { AppContext } from "../common/types";
 import { nodeResponseSchema } from "./node-response-schema";
+import { patchNodeReqSchema } from "src/contracts/model-version-editing";
 
 const uuidSchema = z.uuid();
 const modelVersionRefSchema = z.object({

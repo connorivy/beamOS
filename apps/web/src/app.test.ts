@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { getUserResSchema } from "@beamos/contracts";
+import { getUserResSchema } from "../../api/src/contracts/user";
 
 describe("contracts usable in web", () => {
   it("parses user schema", () => {

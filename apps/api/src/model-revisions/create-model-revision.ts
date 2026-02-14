@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@beamos/contracts";
+import { defineEndpoint } from "../contracts/endpoint";
 import { modelRevisionResponseSchema } from "./model-revision-response-schema";
 import { createModelRevisionReqSchema } from "./create-model-revision-request-schema";
 import { AppContext } from "src/common/types";

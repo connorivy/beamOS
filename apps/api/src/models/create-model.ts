@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@beamos/contracts";
+import { defineEndpoint } from "../contracts/endpoint";
 import { ModelAggregate } from "../models/model-aggregate";
 import type { AppContext } from "../common/types";
 import { z } from "zod";
@@ -39,16 +39,17 @@ export const createModel = defineEndpoint({
       name: req.body.name,
     });
     const savedModel = await ctx.services.modelRepository.save(model);
-    const initialRevision = await ctx.services.modelRevisionRepository.commitRevision({
-      id: Bun.randomUUIDv7(),
-      modelId: savedModel.id,
-      branchName: "main",
-      name: savedModel.name,
-      authorId: req.body.authorId,
-      message: req.body.message,
-      nodes: [],
-      includeModelChange: true,
-    });
+    const initialRevision =
+      await ctx.services.modelRevisionRepository.commitRevision({
+        id: Bun.randomUUIDv7(),
+        modelId: savedModel.id,
+        branchName: "main",
+        name: savedModel.name,
+        authorId: req.body.authorId,
+        message: req.body.message,
+        nodes: [],
+        includeModelChange: true,
+      });
 
     return {
       model: {

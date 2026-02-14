@@ -25,7 +25,6 @@
       "name": "@beamos/api",
       "version": "0.0.1",
       "dependencies": {
-        "@beamos/contracts": "workspace:*",
         "@beamos/openapi-client": "workspace:*",
         "@elysiajs/openapi": "^1.4.14",
         "drizzle-orm": "^1.0.0-beta.9-e89174b",
@@ -44,7 +43,6 @@
       "name": "@beamos/web",
       "version": "0.0.1",
       "dependencies": {
-        "@beamos/contracts": "workspace:*",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "three": "^0.174.0",
@@ -56,13 +54,6 @@
         "@types/three": "^0.174.0",
         "@vitejs/plugin-react": "^4.3.4",
         "vite": "^6.2.2",
-      },
-    },
-    "packages/contracts": {
-      "name": "@beamos/contracts",
-      "version": "0.0.1",
-      "dependencies": {
-        "zod": "^4.3.6",
       },
     },
     "packages/openapi-client": {
@@ -149,8 +140,6 @@
     "@balena/dockerignore": ["@balena/dockerignore@1.0.2", "", {}, "sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q=="],
 
     "@beamos/api": ["@beamos/api@workspace:apps/api"],
-
-    "@beamos/contracts": ["@beamos/contracts@workspace:packages/contracts"],
 
     "@beamos/openapi-client": ["@beamos/openapi-client@workspace:packages/openapi-client"],
 

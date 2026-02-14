@@ -1,4 +1,4 @@
-import { getUserResSchema } from "@beamos/contracts";
+import { getUserResSchema } from "../../../api/src/contracts/user";
 
 export const fetchUser = async (id: string) => {
   const response = await fetch(`/api/users/${encodeURIComponent(id)}`);

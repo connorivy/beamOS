@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@beamos/contracts";
+import { defineEndpoint } from "../contracts/endpoint";
 import {
   Area,
   AreaMomentOfInertia,
