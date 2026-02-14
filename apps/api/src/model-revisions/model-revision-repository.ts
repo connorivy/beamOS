@@ -27,6 +27,7 @@ import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
+import { DEFAULT_NODE_RESTRAINT } from "../nodes/node-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -709,14 +710,7 @@ const applyNodeChanges = (input: {
         change.nodeTypeDescriminator === "external"
           ? undefined
           : Ratio.FromDecimalFractions(0),
-      restraint: {
-        canTranslateAlongX: true,
-        canTranslateAlongY: true,
-        canTranslateAlongZ: true,
-        canRotateAboutX: true,
-        canRotateAboutY: true,
-        canRotateAboutZ: true,
-      },
+      restraint: { ...DEFAULT_NODE_RESTRAINT },
     });
   }
 };
@@ -891,27 +885,18 @@ const toFiniteNumber = (value: unknown): number | undefined => {
 };
 
 const parseNodeRestraint = (value: unknown): NodeRestraint => {
-  const defaultRestraint: NodeRestraint = {
-    canTranslateAlongX: true,
-    canTranslateAlongY: true,
-    canTranslateAlongZ: true,
-    canRotateAboutX: true,
-    canRotateAboutY: true,
-    canRotateAboutZ: true,
-  };
-
   if (!value || typeof value !== "object") {
-    return defaultRestraint;
+    return { ...DEFAULT_NODE_RESTRAINT };
   }
 
   const obj = value as Record<string, unknown>;
   return {
-    canTranslateAlongX: typeof obj.canTranslateAlongX === "boolean" ? obj.canTranslateAlongX : true,
-    canTranslateAlongY: typeof obj.canTranslateAlongY === "boolean" ? obj.canTranslateAlongY : true,
-    canTranslateAlongZ: typeof obj.canTranslateAlongZ === "boolean" ? obj.canTranslateAlongZ : true,
-    canRotateAboutX: typeof obj.canRotateAboutX === "boolean" ? obj.canRotateAboutX : true,
-    canRotateAboutY: typeof obj.canRotateAboutY === "boolean" ? obj.canRotateAboutY : true,
-    canRotateAboutZ: typeof obj.canRotateAboutZ === "boolean" ? obj.canRotateAboutZ : true,
+    canTranslateAlongX: typeof obj.canTranslateAlongX === "boolean" ? obj.canTranslateAlongX : DEFAULT_NODE_RESTRAINT.canTranslateAlongX,
+    canTranslateAlongY: typeof obj.canTranslateAlongY === "boolean" ? obj.canTranslateAlongY : DEFAULT_NODE_RESTRAINT.canTranslateAlongY,
+    canTranslateAlongZ: typeof obj.canTranslateAlongZ === "boolean" ? obj.canTranslateAlongZ : DEFAULT_NODE_RESTRAINT.canTranslateAlongZ,
+    canRotateAboutX: typeof obj.canRotateAboutX === "boolean" ? obj.canRotateAboutX : DEFAULT_NODE_RESTRAINT.canRotateAboutX,
+    canRotateAboutY: typeof obj.canRotateAboutY === "boolean" ? obj.canRotateAboutY : DEFAULT_NODE_RESTRAINT.canRotateAboutY,
+    canRotateAboutZ: typeof obj.canRotateAboutZ === "boolean" ? obj.canRotateAboutZ : DEFAULT_NODE_RESTRAINT.canRotateAboutZ,
   };
 };
 

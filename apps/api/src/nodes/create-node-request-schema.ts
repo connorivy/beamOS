@@ -28,14 +28,7 @@ const internalNodeLocationSchema = z.object({
 
 export const createNodeRequestSchema = z.object({
   tempId: z.string().trim().min(1).optional(),
-  restraint: restraintSchema.default({
-    canTranslateAlongX: true,
-    canTranslateAlongY: true,
-    canTranslateAlongZ: true,
-    canRotateAboutX: true,
-    canRotateAboutY: true,
-    canRotateAboutZ: true,
-  }),
+  restraint: restraintSchema,
   location: z.discriminatedUnion("type", [
     spatialNodeLocationSchema,
     internalNodeLocationSchema,

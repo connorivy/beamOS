@@ -11,6 +11,15 @@ export type NodeRestraint = {
   canRotateAboutZ: boolean;
 };
 
+export const DEFAULT_NODE_RESTRAINT: NodeRestraint = {
+  canTranslateAlongX: true,
+  canTranslateAlongY: true,
+  canTranslateAlongZ: true,
+  canRotateAboutX: true,
+  canRotateAboutY: true,
+  canRotateAboutZ: true,
+};
+
 export type NodePoint = {
   x: number;
   y: number;
@@ -181,16 +190,14 @@ export class NodeEntity {
   private normalizeRestraint(
     restraint: Partial<NodeRestraint> | undefined,
   ): NodeRestraint {
-    const normalized: NodeRestraint = {
-      canTranslateAlongX: restraint?.canTranslateAlongX ?? true,
-      canTranslateAlongY: restraint?.canTranslateAlongY ?? true,
-      canTranslateAlongZ: restraint?.canTranslateAlongZ ?? true,
-      canRotateAboutX: restraint?.canRotateAboutX ?? true,
-      canRotateAboutY: restraint?.canRotateAboutY ?? true,
-      canRotateAboutZ: restraint?.canRotateAboutZ ?? true,
+    return {
+      canTranslateAlongX: restraint?.canTranslateAlongX ?? DEFAULT_NODE_RESTRAINT.canTranslateAlongX,
+      canTranslateAlongY: restraint?.canTranslateAlongY ?? DEFAULT_NODE_RESTRAINT.canTranslateAlongY,
+      canTranslateAlongZ: restraint?.canTranslateAlongZ ?? DEFAULT_NODE_RESTRAINT.canTranslateAlongZ,
+      canRotateAboutX: restraint?.canRotateAboutX ?? DEFAULT_NODE_RESTRAINT.canRotateAboutX,
+      canRotateAboutY: restraint?.canRotateAboutY ?? DEFAULT_NODE_RESTRAINT.canRotateAboutY,
+      canRotateAboutZ: restraint?.canRotateAboutZ ?? DEFAULT_NODE_RESTRAINT.canRotateAboutZ,
     };
-    this.assertRestraint(normalized);
-    return normalized;
   }
 
   private assertRestraint(restraint: NodeRestraint): void {
