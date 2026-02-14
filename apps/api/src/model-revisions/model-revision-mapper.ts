@@ -24,7 +24,8 @@ export const modelRevisionMapper = {
         .filter((change) => change.op !== "delete")
         .map((change) => ({
           id: change.entityId,
-          modelId: row.modelId,
+          modelRevisionId: row.id,
+          nodeType: "spatialNode",
           nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         })),
       materials: [],
@@ -70,7 +71,8 @@ export const modelRevisionMapper = {
       createdAt: new Date(),
       nodes: input.nodes.map((node) => ({
         id: node.id,
-        modelId: node.modelId,
+        modelRevisionId: input.id,
+        nodeType: node.nodeType ?? "spatialNode",
         nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
       materials: [],

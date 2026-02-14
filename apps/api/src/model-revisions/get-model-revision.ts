@@ -79,7 +79,7 @@ export const getModelRevision = defineEndpoint({
         createdAt: modelRevision.createdAt.toISOString(),
         nodes: modelRevision.nodes.map((node) => ({
           id: node.id,
-          modelId: node.modelId,
+          modelId: modelRevision.modelId,
           nodeTypeDescriminator: node.toSnapshot().nodeTypeDescriminator,
         })),
         materials: modelRevision.materials.map((material) => ({

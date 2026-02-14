@@ -36,10 +36,12 @@ export const createNode = defineEndpoint({
     }
 
     try {
+      const modelRevisionId =
+        req.body.target.revisionId ?? req.body.target.draftId ?? req.params.modelId;
       model.addNode({
         id: req.body.nodeId,
-        modelId: req.params.modelId,
-        name: req.body.name,
+        modelRevisionId,
+        nodeTypeDescriminator: "external",
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -54,7 +56,6 @@ export const createNode = defineEndpoint({
       node: {
         id: req.body.nodeId,
         modelId: req.params.modelId,
-        name: req.body.name.trim(),
       },
       version: {
         modelId: req.params.modelId,

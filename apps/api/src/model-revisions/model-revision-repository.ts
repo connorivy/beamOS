@@ -64,7 +64,8 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       createdAt: revision.createdAt,
       nodes: Array.from(nodesById.values()).map((node) => ({
         id: node.id,
-        modelId: node.modelId,
+        modelRevisionId: revision.id,
+        nodeType: "spatialNode",
         nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
       materials: Array.from(materialsById.values()),
@@ -427,7 +428,8 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           .filter((node) => node.op !== "delete")
           .map((node): NodeSnapshot => ({
             id: node.nodeId,
-            modelId: draftSnapshot.modelId,
+            modelRevisionId: draftSnapshot.id,
+            nodeType: "spatialNode",
             nodeTypeDescriminator: "internal",
           })),
       });

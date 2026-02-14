@@ -38,7 +38,6 @@ export const patchNode = defineEndpoint({
     try {
       model.updateNode({
         nodeId: req.params.nodeId,
-        name: req.body.name,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -59,8 +58,7 @@ export const patchNode = defineEndpoint({
     return {
       node: {
         id: patchedNode.id,
-        modelId: patchedNode.modelId,
-        name: patchedNode.name,
+        modelId: req.params.modelId,
       },
       version: {
         modelId: req.params.modelId,

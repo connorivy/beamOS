@@ -57,7 +57,7 @@ async function batchCreateElement1dHandler(
     }
 
     if (seenTempIds.has(element1d.tempId)) {
-      throw httpError(`Duplicate tempId \"${element1d.tempId}\"`, 400);
+      throw httpError(`Duplicate tempId "${element1d.tempId}"`, 400);
     }
 
     seenTempIds.add(element1d.tempId);

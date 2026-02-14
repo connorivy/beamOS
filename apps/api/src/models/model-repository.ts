@@ -14,9 +14,22 @@ import { RevisionChangeEntity } from "../revision-changes/revision-change-entity
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 
 const applyNodeChanges = (input: {
-  modelId: string;
-  current: Map<string, { id: string; modelId: string; name: string }>;
-  changes: { nodeId: string; name: string; op: string }[];
+  current: Map<
+    string,
+    {
+      id: string;
+      modelRevisionId: string;
+      name: string;
+      nodeTypeDescriminator: "external" | "internal";
+    }
+  >;
+  changes: {
+    nodeId: string;
+    modelRevisionId: string;
+    name: string;
+    nodeTypeDescriminator: "external" | "internal";
+    op: string;
+  }[];
 }) => {
   for (const change of input.changes) {
     if (change.op === "delete") {
@@ -26,8 +39,9 @@ const applyNodeChanges = (input: {
 
     input.current.set(change.nodeId, {
       id: change.nodeId,
-      modelId: input.modelId,
+      modelRevisionId: change.modelRevisionId,
       name: change.name,
+      nodeTypeDescriminator: change.nodeTypeDescriminator,
     });
   }
 };
@@ -106,13 +120,14 @@ export const drizzleModelRepository: ModelRepository = {
       });
 
       applyNodeChanges({
-        modelId: input.modelId,
         current: nodesById,
         changes: orderedDraftChanges
           .filter((change) => change.entityType === "node")
           .map((change) => ({
             nodeId: change.entityId,
+            modelRevisionId: draftRows[0].id,
             name: extractNodeName(change.payload),
+            nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
             op: change.op,
           })),
       });
@@ -272,7 +287,17 @@ const loadRevisionHistory = async (input: {
 const buildNodesFromRevisions = async (input: {
   modelId: string;
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, { id: string; modelId: string; name: string }>> => {
+}): Promise<
+  Map<
+    string,
+    {
+      id: string;
+      modelRevisionId: string;
+      name: string;
+      nodeTypeDescriminator: "external" | "internal";
+    }
+  >
+> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
@@ -298,17 +323,24 @@ const buildNodesFromRevisions = async (input: {
 
   const nodesById = new Map<
     string,
-    { id: string; modelId: string; name: string }
+    {
+      id: string;
+      modelRevisionId: string;
+      name: string;
+      nodeTypeDescriminator: "external" | "internal";
+    }
   >();
 
   applyNodeChanges({
-    modelId: input.modelId,
     current: nodesById,
     changes: changeRows
       .filter((change) => change.entityType === "node")
       .map((change) => ({
         nodeId: change.entityId,
+        modelRevisionId:
+          change.revisionId ?? input.revisions[input.revisions.length - 1].id,
         name: extractNodeName(change.payload),
+        nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         op: change.op,
       })),
   });
@@ -324,6 +356,20 @@ const extractNodeName = (payload: unknown): string => {
     }
   }
   return "";
+};
+
+const extractNodeTypeDescriminator = (
+  payload: unknown,
+): "external" | "internal" => {
+  if (payload && typeof payload === "object") {
+    const nodeTypeDescriminator = (
+      payload as { nodeTypeDescriminator?: unknown }
+    ).nodeTypeDescriminator;
+    if (nodeTypeDescriminator === "external") {
+      return "external";
+    }
+  }
+  return "internal";
 };
 
 const extractModelName = (payload: unknown, fallback: string): string => {

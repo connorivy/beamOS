@@ -27,10 +27,7 @@ export class ModelAggregate {
 
     this.id = snapshot.id;
     this._name = snapshot.name.trim();
-    this._nodes = snapshot.nodes.map((node) => {
-      this.assertNodeModelId(node.modelId);
-      return NodeEntity.rehydrate(node);
-    });
+    this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
     this._domainEvents = [];
     this._sourceRevisionId = snapshot.sourceRevisionId ?? null;
     this._sourceDraftId = snapshot.sourceDraftId ?? null;
@@ -105,7 +102,6 @@ export class ModelAggregate {
   }
 
   addNode(node: NodeSnapshot): void {
-    this.assertNodeModelId(node.modelId);
     if (this._nodes.some((existing) => existing.id === node.id)) {
       throw new Error("Node already exists");
     }
@@ -117,29 +113,15 @@ export class ModelAggregate {
     });
   }
 
-  updateNode(input: { nodeId: string; name: string }): void {
+  updateNode(input: { nodeId: string }): void {
     const node = this._nodes.find((current) => current.id === input.nodeId);
     if (!node) {
       throw new Error("Node does not exist");
     }
-
-    const nextName = input.name.trim();
-    if (node.name === nextName) {
-      return;
-    }
-
-    node.rename(nextName);
-    this._domainEvents.push({
-      type: "node_updated",
-      payload: node.toSnapshot(),
-    });
   }
 
   replaceNodes(nodes: NodeSnapshot[]): void {
-    this._nodes = nodes.map((node) => {
-      this.assertNodeModelId(node.modelId);
-      return NodeEntity.rehydrate(node);
-    });
+    this._nodes = nodes.map((node) => NodeEntity.rehydrate(node));
   }
 
   toSnapshot(): ModelSnapshot {
@@ -162,9 +144,4 @@ export class ModelAggregate {
     }
   }
 
-  private assertNodeModelId(nodeModelId: string): void {
-    if (nodeModelId !== this.id) {
-      throw new Error("Node does not belong to this model");
-    }
-  }
 }

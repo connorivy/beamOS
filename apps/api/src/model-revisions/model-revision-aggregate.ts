@@ -56,10 +56,7 @@ export class ModelRevisionAggregate {
     this._authorId = snapshot.authorId;
     this._message = snapshot.message.trim();
     this._createdAt = snapshot.createdAt;
-    this._nodes = snapshot.nodes.map((node) => {
-      this.assertNodeModelId(node.modelId);
-      return NodeEntity.rehydrate(node);
-    });
+    this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
     this._materials = snapshot.materials.map((material) =>
       MaterialEntity.rehydrate(material),
     );
@@ -125,7 +122,6 @@ export class ModelRevisionAggregate {
 
   addNode(node: NodeSnapshot): void {
     assertUuid(node.id, "nodeId");
-    this.assertNodeModelId(node.modelId);
     if (this._nodes.some((existing) => existing.id === node.id)) {
       throw new Error("Node already exists");
     }
@@ -178,12 +174,6 @@ export class ModelRevisionAggregate {
   private assertRequired(value: string, field: string): void {
     if (value.trim().length === 0) {
       throw new Error(`${field} is required`);
-    }
-  }
-
-  private assertNodeModelId(nodeModelId: string): void {
-    if (nodeModelId !== this.modelId) {
-      throw new Error("Node does not belong to this model");
     }
   }
 
