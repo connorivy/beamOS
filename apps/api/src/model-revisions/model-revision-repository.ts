@@ -124,11 +124,11 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       message: draft.message,
       createdAt: draft.createdAt,
       updatedAt: draft.updatedAt,
-      nodes: Array.from(nodesById.values()).map((node) => ({
-        draftId: draft.id,
-        nodeId: node.id,
-        name: node.name,
-        op: "update",
+      nodes: Array.from(nodesById.values()).map((node): NodeSnapshot => ({
+        id: node.id,
+        modelRevisionId: draft.id,
+        nodeType: "spatialNode",
+        nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
     });
   },
@@ -316,11 +316,13 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         message: input.message,
         createdAt,
         updatedAt: now,
-        nodes: input.nodes.map((node) => ({
-          draftId: input.id,
-          nodeId: node.nodeId,
-          name: node.name,
-          op: node.op === "upsert" ? "update" : (node.op ?? "update"),
+        nodes: input.nodes
+          .filter((node) => node.op !== "delete")
+          .map((node): NodeSnapshot => ({
+            id: node.nodeId,
+            modelRevisionId: input.id,
+            nodeType: "spatialNode",
+            nodeTypeDescriminator: "internal",
         })),
       });
 
@@ -347,7 +349,8 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .delete(revisionChanges)
         .where(eq(revisionChanges.draftId, input.id));
 
-      const changeRows = draftAggregate.toSnapshot().nodes.map((node) => {
+      const changeRows = input.nodes.map((node) => {
+        const op = node.op === "upsert" ? "update" : (node.op ?? "update");
         const entity = RevisionChangeEntity.create({
           id: crypto.randomUUID(),
           revisionId: null,
@@ -355,11 +358,12 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           entityType: "node",
           entityId: node.nodeId,
           schemaVersion: 1,
-          op: node.op,
+          op,
           payload: {
             id: node.nodeId,
             modelId: input.modelId,
-            name: node.name,
+            nodeType: "spatialNode",
+            nodeTypeDescriminator: "internal",
           },
           createdAt: now,
         });
@@ -415,6 +419,22 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         draftChangeRows,
       );
       const draftSnapshot = draft.toSnapshot();
+      const draftNodeOps: {
+        nodeId: string;
+        nodeTypeDescriminator: "external" | "internal";
+        op: "insert" | "update" | "delete";
+      }[] = draftChangeRows
+        .filter((change) => change.entityType === "node")
+        .map((change) => ({
+          nodeId: change.entityId,
+          nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
+          op:
+            change.op === "delete"
+              ? "delete"
+              : change.op === "insert"
+                ? "insert"
+                : "update",
+        }));
 
       const aggregate = modelRevisionMapper.fromCommitInput({
         id: draftSnapshot.id,
@@ -424,14 +444,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         secondParentRevisionId: draftSnapshot.secondParentRevisionId,
         authorId: draftSnapshot.authorId,
         message: draftSnapshot.message,
-        nodes: draftSnapshot.nodes
-          .filter((node) => node.op !== "delete")
-          .map((node): NodeSnapshot => ({
-            id: node.nodeId,
-            modelRevisionId: draftSnapshot.id,
-            nodeType: "spatialNode",
-            nodeTypeDescriminator: "internal",
-          })),
+        nodes: draftSnapshot.nodes,
       });
 
       const snapshot = aggregate.toSnapshot();
@@ -445,11 +458,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         modelId: snapshot.modelId,
         revisionId: snapshot.id,
         draftId: null,
-        nodes: draftSnapshot.nodes.map((node) => ({
-          nodeId: node.nodeId,
-          name: node.name,
-          op: node.op,
-        })),
+        nodes: draftNodeOps,
       });
 
       if (changeRows.length > 0) {

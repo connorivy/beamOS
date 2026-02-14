@@ -44,26 +44,6 @@ export const bootstrapDb = async () => {
   `);
 
   await getDb().execute(sql`
-    CREATE TABLE IF NOT EXISTS node_revisions (
-      revision_id UUID NOT NULL REFERENCES model_revisions(id),
-      node_id UUID NOT NULL,
-      name TEXT NOT NULL,
-      op TEXT NOT NULL DEFAULT 'update',
-      PRIMARY KEY (revision_id, node_id)
-    );
-  `);
-
-  await getDb().execute(sql`
-    CREATE TABLE IF NOT EXISTS node_revision_drafts (
-      draft_id UUID NOT NULL REFERENCES model_revision_drafts(id),
-      node_id UUID NOT NULL,
-      name TEXT NOT NULL,
-      op TEXT NOT NULL DEFAULT 'update',
-      PRIMARY KEY (draft_id, node_id)
-    );
-  `);
-
-  await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS revision_changes (
       id UUID PRIMARY KEY NOT NULL,
       revision_id UUID REFERENCES model_revisions(id),

@@ -1,8 +1,5 @@
 import { assertUuid } from "../common/uuid";
-import {
-  NodeRevisionDraftAggregate,
-  type NodeRevisionDraftSnapshot,
-} from "../node-revision-drafts/node-revision-draft-aggregate";
+import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 
 export type ModelRevisionDraftSnapshot = {
   id: string;
@@ -14,7 +11,7 @@ export type ModelRevisionDraftSnapshot = {
   message: string;
   createdAt: Date;
   updatedAt: Date;
-  nodes: NodeRevisionDraftSnapshot[];
+  nodes: NodeSnapshot[];
 };
 
 export class ModelRevisionDraftAggregate {
@@ -25,7 +22,7 @@ export class ModelRevisionDraftAggregate {
   private _message: string;
   private _createdAt: Date;
   private _updatedAt: Date;
-  private _nodes: NodeRevisionDraftAggregate[];
+  private _nodes: NodeEntity[];
 
   private constructor(snapshot: ModelRevisionDraftSnapshot) {
     assertUuid(snapshot.id, "id");
@@ -48,13 +45,7 @@ export class ModelRevisionDraftAggregate {
     this._message = snapshot.message.trim();
     this._createdAt = snapshot.createdAt;
     this._updatedAt = snapshot.updatedAt;
-    this._nodes = snapshot.nodes.map((node) => {
-      if (node.draftId !== snapshot.id) {
-        throw new Error("Node does not belong to draft");
-      }
-
-      return NodeRevisionDraftAggregate.rehydrate(node);
-    });
+    this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
   }
 
   readonly id: string;
@@ -100,7 +91,7 @@ export class ModelRevisionDraftAggregate {
     return this._updatedAt;
   }
 
-  get nodes(): readonly NodeRevisionDraftAggregate[] {
+  get nodes(): readonly NodeEntity[] {
     return this._nodes;
   }
 
@@ -114,14 +105,8 @@ export class ModelRevisionDraftAggregate {
     this._message = message.trim();
   }
 
-  replaceNodes(nodes: NodeRevisionDraftSnapshot[]): void {
-    this._nodes = nodes.map((node) => {
-      if (node.draftId !== this.id) {
-        throw new Error("Node does not belong to draft");
-      }
-
-      return NodeRevisionDraftAggregate.rehydrate(node);
-    });
+  replaceNodes(nodes: NodeSnapshot[]): void {
+    this._nodes = nodes.map((node) => NodeEntity.rehydrate(node));
   }
 
   touch(updatedAt = new Date()): void {

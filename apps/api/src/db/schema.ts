@@ -71,36 +71,6 @@ export const modelRevisionDrafts = pgTable("model_revision_drafts", {
     .defaultNow(),
 });
 
-export const nodeRevisions = pgTable(
-  "node_revisions",
-  {
-    revisionId: uuid("revision_id")
-      .notNull()
-      .references(() => modelRevisions.id),
-    nodeId: uuid("node_id").notNull(),
-    name: text("name").notNull(),
-    op: text("op").notNull().default("update"),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.revisionId, table.nodeId] }),
-  }),
-);
-
-export const nodeRevisionDrafts = pgTable(
-  "node_revision_drafts",
-  {
-    draftId: uuid("draft_id")
-      .notNull()
-      .references(() => modelRevisionDrafts.id),
-    nodeId: uuid("node_id").notNull(),
-    name: text("name").notNull(),
-    op: text("op").notNull().default("update"),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.draftId, table.nodeId] }),
-  }),
-);
-
 export const revisionChanges = pgTable("revision_changes", {
   id: uuid("id").primaryKey(),
   revisionId: uuid("revision_id").references(() => modelRevisions.id),

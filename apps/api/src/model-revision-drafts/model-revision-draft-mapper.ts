@@ -3,6 +3,7 @@ import {
   ModelRevisionDraftAggregate,
   type ModelRevisionDraftSnapshot,
 } from "./model-revision-draft-aggregate";
+import type { NodeSnapshot } from "../nodes/node-entity";
 
 export const modelRevisionDraftMapper = {
   toDomain(
@@ -21,16 +22,12 @@ export const modelRevisionDraftMapper = {
       updatedAt: row.updatedAt,
       nodes: changeRows
         .filter((change) => change.entityType === "node")
+        .filter((change) => change.op !== "delete")
         .map((change) => ({
-          draftId: row.id,
-          nodeId: change.entityId,
-          name: extractNodeName(change.payload),
-          op:
-            change.op === "delete"
-              ? "delete"
-              : change.op === "insert"
-                ? "insert"
-                : "update",
+          id: change.entityId,
+          modelRevisionId: row.id,
+          nodeType: extractNodeType(change.payload),
+          nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         })),
     });
   },
@@ -61,9 +58,10 @@ export const modelRevisionDraftMapper = {
     authorId: string;
     message: string;
     nodes: {
-      nodeId: string;
-      name: string;
-      op?: "insert" | "update" | "delete";
+      id: string;
+      modelRevisionId: string;
+      nodeType?: "spatialNode" | "internalNode";
+      nodeTypeDescriminator: "external" | "internal";
     }[];
   }): ModelRevisionDraftAggregate {
     const now = new Date();
@@ -78,10 +76,10 @@ export const modelRevisionDraftMapper = {
       createdAt: now,
       updatedAt: now,
       nodes: input.nodes.map((node) => ({
-        draftId: input.id,
-        nodeId: node.nodeId,
-        name: node.name,
-        op: node.op ?? "update",
+        id: node.id,
+        modelRevisionId: node.modelRevisionId,
+        nodeType: node.nodeType ?? "spatialNode",
+        nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
     };
 
@@ -89,12 +87,28 @@ export const modelRevisionDraftMapper = {
   },
 };
 
-const extractNodeName = (payload: unknown): string => {
+const extractNodeTypeDescriminator = (
+  payload: unknown,
+): "external" | "internal" => {
   if (payload && typeof payload === "object") {
-    const name = (payload as { name?: unknown }).name;
-    if (typeof name === "string") {
-      return name;
+    const nodeTypeDescriminator = (
+      payload as { nodeTypeDescriminator?: unknown }
+    ).nodeTypeDescriminator;
+    if (nodeTypeDescriminator === "external") {
+      return "external";
     }
   }
-  return "";
+  return "internal";
+};
+
+const extractNodeType = (
+  payload: unknown,
+): NodeSnapshot["nodeType"] => {
+  if (payload && typeof payload === "object") {
+    const nodeType = (payload as { nodeType?: unknown }).nodeType;
+    if (nodeType === "internalNode" || nodeType === "spatialNode") {
+      return nodeType;
+    }
+  }
+  return "spatialNode";
 };
