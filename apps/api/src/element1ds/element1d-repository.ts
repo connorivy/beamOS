@@ -1,9 +1,20 @@
-import { eq, inArray } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "../db/client";
 import type { DbTransaction } from "../db/client";
-import { element1ds } from "../db/schema";
+import { revisionChanges } from "../db/schema";
 import { Element1dEntity } from "./element1d-entity";
-import { element1dMapper } from "./element1d-mapper";
+import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
+import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
+import { z } from "zod";
+
+const element1dPayloadSchema = z.object({
+  id: z.uuid(),
+  revisionId: z.uuid(),
+  startNodeId: z.uuid(),
+  endNodeId: z.uuid(),
+  materialId: z.uuid(),
+  sectionProfileId: z.uuid(),
+});
 
 export type Element1dRepository = {
   batchCreate: (
@@ -19,35 +30,69 @@ export const drizzleElement1dRepository: Element1dRepository = {
       return [];
     }
 
-    await tx
-      .insert(element1ds)
-      .values(input.map((element1d) => element1dMapper.toPersistence(element1d)))
-      .onConflictDoNothing();
+    const now = new Date();
+    const changeRows = input.flatMap((element1d) =>
+      element1d.pullDomainEvents().map((event) =>
+        revisionChangeMapper.toPersistence(
+          RevisionChangeEntity.create({
+            id: Bun.randomUUIDv7(),
+            revisionId: event.payload.revisionId,
+            draftId: null,
+            entityType: "element1d",
+            entityId: event.payload.id,
+            schemaVersion: 1,
+            op: "insert",
+            payload: {
+              id: event.payload.id,
+              revisionId: event.payload.revisionId,
+              startNodeId: event.payload.startNodeId,
+              endNodeId: event.payload.endNodeId,
+              materialId: event.payload.materialId,
+              sectionProfileId: event.payload.sectionProfileId,
+            },
+            createdAt: now,
+          }),
+        ),
+      ),
+    );
 
-    const ids = input.map((element1d) => element1d.id);
-    const rows = await tx
-      .select()
-      .from(element1ds)
-      .where(inArray(element1ds.id, ids));
+    if (changeRows.length > 0) {
+      await tx.insert(revisionChanges).values(changeRows).onConflictDoNothing();
+    }
 
-    const byId = new Map(rows.map((row) => [row.id, row]));
-    return input
-      .map((element1d) => byId.get(element1d.id))
-      .filter((row): row is (typeof element1ds.$inferSelect) => row !== undefined)
-      .map((row) => element1dMapper.toDomain(row));
+    return input;
   },
 
   async getById(element1dId) {
     const rows = await getDb()
       .select()
-      .from(element1ds)
-      .where(eq(element1ds.id, element1dId))
+      .from(revisionChanges)
+      .where(
+        and(
+          eq(revisionChanges.entityType, "element1d"),
+          eq(revisionChanges.entityId, element1dId),
+        ),
+      )
+      .orderBy(desc(revisionChanges.createdAt), desc(revisionChanges.id))
       .limit(1);
 
     if (!rows[0]) {
       return undefined;
     }
 
-    return element1dMapper.toDomain(rows[0]);
+    const latestChange = rows[0];
+    if (latestChange.op === "delete") {
+      return undefined;
+    }
+
+    const payload = element1dPayloadSchema.parse(latestChange.payload);
+    return Element1dEntity.rehydrate({
+      id: payload.id,
+      revisionId: payload.revisionId,
+      startNodeId: payload.startNodeId,
+      endNodeId: payload.endNodeId,
+      materialId: payload.materialId,
+      sectionProfileId: payload.sectionProfileId,
+    });
   },
 };

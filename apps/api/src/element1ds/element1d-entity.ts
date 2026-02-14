@@ -1,4 +1,5 @@
 import { assertUuidV7 } from "../common/uuid";
+import type { Element1dDomainEvent } from "./element1d-events";
 
 export type Element1dSnapshot = {
   id: string;
@@ -10,6 +11,8 @@ export type Element1dSnapshot = {
 };
 
 export class Element1dEntity {
+  private _domainEvents: Element1dDomainEvent[];
+
   private constructor(snapshot: Element1dSnapshot) {
     assertUuidV7(snapshot.id, "id");
     assertUuidV7(snapshot.revisionId, "revisionId");
@@ -24,6 +27,7 @@ export class Element1dEntity {
     this.endNodeId = snapshot.endNodeId;
     this.materialId = snapshot.materialId;
     this.sectionProfileId = snapshot.sectionProfileId;
+    this._domainEvents = [];
   }
 
   readonly id: string;
@@ -34,7 +38,12 @@ export class Element1dEntity {
   readonly sectionProfileId: string;
 
   static create(snapshot: Element1dSnapshot): Element1dEntity {
-    return new Element1dEntity(snapshot);
+    const entity = new Element1dEntity(snapshot);
+    entity._domainEvents.push({
+      type: "element1d_created",
+      payload: entity.toSnapshot(),
+    });
+    return entity;
   }
 
   static rehydrate(snapshot: Element1dSnapshot): Element1dEntity {
@@ -50,5 +59,11 @@ export class Element1dEntity {
       materialId: this.materialId,
       sectionProfileId: this.sectionProfileId,
     };
+  }
+
+  pullDomainEvents(): Element1dDomainEvent[] {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
   }
 }

@@ -3,11 +3,15 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { getDb, type DbTransaction } from "../db/client";
-import { nodes, revisionChanges } from "../db/schema";
+import { revisionChanges } from "../db/schema";
 import { uuidV7Schema } from "src/common/uuid";
 import { revisionNodeResponseSchema } from "./node-response-schema";
 import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
 import { createNodeRequestSchema } from "./create-node-request-schema";
+import { NodeEntity } from "./node-entity";
+import { Ratio } from "unitsnet-js";
+import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
+import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 
 export const batchCreateNodeReqSchema = z.object({
   params: z.object({
@@ -67,79 +71,79 @@ async function batchCreateNodeHandler(
   }
 
   const tempIdToId: Record<string, string> = {};
-  const createdNodes = req.body.nodes.map((node) => {
+  const entities = req.body.nodes.map((node) => {
     const id = Bun.randomUUIDv7();
-    const nodeTypeDescriminator =
-      node.location.type === "spatial" ? "external" : "internal";
 
     if (node.tempId) {
       tempIdToId[node.tempId] = id;
     }
 
-    return {
+    if (node.location.type === "internal") {
+      return NodeEntity.create({
+        id,
+        modelRevisionId: revisionId,
+        nodeType: "internalNode",
+        nodeTypeDescriminator: "internal",
+        element1dId: node.location.element1dId,
+        distanceAlongElement1d: node.location.ratioAlongElement1d,
+        restraint: node.restraint,
+      });
+    }
+
+    return NodeEntity.create({
       id,
-      modelId: req.params.modelId,
-      nodeTypeDescriminator: nodeTypeDescriminator as "external" | "internal",
-      locationDiscriminator: node.location.type,
-      pointX: node.location.type === "spatial" ? node.location.point.x : null,
-      pointY: node.location.type === "spatial" ? node.location.point.y : null,
-      pointZ: node.location.type === "spatial" ? node.location.point.z : null,
-      element1dId:
-        node.location.type === "internal" ? node.location.element1dId : null,
-      ratioAlongElement1d:
-        node.location.type === "internal"
-          ? node.location.ratioAlongElement1d.DecimalFractions
-          : null,
+      modelRevisionId: revisionId,
+      nodeType: "spatialNode",
+      nodeTypeDescriminator: "external",
+      point: node.location.point,
       restraint: node.restraint,
-    };
+    });
   });
 
-  await tx.insert(nodes).values(
-    createdNodes.map((node) => ({
-      id: node.id,
-      revisionId,
-      locationDiscriminator: node.locationDiscriminator,
-      pointX: node.pointX,
-      pointY: node.pointY,
-      pointZ: node.pointZ,
-      element1dId: node.element1dId,
-      ratioAlongElement1d: node.ratioAlongElement1d,
-      restraint: node.restraint,
-    })),
+  const now = new Date();
+  const changeRows = entities.flatMap((node) =>
+    node.pullDomainEvents().map((event) => {
+      const snapshot = event.payload;
+      return revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: Bun.randomUUIDv7(),
+          revisionId,
+          draftId: null,
+          entityType: "node",
+          entityId: snapshot.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: snapshot.id,
+            modelRevisionId: snapshot.modelRevisionId,
+            nodeType: snapshot.nodeType,
+            nodeTypeDescriminator: snapshot.nodeTypeDescriminator,
+            point: snapshot.point ?? null,
+            element1dId: snapshot.element1dId ?? null,
+            distanceAlongElement1d:
+              snapshot.distanceAlongElement1d instanceof Ratio
+                ? snapshot.distanceAlongElement1d.DecimalFractions
+                : null,
+            restraint: snapshot.restraint ?? {},
+          },
+          createdAt: now,
+        }),
+      );
+    }),
   );
 
-  await tx.insert(revisionChanges).values(
-    createdNodes.map((node) => ({
-      id: Bun.randomUUIDv7(),
-      revisionId,
-      draftId: null,
-      entityType: "node",
-      entityId: node.id,
-      schemaVersion: 1,
-      op: "insert",
-      payload: {
-        id: node.id,
-        modelId: node.modelId,
-        nodeTypeDescriminator: node.nodeTypeDescriminator,
-        locationDiscriminator: node.locationDiscriminator,
-        point:
-          node.locationDiscriminator === "spatial"
-            ? {
-                x: node.pointX,
-                y: node.pointY,
-                z: node.pointZ,
-              }
-            : null,
-        element1dId: node.element1dId,
-        ratioAlongElement1d: node.ratioAlongElement1d,
-        restraint: node.restraint,
-      },
-      createdAt: new Date(),
-    })),
-  );
+  if (changeRows.length > 0) {
+    await tx.insert(revisionChanges).values(changeRows).onConflictDoNothing();
+  }
 
   return {
-    nodes: createdNodes.map((node) => toResponseNode(node)),
+    nodes: entities.map((node) =>
+      toResponseNode({
+        id: node.id,
+        modelId: req.params.modelId,
+        nodeTypeDescriminator: node.nodeTypeDescriminator,
+      }),
+    ),
     tempIdToId,
   };
 }

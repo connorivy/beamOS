@@ -1,5 +1,6 @@
 import { assertUuid } from "../common/uuid";
 import { Ratio } from "unitsnet-js";
+import type { NodeDomainEvents } from "./node-events";
 
 export type NodeRestraint = Record<string, boolean>;
 
@@ -49,6 +50,8 @@ export type NodeSnapshot = {
 };
 
 export class NodeEntity {
+  private _domainEvents: NodeDomainEvents[];
+
   private constructor(snapshot: LegacyNodeSnapshot) {
     assertUuid(snapshot.id, "id");
 
@@ -63,6 +66,7 @@ export class NodeEntity {
     this.id = snapshot.id;
     this.modelRevisionId = modelRevisionId;
     this.restraint = normalizedRestraint;
+    this._domainEvents = [];
 
     const isInternalNode =
       snapshot.nodeType === "internalNode" ||
@@ -100,7 +104,12 @@ export class NodeEntity {
   readonly restraint: NodeRestraint;
 
   static create(snapshot: NodeSnapshot): NodeEntity {
-    return new NodeEntity(snapshot);
+    const entity = new NodeEntity(snapshot);
+    entity._domainEvents.push({
+      type: "node_created",
+      payload: entity.toSnapshot(),
+    });
+    return entity;
   }
 
   static rehydrate(snapshot: NodeSnapshot): NodeEntity {
@@ -128,6 +137,12 @@ export class NodeEntity {
       point: this.point as NodePoint,
       restraint: { ...this.restraint },
     };
+  }
+
+  pullDomainEvents(): NodeDomainEvents[] {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
   }
 
   private assertRatio(value: Ratio, field: string): void {

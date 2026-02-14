@@ -4,6 +4,7 @@ import {
   Volume,
   WarpingMomentOfInertia,
 } from "unitsnet-js";
+import type { SectionProfileDomainEvent } from "./section-profile-events";
 import { assertUuidV7 } from "../common/uuid";
 
 export const SECTION_PROFILE_DISCRIMINATORS = [
@@ -33,6 +34,8 @@ export type SectionProfileSnapshot = {
 };
 
 export class SectionProfileAggregate {
+  private _domainEvents: SectionProfileDomainEvent[];
+
   private constructor(snapshot: SectionProfileSnapshot) {
     assertUuidV7(snapshot.id, "id");
     assertUuidV7(snapshot.revisionId, "revisionId");
@@ -119,6 +122,7 @@ export class SectionProfileAggregate {
     this.weakAxisElasticSectionModulus = snapshot.weakAxisElasticSectionModulus;
     this.strongAxisShearArea = snapshot.strongAxisShearArea;
     this.weakAxisShearArea = snapshot.weakAxisShearArea;
+    this._domainEvents = [];
   }
 
   readonly id: string;
@@ -138,7 +142,12 @@ export class SectionProfileAggregate {
   readonly weakAxisShearArea?: Area;
 
   static create(snapshot: SectionProfileSnapshot): SectionProfileAggregate {
-    return new SectionProfileAggregate(snapshot);
+    const entity = new SectionProfileAggregate(snapshot);
+    entity._domainEvents.push({
+      type: "section_profile_created",
+      payload: entity.toSnapshot(),
+    });
+    return entity;
   }
 
   static rehydrate(snapshot: SectionProfileSnapshot): SectionProfileAggregate {
@@ -146,6 +155,7 @@ export class SectionProfileAggregate {
   }
 
   toSnapshot(): SectionProfileSnapshot {
+
     return {
       id: this.id,
       revisionId: this.revisionId,
@@ -163,6 +173,12 @@ export class SectionProfileAggregate {
       strongAxisShearArea: this.strongAxisShearArea,
       weakAxisShearArea: this.weakAxisShearArea,
     };
+  }
+
+  pullDomainEvents(): SectionProfileDomainEvent[] {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
   }
 
   private assertArea(value: Area, field: string): void {

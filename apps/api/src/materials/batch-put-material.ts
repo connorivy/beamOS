@@ -73,8 +73,14 @@ export async function batchPutMaterialHandler(
     MaterialEntity.create({
       id: material.id,
       revisionId,
-      pressureE: new Pressure(material.pressureE.value, material.pressureE.unit),
-      pressureG: new Pressure(material.pressureG.value, material.pressureG.unit),
+      pressureE: new Pressure(
+        material.pressureE.value,
+        material.pressureE.unit,
+      ),
+      pressureG: new Pressure(
+        material.pressureG.value,
+        material.pressureG.unit,
+      ),
     }),
   );
 
@@ -90,36 +96,8 @@ export async function batchPutMaterialHandler(
       },
     });
 
-  const now = new Date();
-  const revisionChanges = entities.flatMap((material) =>
-    material.pullDomainEvents().map((event) =>
-      RevisionChangeEntity.create({
-        id: Bun.randomUUIDv7(),
-        revisionId,
-        draftId: null,
-        entityType: "material",
-        entityId: event.payload.id,
-        schemaVersion: 1,
-        op: "update",
-        payload: {
-          id: event.payload.id,
-          revisionId: event.payload.revisionId,
-          pressureE: {
-            value: event.payload.pressureE.Pascals,
-            unit: PressureUnits.Pascals,
-          },
-          pressureG: {
-            value: event.payload.pressureG.Pascals,
-            unit: PressureUnits.Pascals,
-          },
-        },
-        createdAt: now,
-      }),
-    ),
-  );
-  await ctx.services.revisionChangeRepository.batchCreate(tx, revisionChanges);
-
+  const saved = await ctx.services.materialRepository.batchCreate(tx, entities);
   return {
-    materials: entities.map((material) => toResponseMaterial(material)),
+    materials: saved.map((material) => toResponseMaterial(material)),
   };
 }

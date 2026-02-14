@@ -1,16 +1,19 @@
 import crypto from "crypto";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { Ratio } from "unitsnet-js";
+import {
+  Area,
+  AreaMomentOfInertia,
+  Pressure,
+  Ratio,
+  Volume,
+  WarpingMomentOfInertia,
+} from "unitsnet-js";
 import { getDb } from "../db/client";
 import {
-  element1ds,
-  materials,
   modelBranchHeads,
   modelRevisionDrafts,
   modelRevisions,
-  nodes,
   revisionChanges,
-  sectionProfiles,
 } from "../db/schema";
 import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
 import { modelRevisionDraftMapper } from "../model-revision-drafts/model-revision-draft-mapper";
@@ -20,9 +23,6 @@ import { modelRevisionMapper } from "./model-revision-mapper";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { DomainEvent, ModelRevisionRepository } from "../common/types";
-import { materialMapper } from "../materials/material-mapper";
-import { sectionProfileMapper } from "../section-profiles/section-profile-mapper";
-import { element1dMapper } from "../element1ds/element1d-mapper";
 import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
@@ -774,89 +774,113 @@ const buildNodesFromRevisions = async (input: {
     return new Map();
   }
 
-  const revisionIds = input.revisions.map((revision) => revision.id);
-  const revisionOrder = new Map(
-    input.revisions.map((revision, index) => [revision.id, index]),
-  );
-
-  const nodeRows = await getDb()
-    .select()
-    .from(nodes)
-    .where(inArray(nodes.revisionId, revisionIds));
-
-  nodeRows.sort((a, b) => {
-    const orderA = revisionOrder.get(a.revisionId) ?? 0;
-    const orderB = revisionOrder.get(b.revisionId) ?? 0;
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.id.localeCompare(b.id);
-  });
-
-  const nodeDeleteRows = await getDb()
-    .select()
-    .from(revisionChanges)
-    .where(inArray(revisionChanges.revisionId, revisionIds));
-
-  nodeDeleteRows.sort((a, b) => {
-    const orderA = revisionOrder.get(a.revisionId ?? "") ?? 0;
-    const orderB = revisionOrder.get(b.revisionId ?? "") ?? 0;
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.entityId.localeCompare(b.entityId);
-  });
+  const rows = await loadOrderedRevisionChanges(input.revisions);
 
   const nodesById = new Map<string, NodeSnapshot>();
+  for (const row of rows) {
+    if (row.entityType !== "node") {
+      continue;
+    }
+    if (row.op === "delete") {
+      nodesById.delete(row.entityId);
+      continue;
+    }
 
-  for (const row of nodeRows) {
-    nodesById.set(row.id, toNodeSnapshotFromNodeRow(row));
+    nodesById.set(
+      row.entityId,
+      toNodeSnapshotFromRevisionChange({
+        row,
+      }),
+    );
   }
-
-  applyNodeChanges({
-    current: nodesById,
-    changes: nodeDeleteRows
-      .filter((change) => change.entityType === "node" && change.op === "delete")
-      .map((change) => ({
-        nodeId: change.entityId,
-        op: change.op,
-      })),
-  });
 
   return nodesById;
 };
 
-const toNodeSnapshotFromNodeRow = (
-  row: typeof nodes.$inferSelect,
-): NodeSnapshot => {
-  const restraint = parseNodeRestraint(row.restraint);
+const toNodeSnapshotFromRevisionChange = (input: {
+  row: typeof revisionChanges.$inferSelect;
+}): NodeSnapshot => {
+  const payload = toObject(input.row.payload);
+  const nodeTypeDescriminator = extractNodeTypeDescriminator(payload);
+  const modelRevisionId =
+    typeof payload.modelRevisionId === "string"
+      ? payload.modelRevisionId
+      : (input.row.revisionId ?? "");
+  const restraint = parseNodeRestraint(payload.restraint);
 
-  if (row.locationDiscriminator === "internal") {
+  if (nodeTypeDescriminator === "internal") {
+    const distanceAlongElement1d = toFiniteNumber(payload.distanceAlongElement1d);
     return {
-      id: row.id,
-      modelRevisionId: row.revisionId,
+      id: input.row.entityId,
+      modelRevisionId,
       nodeType: "internalNode",
       nodeTypeDescriminator: "internal",
-      element1dId: row.element1dId ?? row.id,
+      element1dId:
+        typeof payload.element1dId === "string"
+          ? payload.element1dId
+          : input.row.entityId,
       distanceAlongElement1d: Ratio.FromDecimalFractions(
-        row.ratioAlongElement1d ?? 0,
+        distanceAlongElement1d ?? 0,
       ),
       restraint,
     };
   }
 
+  const point = toObject(payload.point);
   return {
-    id: row.id,
-    modelRevisionId: row.revisionId,
+    id: input.row.entityId,
+    modelRevisionId,
     nodeType: "spatialNode",
     nodeTypeDescriminator: "external",
     point: {
-      x: row.pointX ?? 0,
-      y: row.pointY ?? 0,
-      z: row.pointZ ?? 0,
+      x: toFiniteNumber(point.x) ?? 0,
+      y: toFiniteNumber(point.y) ?? 0,
+      z: toFiniteNumber(point.z) ?? 0,
     },
     restraint,
   };
+};
+
+const loadOrderedRevisionChanges = async (
+  revisions: (typeof modelRevisions.$inferSelect)[],
+): Promise<(typeof revisionChanges.$inferSelect)[]> => {
+  const revisionIds = revisions.map((revision) => revision.id);
+  const revisionOrder = new Map(
+    revisions.map((revision, index) => [revision.id, index]),
+  );
+
+  const rows = await getDb()
+    .select()
+    .from(revisionChanges)
+    .where(inArray(revisionChanges.revisionId, revisionIds));
+
+  rows.sort((a, b) => {
+    const orderA = revisionOrder.get(a.revisionId ?? "") ?? 0;
+    const orderB = revisionOrder.get(b.revisionId ?? "") ?? 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    const timeDiff = a.createdAt.getTime() - b.createdAt.getTime();
+    if (timeDiff !== 0) {
+      return timeDiff;
+    }
+    return a.id.localeCompare(b.id);
+  });
+
+  return rows;
+};
+
+const toObject = (value: unknown): Record<string, unknown> => {
+  if (!value || typeof value !== "object") {
+    return {};
+  }
+  return value as Record<string, unknown>;
+};
+
+const toFiniteNumber = (value: unknown): number | undefined => {
+  return typeof value === "number" && Number.isFinite(value)
+    ? value
+    : undefined;
 };
 
 const parseNodeRestraint = (value: unknown): NodeRestraint => {
@@ -881,29 +905,35 @@ const buildMaterialsFromRevisions = async (input: {
     return new Map();
   }
 
-  const revisionIds = input.revisions.map((revision) => revision.id);
-  const revisionOrder = new Map(
-    input.revisions.map((revision, index) => [revision.id, index]),
-  );
-
-  const rows = await getDb()
-    .select()
-    .from(materials)
-    .where(inArray(materials.revisionId, revisionIds));
-
-  rows.sort((a, b) => {
-    const orderA = revisionOrder.get(a.revisionId) ?? 0;
-    const orderB = revisionOrder.get(b.revisionId) ?? 0;
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.id.localeCompare(b.id);
-  });
-
+  const rows = await loadOrderedRevisionChanges(input.revisions);
   const materialsById = new Map<string, MaterialSnapshot>();
-
   for (const row of rows) {
-    materialsById.set(row.id, materialMapper.toDomain(row).toSnapshot());
+    if (row.entityType !== "material") {
+      continue;
+    }
+    if (row.op === "delete") {
+      materialsById.delete(row.entityId);
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    const pressureE = toObject(payload.pressureE);
+    const pressureG = toObject(payload.pressureG);
+    const pressureEValue = toFiniteNumber(pressureE.value);
+    const pressureGValue = toFiniteNumber(pressureG.value);
+    if (pressureEValue === undefined || pressureGValue === undefined) {
+      continue;
+    }
+
+    materialsById.set(row.entityId, {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      pressureE: Pressure.FromPascals(pressureEValue),
+      pressureG: Pressure.FromPascals(pressureGValue),
+    });
   }
 
   return materialsById;
@@ -916,32 +946,112 @@ const buildSectionProfilesFromRevisions = async (input: {
     return new Map();
   }
 
-  const revisionIds = input.revisions.map((revision) => revision.id);
-  const revisionOrder = new Map(
-    input.revisions.map((revision, index) => [revision.id, index]),
-  );
-
-  const rows = await getDb()
-    .select()
-    .from(sectionProfiles)
-    .where(inArray(sectionProfiles.revisionId, revisionIds));
-
-  rows.sort((a, b) => {
-    const orderA = revisionOrder.get(a.revisionId) ?? 0;
-    const orderB = revisionOrder.get(b.revisionId) ?? 0;
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.id.localeCompare(b.id);
-  });
-
+  const rows = await loadOrderedRevisionChanges(input.revisions);
   const sectionProfilesById = new Map<string, SectionProfileSnapshot>();
-
   for (const row of rows) {
-    sectionProfilesById.set(
-      row.id,
-      sectionProfileMapper.toDomain(row).toSnapshot(),
+    if (
+      row.entityType !== "sectionprofile" &&
+      row.entityType !== "section_profile"
+    ) {
+      continue;
+    }
+    if (row.op === "delete") {
+      sectionProfilesById.delete(row.entityId);
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    const discriminator =
+      payload.discriminator === "WITH_SHEAR_AREAS"
+        ? "WITH_SHEAR_AREAS"
+        : payload.discriminator === "STANDARD"
+          ? "STANDARD"
+          : undefined;
+    if (!discriminator || typeof payload.name !== "string") {
+      continue;
+    }
+
+    const area = toObject(payload.area);
+    const strongAxisMomentOfInertia = toObject(payload.strongAxisMomentOfInertia);
+    const weakAxisMomentOfInertia = toObject(payload.weakAxisMomentOfInertia);
+    const torsionalConstant = toObject(payload.torsionalConstant);
+    const warpingConstant = toObject(payload.warpingConstant);
+    const strongAxisPlasticSectionModulus = toObject(
+      payload.strongAxisPlasticSectionModulus,
     );
+    const weakAxisPlasticSectionModulus = toObject(
+      payload.weakAxisPlasticSectionModulus,
+    );
+    const strongAxisElasticSectionModulus = toObject(
+      payload.strongAxisElasticSectionModulus,
+    );
+    const weakAxisElasticSectionModulus = toObject(
+      payload.weakAxisElasticSectionModulus,
+    );
+
+    const areaValue = toFiniteNumber(area.value);
+    const strongIValue = toFiniteNumber(strongAxisMomentOfInertia.value);
+    const weakIValue = toFiniteNumber(weakAxisMomentOfInertia.value);
+    const torsionalValue = toFiniteNumber(torsionalConstant.value);
+    const warpingValue = toFiniteNumber(warpingConstant.value);
+    const strongPlasticValue = toFiniteNumber(
+      strongAxisPlasticSectionModulus.value,
+    );
+    const weakPlasticValue = toFiniteNumber(weakAxisPlasticSectionModulus.value);
+    const strongElasticValue = toFiniteNumber(
+      strongAxisElasticSectionModulus.value,
+    );
+    const weakElasticValue = toFiniteNumber(weakAxisElasticSectionModulus.value);
+
+    if (
+      areaValue === undefined ||
+      strongIValue === undefined ||
+      weakIValue === undefined ||
+      torsionalValue === undefined ||
+      warpingValue === undefined ||
+      strongPlasticValue === undefined ||
+      weakPlasticValue === undefined ||
+      strongElasticValue === undefined ||
+      weakElasticValue === undefined
+    ) {
+      continue;
+    }
+
+    const strongAxisShearArea = toFiniteNumber(
+      toObject(payload.strongAxisShearArea).value,
+    );
+    const weakAxisShearArea = toFiniteNumber(
+      toObject(payload.weakAxisShearArea).value,
+    );
+
+    sectionProfilesById.set(row.entityId, {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      name: payload.name,
+      discriminator,
+      area: Area.FromSquareMeters(areaValue),
+      strongAxisMomentOfInertia:
+        AreaMomentOfInertia.FromMetersToTheFourth(strongIValue),
+      weakAxisMomentOfInertia:
+        AreaMomentOfInertia.FromMetersToTheFourth(weakIValue),
+      torsionalConstant:
+        AreaMomentOfInertia.FromMetersToTheFourth(torsionalValue),
+      warpingConstant:
+        WarpingMomentOfInertia.FromMetersToTheSixth(warpingValue),
+      strongAxisPlasticSectionModulus: Volume.FromCubicMeters(strongPlasticValue),
+      weakAxisPlasticSectionModulus: Volume.FromCubicMeters(weakPlasticValue),
+      strongAxisElasticSectionModulus: Volume.FromCubicMeters(strongElasticValue),
+      weakAxisElasticSectionModulus: Volume.FromCubicMeters(weakElasticValue),
+      ...(strongAxisShearArea !== undefined
+        ? { strongAxisShearArea: Area.FromSquareMeters(strongAxisShearArea) }
+        : {}),
+      ...(weakAxisShearArea !== undefined
+        ? { weakAxisShearArea: Area.FromSquareMeters(weakAxisShearArea) }
+        : {}),
+    });
   }
 
   return sectionProfilesById;
@@ -954,29 +1064,38 @@ const buildElement1dsFromRevisions = async (input: {
     return new Map();
   }
 
-  const revisionIds = input.revisions.map((revision) => revision.id);
-  const revisionOrder = new Map(
-    input.revisions.map((revision, index) => [revision.id, index]),
-  );
-
-  const rows = await getDb()
-    .select()
-    .from(element1ds)
-    .where(inArray(element1ds.revisionId, revisionIds));
-
-  rows.sort((a, b) => {
-    const orderA = revisionOrder.get(a.revisionId) ?? 0;
-    const orderB = revisionOrder.get(b.revisionId) ?? 0;
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.id.localeCompare(b.id);
-  });
-
+  const rows = await loadOrderedRevisionChanges(input.revisions);
   const element1dsById = new Map<string, Element1dSnapshot>();
-
   for (const row of rows) {
-    element1dsById.set(row.id, element1dMapper.toDomain(row).toSnapshot());
+    if (row.entityType !== "element1d") {
+      continue;
+    }
+    if (row.op === "delete") {
+      element1dsById.delete(row.entityId);
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    if (
+      typeof payload.startNodeId !== "string" ||
+      typeof payload.endNodeId !== "string" ||
+      typeof payload.materialId !== "string" ||
+      typeof payload.sectionProfileId !== "string"
+    ) {
+      continue;
+    }
+
+    element1dsById.set(row.entityId, {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      startNodeId: payload.startNodeId,
+      endNodeId: payload.endNodeId,
+      materialId: payload.materialId,
+      sectionProfileId: payload.sectionProfileId,
+    });
   }
 
   return element1dsById;
