@@ -72,17 +72,14 @@ export const batchCreateElement1d = defineEndpoint({
 
     const tempIdToId: Record<string, string> = {};
     const { modelId, branchName } = req.params;
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+    
+    // Create a new revision and update branch head
+    const newRevisionId = await ctx.services.modelRevisionRepository.createRevisionAndUpdateBranchHead({
       modelId,
       branchName,
-    );
-
-    if (!branch) {
-      throw httpError(
-        `Could not find branch ${branchName} on model with ID ${modelId}`,
-        404,
-      );
-    }
+      authorId: "system", // TODO: get from auth context
+      message: "Add element1ds",
+    });
 
     const entities = req.body.element1ds.map((element1d) => {
       const id = Bun.randomUUIDv7();
@@ -93,7 +90,7 @@ export const batchCreateElement1d = defineEndpoint({
 
       return Element1dEntity.create({
         id,
-        revisionId: branch.headRevisionId,
+        revisionId: newRevisionId,
         startNodeId: element1d.startNodeId,
         endNodeId: element1d.endNodeId,
         materialId: element1d.materialId,

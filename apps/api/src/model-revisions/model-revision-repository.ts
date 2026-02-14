@@ -578,6 +578,38 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       return modelRevisionMapper.toDomain(revisionRow[0], persistedChangeRows);
     });
   },
+
+  async createRevisionAndUpdateBranchHead(input) {
+    const branch = await this.getBranchHead(input.modelId, input.branchName);
+    if (!branch) {
+      throw new Error(
+        `Could not find branch ${input.branchName} on model with ID ${input.modelId}`,
+      );
+    }
+
+    const parentRevision = await this.getRevisionById(branch.headRevisionId);
+    if (!parentRevision) {
+      throw new Error(
+        `Could not find parent revision with ID ${branch.headRevisionId}`,
+      );
+    }
+
+    const parentSnapshot = parentRevision.toSnapshot();
+    const newRevisionId = crypto.randomUUID();
+
+    const revision = await this.commitRevision({
+      id: newRevisionId,
+      modelId: input.modelId,
+      branchName: input.branchName,
+      name: parentSnapshot.name,
+      parentRevisionId: branch.headRevisionId,
+      authorId: input.authorId,
+      message: input.message,
+      nodes: [],
+    });
+
+    return revision.toSnapshot().id;
+  },
 };
 
 const buildRevisionChangeRowsFromNodeOps = (input: {

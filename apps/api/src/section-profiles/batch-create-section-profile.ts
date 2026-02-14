@@ -255,17 +255,14 @@ export const batchCreateSectionProfile = defineEndpoint({
 
     const tempIdToId: Record<string, string> = {};
     const { modelId, branchName } = req.params;
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+    
+    // Create a new revision and update branch head
+    const newRevisionId = await ctx.services.modelRevisionRepository.createRevisionAndUpdateBranchHead({
       modelId,
       branchName,
-    );
-
-    if (!branch) {
-      throw httpError(
-        `Could not find branch ${branchName} on model with ID ${modelId}`,
-        404,
-      );
-    }
+      authorId: "system", // TODO: get from auth context
+      message: "Add section profiles",
+    });
 
     const entities = req.body.sectionProfiles.map((sectionProfile) => {
       const id = Bun.randomUUIDv7();
@@ -281,7 +278,7 @@ export const batchCreateSectionProfile = defineEndpoint({
 
       return SectionProfileAggregate.create({
         id,
-        revisionId: branch.headRevisionId,
+        revisionId: newRevisionId,
         name: sectionProfile.name,
         discriminator: sectionProfile.discriminator,
         area: converted.area,

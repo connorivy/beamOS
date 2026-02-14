@@ -81,16 +81,15 @@ export const batchCreateMaterial = defineEndpoint({
 
     const tempIdToId: Record<string, string> = {};
     const { modelId, branchName } = req.params;
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+    
+    // Create a new revision and update branch head
+    const newRevisionId = await ctx.services.modelRevisionRepository.createRevisionAndUpdateBranchHead({
       modelId,
       branchName,
-    );
-    if (!branch) {
-      throw httpError(
-        `Could not find branch ${branchName} on model with ID ${modelId}`,
-        404,
-      );
-    }
+      authorId: "system", // TODO: get from auth context
+      message: "Add materials",
+    });
+
     const entities = req.body.materials.map((material) => {
       const id = Bun.randomUUIDv7();
       if (material.tempId) {
@@ -99,7 +98,7 @@ export const batchCreateMaterial = defineEndpoint({
 
       return MaterialEntity.create({
         id,
-        revisionId: branch.headRevisionId,
+        revisionId: newRevisionId,
         pressureE: new Pressure(
           material.pressureE.value,
           material.pressureE.unit,

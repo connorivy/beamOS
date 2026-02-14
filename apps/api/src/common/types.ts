@@ -77,6 +77,12 @@ export type ModelRevisionRepository = {
   commitRevision: (
     input: ModelRevisionCommitInput,
   ) => Promise<ModelRevisionAggregate>;
+  createRevisionAndUpdateBranchHead: (input: {
+    modelId: string;
+    branchName: string;
+    authorId: string;
+    message: string;
+  }) => Promise<string>;
 };
 
 export type AppServices = {
