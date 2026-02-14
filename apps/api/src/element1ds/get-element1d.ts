@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
+import { element1dResponseSchema } from "./element1d-response-schema";
 
 const uuidV7Schema = z
   .uuid()
@@ -15,14 +16,7 @@ export const getElement1dReqSchema = z.object({
 });
 
 export const getElement1dResSchema = z.object({
-  element1d: z.object({
-    id: uuidV7Schema,
-    revisionId: uuidV7Schema,
-    startNodeId: uuidV7Schema,
-    endNodeId: uuidV7Schema,
-    materialId: uuidV7Schema,
-    sectionProfileId: uuidV7Schema,
-  }),
+  element1d: element1dResponseSchema,
 });
 
 export const getElement1d = defineEndpoint({

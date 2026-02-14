@@ -3,6 +3,11 @@ import { drizzle } from "drizzle-orm/bun-sql";
 let client: ReturnType<typeof drizzle> | undefined;
 let clientUri: string | undefined;
 
+export type DbClient = ReturnType<typeof drizzle>;
+export type DbTransaction = Parameters<
+  Parameters<DbClient["transaction"]>[0]
+>[0];
+
 export const getDb = () => {
   const databaseUrl = process.env.DB_URI;
 

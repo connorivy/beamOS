@@ -1,11 +1,24 @@
 import {
   createNodeReqSchema,
-  createNodeResSchema,
   defineEndpoint,
 } from "@beamos/contracts";
+import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { toVersionRef } from "../common/version-utils";
+import { nodeResponseSchema } from "./node-response-schema";
+
+const uuidSchema = z.uuid();
+const modelVersionRefSchema = z.object({
+  modelId: uuidSchema,
+  revisionId: uuidSchema.nullable(),
+  draftId: uuidSchema.nullable(),
+});
+
+export const createNodeResSchema = z.object({
+  node: nodeResponseSchema,
+  version: modelVersionRefSchema,
+});
 
 export const createNode = defineEndpoint({
   method: "POST",

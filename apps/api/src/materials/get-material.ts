@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
+import { materialResponseSchema } from "./material-response-schema";
 
 const uuidV7Schema = z
   .uuid()
@@ -16,18 +17,7 @@ export const getMaterialReqSchema = z.object({
 });
 
 export const getMaterialResSchema = z.object({
-  material: z.object({
-    id: uuidV7Schema,
-    revisionId: uuidV7Schema,
-    pressureE: z.object({
-      value: z.number().finite(),
-      unit: z.literal(PressureUnits.Pascals),
-    }),
-    pressureG: z.object({
-      value: z.number().finite(),
-      unit: z.literal(PressureUnits.Pascals),
-    }),
-  }),
+  material: materialResponseSchema,
 });
 
 export const getMaterial = defineEndpoint({

@@ -1,11 +1,24 @@
 import {
   defineEndpoint,
   patchNodeReqSchema,
-  patchNodeResSchema,
 } from "@beamos/contracts";
+import { z } from "zod";
 import { httpError } from "../common/http-utils";
 import { toVersionRef } from "../common/version-utils";
 import type { AppContext } from "../common/types";
+import { nodeResponseSchema } from "./node-response-schema";
+
+const uuidSchema = z.uuid();
+const modelVersionRefSchema = z.object({
+  modelId: uuidSchema,
+  revisionId: uuidSchema.nullable(),
+  draftId: uuidSchema.nullable(),
+});
+
+export const patchNodeResSchema = z.object({
+  node: nodeResponseSchema,
+  version: modelVersionRefSchema,
+});
 
 export const patchNode = defineEndpoint({
   method: "PATCH",

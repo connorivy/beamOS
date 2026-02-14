@@ -1,3 +1,5 @@
+import z from "zod";
+
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const UUID_V7_REGEX =
@@ -17,3 +19,7 @@ export const assertUuidV7 = (value: string, field: string): void => {
     throw new Error(`${field} must be a valid UUIDv7`);
   }
 };
+
+export const uuidV7Schema = z
+  .uuid()
+  .refine((value) => isUuidV7(value), "Must be a valid UUIDv7");

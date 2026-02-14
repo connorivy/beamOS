@@ -9,7 +9,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
-import { SECTION_PROFILE_DISCRIMINATORS } from "./section-profile-aggregate";
+import { sectionProfileResponseSchema } from "./section-profile-response-schema";
 
 const uuidV7Schema = z
   .uuid()
@@ -22,60 +22,7 @@ export const getSectionProfileReqSchema = z.object({
 });
 
 export const getSectionProfileResSchema = z.object({
-  sectionProfile: z.object({
-    id: uuidV7Schema,
-    revisionId: uuidV7Schema,
-    name: z.string().min(1),
-    discriminator: z.enum(SECTION_PROFILE_DISCRIMINATORS),
-    area: z.object({
-      value: z.number().finite(),
-      unit: z.literal(AreaUnits.SquareMeters),
-    }),
-    strongAxisMomentOfInertia: z.object({
-      value: z.number().finite(),
-      unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
-    }),
-    weakAxisMomentOfInertia: z.object({
-      value: z.number().finite(),
-      unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
-    }),
-    torsionalConstant: z.object({
-      value: z.number().finite(),
-      unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
-    }),
-    warpingConstant: z.object({
-      value: z.number().finite(),
-      unit: z.literal(WarpingMomentOfInertiaUnits.MetersToTheSixth),
-    }),
-    strongAxisPlasticSectionModulus: z.object({
-      value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
-    }),
-    weakAxisPlasticSectionModulus: z.object({
-      value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
-    }),
-    strongAxisElasticSectionModulus: z.object({
-      value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
-    }),
-    weakAxisElasticSectionModulus: z.object({
-      value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
-    }),
-    strongAxisShearArea: z
-      .object({
-        value: z.number().finite(),
-        unit: z.literal(AreaUnits.SquareMeters),
-      })
-      .optional(),
-    weakAxisShearArea: z
-      .object({
-        value: z.number().finite(),
-        unit: z.literal(AreaUnits.SquareMeters),
-      })
-      .optional(),
-  }),
+  sectionProfile: sectionProfileResponseSchema,
 });
 
 export const getSectionProfile = defineEndpoint({

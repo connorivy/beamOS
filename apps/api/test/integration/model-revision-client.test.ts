@@ -57,6 +57,7 @@ describe("model revision integration", () => {
           materials: [
             {
               tempId: "mat-rev1",
+              name: "Material Revision 1",
               pressureE: { value: 1.1, unit: PressureUnits.Bars },
               pressureG: { value: 75, unit: PressureUnits.Kilopascals },
             },
@@ -179,6 +180,7 @@ describe("model revision integration", () => {
           materials: [
             {
               tempId: "mat-rev2",
+              name: "Material Revision 2",
               pressureE: { value: 2.5, unit: PressureUnits.Bars },
               pressureG: { value: 120, unit: PressureUnits.Kilopascals },
             },
@@ -294,24 +296,28 @@ describe("model revision integration", () => {
       getModelRevisionResponse.data.modelRevision.materials.map(
         (material) => material.id,
       ),
-    ).toEqual(
-      expect.arrayContaining([materialRev1Id, materialRev2Id]),
-    );
+    ).toEqual(expect.arrayContaining([materialRev1Id, materialRev2Id]));
     expect(
       getModelRevisionResponse.data.modelRevision.sectionProfiles.map(
         (sectionProfile) => sectionProfile.id,
       ),
-    ).toEqual(expect.arrayContaining([sectionProfileRev1Id, sectionProfileRev2Id]));
+    ).toEqual(
+      expect.arrayContaining([sectionProfileRev1Id, sectionProfileRev2Id]),
+    );
     expect(
       getModelRevisionResponse.data.modelRevision.element1ds.map(
         (element1d) => element1d.revisionId,
       ),
     ).toEqual(expect.arrayContaining([revision1Id, revision2Id]));
 
-    expect(getModelRevisionResponse.data.modelRevision.materials).toHaveLength(2);
-    expect(getModelRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(
+    expect(getModelRevisionResponse.data.modelRevision.materials).toHaveLength(
       2,
     );
-    expect(getModelRevisionResponse.data.modelRevision.element1ds).toHaveLength(2);
+    expect(
+      getModelRevisionResponse.data.modelRevision.sectionProfiles,
+    ).toHaveLength(2);
+    expect(getModelRevisionResponse.data.modelRevision.element1ds).toHaveLength(
+      2,
+    );
   });
 });

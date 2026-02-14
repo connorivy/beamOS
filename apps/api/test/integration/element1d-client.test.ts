@@ -57,6 +57,7 @@ describe("typed element1d api client integration", () => {
           materials: [
             {
               tempId: "mat-for-element",
+              name: "Material for Element1d",
               pressureE: { value: 1.25, unit: PressureUnits.Bars },
               pressureG: { value: 85, unit: PressureUnits.Kilopascals },
             },
@@ -115,7 +116,9 @@ describe("typed element1d api client integration", () => {
 
     expect(sectionProfileBatchCreateResponse.error).toBeUndefined();
     expect(sectionProfileBatchCreateResponse.response.status).toBe(200);
-    expect(sectionProfileBatchCreateResponse.data?.sectionProfiles).toHaveLength(1);
+    expect(
+      sectionProfileBatchCreateResponse.data?.sectionProfiles,
+    ).toHaveLength(1);
 
     if (!sectionProfileBatchCreateResponse.data) {
       throw new Error("Expected section profile batch response");

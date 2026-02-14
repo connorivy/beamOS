@@ -1,27 +1,31 @@
 import { eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
+import type { DbTransaction } from "../db/client";
 import { element1ds } from "../db/schema";
 import { Element1dEntity } from "./element1d-entity";
 import { element1dMapper } from "./element1d-mapper";
 
 export type Element1dRepository = {
-  batchCreate: (input: Element1dEntity[]) => Promise<Element1dEntity[]>;
+  batchCreate: (
+    tx: DbTransaction,
+    input: Element1dEntity[],
+  ) => Promise<Element1dEntity[]>;
   getById: (element1dId: string) => Promise<Element1dEntity | undefined>;
 };
 
 export const drizzleElement1dRepository: Element1dRepository = {
-  async batchCreate(input) {
+  async batchCreate(tx, input) {
     if (input.length === 0) {
       return [];
     }
 
-    await getDb()
+    await tx
       .insert(element1ds)
       .values(input.map((element1d) => element1dMapper.toPersistence(element1d)))
       .onConflictDoNothing();
 
     const ids = input.map((element1d) => element1d.id);
-    const rows = await getDb()
+    const rows = await tx
       .select()
       .from(element1ds)
       .where(inArray(element1ds.id, ids));

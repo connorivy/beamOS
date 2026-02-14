@@ -1,11 +1,13 @@
 import { eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
+import type { DbTransaction } from "../db/client";
 import { sectionProfiles } from "../db/schema";
 import { SectionProfileAggregate } from "./section-profile-aggregate";
 import { sectionProfileMapper } from "./section-profile-mapper";
 
 export type SectionProfileRepository = {
   batchCreate: (
+    tx: DbTransaction,
     input: SectionProfileAggregate[],
   ) => Promise<SectionProfileAggregate[]>;
   getById: (
@@ -14,18 +16,18 @@ export type SectionProfileRepository = {
 };
 
 export const drizzleSectionProfileRepository: SectionProfileRepository = {
-  async batchCreate(input) {
+  async batchCreate(tx, input) {
     if (input.length === 0) {
       return [];
     }
 
-    await getDb()
+    await tx
       .insert(sectionProfiles)
       .values(input.map((sectionProfile) => sectionProfileMapper.toPersistence(sectionProfile)))
       .onConflictDoNothing();
 
     const ids = input.map((sectionProfile) => sectionProfile.id);
-    const rows = await getDb()
+    const rows = await tx
       .select()
       .from(sectionProfiles)
       .where(inArray(sectionProfiles.id, ids));

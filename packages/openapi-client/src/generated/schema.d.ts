@@ -494,7 +494,7 @@ export interface operations {
             content: {
                 "application/json": {
                     materials: {
-                        tempId?: string;
+                        name: string;
                         pressureE: {
                             value: number;
                             /** @enum {string} */
@@ -505,11 +505,12 @@ export interface operations {
                             /** @enum {string} */
                             unit: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
                         };
+                        tempId?: string;
                     }[];
                 };
                 "application/x-www-form-urlencoded": {
                     materials: {
-                        tempId?: string;
+                        name: string;
                         pressureE: {
                             value: number;
                             /** @enum {string} */
@@ -520,11 +521,12 @@ export interface operations {
                             /** @enum {string} */
                             unit: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
                         };
+                        tempId?: string;
                     }[];
                 };
                 "multipart/form-data": {
                     materials: {
-                        tempId?: string;
+                        name: string;
                         pressureE: {
                             value: number;
                             /** @enum {string} */
@@ -535,6 +537,7 @@ export interface operations {
                             /** @enum {string} */
                             unit: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
                         };
+                        tempId?: string;
                     }[];
                 };
             };

@@ -17,4 +17,12 @@ export default [
       "@typescript-eslint/no-explicit-any": "error",
     },
   },
+  {
+    files: ["apps/api/**/*.{ts,tsx,mts,cts}"],
+    languageOptions: {
+      globals: {
+        Bun: "readonly",
+      },
+    },
+  },
 ];

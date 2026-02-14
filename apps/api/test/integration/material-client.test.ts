@@ -50,11 +50,13 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: tempIds[0],
+              name: "Material 1",
               pressureE: { value: 1.25, unit: PressureUnits.Bars },
               pressureG: { value: 85, unit: PressureUnits.Kilopascals },
             },
             {
               tempId: tempIds[1],
+              name: "Material 2",
               pressureE: {
                 value: 14.6959,
                 unit: PressureUnits.PoundsForcePerSquareInch,
@@ -63,6 +65,7 @@ describe("typed material api client integration", () => {
             },
             {
               tempId: tempIds[2],
+              name: "Material 3",
               pressureE: { value: 0.95, unit: PressureUnits.Atmospheres },
               pressureG: { value: 950, unit: PressureUnits.Hectopascals },
             },
@@ -129,7 +132,6 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const revisionId = createModelResponse.data.version.revisionId;
     const modelId = createModelResponse.data.model.id;
     const branchName = createModelResponse.data.version.branchName;
     const batchCreateResponse = await client.POST(
@@ -145,13 +147,13 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: "dup-1",
-              revisionId,
+              name: "Material 1",
               pressureE: { value: 1, unit: PressureUnits.Bars },
               pressureG: { value: 1, unit: PressureUnits.Bars },
             },
             {
               tempId: "dup-1",
-              revisionId,
+              name: "Material 2",
               pressureE: { value: 2, unit: PressureUnits.Bars },
               pressureG: { value: 2, unit: PressureUnits.Bars },
             },

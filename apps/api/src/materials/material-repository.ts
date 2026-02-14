@@ -1,27 +1,31 @@
 import { eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
+import type { DbTransaction } from "../db/client";
 import { materials } from "../db/schema";
 import { MaterialEntity } from "./material-entity";
 import { materialMapper } from "./material-mapper";
 
 export type MaterialRepository = {
-  batchCreate: (input: MaterialEntity[]) => Promise<MaterialEntity[]>;
+  batchCreate: (
+    tx: DbTransaction,
+    input: MaterialEntity[],
+  ) => Promise<MaterialEntity[]>;
   getById: (materialId: string) => Promise<MaterialEntity | undefined>;
 };
 
 export const drizzleMaterialRepository: MaterialRepository = {
-  async batchCreate(input) {
+  async batchCreate(tx, input) {
     if (input.length === 0) {
       return [];
     }
 
-    await getDb()
+    await tx
       .insert(materials)
       .values(input.map((material) => materialMapper.toPersistence(material)))
       .onConflictDoNothing();
 
     const ids = input.map((material) => material.id);
-    const rows = await getDb()
+    const rows = await tx
       .select()
       .from(materials)
       .where(inArray(materials.id, ids));

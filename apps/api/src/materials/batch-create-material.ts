@@ -3,36 +3,12 @@ import { Pressure, PressureUnits } from "unitsnet-js";
 import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
-import { isUuidV7 } from "../common/uuid";
+import { getDb } from "../db/client";
+import type { DbTransaction } from "../db/client";
 import { MaterialEntity } from "./material-entity";
-
-const uuidV7Schema = z
-  .uuid()
-  .refine((value) => isUuidV7(value), "Must be a valid UUIDv7");
-
-const pressureDtoSchema = z.object({
-  value: z.number().finite(),
-  unit: z.enum(PressureUnits),
-});
-
-const materialInputSchema = z.object({
-  tempId: z.string().trim().min(1).optional(),
-  pressureE: pressureDtoSchema,
-  pressureG: pressureDtoSchema,
-});
-
-const materialResSchema = z.object({
-  id: uuidV7Schema,
-  revisionId: uuidV7Schema,
-  pressureE: z.object({
-    value: z.number().finite(),
-    unit: z.literal(PressureUnits.Pascals),
-  }),
-  pressureG: z.object({
-    value: z.number().finite(),
-    unit: z.literal(PressureUnits.Pascals),
-  }),
-});
+import { uuidV7Schema } from "src/common/uuid";
+import { materialResponseSchema } from "./material-response-schema";
+import { createMaterialRequestSchema } from "./create-material-request-schema";
 
 export const batchCreateMaterialReqSchema = z.object({
   params: z.object({
@@ -40,12 +16,12 @@ export const batchCreateMaterialReqSchema = z.object({
     branchName: z.string().trim().min(1),
   }),
   body: z.object({
-    materials: z.array(materialInputSchema).min(1),
+    materials: z.array(createMaterialRequestSchema).min(1),
   }),
 });
 
 export const batchCreateMaterialResSchema = z.object({
-  materials: z.array(materialResSchema),
+  materials: z.array(materialResponseSchema),
   tempIdToId: z.record(z.string(), uuidV7Schema),
 });
 
@@ -69,52 +45,63 @@ export const batchCreateMaterial = defineEndpoint({
   res: batchCreateMaterialResSchema,
   async handler(req, ctx: AppContext) {
     const seenTempIds = new Set<string>();
-    for (const material of req.body.materials) {
-      if (!material.tempId) {
-        continue;
-      }
-      if (seenTempIds.has(material.tempId)) {
-        throw httpError(`Duplicate tempId "${material.tempId}"`, 400);
-      }
-      seenTempIds.add(material.tempId);
-    }
-
-    const tempIdToId: Record<string, string> = {};
-    const { modelId, branchName } = req.params;
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-      modelId,
-      branchName,
-    );
-    if (!branch) {
-      throw httpError(
-        `Could not find branch ${branchName} on model with ID ${modelId}`,
-        404,
-      );
-    }
-    const entities = req.body.materials.map((material) => {
-      const id = Bun.randomUUIDv7();
-      if (material.tempId) {
-        tempIdToId[material.tempId] = id;
-      }
-
-      return MaterialEntity.create({
-        id,
-        revisionId: branch.headRevisionId,
-        pressureE: new Pressure(
-          material.pressureE.value,
-          material.pressureE.unit,
-        ),
-        pressureG: new Pressure(
-          material.pressureG.value,
-          material.pressureG.unit,
-        ),
-      });
+    return await getDb().transaction(async (tx) => {
+      return await batchCreateMaterialHandler(req, seenTempIds, ctx, tx);
     });
-
-    const saved = await ctx.services.materialRepository.batchCreate(entities);
-    return {
-      materials: saved.map((material) => toResponseMaterial(material)),
-      tempIdToId,
-    };
   },
 });
+
+export async function batchCreateMaterialHandler(
+  req: z.infer<typeof batchCreateMaterialReqSchema>,
+  seenTempIds: Set<string>,
+  ctx: AppContext,
+  tx: DbTransaction,
+) {
+  for (const material of req.body.materials) {
+    if (!material.tempId) {
+      continue;
+    }
+    if (seenTempIds.has(material.tempId)) {
+      throw httpError(`Duplicate tempId "${material.tempId}"`, 400);
+    }
+    seenTempIds.add(material.tempId);
+  }
+
+  const tempIdToId: Record<string, string> = {};
+  const { modelId, branchName } = req.params;
+  const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+    modelId,
+    branchName,
+  );
+  if (!branch) {
+    throw httpError(
+      `Could not find branch ${branchName} on model with ID ${modelId}`,
+      404,
+    );
+  }
+  const entities = req.body.materials.map((material) => {
+    const id = Bun.randomUUIDv7();
+    if (material.tempId) {
+      tempIdToId[material.tempId] = id;
+    }
+
+    return MaterialEntity.create({
+      id,
+      revisionId: branch.headRevisionId,
+      pressureE: new Pressure(
+        material.pressureE.value,
+        material.pressureE.unit,
+      ),
+      pressureG: new Pressure(
+        material.pressureG.value,
+        material.pressureG.unit,
+      ),
+    });
+  });
+
+  const saved = await ctx.services.materialRepository.batchCreate(tx, entities);
+  return {
+    materials: saved.map((material) => toResponseMaterial(material)),
+    tempIdToId,
+  };
+}

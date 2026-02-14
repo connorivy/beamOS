@@ -12,15 +12,10 @@ import {
 import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
-import { isUuidV7 } from "../common/uuid";
-import {
-  SECTION_PROFILE_DISCRIMINATORS,
-  SectionProfileAggregate,
-} from "./section-profile-aggregate";
-
-const uuidV7Schema = z
-  .uuid()
-  .refine((value) => isUuidV7(value), "Must be a valid UUIDv7");
+import { DbTransaction, getDb } from "../db/client";
+import { SectionProfileAggregate } from "./section-profile-aggregate";
+import { sectionProfileResponseSchema } from "./section-profile-response-schema";
+import { uuidV7Schema } from "src/common/uuid";
 
 const sectionProfileUnitsInputSchema = z.object({
   area: z.enum(AreaUnits),
@@ -62,61 +57,6 @@ const sectionInputSchema = z.discriminatedUnion("discriminator", [
   withShearAreasSectionInputSchema,
 ]);
 
-const sectionProfileResSchema = z.object({
-  id: uuidV7Schema,
-  revisionId: uuidV7Schema,
-  name: z.string().min(1),
-  discriminator: z.enum(SECTION_PROFILE_DISCRIMINATORS),
-  area: z.object({
-    value: z.number().finite(),
-    unit: z.literal(AreaUnits.SquareMeters),
-  }),
-  strongAxisMomentOfInertia: z.object({
-    value: z.number().finite(),
-    unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
-  }),
-  weakAxisMomentOfInertia: z.object({
-    value: z.number().finite(),
-    unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
-  }),
-  torsionalConstant: z.object({
-    value: z.number().finite(),
-    unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
-  }),
-  warpingConstant: z.object({
-    value: z.number().finite(),
-    unit: z.literal(WarpingMomentOfInertiaUnits.MetersToTheSixth),
-  }),
-  strongAxisPlasticSectionModulus: z.object({
-    value: z.number().finite(),
-    unit: z.literal(VolumeUnits.CubicMeters),
-  }),
-  weakAxisPlasticSectionModulus: z.object({
-    value: z.number().finite(),
-    unit: z.literal(VolumeUnits.CubicMeters),
-  }),
-  strongAxisElasticSectionModulus: z.object({
-    value: z.number().finite(),
-    unit: z.literal(VolumeUnits.CubicMeters),
-  }),
-  weakAxisElasticSectionModulus: z.object({
-    value: z.number().finite(),
-    unit: z.literal(VolumeUnits.CubicMeters),
-  }),
-  strongAxisShearArea: z
-    .object({
-      value: z.number().finite(),
-      unit: z.literal(AreaUnits.SquareMeters),
-    })
-    .optional(),
-  weakAxisShearArea: z
-    .object({
-      value: z.number().finite(),
-      unit: z.literal(AreaUnits.SquareMeters),
-    })
-    .optional(),
-});
-
 export const batchCreateSectionProfileReqSchema = z.object({
   params: z.object({
     modelId: uuidV7Schema,
@@ -129,7 +69,7 @@ export const batchCreateSectionProfileReqSchema = z.object({
 });
 
 export const batchCreateSectionProfileResSchema = z.object({
-  sectionProfiles: z.array(sectionProfileResSchema),
+  sectionProfiles: z.array(sectionProfileResponseSchema),
   tempIdToId: z.record(z.string(), uuidV7Schema),
 });
 
@@ -239,79 +179,141 @@ export const batchCreateSectionProfile = defineEndpoint({
   req: batchCreateSectionProfileReqSchema,
   res: batchCreateSectionProfileResSchema,
   async handler(req, ctx: AppContext) {
-    const seenTempIds = new Set<string>();
-
-    for (const sectionProfile of req.body.sectionProfiles) {
-      if (!sectionProfile.tempId) {
-        continue;
-      }
-
-      if (seenTempIds.has(sectionProfile.tempId)) {
-        throw httpError(`Duplicate tempId \"${sectionProfile.tempId}\"`, 400);
-      }
-
-      seenTempIds.add(sectionProfile.tempId);
-    }
-
-    const tempIdToId: Record<string, string> = {};
-    const { modelId, branchName } = req.params;
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-      modelId,
-      branchName,
-    );
-
-    if (!branch) {
-      throw httpError(
-        `Could not find branch ${branchName} on model with ID ${modelId}`,
-        404,
-      );
-    }
-
-    const entities = req.body.sectionProfiles.map((sectionProfile) => {
-      const id = Bun.randomUUIDv7();
-
-      if (sectionProfile.tempId) {
-        tempIdToId[sectionProfile.tempId] = id;
-      }
-
-      const converted = toDomainProperties(
-        sectionProfile,
-        req.body.units,
-      );
-
-      return SectionProfileAggregate.create({
-        id,
-        revisionId: branch.headRevisionId,
-        name: sectionProfile.name,
-        discriminator: sectionProfile.discriminator,
-        area: converted.area,
-        strongAxisMomentOfInertia: converted.strongAxisMomentOfInertia,
-        weakAxisMomentOfInertia: converted.weakAxisMomentOfInertia,
-        torsionalConstant: converted.torsionalConstant,
-        warpingConstant: converted.warpingConstant,
-        strongAxisPlasticSectionModulus:
-          converted.strongAxisPlasticSectionModulus,
-        weakAxisPlasticSectionModulus: converted.weakAxisPlasticSectionModulus,
-        strongAxisElasticSectionModulus:
-          converted.strongAxisElasticSectionModulus,
-        weakAxisElasticSectionModulus: converted.weakAxisElasticSectionModulus,
-        strongAxisShearArea: sectionProfile.strongAxisShearArea
-          ? new Area(sectionProfile.strongAxisShearArea, req.body.units.area)
-          : undefined,
-        weakAxisShearArea: sectionProfile.weakAxisShearArea
-          ? new Area(sectionProfile.weakAxisShearArea, req.body.units.area)
-          : undefined,
-      });
+    return await getDb().transaction(async (tx) => {
+      return await batchCreateSectionProfileHandler(req, ctx, tx);
     });
-
-    const saved =
-      await ctx.services.sectionProfileRepository.batchCreate(entities);
-
-    return {
-      sectionProfiles: saved.map((sectionProfile) =>
-        toResponseSectionProfile(sectionProfile),
-      ),
-      tempIdToId,
-    };
   },
 });
+async function batchCreateSectionProfileHandler(
+  req: {
+    params: { modelId: string; branchName: string };
+    body: {
+      units: {
+        area: AreaUnits;
+        areaMomentOfInertia: AreaMomentOfInertiaUnits;
+        warpingMomentOfInertia: WarpingMomentOfInertiaUnits;
+        volume: VolumeUnits;
+      };
+      sectionProfiles: (
+        | {
+            area: number;
+            strongAxisMomentOfInertia: number;
+            weakAxisMomentOfInertia: number;
+            torsionalConstant: number;
+            warpingConstant: number;
+            strongAxisPlasticSectionModulus: number;
+            weakAxisPlasticSectionModulus: number;
+            strongAxisElasticSectionModulus: number;
+            weakAxisElasticSectionModulus: number;
+            name: string;
+            discriminator: "STANDARD";
+            tempId?: string | undefined;
+          }
+        | {
+            area: number;
+            strongAxisMomentOfInertia: number;
+            weakAxisMomentOfInertia: number;
+            torsionalConstant: number;
+            warpingConstant: number;
+            strongAxisPlasticSectionModulus: number;
+            weakAxisPlasticSectionModulus: number;
+            strongAxisElasticSectionModulus: number;
+            weakAxisElasticSectionModulus: number;
+            name: string;
+            discriminator: "WITH_SHEAR_AREAS";
+            strongAxisShearArea: number;
+            weakAxisShearArea: number;
+            tempId?: string | undefined;
+          }
+      )[];
+    };
+  },
+  ctx: AppContext,
+  tx: DbTransaction,
+) {
+  const seenTempIds = new Set<string>();
+
+  for (const sectionProfile of req.body.sectionProfiles) {
+    if (!sectionProfile.tempId) {
+      continue;
+    }
+
+    if (seenTempIds.has(sectionProfile.tempId)) {
+      throw httpError(`Duplicate tempId "${sectionProfile.tempId}"`, 400);
+    }
+
+    seenTempIds.add(sectionProfile.tempId);
+  }
+
+  const tempIdToId: Record<string, string> = {};
+  const { modelId, branchName } = req.params;
+  const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+    modelId,
+    branchName,
+  );
+
+  if (!branch) {
+    throw httpError(
+      `Could not find branch ${branchName} on model with ID ${modelId}`,
+      404,
+    );
+  }
+
+  const entities = req.body.sectionProfiles.map((sectionProfile) => {
+    const id = Bun.randomUUIDv7();
+
+    if (sectionProfile.tempId) {
+      tempIdToId[sectionProfile.tempId] = id;
+    }
+
+    const converted = toDomainProperties(sectionProfile, req.body.units);
+    const shearAreas =
+      sectionProfile.discriminator === "WITH_SHEAR_AREAS"
+        ? {
+            strongAxisShearArea: new Area(
+              sectionProfile.strongAxisShearArea,
+              req.body.units.area,
+            ),
+            weakAxisShearArea: new Area(
+              sectionProfile.weakAxisShearArea,
+              req.body.units.area,
+            ),
+          }
+        : {
+            strongAxisShearArea: undefined,
+            weakAxisShearArea: undefined,
+          };
+
+    return SectionProfileAggregate.create({
+      id,
+      revisionId: branch.headRevisionId,
+      name: sectionProfile.name,
+      discriminator: sectionProfile.discriminator,
+      area: converted.area,
+      strongAxisMomentOfInertia: converted.strongAxisMomentOfInertia,
+      weakAxisMomentOfInertia: converted.weakAxisMomentOfInertia,
+      torsionalConstant: converted.torsionalConstant,
+      warpingConstant: converted.warpingConstant,
+      strongAxisPlasticSectionModulus:
+        converted.strongAxisPlasticSectionModulus,
+      weakAxisPlasticSectionModulus: converted.weakAxisPlasticSectionModulus,
+      strongAxisElasticSectionModulus:
+        converted.strongAxisElasticSectionModulus,
+      weakAxisElasticSectionModulus: converted.weakAxisElasticSectionModulus,
+      strongAxisShearArea: shearAreas.strongAxisShearArea,
+      weakAxisShearArea: shearAreas.weakAxisShearArea,
+    });
+  });
+
+  const saved = await ctx.services.sectionProfileRepository.batchCreate(
+    tx,
+    entities,
+  );
+
+  return {
+    sectionProfiles: saved.map((sectionProfile) =>
+      toResponseSectionProfile(sectionProfile),
+    ),
+    tempIdToId,
+  };
+}

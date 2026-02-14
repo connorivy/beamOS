@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "dev:db": "sh -c 'set -e; docker compose -f ../../../docker-compose.yml up -d --wait db; trap \"docker compose -f ../../../docker-compose.yml down\" EXIT INT TERM; DB_URI=${DB_URI:-postgresql://beamos:beamos@${DB_HOST:-127.0.0.1}:${DB_PORT:-5432}/beamos} PORT=${PORT:-3001} bun run dev'",
+    "dev:db": "sh -c 'set -e; docker compose -f ../../docker-compose.yml up -d --wait db; trap \"docker compose -f ../../docker-compose.yml down\" EXIT INT TERM; DB_URI=${DB_URI:-postgresql://beamos:beamos@${DB_HOST:-127.0.0.1}:${DB_PORT:-5432}/beamos} PORT=${PORT:-3001} bun run dev'",
     "dev:test": "PORT=3001 bun --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
     "test:unit": "sh -c 'if [ -d test/unit ] && rg -q --glob \"*.test.*\" --glob \"*.spec.*\" --files test/unit; then bun test test/unit; else echo \"No API unit tests found; skipping.\"; fi'",
