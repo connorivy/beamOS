@@ -2,7 +2,14 @@ import { assertUuid } from "../common/uuid";
 import { Ratio } from "unitsnet-js";
 import type { NodeDomainEvents } from "./node-events";
 
-export type NodeRestraint = Record<string, boolean>;
+export type NodeRestraint = {
+  canTranslateAlongX: boolean;
+  canTranslateAlongY: boolean;
+  canTranslateAlongZ: boolean;
+  canRotateAboutX: boolean;
+  canRotateAboutY: boolean;
+  canRotateAboutZ: boolean;
+};
 
 export type NodePoint = {
   x: number;
@@ -172,16 +179,30 @@ export class NodeEntity {
   }
 
   private normalizeRestraint(
-    restraint: NodeRestraint | undefined,
+    restraint: Partial<NodeRestraint> | undefined,
   ): NodeRestraint {
-    if (!restraint) {
-      return {};
+    const normalized: NodeRestraint = {
+      canTranslateAlongX: restraint?.canTranslateAlongX ?? true,
+      canTranslateAlongY: restraint?.canTranslateAlongY ?? true,
+      canTranslateAlongZ: restraint?.canTranslateAlongZ ?? true,
+      canRotateAboutX: restraint?.canRotateAboutX ?? true,
+      canRotateAboutY: restraint?.canRotateAboutY ?? true,
+      canRotateAboutZ: restraint?.canRotateAboutZ ?? true,
+    };
+    this.assertRestraint(normalized);
+    return normalized;
+  }
+
+  private assertRestraint(restraint: NodeRestraint): void {
+    if (
+      typeof restraint.canTranslateAlongX !== "boolean" ||
+      typeof restraint.canTranslateAlongY !== "boolean" ||
+      typeof restraint.canTranslateAlongZ !== "boolean" ||
+      typeof restraint.canRotateAboutX !== "boolean" ||
+      typeof restraint.canRotateAboutY !== "boolean" ||
+      typeof restraint.canRotateAboutZ !== "boolean"
+    ) {
+      throw new Error("restraint must contain boolean values for all fields");
     }
-    for (const value of Object.values(restraint)) {
-      if (typeof value !== "boolean") {
-        throw new Error("restraint must contain boolean values");
-      }
-    }
-    return { ...restraint };
   }
 }

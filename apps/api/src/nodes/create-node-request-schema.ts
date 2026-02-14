@@ -2,7 +2,14 @@ import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
 import { Ratio } from "unitsnet-js";
 
-const restraintSchema = z.record(z.string(), z.boolean());
+const restraintSchema = z.object({
+  canTranslateAlongX: z.boolean().default(true),
+  canTranslateAlongY: z.boolean().default(true),
+  canTranslateAlongZ: z.boolean().default(true),
+  canRotateAboutX: z.boolean().default(true),
+  canRotateAboutY: z.boolean().default(true),
+  canRotateAboutZ: z.boolean().default(true),
+});
 
 const spatialNodeLocationSchema = z.object({
   type: z.literal("spatial"),
@@ -21,7 +28,14 @@ const internalNodeLocationSchema = z.object({
 
 export const createNodeRequestSchema = z.object({
   tempId: z.string().trim().min(1).optional(),
-  restraint: restraintSchema.default({}),
+  restraint: restraintSchema.default({
+    canTranslateAlongX: true,
+    canTranslateAlongY: true,
+    canTranslateAlongZ: true,
+    canRotateAboutX: true,
+    canRotateAboutY: true,
+    canRotateAboutZ: true,
+  }),
   location: z.discriminatedUnion("type", [
     spatialNodeLocationSchema,
     internalNodeLocationSchema,

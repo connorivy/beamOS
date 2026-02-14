@@ -124,7 +124,7 @@ async function batchCreateNodeHandler(
               snapshot.distanceAlongElement1d instanceof Ratio
                 ? snapshot.distanceAlongElement1d.DecimalFractions
                 : null,
-            restraint: snapshot.restraint ?? {},
+            restraint: snapshot.restraint,
           },
           createdAt: now,
         }),

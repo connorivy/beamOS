@@ -49,7 +49,14 @@ const applyNodeChanges = (input: {
         change.nodeTypeDescriminator === "external"
           ? undefined
           : Ratio.FromDecimalFractions(0),
-      restraint: {},
+      restraint: {
+        canTranslateAlongX: true,
+        canTranslateAlongY: true,
+        canTranslateAlongZ: true,
+        canRotateAboutX: true,
+        canRotateAboutY: true,
+        canRotateAboutZ: true,
+      },
     });
   }
 };
@@ -383,18 +390,28 @@ const toNodeSnapshotFromRow = (row: typeof nodes.$inferSelect): NodeSnapshot => 
 };
 
 const parseNodeRestraint = (value: unknown): NodeRestraint => {
+  const defaultRestraint: NodeRestraint = {
+    canTranslateAlongX: true,
+    canTranslateAlongY: true,
+    canTranslateAlongZ: true,
+    canRotateAboutX: true,
+    canRotateAboutY: true,
+    canRotateAboutZ: true,
+  };
+
   if (!value || typeof value !== "object") {
-    return {};
+    return defaultRestraint;
   }
 
-  const parsed: NodeRestraint = {};
-  for (const [key, entry] of Object.entries(value)) {
-    if (typeof entry === "boolean") {
-      parsed[key] = entry;
-    }
-  }
-
-  return parsed;
+  const obj = value as Record<string, unknown>;
+  return {
+    canTranslateAlongX: typeof obj.canTranslateAlongX === "boolean" ? obj.canTranslateAlongX : true,
+    canTranslateAlongY: typeof obj.canTranslateAlongY === "boolean" ? obj.canTranslateAlongY : true,
+    canTranslateAlongZ: typeof obj.canTranslateAlongZ === "boolean" ? obj.canTranslateAlongZ : true,
+    canRotateAboutX: typeof obj.canRotateAboutX === "boolean" ? obj.canRotateAboutX : true,
+    canRotateAboutY: typeof obj.canRotateAboutY === "boolean" ? obj.canRotateAboutY : true,
+    canRotateAboutZ: typeof obj.canRotateAboutZ === "boolean" ? obj.canRotateAboutZ : true,
+  };
 };
 
 const extractNodeTypeDescriminator = (
