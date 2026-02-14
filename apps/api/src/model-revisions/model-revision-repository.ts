@@ -595,7 +595,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     }
 
     const parentSnapshot = parentRevision.toSnapshot();
-    const newRevisionId = crypto.randomUUID();
+    const newRevisionId = Bun.randomUUIDv7();
 
     const revision = await drizzleModelVersionRepository.commitRevision({
       id: newRevisionId,
