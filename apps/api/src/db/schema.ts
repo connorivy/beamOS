@@ -149,5 +149,38 @@ export const materials = pgTable("materials", {
   pressureGSi: doublePrecision("pressure_g_si").notNull(),
 });
 
+export const sectionProfiles = pgTable("section_profiles", {
+  id: uuid("id").primaryKey(),
+  revisionId: uuid("revision_id")
+    .notNull()
+    .references(() => modelRevisions.id),
+  name: text("name").notNull(),
+  discriminator: text("discriminator").notNull(),
+  areaSi: doublePrecision("area_si").notNull(),
+  strongAxisMomentOfInertiaSi: doublePrecision(
+    "strong_axis_moment_of_inertia_si",
+  ).notNull(),
+  weakAxisMomentOfInertiaSi: doublePrecision(
+    "weak_axis_moment_of_inertia_si",
+  ).notNull(),
+  torsionalConstantSi: doublePrecision("torsional_constant_si").notNull(),
+  warpingConstantSi: doublePrecision("warping_constant_si").notNull(),
+  strongAxisPlasticSectionModulusSi: doublePrecision(
+    "strong_axis_plastic_section_modulus_si",
+  ).notNull(),
+  weakAxisPlasticSectionModulusSi: doublePrecision(
+    "weak_axis_plastic_section_modulus_si",
+  ).notNull(),
+  strongAxisElasticSectionModulusSi: doublePrecision(
+    "strong_axis_elastic_section_modulus_si",
+  ).notNull(),
+  weakAxisElasticSectionModulusSi: doublePrecision(
+    "weak_axis_elastic_section_modulus_si",
+  ).notNull(),
+  strongAxisShearAreaSi: doublePrecision("strong_axis_shear_area_si"),
+  weakAxisShearAreaSi: doublePrecision("weak_axis_shear_area_si"),
+});
+
 export type Model = InferSelectModel<typeof models>;
 export type Material = InferSelectModel<typeof materials>;
+export type SectionProfile = InferSelectModel<typeof sectionProfiles>;

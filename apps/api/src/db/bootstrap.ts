@@ -100,4 +100,24 @@ export const bootstrapDb = async () => {
       pressure_g_si DOUBLE PRECISION NOT NULL
     );
   `);
+
+  await getDb().execute(sql`
+    CREATE TABLE IF NOT EXISTS section_profiles (
+      id UUID PRIMARY KEY NOT NULL,
+      revision_id UUID NOT NULL REFERENCES model_revisions(id),
+      name TEXT NOT NULL,
+      discriminator TEXT NOT NULL,
+      area_si DOUBLE PRECISION NOT NULL,
+      strong_axis_moment_of_inertia_si DOUBLE PRECISION NOT NULL,
+      weak_axis_moment_of_inertia_si DOUBLE PRECISION NOT NULL,
+      torsional_constant_si DOUBLE PRECISION NOT NULL,
+      warping_constant_si DOUBLE PRECISION NOT NULL,
+      strong_axis_plastic_section_modulus_si DOUBLE PRECISION NOT NULL,
+      weak_axis_plastic_section_modulus_si DOUBLE PRECISION NOT NULL,
+      strong_axis_elastic_section_modulus_si DOUBLE PRECISION NOT NULL,
+      weak_axis_elastic_section_modulus_si DOUBLE PRECISION NOT NULL,
+      strong_axis_shear_area_si DOUBLE PRECISION,
+      weak_axis_shear_area_si DOUBLE PRECISION
+    );
+  `);
 };

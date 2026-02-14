@@ -5,6 +5,7 @@ import type { ModelRevisionDraftAggregate } from "../model-revision-drafts/model
 import type { NodeSnapshot } from "../nodes/node-entity";
 import { ModelRepository } from "src/models/model-repository";
 import type { MaterialRepository } from "../materials/material-repository";
+import type { SectionProfileRepository } from "../section-profiles/section-profile-repository";
 
 export type DomainEvent =
   | {
@@ -82,6 +83,7 @@ export type AppServices = {
   modelRepository: ModelRepository;
   modelRevisionRepository: ModelRevisionRepository;
   materialRepository: MaterialRepository;
+  sectionProfileRepository: SectionProfileRepository;
 };
 
 export type AppContext = {
