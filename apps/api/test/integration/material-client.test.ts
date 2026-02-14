@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
-import { PressureUnits } from "unitsnet-js";
+import { Pressure, PressureUnits } from "unitsnet-js";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
@@ -164,5 +164,115 @@ describe("typed material api client integration", () => {
 
     expect(batchCreateResponse.data).toBeUndefined();
     expect(batchCreateResponse.response.status).toBe(400);
+  });
+
+  it("batch puts materials and updates values", async () => {
+    const client = createApiClient(baseUrl);
+
+    const createModelResponse = await client.POST("/api/models", {
+      body: {
+        name: "Material Batch Put Model",
+        authorId: randomUUID(),
+        message: "Create model for batch put test",
+      },
+    });
+
+    expect(createModelResponse.response.status).toBe(200);
+    expect(createModelResponse.data).toBeDefined();
+
+    if (!createModelResponse.data) {
+      throw new Error("Expected model response");
+    }
+
+    const modelId = createModelResponse.data.model.id;
+    const branchName = createModelResponse.data.version.branchName;
+
+    const batchCreateResponse = await client.POST(
+      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      {
+        params: {
+          path: {
+            modelId,
+            branchName,
+          },
+        },
+        body: {
+          materials: [
+            {
+              tempId: "mat-put-01",
+              name: "Material Put Target",
+              pressureE: { value: 100, unit: PressureUnits.Kilopascals },
+              pressureG: { value: 200, unit: PressureUnits.Kilopascals },
+            },
+          ],
+        },
+      },
+    );
+
+    expect(batchCreateResponse.response.status).toBe(200);
+    expect(batchCreateResponse.data).toBeDefined();
+
+    if (!batchCreateResponse.data) {
+      throw new Error("Expected batch create response");
+    }
+
+    const materialId = batchCreateResponse.data.tempIdToId["mat-put-01"];
+    if (!materialId) {
+      throw new Error("Expected material ID for mat-put-01");
+    }
+
+    const batchPutResponse = await client.PUT(
+      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      {
+        params: {
+          path: {
+            modelId,
+            branchName,
+          },
+        },
+        body: {
+          materials: [
+            {
+              id: materialId,
+              pressureE: { value: 2.5, unit: PressureUnits.Bars },
+              pressureG: {
+                value: 30,
+                unit: PressureUnits.PoundsForcePerSquareInch,
+              },
+            },
+          ],
+        },
+      },
+    );
+
+    expect(batchPutResponse.error).toBeUndefined();
+    expect(batchPutResponse.response.status).toBe(200);
+    expect(batchPutResponse.data?.materials).toHaveLength(1);
+    expect(batchPutResponse.data?.materials[0]?.id).toBe(materialId);
+
+    const getResponse = await client.GET("/api/materials/{materialId}", {
+      params: {
+        path: { materialId },
+      },
+    });
+
+    expect(getResponse.error).toBeUndefined();
+    expect(getResponse.response.status).toBe(200);
+    expect(getResponse.data).toBeDefined();
+
+    if (!getResponse.data) {
+      throw new Error(`Expected material response for ${materialId}`);
+    }
+
+    expect(getResponse.data.material.pressureE.value).toBeCloseTo(
+      new Pressure(2.5, PressureUnits.Bars).Pascals,
+      6,
+    );
+    expect(getResponse.data.material.pressureG.value).toBeCloseTo(
+      new Pressure(30, PressureUnits.PoundsForcePerSquareInch).Pascals,
+      6,
+    );
+    expect(getResponse.data.material.pressureE.unit).toBe(PressureUnits.Pascals);
+    expect(getResponse.data.material.pressureG.unit).toBe(PressureUnits.Pascals);
   });
 });

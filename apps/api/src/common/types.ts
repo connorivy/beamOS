@@ -7,6 +7,7 @@ import { ModelRepository } from "src/models/model-repository";
 import type { MaterialRepository } from "../materials/material-repository";
 import type { SectionProfileRepository } from "../section-profiles/section-profile-repository";
 import type { Element1dRepository } from "../element1ds/element1d-repository";
+import type { RevisionChangeRepository } from "../revision-changes/revision-change-repository";
 
 export type DomainEvent =
   | {
@@ -86,6 +87,7 @@ export type AppServices = {
   materialRepository: MaterialRepository;
   sectionProfileRepository: SectionProfileRepository;
   element1dRepository: Element1dRepository;
+  revisionChangeRepository: RevisionChangeRepository;
 };
 
 export type AppContext = {

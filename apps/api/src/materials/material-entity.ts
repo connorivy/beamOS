@@ -1,5 +1,6 @@
 import { assertUuidV7 } from "../common/uuid";
 import { Pressure } from "unitsnet-js";
+import type { MaterialDomainEvent } from "./material-events";
 
 export type MaterialSnapshot = {
   id: string;
@@ -9,6 +10,8 @@ export type MaterialSnapshot = {
 };
 
 export class MaterialEntity {
+  private _domainEvents: MaterialDomainEvent[];
+
   private constructor(snapshot: MaterialSnapshot) {
     assertUuidV7(snapshot.id, "id");
     assertUuidV7(snapshot.revisionId, "revisionId");
@@ -19,6 +22,7 @@ export class MaterialEntity {
     this.revisionId = snapshot.revisionId;
     this.pressureE = snapshot.pressureE;
     this.pressureG = snapshot.pressureG;
+    this._domainEvents = [];
   }
 
   readonly id: string;
@@ -27,7 +31,12 @@ export class MaterialEntity {
   readonly pressureG: Pressure;
 
   static create(snapshot: MaterialSnapshot): MaterialEntity {
-    return new MaterialEntity(snapshot);
+    const entity = new MaterialEntity(snapshot);
+    entity._domainEvents.push({
+      type: "material_created",
+      payload: entity.toSnapshot(),
+    });
+    return entity;
   }
 
   static rehydrate(snapshot: MaterialSnapshot): MaterialEntity {
@@ -41,6 +50,12 @@ export class MaterialEntity {
       pressureE: this.pressureE,
       pressureG: this.pressureG,
     };
+  }
+
+  pullDomainEvents(): MaterialDomainEvent[] {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
   }
 
   private assertPressure(value: Pressure, field: string): void {
