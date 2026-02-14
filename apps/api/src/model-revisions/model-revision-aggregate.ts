@@ -1,6 +1,12 @@
 import { DomainEvent } from "src/common/types";
 import { assertUuid } from "../common/uuid";
+import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
+import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
 import { NodeEntity, NodeSnapshot } from "../nodes/node-entity";
+import {
+  SectionProfileAggregate,
+  type SectionProfileSnapshot,
+} from "../section-profiles/section-profile-aggregate";
 
 export type ModelRevisionSnapshot = {
   id: string;
@@ -12,6 +18,9 @@ export type ModelRevisionSnapshot = {
   message: string;
   createdAt: Date;
   nodes: NodeSnapshot[];
+  materials: MaterialSnapshot[];
+  sectionProfiles: SectionProfileSnapshot[];
+  element1ds: Element1dSnapshot[];
 };
 
 export class ModelRevisionAggregate {
@@ -22,6 +31,9 @@ export class ModelRevisionAggregate {
   private _message: string;
   private _createdAt: Date;
   private _nodes: NodeEntity[];
+  private _materials: MaterialEntity[];
+  private _sectionProfiles: SectionProfileAggregate[];
+  private _element1ds: Element1dEntity[];
   private _domainEvents: DomainEvent[];
 
   private constructor(snapshot: ModelRevisionSnapshot) {
@@ -48,6 +60,15 @@ export class ModelRevisionAggregate {
       this.assertNodeModelId(node.modelId);
       return NodeEntity.rehydrate(node);
     });
+    this._materials = snapshot.materials.map((material) =>
+      MaterialEntity.rehydrate(material),
+    );
+    this._sectionProfiles = snapshot.sectionProfiles.map((sectionProfile) =>
+      SectionProfileAggregate.rehydrate(sectionProfile),
+    );
+    this._element1ds = snapshot.element1ds.map((element1d) =>
+      Element1dEntity.rehydrate(element1d),
+    );
     this._domainEvents = [];
   }
 
@@ -90,6 +111,18 @@ export class ModelRevisionAggregate {
     return this._nodes;
   }
 
+  get materials(): readonly MaterialEntity[] {
+    return this._materials;
+  }
+
+  get sectionProfiles(): readonly SectionProfileAggregate[] {
+    return this._sectionProfiles;
+  }
+
+  get element1ds(): readonly Element1dEntity[] {
+    return this._element1ds;
+  }
+
   addNode(node: NodeEntity): void {
     assertUuid(node.id, "nodeId");
     this.assertNodeModelId(node.modelId);
@@ -129,6 +162,11 @@ export class ModelRevisionAggregate {
       message: this._message,
       createdAt: this._createdAt,
       nodes: this._nodes.map((node) => node.toSnapshot()),
+      materials: this._materials.map((material) => material.toSnapshot()),
+      sectionProfiles: this._sectionProfiles.map((sectionProfile) =>
+        sectionProfile.toSnapshot(),
+      ),
+      element1ds: this._element1ds.map((element1d) => element1d.toSnapshot()),
     };
   }
 

@@ -29,6 +29,7 @@ export const setupIntegrationApp = async (): Promise<string> => {
 
       const dbUri = `postgres://beamos:beamos@${postgres.getHost()}:${postgres.getMappedPort(5432)}/beamos`;
       process.env.DB_URI = dbUri;
+      process.env.BEAMOS_API_ADDITIONAL_PLUGINS_MODULE = "./additional-plugins";
 
       const { createAppAndMigrate } = await import("../../src/server");
       const app = await createAppAndMigrate();

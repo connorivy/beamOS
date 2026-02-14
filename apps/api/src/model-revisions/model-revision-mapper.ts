@@ -27,6 +27,9 @@ export const modelRevisionMapper = {
           modelId: row.modelId,
           name: extractNodeName(change.payload),
         })),
+      materials: [],
+      sectionProfiles: [],
+      element1ds: [],
     });
   },
 
@@ -70,6 +73,9 @@ export const modelRevisionMapper = {
         modelId: node.modelId,
         name: node.name,
       })),
+      materials: [],
+      sectionProfiles: [],
+      element1ds: [],
     };
 
     return ModelRevisionAggregate.create(snapshot);

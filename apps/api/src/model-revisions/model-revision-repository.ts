@@ -2,10 +2,13 @@ import crypto from "crypto";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "../db/client";
 import {
+  element1ds,
+  materials,
   modelBranchHeads,
   modelRevisionDrafts,
   modelRevisions,
   revisionChanges,
+  sectionProfiles,
 } from "../db/schema";
 import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
 import { modelRevisionDraftMapper } from "../model-revision-drafts/model-revision-draft-mapper";
@@ -15,6 +18,12 @@ import { modelRevisionMapper } from "./model-revision-mapper";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { DomainEvent, ModelRevisionRepository } from "../common/types";
+import { materialMapper } from "../materials/material-mapper";
+import { sectionProfileMapper } from "../section-profiles/section-profile-mapper";
+import { element1dMapper } from "../element1ds/element1d-mapper";
+import type { MaterialSnapshot } from "../materials/material-entity";
+import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
+import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -32,10 +41,16 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     const revisions = await loadRevisionHistory({
       revisionId: revision.id,
     });
-    const nodesById = await buildNodesFromRevisions({
-      modelId: revision.modelId,
-      revisions,
-    });
+    const [nodesById, materialsById, sectionProfilesById, element1dsById] =
+      await Promise.all([
+        buildNodesFromRevisions({
+          modelId: revision.modelId,
+          revisions,
+        }),
+        buildMaterialsFromRevisions({ revisions }),
+        buildSectionProfilesFromRevisions({ revisions }),
+        buildElement1dsFromRevisions({ revisions }),
+      ]);
 
     return ModelRevisionAggregate.rehydrate({
       id: revision.id,
@@ -47,6 +62,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       message: revision.message,
       createdAt: revision.createdAt,
       nodes: Array.from(nodesById.values()),
+      materials: Array.from(materialsById.values()),
+      sectionProfiles: Array.from(sectionProfilesById.values()),
+      element1ds: Array.from(element1dsById.values()),
     });
   },
 
@@ -749,6 +767,114 @@ const buildNodesFromRevisions = async (input: {
   });
 
   return nodesById;
+};
+
+const buildMaterialsFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<Map<string, MaterialSnapshot>> => {
+  if (input.revisions.length === 0) {
+    return new Map();
+  }
+
+  const revisionIds = input.revisions.map((revision) => revision.id);
+  const revisionOrder = new Map(
+    input.revisions.map((revision, index) => [revision.id, index]),
+  );
+
+  const rows = await getDb()
+    .select()
+    .from(materials)
+    .where(inArray(materials.revisionId, revisionIds));
+
+  rows.sort((a, b) => {
+    const orderA = revisionOrder.get(a.revisionId) ?? 0;
+    const orderB = revisionOrder.get(b.revisionId) ?? 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return a.id.localeCompare(b.id);
+  });
+
+  const materialsById = new Map<string, MaterialSnapshot>();
+
+  for (const row of rows) {
+    materialsById.set(row.id, materialMapper.toDomain(row).toSnapshot());
+  }
+
+  return materialsById;
+};
+
+const buildSectionProfilesFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<Map<string, SectionProfileSnapshot>> => {
+  if (input.revisions.length === 0) {
+    return new Map();
+  }
+
+  const revisionIds = input.revisions.map((revision) => revision.id);
+  const revisionOrder = new Map(
+    input.revisions.map((revision, index) => [revision.id, index]),
+  );
+
+  const rows = await getDb()
+    .select()
+    .from(sectionProfiles)
+    .where(inArray(sectionProfiles.revisionId, revisionIds));
+
+  rows.sort((a, b) => {
+    const orderA = revisionOrder.get(a.revisionId) ?? 0;
+    const orderB = revisionOrder.get(b.revisionId) ?? 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return a.id.localeCompare(b.id);
+  });
+
+  const sectionProfilesById = new Map<string, SectionProfileSnapshot>();
+
+  for (const row of rows) {
+    sectionProfilesById.set(
+      row.id,
+      sectionProfileMapper.toDomain(row).toSnapshot(),
+    );
+  }
+
+  return sectionProfilesById;
+};
+
+const buildElement1dsFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<Map<string, Element1dSnapshot>> => {
+  if (input.revisions.length === 0) {
+    return new Map();
+  }
+
+  const revisionIds = input.revisions.map((revision) => revision.id);
+  const revisionOrder = new Map(
+    input.revisions.map((revision, index) => [revision.id, index]),
+  );
+
+  const rows = await getDb()
+    .select()
+    .from(element1ds)
+    .where(inArray(element1ds.revisionId, revisionIds));
+
+  rows.sort((a, b) => {
+    const orderA = revisionOrder.get(a.revisionId) ?? 0;
+    const orderB = revisionOrder.get(b.revisionId) ?? 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return a.id.localeCompare(b.id);
+  });
+
+  const element1dsById = new Map<string, Element1dSnapshot>();
+
+  for (const row of rows) {
+    element1dsById.set(row.id, element1dMapper.toDomain(row).toSnapshot());
+  }
+
+  return element1dsById;
 };
 
 const extractNodeName = (payload: unknown): string => {
