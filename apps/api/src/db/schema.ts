@@ -6,7 +6,6 @@ import {
   uuid,
   jsonb,
   integer,
-  doublePrecision,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
@@ -110,74 +109,4 @@ export const modelBranchHeads = pgTable(
   }),
 );
 
-export const nodes = pgTable("nodes", {
-  id: uuid("id").primaryKey(),
-  revisionId: uuid("revision_id")
-    .notNull()
-    .references(() => modelRevisions.id),
-  locationDiscriminator: text("location_discriminator").notNull(),
-  pointX: doublePrecision("point_x"),
-  pointY: doublePrecision("point_y"),
-  pointZ: doublePrecision("point_z"),
-  element1dId: uuid("element1d_id"),
-  ratioAlongElement1d: doublePrecision("ratio_along_element1d"),
-  restraint: jsonb("restraint").notNull(),
-});
-
-export const materials = pgTable("materials", {
-  id: uuid("id").primaryKey(),
-  revisionId: uuid("revision_id")
-    .notNull()
-    .references(() => modelRevisions.id),
-  pressureESi: doublePrecision("pressure_e_si").notNull(),
-  pressureGSi: doublePrecision("pressure_g_si").notNull(),
-});
-
-export const sectionProfiles = pgTable("section_profiles", {
-  id: uuid("id").primaryKey(),
-  revisionId: uuid("revision_id")
-    .notNull()
-    .references(() => modelRevisions.id),
-  name: text("name").notNull(),
-  discriminator: text("discriminator").notNull(),
-  areaSi: doublePrecision("area_si").notNull(),
-  strongAxisMomentOfInertiaSi: doublePrecision(
-    "strong_axis_moment_of_inertia_si",
-  ).notNull(),
-  weakAxisMomentOfInertiaSi: doublePrecision(
-    "weak_axis_moment_of_inertia_si",
-  ).notNull(),
-  torsionalConstantSi: doublePrecision("torsional_constant_si").notNull(),
-  warpingConstantSi: doublePrecision("warping_constant_si").notNull(),
-  strongAxisPlasticSectionModulusSi: doublePrecision(
-    "strong_axis_plastic_section_modulus_si",
-  ).notNull(),
-  weakAxisPlasticSectionModulusSi: doublePrecision(
-    "weak_axis_plastic_section_modulus_si",
-  ).notNull(),
-  strongAxisElasticSectionModulusSi: doublePrecision(
-    "strong_axis_elastic_section_modulus_si",
-  ).notNull(),
-  weakAxisElasticSectionModulusSi: doublePrecision(
-    "weak_axis_elastic_section_modulus_si",
-  ).notNull(),
-  strongAxisShearAreaSi: doublePrecision("strong_axis_shear_area_si"),
-  weakAxisShearAreaSi: doublePrecision("weak_axis_shear_area_si"),
-});
-
-export const element1ds = pgTable("element1ds", {
-  id: uuid("id").primaryKey(),
-  revisionId: uuid("revision_id")
-    .notNull()
-    .references(() => modelRevisions.id),
-  startNodeId: uuid("start_node_id").notNull(),
-  endNodeId: uuid("end_node_id").notNull(),
-  materialId: uuid("material_id").notNull(),
-  sectionProfileId: uuid("section_profile_id").notNull(),
-});
-
 export type Model = InferSelectModel<typeof models>;
-export type Node = InferSelectModel<typeof nodes>;
-export type Material = InferSelectModel<typeof materials>;
-export type SectionProfile = InferSelectModel<typeof sectionProfiles>;
-export type Element1d = InferSelectModel<typeof element1ds>;

@@ -6,7 +6,6 @@ import {
   modelRevisionDrafts,
   modelRevisions,
   models,
-  nodes,
   revisionChanges,
 } from "../db/schema";
 import { ModelAggregate } from "./model-aggregate";
@@ -301,20 +300,6 @@ const buildNodesFromRevisions = async (input: {
     input.revisions.map((revision, index) => [revision.id, index]),
   );
 
-  const nodeRows = await getDb()
-    .select()
-    .from(nodes)
-    .where(inArray(nodes.revisionId, revisionIds));
-
-  nodeRows.sort((a, b) => {
-    const orderA = revisionOrder.get(a.revisionId) ?? 0;
-    const orderB = revisionOrder.get(b.revisionId) ?? 0;
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.id.localeCompare(b.id);
-  });
-
   const changeRows = await getDb()
     .select()
     .from(revisionChanges)
@@ -330,53 +315,66 @@ const buildNodesFromRevisions = async (input: {
   });
 
   const nodesById = new Map<string, NodeSnapshot>();
-
-  for (const row of nodeRows) {
-    nodesById.set(row.id, toNodeSnapshotFromRow(row));
+  for (const change of changeRows) {
+    if (change.entityType !== "node") {
+      continue;
+    }
+    if (change.op === "delete") {
+      nodesById.delete(change.entityId);
+      continue;
+    }
+    nodesById.set(change.entityId, toNodeSnapshotFromChange(change));
   }
-
-  applyNodeChanges({
-    current: nodesById,
-    changes: changeRows
-      .filter((change) => change.entityType === "node" && change.op === "delete")
-      .map((change) => ({
-        nodeId: change.entityId,
-        modelRevisionId:
-          change.revisionId ?? input.revisions[input.revisions.length - 1].id,
-        op: change.op,
-        nodeTypeDescriminator: "internal",
-      })),
-  });
 
   return nodesById;
 };
 
-const toNodeSnapshotFromRow = (row: typeof nodes.$inferSelect): NodeSnapshot => {
-  const restraint = parseNodeRestraint(row.restraint);
+const toNodeSnapshotFromChange = (
+  change: typeof revisionChanges.$inferSelect,
+): NodeSnapshot => {
+  const payload =
+    change.payload && typeof change.payload === "object"
+      ? (change.payload as Record<string, unknown>)
+      : {};
+  const modelRevisionId =
+    typeof payload.modelRevisionId === "string"
+      ? payload.modelRevisionId
+      : (change.revisionId ?? "");
+  const nodeTypeDescriminator = extractNodeTypeDescriminator(payload);
+  const restraint = parseNodeRestraint(payload.restraint);
 
-  if (row.locationDiscriminator === "internal") {
+  if (nodeTypeDescriminator === "internal") {
+    const element1dId =
+      typeof payload.element1dId === "string" ? payload.element1dId : change.entityId;
+    const distanceAlongElement1d =
+      typeof payload.distanceAlongElement1d === "number" &&
+      Number.isFinite(payload.distanceAlongElement1d)
+        ? payload.distanceAlongElement1d
+        : 0;
     return {
-      id: row.id,
-      modelRevisionId: row.revisionId,
+      id: change.entityId,
+      modelRevisionId,
       nodeType: "internalNode",
       nodeTypeDescriminator: "internal",
-      element1dId: row.element1dId ?? row.id,
-      distanceAlongElement1d: Ratio.FromDecimalFractions(
-        row.ratioAlongElement1d ?? 0,
-      ),
+      element1dId,
+      distanceAlongElement1d: Ratio.FromDecimalFractions(distanceAlongElement1d),
       restraint,
     };
   }
 
+  const point =
+    payload.point && typeof payload.point === "object"
+      ? (payload.point as Record<string, unknown>)
+      : {};
   return {
-    id: row.id,
-    modelRevisionId: row.revisionId,
+    id: change.entityId,
+    modelRevisionId,
     nodeType: "spatialNode",
     nodeTypeDescriminator: "external",
     point: {
-      x: row.pointX ?? 0,
-      y: row.pointY ?? 0,
-      z: row.pointZ ?? 0,
+      x: typeof point.x === "number" && Number.isFinite(point.x) ? point.x : 0,
+      y: typeof point.y === "number" && Number.isFinite(point.y) ? point.y : 0,
+      z: typeof point.z === "number" && Number.isFinite(point.z) ? point.z : 0,
     },
     restraint,
   };

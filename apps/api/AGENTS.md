@@ -9,6 +9,11 @@
 - Database schema and migration tooling live in `src/db/` and `drizzle/`.
 - Integration tests live in `test/integration/`.
 
+## Persistence Model
+- Nodes, materials, section profiles, and element1ds are persisted as revision-change domain events.
+- Persist those entities via `revision_changes` entries (`entity_type`, `op`, `payload`), not entity-specific tables.
+- Read models/revisions by replaying ordered revision changes.
+
 ## Commands
 - Dev server: `bun run --cwd apps/api dev`
 - Build: `bun run --cwd apps/api build`

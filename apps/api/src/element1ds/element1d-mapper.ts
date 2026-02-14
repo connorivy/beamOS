@@ -1,8 +1,16 @@
-import { element1ds, type Element1d as Element1dRow } from "../db/schema";
 import { Element1dEntity } from "./element1d-entity";
 
+export type Element1dPersistence = {
+  id: string;
+  revisionId: string;
+  startNodeId: string;
+  endNodeId: string;
+  materialId: string;
+  sectionProfileId: string;
+};
+
 export const element1dMapper = {
-  toDomain(row: Element1dRow): Element1dEntity {
+  toDomain(row: Element1dPersistence): Element1dEntity {
     return Element1dEntity.rehydrate({
       id: row.id,
       revisionId: row.revisionId,
@@ -13,7 +21,7 @@ export const element1dMapper = {
     });
   },
 
-  toPersistence(aggregate: Element1dEntity): typeof element1ds.$inferInsert {
+  toPersistence(aggregate: Element1dEntity): Element1dPersistence {
     return {
       id: aggregate.id,
       revisionId: aggregate.revisionId,
