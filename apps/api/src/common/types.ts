@@ -6,6 +6,7 @@ import type { NodeSnapshot } from "../nodes/node-entity";
 import { ModelRepository } from "src/models/model-repository";
 import type { MaterialRepository } from "../materials/material-repository";
 import type { SectionProfileRepository } from "../section-profiles/section-profile-repository";
+import type { Element1dRepository } from "../element1ds/element1d-repository";
 
 export type DomainEvent =
   | {
@@ -84,6 +85,7 @@ export type AppServices = {
   modelRevisionRepository: ModelRevisionRepository;
   materialRepository: MaterialRepository;
   sectionProfileRepository: SectionProfileRepository;
+  element1dRepository: Element1dRepository;
 };
 
 export type AppContext = {

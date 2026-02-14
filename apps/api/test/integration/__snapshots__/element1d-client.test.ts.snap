@@ -1,0 +1,23 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`typed element1d api client integration batch creates element1ds and snapshots get responses 1`] = `
+{
+  "endNodeId": "<end-node-id>",
+  "id": "<db-id>",
+  "materialId": "<material-id>",
+  "revisionId": "<revision-id>",
+  "sectionProfileId": "<section-profile-id>",
+  "startNodeId": "<start-node-id>",
+}
+`;
+
+exports[`typed element1d api client integration batch creates element1ds and snapshots get responses 2`] = `
+{
+  "endNodeId": "<end-node-id>",
+  "id": "<db-id>",
+  "materialId": "<material-id>",
+  "revisionId": "<revision-id>",
+  "sectionProfileId": "<section-profile-id>",
+  "startNodeId": "<start-node-id>",
+}
+`;

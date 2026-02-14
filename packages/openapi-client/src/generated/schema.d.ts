@@ -148,6 +148,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/models/{modelId}/branches/{branchName}/element1ds/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiModelsByModelIdBranchesByBranchNameElement1dsBatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/element1ds/{element1dId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiElement1dsByElement1dId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -866,6 +898,126 @@ export interface operations {
                                 /** @constant */
                                 unit: "SquareMeter";
                             };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiModelsByModelIdBranchesByBranchNameElement1dsBatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modelId: string;
+                branchName: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    element1ds: {
+                        tempId?: string;
+                        /** Format: uuid */
+                        startNodeId: string;
+                        /** Format: uuid */
+                        endNodeId: string;
+                        /** Format: uuid */
+                        materialId: string;
+                        /** Format: uuid */
+                        sectionProfileId: string;
+                    }[];
+                };
+                "application/x-www-form-urlencoded": {
+                    element1ds: {
+                        tempId?: string;
+                        /** Format: uuid */
+                        startNodeId: string;
+                        /** Format: uuid */
+                        endNodeId: string;
+                        /** Format: uuid */
+                        materialId: string;
+                        /** Format: uuid */
+                        sectionProfileId: string;
+                    }[];
+                };
+                "multipart/form-data": {
+                    element1ds: {
+                        tempId?: string;
+                        /** Format: uuid */
+                        startNodeId: string;
+                        /** Format: uuid */
+                        endNodeId: string;
+                        /** Format: uuid */
+                        materialId: string;
+                        /** Format: uuid */
+                        sectionProfileId: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        element1ds: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            revisionId: string;
+                            /** Format: uuid */
+                            startNodeId: string;
+                            /** Format: uuid */
+                            endNodeId: string;
+                            /** Format: uuid */
+                            materialId: string;
+                            /** Format: uuid */
+                            sectionProfileId: string;
+                        }[];
+                        tempIdToId: {
+                            [key: string]: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiElement1dsByElement1dId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                element1dId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        element1d: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            revisionId: string;
+                            /** Format: uuid */
+                            startNodeId: string;
+                            /** Format: uuid */
+                            endNodeId: string;
+                            /** Format: uuid */
+                            materialId: string;
+                            /** Format: uuid */
+                            sectionProfileId: string;
                         };
                     };
                 };

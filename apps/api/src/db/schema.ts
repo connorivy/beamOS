@@ -181,6 +181,18 @@ export const sectionProfiles = pgTable("section_profiles", {
   weakAxisShearAreaSi: doublePrecision("weak_axis_shear_area_si"),
 });
 
+export const element1ds = pgTable("element1ds", {
+  id: uuid("id").primaryKey(),
+  revisionId: uuid("revision_id")
+    .notNull()
+    .references(() => modelRevisions.id),
+  startNodeId: uuid("start_node_id").notNull(),
+  endNodeId: uuid("end_node_id").notNull(),
+  materialId: uuid("material_id").notNull(),
+  sectionProfileId: uuid("section_profile_id").notNull(),
+});
+
 export type Model = InferSelectModel<typeof models>;
 export type Material = InferSelectModel<typeof materials>;
 export type SectionProfile = InferSelectModel<typeof sectionProfiles>;
+export type Element1d = InferSelectModel<typeof element1ds>;

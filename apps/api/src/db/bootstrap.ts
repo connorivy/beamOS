@@ -120,4 +120,15 @@ export const bootstrapDb = async () => {
       weak_axis_shear_area_si DOUBLE PRECISION
     );
   `);
+
+  await getDb().execute(sql`
+    CREATE TABLE IF NOT EXISTS element1ds (
+      id UUID PRIMARY KEY NOT NULL,
+      revision_id UUID NOT NULL REFERENCES model_revisions(id),
+      start_node_id UUID NOT NULL,
+      end_node_id UUID NOT NULL,
+      material_id UUID NOT NULL,
+      section_profile_id UUID NOT NULL
+    );
+  `);
 };

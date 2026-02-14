@@ -7,6 +7,8 @@ import { batchCreateMaterial } from "src/materials/batch-create-material";
 import { getMaterial } from "src/materials/get-material";
 import { batchCreateSectionProfile } from "src/section-profiles/batch-create-section-profile";
 import { getSectionProfile } from "src/section-profiles/get-section-profile";
+import { batchCreateElement1d } from "src/element1ds/batch-create-element1d";
+import { getElement1d } from "src/element1ds/get-element1d";
 
 export const coreApiPlugin = defineApiPlugin({
   id: "core.users",
@@ -19,5 +21,7 @@ export const coreApiPlugin = defineApiPlugin({
     getMaterial,
     batchCreateSectionProfile,
     getSectionProfile,
+    batchCreateElement1d,
+    getElement1d,
   ],
 });
