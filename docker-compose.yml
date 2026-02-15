@@ -43,7 +43,7 @@ services:
   #     api:
   #       condition: service_started
   #   environment:
-  #     BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE: ${BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE:-./additional-plugins.js}
+  #     BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE: ${BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE:-./src/plugins/additional-plugins.ts}
   #     VITE_API_PROXY_TARGET: http://api:3001
   #   command: >
   #     sh -lc "bun install && bun run --cwd beamos/apps/web dev --host 0.0.0.0 --port 5173"
