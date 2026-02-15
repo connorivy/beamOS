@@ -6,8 +6,10 @@ import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
 import type { MaterialSnapshot } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
-import { materialResponseSchema } from "./material-response-schema";
-import { createMaterialRequestSchema } from "./create-material-request-schema";
+import {
+  materialResponseSchema,
+  createMaterialRequestSchema,
+} from "./material-contract-schemas";
 import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 
@@ -29,13 +31,11 @@ export const batchCreateMaterialResSchema = z.object({
 const toResponseMaterial = (material: MaterialSnapshot) => ({
   id: material.id,
   revisionId: material.revisionId,
-  pressureE: {
-    value: material.pressureE.Pascals,
-    unit: PressureUnits.Pascals as const,
-  },
-  pressureG: {
-    value: material.pressureG.Pascals,
-    unit: PressureUnits.Pascals as const,
+  name: material.name,
+  modulusOfElasticity: material.pressureE.Pascals,
+  modulusOfRigidity: material.pressureG.Pascals,
+  units: {
+    pressure: PressureUnits.Pascals as const,
   },
 });
 
@@ -79,13 +79,14 @@ export async function batchCreateMaterialHandler(
     const snapshot: MaterialSnapshot = {
       id,
       revisionId: revision.id,
+      name: material.name,
       pressureE: new Pressure(
-        material.pressureE.value,
-        material.pressureE.unit,
+        material.modulusOfElasticity,
+        material.units.pressure,
       ),
       pressureG: new Pressure(
-        material.pressureG.value,
-        material.pressureG.unit,
+        material.modulusOfRigidity,
+        material.units.pressure,
       ),
     };
     revision.addMaterial(snapshot);

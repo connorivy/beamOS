@@ -3,44 +3,38 @@
 exports[`typed material api client integration batch creates materials and snapshots get responses 1`] = `
 {
   "id": "<db-id>",
-  "pressureE": {
-    "unit": "Pascal",
-    "value": 125000,
-  },
-  "pressureG": {
-    "unit": "Pascal",
-    "value": 85000,
-  },
+  "modulusOfElasticity": 125000,
+  "modulusOfRigidity": 85000,
+  "name": "Material 1",
   "revisionId": "<revision-id>",
+  "units": {
+    "pressure": "Pascal",
+  },
 }
 `;
 
 exports[`typed material api client integration batch creates materials and snapshots get responses 2`] = `
 {
   "id": "<db-id>",
-  "pressureE": {
-    "unit": "Pascal",
-    "value": 101324.66370467292,
-  },
-  "pressureG": {
-    "unit": "Pascal",
-    "value": 101325,
-  },
+  "modulusOfElasticity": 101324.66370467292,
+  "modulusOfRigidity": 101325,
+  "name": "Material 2",
   "revisionId": "<revision-id>",
+  "units": {
+    "pressure": "Pascal",
+  },
 }
 `;
 
 exports[`typed material api client integration batch creates materials and snapshots get responses 3`] = `
 {
   "id": "<db-id>",
-  "pressureE": {
-    "unit": "Pascal",
-    "value": 96258.75,
-  },
-  "pressureG": {
-    "unit": "Pascal",
-    "value": 95000,
-  },
+  "modulusOfElasticity": 96258.75,
+  "modulusOfRigidity": 95000,
+  "name": "Material 3",
   "revisionId": "<revision-id>",
+  "units": {
+    "pressure": "Pascal",
+  },
 }
 `;

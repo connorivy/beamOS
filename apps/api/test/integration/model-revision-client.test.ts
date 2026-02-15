@@ -205,8 +205,9 @@ describe("model revision integration", () => {
             {
               tempId: "mat-rev1",
               name: "Material Revision 1",
-              pressureE: { value: 1.1, unit: PressureUnits.Bars },
-              pressureG: { value: 75, unit: PressureUnits.Kilopascals },
+              modulusOfElasticity: 110000, // 1.1 Bars
+              modulusOfRigidity: 75000, // 75 Kilopascals
+              units: { pressure: PressureUnits.Pascals },
             },
           ],
         },
@@ -310,8 +311,9 @@ describe("model revision integration", () => {
             {
               tempId: "mat-rev2",
               name: "Material Revision 2",
-              pressureE: { value: 2.5, unit: PressureUnits.Bars },
-              pressureG: { value: 120, unit: PressureUnits.Kilopascals },
+              modulusOfElasticity: 250000, // 2.5 Bars
+              modulusOfRigidity: 120000, // 120 Kilopascals
+              units: { pressure: PressureUnits.Pascals },
             },
           ],
         },

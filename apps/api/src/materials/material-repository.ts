@@ -11,6 +11,7 @@ import { z } from "zod";
 const materialPayloadSchema = z.object({
   id: z.uuid(),
   revisionId: z.uuid(),
+  name: z.string(),
   pressureE: z.object({
     value: z.number().finite(),
     unit: z.enum(PressureUnits),
@@ -49,6 +50,7 @@ export const drizzleMaterialRepository: MaterialRepository = {
             payload: {
               id: event.payload.id,
               revisionId: event.payload.revisionId,
+              name: event.payload.name,
               pressureE: {
                 value: event.payload.pressureE.Pascals,
                 unit: PressureUnits.Pascals,
@@ -97,6 +99,7 @@ export const drizzleMaterialRepository: MaterialRepository = {
     return MaterialEntity.rehydrate({
       id: payload.id,
       revisionId: payload.revisionId,
+      name: payload.name,
       pressureE: new Pressure(payload.pressureE.value, payload.pressureE.unit),
       pressureG: new Pressure(payload.pressureG.value, payload.pressureG.unit),
     });

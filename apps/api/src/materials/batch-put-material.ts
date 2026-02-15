@@ -7,9 +7,11 @@ import { getDb } from "../db/client";
 import type { DbTransaction } from "../db/client";
 import { MaterialEntity } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
-import { materialResponseSchema } from "./material-response-schema";
+import {
+  materialResponseSchema,
+  putMaterialRequestSchema,
+} from "./material-contract-schemas";
 import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
-import { putMaterialReqSchema } from "./put-material-request-schema";
 
 export const batchPutMaterialReqSchema = z.object({
   params: z.object({
@@ -17,7 +19,7 @@ export const batchPutMaterialReqSchema = z.object({
     branchName: z.string().trim().min(1),
   }),
   body: z.object({
-    materials: z.array(putMaterialReqSchema).min(1),
+    materials: z.array(putMaterialRequestSchema).min(1),
   }),
 });
 
@@ -28,13 +30,11 @@ export const batchPutMaterialResSchema = z.object({
 const toResponseMaterial = (material: MaterialEntity) => ({
   id: material.id,
   revisionId: material.revisionId,
-  pressureE: {
-    value: material.pressureE.Pascals,
-    unit: PressureUnits.Pascals as const,
-  },
-  pressureG: {
-    value: material.pressureG.Pascals,
-    unit: PressureUnits.Pascals as const,
+  name: material.name,
+  modulusOfElasticity: material.pressureE.Pascals,
+  modulusOfRigidity: material.pressureG.Pascals,
+  units: {
+    pressure: PressureUnits.Pascals as const,
   },
 });
 
@@ -69,13 +69,14 @@ export async function batchPutMaterialHandler(
     MaterialEntity.create({
       id: material.id,
       revisionId,
+      name: material.name,
       pressureE: new Pressure(
-        material.pressureE.value,
-        material.pressureE.unit,
+        material.modulusOfElasticity,
+        material.units.pressure,
       ),
       pressureG: new Pressure(
-        material.pressureG.value,
-        material.pressureG.unit,
+        material.modulusOfRigidity,
+        material.units.pressure,
       ),
     }),
   );

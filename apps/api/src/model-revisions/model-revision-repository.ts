@@ -402,6 +402,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
           payload: {
             id: event.payload.id,
             revisionId: event.payload.revisionId,
+            name: event.payload.name,
             pressureE: {
               value: event.payload.pressureE.Pascals,
               unit: PressureUnits.Pascals,
@@ -775,6 +776,7 @@ const buildMaterialsFromRevisions = async (input: {
     const pressureG = toObject(payload.pressureG);
     const pressureEValue = toFiniteNumber(pressureE.value);
     const pressureGValue = toFiniteNumber(pressureG.value);
+    const name = typeof payload.name === "string" && payload.name.length > 0 ? payload.name : "Unnamed Material";
     if (pressureEValue === undefined || pressureGValue === undefined) {
       continue;
     }
@@ -785,6 +787,7 @@ const buildMaterialsFromRevisions = async (input: {
         typeof payload.revisionId === "string"
           ? payload.revisionId
           : (row.revisionId ?? ""),
+      name,
       pressureE: Pressure.FromPascals(pressureEValue),
       pressureG: Pressure.FromPascals(pressureGValue),
     });

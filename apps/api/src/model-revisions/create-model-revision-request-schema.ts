@@ -3,9 +3,11 @@ import { uuidV7Schema } from "../common/uuid";
 import { createElement1dRequestSchema } from "../element1ds/create-element1d-request-schema";
 import { deleteElement1dRequestSchema } from "../element1ds/delete-element1d-request-schema";
 import { updateElement1dRequestSchema } from "../element1ds/update-element1d-request-schema";
-import { createMaterialRequestSchema } from "../materials/create-material-request-schema";
-import { deleteMaterialRequestSchema } from "../materials/delete-material-request-schema";
-import { updateMaterialRequestSchema } from "../materials/update-material-request-schema";
+import {
+  createMaterialRequestSchema,
+  deleteMaterialRequestSchema,
+  putMaterialRequestSchema,
+} from "../materials/material-contract-schemas";
 import { createNodeRequestSchema } from "../nodes/create-node-request-schema";
 import { deleteNodeRequestSchema } from "../nodes/delete-node-request-schema";
 import { updateNodeRequestSchema } from "../nodes/update-node-request-schema";
@@ -27,7 +29,7 @@ const nodeOperationsRequestSchema = z.object({
 
 const materialOperationsRequestSchema = z.object({
   create: z.array(createMaterialRequestSchema).default([]),
-  update: z.array(updateMaterialRequestSchema).default([]),
+  update: z.array(putMaterialRequestSchema).default([]),
   delete: z.array(deleteMaterialRequestSchema).default([]),
 });
 

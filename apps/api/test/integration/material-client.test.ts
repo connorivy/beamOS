@@ -51,23 +51,23 @@ describe("typed material api client integration", () => {
             {
               tempId: tempIds[0],
               name: "Material 1",
-              pressureE: { value: 1.25, unit: PressureUnits.Bars },
-              pressureG: { value: 85, unit: PressureUnits.Kilopascals },
+              modulusOfElasticity: 125000, // 1.25 Bars
+              modulusOfRigidity: 85000, // 85 Kilopascals
+              units: { pressure: PressureUnits.Pascals },
             },
             {
               tempId: tempIds[1],
               name: "Material 2",
-              pressureE: {
-                value: 14.6959,
-                unit: PressureUnits.PoundsForcePerSquareInch,
-              },
-              pressureG: { value: 1013.25, unit: PressureUnits.Millibars },
+              modulusOfElasticity: 101324.66370467292, // 14.6959 PoundsForcePerSquareInch
+              modulusOfRigidity: 101325, // 1013.25 Millibars
+              units: { pressure: PressureUnits.Pascals },
             },
             {
               tempId: tempIds[2],
               name: "Material 3",
-              pressureE: { value: 0.95, unit: PressureUnits.Atmospheres },
-              pressureG: { value: 950, unit: PressureUnits.Hectopascals },
+              modulusOfElasticity: 96258.75, // 0.95 Atmospheres
+              modulusOfRigidity: 95000, // 950 Hectopascals
+              units: { pressure: PressureUnits.Pascals },
             },
           ],
         },
@@ -167,15 +167,17 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: "dup-1",
-              name: "Material 1",
-              pressureE: { value: 1, unit: PressureUnits.Bars },
-              pressureG: { value: 1, unit: PressureUnits.Bars },
+              name: "Duplicate Material 1",
+              modulusOfElasticity: 1,
+              modulusOfRigidity: 1,
+              units: { pressure: PressureUnits.Bars },
             },
             {
               tempId: "dup-1",
-              name: "Material 2",
-              pressureE: { value: 2, unit: PressureUnits.Bars },
-              pressureG: { value: 2, unit: PressureUnits.Bars },
+              name: "Duplicate Material 2",
+              modulusOfElasticity: 2,
+              modulusOfRigidity: 2,
+              units: { pressure: PressureUnits.Bars },
             },
           ],
         },
@@ -221,8 +223,9 @@ describe("typed material api client integration", () => {
             {
               tempId: "mat-put-01",
               name: "Material Put Target",
-              pressureE: { value: 100, unit: PressureUnits.Kilopascals },
-              pressureG: { value: 200, unit: PressureUnits.Kilopascals },
+              modulusOfElasticity: 100000, // 100 Kilopascals
+              modulusOfRigidity: 200000, // 200 Kilopascals
+              units: { pressure: PressureUnits.Pascals },
             },
           ],
         },
@@ -254,11 +257,10 @@ describe("typed material api client integration", () => {
           materials: [
             {
               id: materialId,
-              pressureE: { value: 2.5, unit: PressureUnits.Bars },
-              pressureG: {
-                value: 30,
-                unit: PressureUnits.PoundsForcePerSquareInch,
-              },
+              name: "Updated Material",
+              modulusOfElasticity: 250000, // 2.5 Bars
+              modulusOfRigidity: 206842.7185, // ~30 Bars (converted for consistency)
+              units: { pressure: PressureUnits.Pascals },
             },
           ],
         },
@@ -284,15 +286,8 @@ describe("typed material api client integration", () => {
       throw new Error(`Expected material response for ${materialId}`);
     }
 
-    expect(getResponse.data.material.pressureE.value).toBeCloseTo(
-      new Pressure(2.5, PressureUnits.Bars).Pascals,
-      6,
-    );
-    expect(getResponse.data.material.pressureG.value).toBeCloseTo(
-      new Pressure(30, PressureUnits.PoundsForcePerSquareInch).Pascals,
-      6,
-    );
-    expect(getResponse.data.material.pressureE.unit).toBe(PressureUnits.Pascals);
-    expect(getResponse.data.material.pressureG.unit).toBe(PressureUnits.Pascals);
+    expect(getResponse.data.material.modulusOfElasticity).toBeCloseTo(250000, 6);
+    expect(getResponse.data.material.modulusOfRigidity).toBeCloseTo(206842.7185, 6);
+    expect(getResponse.data.material.units.pressure).toBe(PressureUnits.Pascals);
   });
 });

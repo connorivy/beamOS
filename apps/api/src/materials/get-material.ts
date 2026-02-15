@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
-import { materialResponseSchema } from "./material-response-schema";
+import { materialResponseSchema } from "./material-contract-schemas";
 
 const uuidV7Schema = z
   .uuid()
@@ -38,13 +38,11 @@ export const getMaterial = defineEndpoint({
       material: {
         id: material.id,
         revisionId: material.revisionId,
-        pressureE: {
-          value: material.pressureE.Pascals,
-          unit: PressureUnits.Pascals as const,
-        },
-        pressureG: {
-          value: material.pressureG.Pascals,
-          unit: PressureUnits.Pascals as const,
+        name: material.name,
+        modulusOfElasticity: material.pressureE.Pascals,
+        modulusOfRigidity: material.pressureG.Pascals,
+        units: {
+          pressure: PressureUnits.Pascals as const,
         },
       },
     };

@@ -114,13 +114,11 @@ export const createModelRevision = defineEndpoint({
         materials: modelRevision.materials.map((material) => ({
           id: material.id,
           revisionId: material.revisionId,
-          pressureE: {
-            value: material.pressureE.Pascals,
-            unit: PressureUnits.Pascals as const,
-          },
-          pressureG: {
-            value: material.pressureG.Pascals,
-            unit: PressureUnits.Pascals as const,
+          name: material.name,
+          modulusOfElasticity: material.pressureE.Pascals,
+          modulusOfRigidity: material.pressureG.Pascals,
+          units: {
+            pressure: PressureUnits.Pascals as const,
           },
         })),
         sectionProfiles: modelRevision.sectionProfiles.map((sectionProfile) => ({
@@ -314,21 +312,21 @@ const buildRevisionChanges = (input: {
         payload: {
           id,
           revisionId: input.revisionId,
+          name: createMaterial.name,
           pressureE: {
             value: new Pressure(
-              createMaterial.pressureE.value,
-              createMaterial.pressureE.unit,
+              createMaterial.modulusOfElasticity,
+              createMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },
           pressureG: {
             value: new Pressure(
-              createMaterial.pressureG.value,
-              createMaterial.pressureG.unit,
+              createMaterial.modulusOfRigidity,
+              createMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },
-          ...(createMaterial.name ? { name: createMaterial.name } : {}),
         },
       }),
     );
@@ -348,15 +346,21 @@ const buildRevisionChanges = (input: {
         payload: {
           id: updateMaterial.id,
           revisionId: input.revisionId,
+          name: updateMaterial.name,
           pressureE: {
-            value: existing.pressureE.Pascals,
+            value: new Pressure(
+              updateMaterial.modulusOfElasticity,
+              updateMaterial.units.pressure,
+            ).Pascals,
             unit: "Pascals",
           },
           pressureG: {
-            value: existing.pressureG.Pascals,
+            value: new Pressure(
+              updateMaterial.modulusOfRigidity,
+              updateMaterial.units.pressure,
+            ).Pascals,
             unit: "Pascals",
           },
-          ...(updateMaterial.name ? { name: updateMaterial.name } : {}),
         },
       }),
     );
