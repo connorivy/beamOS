@@ -12,6 +12,21 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const createSectionProfileInput = (tempId?: string) => ({
+  ...(tempId ? { tempId } : {}),
+  name: "W12x26",
+  discriminator: "STANDARD" as const,
+  area: 7.65,
+  strongAxisMomentOfInertia: 204,
+  weakAxisMomentOfInertia: 17.3,
+  torsionalConstant: 0.346,
+  warpingConstant: 337,
+  strongAxisPlasticSectionModulus: 38.4,
+  weakAxisPlasticSectionModulus: 8.94,
+  strongAxisElasticSectionModulus: 34,
+  weakAxisElasticSectionModulus: 5.77,
+});
+
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
 }, 10_000);
@@ -76,7 +91,7 @@ describe("model revision integration", () => {
             delete: [],
           },
           sectionProfiles: {
-            create: [],
+            create: [createSectionProfileInput("sp-rev-create")],
             update: [],
             delete: [],
           },
@@ -102,6 +117,9 @@ describe("model revision integration", () => {
       branchName,
     );
     expect(createRevisionResponse.data.modelRevision.nodes).toHaveLength(1);
+    expect(createRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(
+      1,
+    );
     const createdNodeId = createRevisionResponse.data.modelRevision.nodes[0]?.id;
     expect(createdNodeId).toBeDefined();
 

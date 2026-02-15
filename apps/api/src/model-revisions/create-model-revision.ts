@@ -374,7 +374,7 @@ const buildRevisionChanges = (input: {
   }
 
   for (const createSectionProfile of input.req.body.sectionProfiles.create) {
-    const id = createSectionProfile.id;
+    const id = Bun.randomUUIDv7();
     changes.push(
       toEntity({
         entityType: "sectionprofile",
@@ -384,6 +384,55 @@ const buildRevisionChanges = (input: {
           id,
           revisionId: input.revisionId,
           name: createSectionProfile.name,
+          discriminator: createSectionProfile.discriminator,
+          area: {
+            value: createSectionProfile.area,
+            unit: "SquareMeters",
+          },
+          strongAxisMomentOfInertia: {
+            value: createSectionProfile.strongAxisMomentOfInertia,
+            unit: "MetersToTheFourth",
+          },
+          weakAxisMomentOfInertia: {
+            value: createSectionProfile.weakAxisMomentOfInertia,
+            unit: "MetersToTheFourth",
+          },
+          torsionalConstant: {
+            value: createSectionProfile.torsionalConstant,
+            unit: "MetersToTheFourth",
+          },
+          warpingConstant: {
+            value: createSectionProfile.warpingConstant,
+            unit: "MetersToTheSixth",
+          },
+          strongAxisPlasticSectionModulus: {
+            value: createSectionProfile.strongAxisPlasticSectionModulus,
+            unit: "CubicMeters",
+          },
+          weakAxisPlasticSectionModulus: {
+            value: createSectionProfile.weakAxisPlasticSectionModulus,
+            unit: "CubicMeters",
+          },
+          strongAxisElasticSectionModulus: {
+            value: createSectionProfile.strongAxisElasticSectionModulus,
+            unit: "CubicMeters",
+          },
+          weakAxisElasticSectionModulus: {
+            value: createSectionProfile.weakAxisElasticSectionModulus,
+            unit: "CubicMeters",
+          },
+          ...(createSectionProfile.discriminator === "WITH_SHEAR_AREAS"
+            ? {
+                strongAxisShearArea: {
+                  value: createSectionProfile.strongAxisShearArea,
+                  unit: "SquareMeters",
+                },
+                weakAxisShearArea: {
+                  value: createSectionProfile.weakAxisShearArea,
+                  unit: "SquareMeters",
+                },
+              }
+            : {}),
         },
       }),
     );
