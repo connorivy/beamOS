@@ -10,10 +10,6 @@ import { uuidV7Schema } from "src/common/uuid";
 import { materialResponseSchema } from "./material-response-schema";
 import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
 import { putMaterialReqSchema } from "./put-material-request-schema";
-import { materials } from "../db/schema";
-import { materialMapper } from "./material-mapper";
-import { sql } from "drizzle-orm";
-import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 
 export const batchPutMaterialReqSchema = z.object({
   params: z.object({
@@ -83,18 +79,6 @@ export async function batchPutMaterialHandler(
       ),
     }),
   );
-
-  await tx
-    .insert(materials)
-    .values(entities.map((material) => materialMapper.toPersistence(material)))
-    .onConflictDoUpdate({
-      target: materials.id,
-      set: {
-        revisionId: sql`excluded.revision_id`,
-        pressureESi: sql`excluded.pressure_e_si`,
-        pressureGSi: sql`excluded.pressure_g_si`,
-      },
-    });
 
   const saved = await ctx.services.materialRepository.batchCreate(tx, entities);
   return {

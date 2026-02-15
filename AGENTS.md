@@ -24,4 +24,5 @@
 ## Working Norms For Agents
 - Prefer small, scoped changes.
 - Keep API schema/request/response updates synchronized with integration tests.
+- Entity persistence for nodes/materials/section profiles/element1ds is event-sourced: write/read through `revision_changes` payloads instead of entity-specific tables.
 - When API routes change, regenerate the OpenAPI client and verify TypeScript usage in dependent packages.

@@ -4,14 +4,28 @@ import {
   Volume,
   WarpingMomentOfInertia,
 } from "unitsnet-js";
-import {
-  sectionProfiles,
-  type SectionProfile as SectionProfileRow,
-} from "../db/schema";
 import { SectionProfileAggregate } from "./section-profile-aggregate";
 
+export type SectionProfilePersistence = {
+  id: string;
+  revisionId: string;
+  name: string;
+  discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
+  areaSi: number;
+  strongAxisMomentOfInertiaSi: number;
+  weakAxisMomentOfInertiaSi: number;
+  torsionalConstantSi: number;
+  warpingConstantSi: number;
+  strongAxisPlasticSectionModulusSi: number;
+  weakAxisPlasticSectionModulusSi: number;
+  strongAxisElasticSectionModulusSi: number;
+  weakAxisElasticSectionModulusSi: number;
+  strongAxisShearAreaSi: number | null;
+  weakAxisShearAreaSi: number | null;
+};
+
 export const sectionProfileMapper = {
-  toDomain(row: SectionProfileRow): SectionProfileAggregate {
+  toDomain(row: SectionProfilePersistence): SectionProfileAggregate {
     return SectionProfileAggregate.rehydrate({
       id: row.id,
       revisionId: row.revisionId,
@@ -55,7 +69,7 @@ export const sectionProfileMapper = {
 
   toPersistence(
     aggregate: SectionProfileAggregate,
-  ): typeof sectionProfiles.$inferInsert {
+  ): SectionProfilePersistence {
     return {
       id: aggregate.id,
       revisionId: aggregate.revisionId,
@@ -75,8 +89,8 @@ export const sectionProfileMapper = {
         aggregate.strongAxisElasticSectionModulus.CubicMeters,
       weakAxisElasticSectionModulusSi:
         aggregate.weakAxisElasticSectionModulus.CubicMeters,
-      strongAxisShearAreaSi: aggregate.strongAxisShearArea?.SquareMeters,
-      weakAxisShearAreaSi: aggregate.weakAxisShearArea?.SquareMeters,
+      strongAxisShearAreaSi: aggregate.strongAxisShearArea?.SquareMeters ?? null,
+      weakAxisShearAreaSi: aggregate.weakAxisShearArea?.SquareMeters ?? null,
     };
   },
 };

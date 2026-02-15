@@ -1,9 +1,15 @@
 import { Pressure } from "unitsnet-js";
-import { materials, type Material as MaterialRow } from "../db/schema";
 import { MaterialEntity } from "./material-entity";
 
+export type MaterialPersistence = {
+  id: string;
+  revisionId: string;
+  pressureESi: number;
+  pressureGSi: number;
+};
+
 export const materialMapper = {
-  toDomain(row: MaterialRow): MaterialEntity {
+  toDomain(row: MaterialPersistence): MaterialEntity {
     return MaterialEntity.rehydrate({
       id: row.id,
       revisionId: row.revisionId,
@@ -12,7 +18,7 @@ export const materialMapper = {
     });
   },
 
-  toPersistence(aggregate: MaterialEntity): typeof materials.$inferInsert {
+  toPersistence(aggregate: MaterialEntity): MaterialPersistence {
     return {
       id: aggregate.id,
       revisionId: aggregate.revisionId,

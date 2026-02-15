@@ -11,6 +11,7 @@ import { getSectionProfile } from "src/section-profiles/get-section-profile";
 import { batchCreateElement1d } from "src/element1ds/batch-create-element1d";
 import { getElement1d } from "src/element1ds/get-element1d";
 import { getModelRevision } from "src/model-revisions/get-model-revision";
+import { createModelRevision } from "src/model-revisions/create-model-revision";
 
 export const coreApiPlugin = defineApiPlugin({
   id: "core.users",
@@ -27,5 +28,6 @@ export const coreApiPlugin = defineApiPlugin({
     batchCreateElement1d,
     getElement1d,
     getModelRevision,
+    createModelRevision,
   ],
 });
