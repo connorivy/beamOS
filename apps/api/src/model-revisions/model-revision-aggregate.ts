@@ -2,6 +2,10 @@ import { DomainEvent } from "src/common/types";
 import { assertUuid, assertUuidV7 } from "../common/uuid";
 import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
 import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
+import {
+  ModelSettingsEntity,
+  type ModelSettingsSnapshot,
+} from "../model-settings/model-settings-entity";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import {
   SectionProfileEntity,
@@ -20,12 +24,14 @@ export type ModelRevisionSnapshot = {
   createdAt: Date;
   nodes: NodeSnapshot[];
   materials: MaterialSnapshot[];
+  modelSettings: ModelSettingsSnapshot | null;
   sectionProfiles: SectionProfileSnapshot[];
   element1ds: Element1dSnapshot[];
 };
 
-export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id"> & {
+export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id" | "modelSettings"> & {
   id?: string;
+  modelSettings?: ModelSettingsSnapshot | null;
 };
 
 export const DEFAULT_MODEL_REVISION_BRANCH_NAME = "detached";
@@ -40,6 +46,7 @@ export class ModelRevisionAggregate {
   private _createdAt: Date;
   private _nodes: NodeEntity[];
   private _materials: MaterialEntity[];
+  private _modelSettings: ModelSettingsEntity | null;
   private _sectionProfiles: SectionProfileEntity[];
   private _element1ds: Element1dEntity[];
   private _domainEvents: DomainEvent[];
@@ -71,6 +78,9 @@ export class ModelRevisionAggregate {
     this._materials = snapshot.materials.map((material) =>
       MaterialEntity.rehydrate(material),
     );
+    this._modelSettings = snapshot.modelSettings
+      ? ModelSettingsEntity.rehydrate(snapshot.modelSettings)
+      : null;
     this._sectionProfiles = snapshot.sectionProfiles.map((sectionProfile) =>
       SectionProfileEntity.rehydrate(sectionProfile),
     );
@@ -127,6 +137,10 @@ export class ModelRevisionAggregate {
     return this._materials;
   }
 
+  get modelSettings(): ModelSettingsEntity | null {
+    return this._modelSettings;
+  }
+
   get sectionProfiles(): readonly SectionProfileEntity[] {
     return this._sectionProfiles;
   }
@@ -149,6 +163,11 @@ export class ModelRevisionAggregate {
       throw new Error("Material already exists");
     }
     this._materials.push(MaterialEntity.create(material));
+  }
+
+  setModelSettings(modelSettings: ModelSettingsSnapshot): void {
+    assertUuid(modelSettings.id, "modelSettingsId");
+    this._modelSettings = ModelSettingsEntity.create(modelSettings);
   }
 
   addSectionProfile(sectionProfile: SectionProfileSnapshot): void {
@@ -193,6 +212,7 @@ export class ModelRevisionAggregate {
       createdAt: this._createdAt,
       nodes: this._nodes.map((node) => node.toSnapshot()),
       materials: this._materials.map((material) => material.toSnapshot()),
+      modelSettings: this._modelSettings?.toSnapshot() ?? null,
       sectionProfiles: this._sectionProfiles.map((sectionProfile) =>
         sectionProfile.toSnapshot(),
       ),
@@ -207,13 +227,16 @@ export class ModelRevisionAggregate {
     const materialEvents = this._materials.flatMap((material) =>
       material.pullDomainEvents(),
     );
+    const modelSettingsEvents = this._modelSettings
+      ? this._modelSettings.pullDomainEvents()
+      : [];
     const sectionProfileEvents = this._sectionProfiles.flatMap(
       (sectionProfile) => sectionProfile.pullDomainEvents(),
     );
     const element1dEvents = this._element1ds.flatMap((element1d) =>
       element1d.pullDomainEvents(),
     );
-    const events = [...this._domainEvents, ...nodeEvents, ...materialEvents, ...sectionProfileEvents, ...element1dEvents];
+    const events = [...this._domainEvents, ...nodeEvents, ...materialEvents, ...modelSettingsEvents, ...sectionProfileEvents, ...element1dEvents];
     this._domainEvents = [];
     return events;
   }

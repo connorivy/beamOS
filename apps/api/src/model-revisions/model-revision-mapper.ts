@@ -31,6 +31,7 @@ export const modelRevisionMapper = {
           nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         })),
       materials: [],
+      modelSettings: null,
       sectionProfiles: [],
       element1ds: [],
     });
@@ -80,6 +81,7 @@ export const modelRevisionMapper = {
         nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
       materials: [],
+      modelSettings: null,
       sectionProfiles: [],
       element1ds: [],
     };

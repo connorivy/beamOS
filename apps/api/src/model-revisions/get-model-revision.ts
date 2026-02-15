@@ -12,6 +12,7 @@ import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
 import { element1dResponseSchema } from "../element1ds/element1d-contract-schemas";
 import { materialResponseSchema } from "../materials/material-contract-schemas";
+import { modelSettingsResponseSchema } from "../model-settings/model-settings-contract-schemas";
 import { revisionNodeResponseSchema } from "../nodes/node-contract-schemas";
 import { sectionProfileResponseSchema } from "../section-profiles/section-profile-contract-schemas";
 
@@ -38,6 +39,7 @@ export const getModelRevisionResSchema = z.object({
     createdAt: z.iso.datetime(),
     nodes: z.array(revisionNodeResponseSchema),
     materials: z.array(materialResponseSchema),
+    modelSettings: modelSettingsResponseSchema.nullable(),
     sectionProfiles: z.array(sectionProfileResponseSchema),
     element1ds: z.array(element1dResponseSchema),
   }),
@@ -94,6 +96,14 @@ export const getModelRevision = defineEndpoint({
             pressure: PressureUnits.Pascals as const,
           },
         })),
+        modelSettings: modelRevision.modelSettings
+          ? {
+              id: modelRevision.modelSettings.id,
+              revisionId: modelRevision.modelSettings.revisionId,
+              units: modelRevision.modelSettings.units,
+              yAxisUp: modelRevision.modelSettings.yAxisUp,
+            }
+          : null,
         sectionProfiles: modelRevision.sectionProfiles.map(
           (sectionProfile) => ({
             id: sectionProfile.id,

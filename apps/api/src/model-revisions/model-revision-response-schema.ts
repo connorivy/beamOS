@@ -2,6 +2,7 @@ import z from "zod";
 import { uuidV7Schema } from "../common/uuid";
 import { element1dResponseSchema } from "../element1ds/element1d-contract-schemas";
 import { materialResponseSchema } from "../materials/material-contract-schemas";
+import { modelSettingsResponseSchema } from "../model-settings/model-settings-contract-schemas";
 import { revisionNodeResponseSchema } from "../nodes/node-contract-schemas";
 import { sectionProfileResponseSchema } from "../section-profiles/section-profile-contract-schemas";
 
@@ -28,6 +29,7 @@ export const modelRevisionResponseSchema = z.object({
     createdAt: z.iso.datetime(),
     nodes: z.array(revisionNodeResponseSchema),
     materials: z.array(materialResponseSchema),
+    modelSettings: modelSettingsResponseSchema.nullable(),
     sectionProfiles: z.array(sectionProfileResponseSchema),
     element1ds: z.array(element1dResponseSchema),
   }),

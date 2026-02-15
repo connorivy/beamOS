@@ -29,6 +29,7 @@ import { RevisionChangeEntity } from "../revision-changes/revision-change-entity
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { DomainEvent, ModelRevisionRepository } from "../common/types";
 import type { MaterialSnapshot } from "../materials/material-entity";
+import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
@@ -57,12 +58,13 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .where(eq(modelBranchHeads.headRevisionId, revision.id))
         .limit(1),
     ]);
-    const [nodesById, materialsById, sectionProfilesById, element1dsById] =
+    const [nodesById, materialsById, modelSettings, sectionProfilesById, element1dsById] =
       await Promise.all([
         buildNodesFromRevisions({
           revisions,
         }),
         buildMaterialsFromRevisions({ revisions }),
+        buildModelSettingsFromRevisions({ revisions }),
         buildSectionProfilesFromRevisions({ revisions }),
         buildElement1dsFromRevisions({ revisions }),
       ]);
@@ -80,6 +82,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       createdAt: revision.createdAt,
       nodes: Array.from(nodesById.values()),
       materials: Array.from(materialsById.values()),
+      modelSettings,
       sectionProfiles: Array.from(sectionProfilesById.values()),
       element1ds: Array.from(element1dsById.values()),
     });
@@ -494,6 +497,31 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
+  const modelSettingsChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "model_settings_created" }> =>
+        event.type === "model_settings_created",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          entityType: "model_settings",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            units: event.payload.units,
+            yAxisUp: event.payload.yAxisUp,
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
   const element1dChanges = input.events
     .filter(
       (event): event is Extract<DomainEvent, { type: "element1d_created" }> =>
@@ -521,7 +549,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
-  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...sectionProfileChanges, ...element1dChanges];
+  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...modelSettingsChanges, ...sectionProfileChanges, ...element1dChanges];
 };
 
 const buildModelRevisionChangeRow = (input: {
@@ -794,6 +822,70 @@ const buildMaterialsFromRevisions = async (input: {
   }
 
   return materialsById;
+};
+
+const buildModelSettingsFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<ModelSettingsSnapshot | null> => {
+  if (input.revisions.length === 0) {
+    return null;
+  }
+
+  const rows = await loadOrderedRevisionChanges(input.revisions);
+  let latestModelSettings: ModelSettingsSnapshot | null = null;
+  for (const row of rows) {
+    if (row.entityType !== "model_settings") {
+      continue;
+    }
+    if (row.op === "delete") {
+      latestModelSettings = null;
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    const units = toObject(payload.units);
+    const pressure =
+      typeof units.pressure === "string" &&
+      units.pressure in PressureUnits
+        ? (units.pressure as PressureUnits)
+        : PressureUnits.Pascals;
+    const area =
+      typeof units.area === "string" && units.area in AreaUnits
+        ? (units.area as AreaUnits)
+        : AreaUnits.SquareMeters;
+    const areaMomentOfInertia =
+      typeof units.areaMomentOfInertia === "string" &&
+      units.areaMomentOfInertia in AreaMomentOfInertiaUnits
+        ? (units.areaMomentOfInertia as AreaMomentOfInertiaUnits)
+        : AreaMomentOfInertiaUnits.MetersToTheFourth;
+    const warpingMomentOfInertia =
+      typeof units.warpingMomentOfInertia === "string" &&
+      units.warpingMomentOfInertia in WarpingMomentOfInertiaUnits
+        ? (units.warpingMomentOfInertia as WarpingMomentOfInertiaUnits)
+        : WarpingMomentOfInertiaUnits.MetersToTheSixth;
+    const volume =
+      typeof units.volume === "string" && units.volume in VolumeUnits
+        ? (units.volume as VolumeUnits)
+        : VolumeUnits.CubicMeters;
+
+    latestModelSettings = {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      units: {
+        pressure,
+        area,
+        areaMomentOfInertia,
+        warpingMomentOfInertia,
+        volume,
+      },
+      yAxisUp: payload.yAxisUp === false ? false : true,
+    };
+  }
+
+  return latestModelSettings;
 };
 
 const buildSectionProfilesFromRevisions = async (input: {
