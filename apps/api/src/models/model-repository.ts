@@ -342,7 +342,11 @@ const toNodeSnapshotFromChange = (
       ? payload.modelRevisionId
       : (change.revisionId ?? "");
   const nodeTypeDescriminator = extractNodeTypeDescriminator(payload);
+<<<<<<< HEAD
   const restraint = parseRestraint(payload.restraint);
+=======
+  const restraint = parseNodeRestraint(payload.restraint);
+>>>>>>> 75f2de43e722bc349af48e94b33023ea9ea29eeb
 
   if (nodeTypeDescriminator === "internal") {
     const element1dId =
