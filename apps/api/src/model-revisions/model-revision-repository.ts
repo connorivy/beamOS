@@ -776,7 +776,7 @@ const buildMaterialsFromRevisions = async (input: {
     const pressureG = toObject(payload.pressureG);
     const pressureEValue = toFiniteNumber(pressureE.value);
     const pressureGValue = toFiniteNumber(pressureG.value);
-    const name = typeof payload.name === "string" ? payload.name : "";
+    const name = typeof payload.name === "string" && payload.name.length > 0 ? payload.name : "Unnamed Material";
     if (pressureEValue === undefined || pressureGValue === undefined) {
       continue;
     }
