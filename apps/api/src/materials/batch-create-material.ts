@@ -6,8 +6,10 @@ import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
 import type { MaterialSnapshot } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
-import { materialResponseSchema } from "./material-response-schema";
-import { createMaterialRequestSchema } from "./create-material-request-schema";
+import {
+  materialResponseSchema,
+  createMaterialRequestSchema,
+} from "./material-contract-schemas";
 import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 

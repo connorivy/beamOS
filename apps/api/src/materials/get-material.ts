@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
-import { materialResponseSchema } from "./material-response-schema";
+import { materialResponseSchema } from "./material-contract-schemas";
 
 const uuidV7Schema = z
   .uuid()
