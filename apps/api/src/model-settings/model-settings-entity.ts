@@ -65,14 +65,15 @@ export class ModelSettingsEntity {
   }
 
   private assertUnits(units: ModelSettingsUnitsSnapshot): void {
-    if (
-      !units.pressure ||
-      !units.area ||
-      !units.areaMomentOfInertia ||
-      !units.warpingMomentOfInertia ||
-      !units.volume
-    ) {
-      throw new Error("units must include all model entity unit types");
+    const missing = [
+      !units.pressure ? "pressure" : undefined,
+      !units.area ? "area" : undefined,
+      !units.areaMomentOfInertia ? "areaMomentOfInertia" : undefined,
+      !units.warpingMomentOfInertia ? "warpingMomentOfInertia" : undefined,
+      !units.volume ? "volume" : undefined,
+    ].filter((field): field is string => Boolean(field));
+    if (missing.length > 0) {
+      throw new Error(`units missing required fields: ${missing.join(", ")}`);
     }
   }
 }
