@@ -377,7 +377,6 @@ const buildModelNameFromRevisions = async (input: {
 };
 
 const buildRevisionChanges = (input: {
-const buildRevisionChanges = (input: {
   modelId: string;
   revisionId: string | null;
   events: ModelDomainEvent[];
