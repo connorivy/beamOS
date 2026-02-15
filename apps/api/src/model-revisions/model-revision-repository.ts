@@ -493,7 +493,34 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
-  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...sectionProfileChanges];
+  const element1dChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "element1d_created" }> =>
+        event.type === "element1d_created",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          entityType: "element1d",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            startNodeId: event.payload.startNodeId,
+            endNodeId: event.payload.endNodeId,
+            materialId: event.payload.materialId,
+            sectionProfileId: event.payload.sectionProfileId,
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
+  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...sectionProfileChanges, ...element1dChanges];
 };
 
 const buildModelRevisionChangeRow = (input: {

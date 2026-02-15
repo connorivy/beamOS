@@ -167,6 +167,26 @@ describe("typed element1d api client integration", () => {
       throw new Error("Expected batch create response");
     }
 
+    const getRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+      },
+    );
+
+    expect(getRevisionResponse.error).toBeUndefined();
+    expect(getRevisionResponse.response.status).toBe(200);
+    expect(getRevisionResponse.data).toBeDefined();
+    expect(
+      getRevisionResponse.data?.modelRevision.element1ds.map((element1d) => element1d.id),
+    ).toEqual(
+      expect.arrayContaining(
+        Object.values(batchCreateResponse.data.tempIdToId),
+      ),
+    );
+
     for (const tempId of tempIds) {
       const element1dId = batchCreateResponse.data.tempIdToId[tempId];
       expect(element1dId).toBeDefined();

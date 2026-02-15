@@ -2,12 +2,13 @@ import { defineEndpoint } from "../contracts/endpoint";
 import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
-import { DbTransaction, getDb } from "../db/client";
-import { Element1dEntity } from "./element1d-entity";
+import { getDb } from "../db/client";
+import type { Element1dSnapshot } from "./element1d-entity";
 import { element1dResponseSchema } from "./element1d-response-schema";
 import { createElement1dRequestSchema } from "./create-element1d-request-schema";
 import { uuidV7Schema } from "src/common/uuid";
-import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
+import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
+import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 
 export const batchCreateElement1dReqSchema = z.object({
   params: z.object({
@@ -24,7 +25,7 @@ export const batchCreateElement1dResSchema = z.object({
   tempIdToId: z.record(z.string(), uuidV7Schema),
 });
 
-const toResponseElement1d = (element1d: Element1dEntity) => ({
+const toResponseElement1d = (element1d: Element1dSnapshot) => ({
   id: element1d.id,
   revisionId: element1d.revisionId,
   startNodeId: element1d.startNodeId,
@@ -39,59 +40,59 @@ export const batchCreateElement1d = defineEndpoint({
   req: batchCreateElement1dReqSchema,
   res: batchCreateElement1dResSchema,
   async handler(req, ctx: AppContext) {
-    return await getDb().transaction(async (tx) => {
-      const revisionId = await createNewRevisionHandler(req, ctx, tx);
-      return await batchCreateElement1dHandler(req, ctx, tx, revisionId);
-    });
+    const revision = await createNewRevisionAggregateHandler(req, ctx);
+
+    const seenTempIds = new Set<string>();
+    return await batchCreateElement1dHandler(req, seenTempIds, ctx, revision);
   },
 });
 
-async function batchCreateElement1dHandler(
+export async function batchCreateElement1dHandler(
   req: z.infer<typeof batchCreateElement1dReqSchema>,
+  seenTempIds: Set<string>,
   ctx: AppContext,
-  tx: DbTransaction,
-  revisionId: string,
+  revision: ModelRevisionAggregate,
 ) {
-  const seenTempIds = new Set<string>();
-
   for (const element1d of req.body.element1ds) {
     if (!element1d.tempId) {
       continue;
     }
-
     if (seenTempIds.has(element1d.tempId)) {
       throw httpError(`Duplicate tempId "${element1d.tempId}"`, 400);
     }
-
     seenTempIds.add(element1d.tempId);
   }
 
   const tempIdToId: Record<string, string> = {};
 
-  const entities = req.body.element1ds.map((element1d) => {
+  const element1ds = req.body.element1ds.map((element1d) => {
     const id = Bun.randomUUIDv7();
-
     if (element1d.tempId) {
       tempIdToId[element1d.tempId] = id;
     }
 
-    return Element1dEntity.create({
+    const snapshot: Element1dSnapshot = {
       id,
-      revisionId,
+      revisionId: revision.id,
       startNodeId: element1d.startNodeId,
       endNodeId: element1d.endNodeId,
       materialId: element1d.materialId,
       sectionProfileId: element1d.sectionProfileId,
+    };
+    revision.addElement1d(snapshot);
+    return snapshot;
+  });
+
+  await getDb().transaction(async (tx) => {
+    await ctx.services.modelRevisionRepository.save({
+      revision,
+      newRevision: true,
+      tx,
     });
   });
 
-  const saved = await ctx.services.element1dRepository.batchCreate(
-    tx,
-    entities,
-  );
-
   return {
-    element1ds: saved.map((element1d) => toResponseElement1d(element1d)),
+    element1ds: element1ds.map((element1d) => toResponseElement1d(element1d)),
     tempIdToId,
   };
 }
