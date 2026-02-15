@@ -10,6 +10,7 @@ import type { Element1dRepository } from "../element1ds/element1d-repository";
 import type { RevisionChangeRepository } from "../revision-changes/revision-change-repository";
 import type { DbTransaction } from "../db/client";
 import type { MaterialSnapshot } from "../materials/material-entity";
+import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
 
 export type DomainEvent =
   | {
@@ -23,6 +24,10 @@ export type DomainEvent =
   | {
       type: "material_created";
       payload: MaterialSnapshot;
+    }
+  | {
+      type: "section_profile_created";
+      payload: SectionProfileSnapshot;
     };
 
 export type UserRepository = {

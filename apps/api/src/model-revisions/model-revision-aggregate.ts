@@ -156,6 +156,14 @@ export class ModelRevisionAggregate {
     this._materials.push(MaterialEntity.create(material));
   }
 
+  addSectionProfile(sectionProfile: SectionProfileSnapshot): void {
+    assertUuid(sectionProfile.id, "sectionProfileId");
+    if (this._sectionProfiles.some((existing) => existing.id === sectionProfile.id)) {
+      throw new Error("Section profile already exists");
+    }
+    this._sectionProfiles.push(SectionProfileAggregate.create(sectionProfile));
+  }
+
   deleteNode(nodeId: string): void {
     assertUuid(nodeId, "nodeId");
     const index = this._nodes.findIndex((node) => node.id === nodeId);
@@ -193,7 +201,10 @@ export class ModelRevisionAggregate {
     const materialEvents = this._materials.flatMap((material) =>
       material.pullDomainEvents(),
     );
-    const events = [...this._domainEvents, ...materialEvents];
+    const sectionProfileEvents = this._sectionProfiles.flatMap(
+      (sectionProfile) => sectionProfile.pullDomainEvents(),
+    );
+    const events = [...this._domainEvents, ...materialEvents, ...sectionProfileEvents];
     this._domainEvents = [];
     return events;
   }

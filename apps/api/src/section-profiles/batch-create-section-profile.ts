@@ -12,11 +12,12 @@ import {
 import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
-import { DbTransaction, getDb } from "../db/client";
+import { getDb } from "../db/client";
 import { SectionProfileAggregate } from "./section-profile-aggregate";
 import { sectionProfileResponseSchema } from "./section-profile-response-schema";
 import { uuidV7Schema } from "src/common/uuid";
-import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
+import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
+import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 import {
   createSectionProfileRequestSchema,
   sectionPropertiesInputSchema,
@@ -151,10 +152,12 @@ export const batchCreateSectionProfile = defineEndpoint({
   req: batchCreateSectionProfileReqSchema,
   res: batchCreateSectionProfileResSchema,
   async handler(req, ctx: AppContext) {
-    return await getDb().transaction(async (tx) => {
-      const revisionId = await createNewRevisionHandler(req, ctx, tx);
-      return await batchCreateSectionProfileHandler(req, ctx, tx, revisionId);
-    });
+    const revision = await createNewRevisionAggregateHandler(
+      req,
+      ctx,
+      "Batch create section profiles",
+    );
+    return await batchCreateSectionProfileHandler(req, ctx, revision);
   },
 });
 async function batchCreateSectionProfileHandler(
@@ -202,8 +205,7 @@ async function batchCreateSectionProfileHandler(
     };
   },
   ctx: AppContext,
-  tx: DbTransaction,
-  revisionId: string,
+  revision: ModelRevisionAggregate,
 ) {
   const seenTempIds = new Set<string>();
 
@@ -248,7 +250,7 @@ async function batchCreateSectionProfileHandler(
 
     return SectionProfileAggregate.create({
       id,
-      revisionId,
+      revisionId: revision.id,
       name: sectionProfile.name,
       discriminator: sectionProfile.discriminator,
       area: converted.area,
@@ -267,13 +269,20 @@ async function batchCreateSectionProfileHandler(
     });
   });
 
-  const saved = await ctx.services.sectionProfileRepository.batchCreate(
-    tx,
-    entities,
-  );
+  for (const sectionProfile of entities) {
+    revision.addSectionProfile(sectionProfile.toSnapshot());
+  }
+
+  await getDb().transaction(async (tx) => {
+    await ctx.services.modelRevisionRepository.save({
+      revision,
+      newRevision: true,
+      tx,
+    });
+  });
 
   return {
-    sectionProfiles: saved.map((sectionProfile) =>
+    sectionProfiles: entities.map((sectionProfile) =>
       toResponseSectionProfile(sectionProfile),
     ),
     tempIdToId,

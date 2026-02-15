@@ -137,6 +137,29 @@ describe("typed section profile api client integration", () => {
       throw new Error("Expected batch create responses");
     }
 
+    const getRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+      },
+    );
+
+    expect(getRevisionResponse.error).toBeUndefined();
+    expect(getRevisionResponse.response.status).toBe(200);
+    expect(getRevisionResponse.data).toBeDefined();
+    expect(
+      getRevisionResponse.data?.modelRevision.sectionProfiles.map(
+        (sectionProfile) => sectionProfile.id,
+      ),
+    ).toEqual(
+      expect.arrayContaining([
+        ...Object.values(imperialBatchCreateResponse.data.tempIdToId),
+        ...Object.values(metricBatchCreateResponse.data.tempIdToId),
+      ]),
+    );
+
     const tempIdToId = {
       ...imperialBatchCreateResponse.data.tempIdToId,
       ...metricBatchCreateResponse.data.tempIdToId,

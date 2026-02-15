@@ -3,10 +3,15 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import {
   Area,
   AreaMomentOfInertia,
+  AreaMomentOfInertiaUnits,
+  AreaUnits,
   Pressure,
+  PressureUnits,
   Ratio,
   Volume,
+  VolumeUnits,
   WarpingMomentOfInertia,
+  WarpingMomentOfInertiaUnits,
 } from "unitsnet-js";
 import { getDb, type DbTransaction } from "../db/client";
 import {
@@ -722,11 +727,11 @@ const buildRevisionChangeRowsFromEvents = (input: {
             revisionId: event.payload.revisionId,
             pressureE: {
               value: event.payload.pressureE.Pascals,
-              unit: "Pascals",
+              unit: PressureUnits.Pascals,
             },
             pressureG: {
               value: event.payload.pressureG.Pascals,
-              unit: "Pascals",
+              unit: PressureUnits.Pascals,
             },
           },
           createdAt: now,
@@ -734,7 +739,85 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
-  return [...nodeChanges, ...materialChanges];
+  const sectionProfileChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "section_profile_created" }> =>
+        event.type === "section_profile_created",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          draftId: input.draftId,
+          entityType: "section_profile",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            name: event.payload.name,
+            discriminator: event.payload.discriminator,
+            area: {
+              value: event.payload.area.SquareMeters,
+              unit: AreaUnits.SquareMeters,
+            },
+            strongAxisMomentOfInertia: {
+              value: event.payload.strongAxisMomentOfInertia.MetersToTheFourth,
+              unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
+            },
+            weakAxisMomentOfInertia: {
+              value: event.payload.weakAxisMomentOfInertia.MetersToTheFourth,
+              unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
+            },
+            torsionalConstant: {
+              value: event.payload.torsionalConstant.MetersToTheFourth,
+              unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
+            },
+            warpingConstant: {
+              value: event.payload.warpingConstant.MetersToTheSixth,
+              unit: WarpingMomentOfInertiaUnits.MetersToTheSixth,
+            },
+            strongAxisPlasticSectionModulus: {
+              value: event.payload.strongAxisPlasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters,
+            },
+            weakAxisPlasticSectionModulus: {
+              value: event.payload.weakAxisPlasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters,
+            },
+            strongAxisElasticSectionModulus: {
+              value: event.payload.strongAxisElasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters,
+            },
+            weakAxisElasticSectionModulus: {
+              value: event.payload.weakAxisElasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters,
+            },
+            ...(event.payload.strongAxisShearArea
+              ? {
+                  strongAxisShearArea: {
+                    value: event.payload.strongAxisShearArea.SquareMeters,
+                    unit: AreaUnits.SquareMeters,
+                  },
+                }
+              : {}),
+            ...(event.payload.weakAxisShearArea
+              ? {
+                  weakAxisShearArea: {
+                    value: event.payload.weakAxisShearArea.SquareMeters,
+                    unit: AreaUnits.SquareMeters,
+                  },
+                }
+              : {}),
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
+  return [...nodeChanges, ...materialChanges, ...sectionProfileChanges];
 };
 
 const buildModelRevisionChangeRow = (input: {

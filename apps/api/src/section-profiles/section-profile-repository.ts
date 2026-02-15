@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
 import type { DbTransaction } from "../db/client";
 import { revisionChanges } from "../db/schema";
@@ -177,7 +177,10 @@ export const drizzleSectionProfileRepository: SectionProfileRepository = {
       .from(revisionChanges)
       .where(
         and(
-          eq(revisionChanges.entityType, "sectionprofile"),
+          inArray(revisionChanges.entityType, [
+            "sectionprofile",
+            "section_profile",
+          ]),
           eq(revisionChanges.entityId, sectionProfileId),
         ),
       )
