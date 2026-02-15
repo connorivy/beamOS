@@ -99,7 +99,7 @@ export async function batchCreateNodeHandler(
         restraint: node.restraint,
       };
     }
-    
+
     revision.addNode(snapshot);
     return snapshot;
   });

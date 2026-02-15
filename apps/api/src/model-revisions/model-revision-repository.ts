@@ -690,7 +690,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
   events: DomainEvent[];
 }): (typeof revisionChanges.$inferInsert)[] => {
   const now = new Date();
-  
+
   const nodeChanges = input.events
     .filter(
       (event): event is Extract<DomainEvent, { type: "node_created" }> =>
