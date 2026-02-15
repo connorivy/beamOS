@@ -360,7 +360,6 @@ export interface operations {
             content: {
                 "application/json": {
                     nodes: {
-                        tempId?: string;
                         restraint?: {
                             canTranslateAlongX: boolean;
                             canTranslateAlongY: boolean;
@@ -384,11 +383,11 @@ export interface operations {
                             element1dId: string;
                             ratioAlongElement1d: number;
                         };
+                        tempId?: string;
                     }[];
                 };
                 "application/x-www-form-urlencoded": {
                     nodes: {
-                        tempId?: string;
                         restraint?: {
                             canTranslateAlongX: boolean;
                             canTranslateAlongY: boolean;
@@ -412,11 +411,11 @@ export interface operations {
                             element1dId: string;
                             ratioAlongElement1d: number;
                         };
+                        tempId?: string;
                     }[];
                 };
                 "multipart/form-data": {
                     nodes: {
-                        tempId?: string;
                         restraint?: {
                             canTranslateAlongX: boolean;
                             canTranslateAlongY: boolean;
@@ -440,6 +439,7 @@ export interface operations {
                             element1dId: string;
                             ratioAlongElement1d: number;
                         };
+                        tempId?: string;
                     }[];
                 };
             };
@@ -737,7 +737,6 @@ export interface operations {
                         volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
                     };
                     sectionProfiles: ({
-                        tempId?: string;
                         name: string;
                         area: number;
                         strongAxisMomentOfInertia: number;
@@ -750,8 +749,8 @@ export interface operations {
                         weakAxisElasticSectionModulus: number;
                         /** @constant */
                         discriminator: "STANDARD";
-                    } | {
                         tempId?: string;
+                    } | {
                         name: string;
                         area: number;
                         strongAxisMomentOfInertia: number;
@@ -766,6 +765,7 @@ export interface operations {
                         discriminator: "WITH_SHEAR_AREAS";
                         strongAxisShearArea: number;
                         weakAxisShearArea: number;
+                        tempId?: string;
                     })[];
                 };
                 "application/x-www-form-urlencoded": {
@@ -780,7 +780,6 @@ export interface operations {
                         volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
                     };
                     sectionProfiles: ({
-                        tempId?: string;
                         name: string;
                         area: number;
                         strongAxisMomentOfInertia: number;
@@ -793,8 +792,8 @@ export interface operations {
                         weakAxisElasticSectionModulus: number;
                         /** @constant */
                         discriminator: "STANDARD";
-                    } | {
                         tempId?: string;
+                    } | {
                         name: string;
                         area: number;
                         strongAxisMomentOfInertia: number;
@@ -809,6 +808,7 @@ export interface operations {
                         discriminator: "WITH_SHEAR_AREAS";
                         strongAxisShearArea: number;
                         weakAxisShearArea: number;
+                        tempId?: string;
                     })[];
                 };
                 "multipart/form-data": {
@@ -823,7 +823,6 @@ export interface operations {
                         volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
                     };
                     sectionProfiles: ({
-                        tempId?: string;
                         name: string;
                         area: number;
                         strongAxisMomentOfInertia: number;
@@ -836,8 +835,8 @@ export interface operations {
                         weakAxisElasticSectionModulus: number;
                         /** @constant */
                         discriminator: "STANDARD";
-                    } | {
                         tempId?: string;
+                    } | {
                         name: string;
                         area: number;
                         strongAxisMomentOfInertia: number;
@@ -852,6 +851,7 @@ export interface operations {
                         discriminator: "WITH_SHEAR_AREAS";
                         strongAxisShearArea: number;
                         weakAxisShearArea: number;
+                        tempId?: string;
                     })[];
                 };
             };
@@ -1037,7 +1037,6 @@ export interface operations {
             content: {
                 "application/json": {
                     element1ds: {
-                        tempId?: string;
                         /** Format: uuid */
                         startNodeId: string;
                         /** Format: uuid */
@@ -1046,11 +1045,11 @@ export interface operations {
                         materialId: string;
                         /** Format: uuid */
                         sectionProfileId: string;
+                        tempId?: string;
                     }[];
                 };
                 "application/x-www-form-urlencoded": {
                     element1ds: {
-                        tempId?: string;
                         /** Format: uuid */
                         startNodeId: string;
                         /** Format: uuid */
@@ -1059,11 +1058,11 @@ export interface operations {
                         materialId: string;
                         /** Format: uuid */
                         sectionProfileId: string;
+                        tempId?: string;
                     }[];
                 };
                 "multipart/form-data": {
                     element1ds: {
-                        tempId?: string;
                         /** Format: uuid */
                         startNodeId: string;
                         /** Format: uuid */
@@ -1072,6 +1071,7 @@ export interface operations {
                         materialId: string;
                         /** Format: uuid */
                         sectionProfileId: string;
+                        tempId?: string;
                     }[];
                 };
             };
@@ -1086,10 +1086,6 @@ export interface operations {
                     "application/json": {
                         element1ds: {
                             /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                            /** Format: uuid */
                             startNodeId: string;
                             /** Format: uuid */
                             endNodeId: string;
@@ -1097,6 +1093,10 @@ export interface operations {
                             materialId: string;
                             /** Format: uuid */
                             sectionProfileId: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            revisionId: string;
                         }[];
                         tempIdToId: {
                             [key: string]: string;
@@ -1126,10 +1126,6 @@ export interface operations {
                     "application/json": {
                         element1d: {
                             /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                            /** Format: uuid */
                             startNodeId: string;
                             /** Format: uuid */
                             endNodeId: string;
@@ -1137,6 +1133,10 @@ export interface operations {
                             materialId: string;
                             /** Format: uuid */
                             sectionProfileId: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            revisionId: string;
                         };
                     };
                 };
@@ -1262,10 +1262,6 @@ export interface operations {
                             }[];
                             element1ds: {
                                 /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                                /** Format: uuid */
                                 startNodeId: string;
                                 /** Format: uuid */
                                 endNodeId: string;
@@ -1273,6 +1269,10 @@ export interface operations {
                                 materialId: string;
                                 /** Format: uuid */
                                 sectionProfileId: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                revisionId: string;
                             }[];
                         };
                     };
@@ -1296,7 +1296,6 @@ export interface operations {
                     element1ds: {
                         /** @default [] */
                         create: {
-                            tempId?: string;
                             /** Format: uuid */
                             startNodeId: string;
                             /** Format: uuid */
@@ -1305,14 +1304,20 @@ export interface operations {
                             materialId: string;
                             /** Format: uuid */
                             sectionProfileId: string;
+                            tempId?: string;
                         }[];
                         /** @default [] */
                         update: {
+                            /** Format: uuid */
+                            startNodeId: string;
+                            /** Format: uuid */
+                            endNodeId: string;
+                            /** Format: uuid */
+                            materialId: string;
+                            /** Format: uuid */
+                            sectionProfileId: string;
+                            /** Format: uuid */
                             id: string;
-                            startNode?: string;
-                            endNode?: string;
-                            material?: string;
-                            section?: string;
                         }[];
                         /** @default [] */
                         delete: string[];
@@ -1320,7 +1325,6 @@ export interface operations {
                     nodes: {
                         /** @default [] */
                         create: {
-                            tempId?: string;
                             restraint?: {
                                 canTranslateAlongX: boolean;
                                 canTranslateAlongY: boolean;
@@ -1344,12 +1348,35 @@ export interface operations {
                                 element1dId: string;
                                 ratioAlongElement1d: number;
                             };
+                            tempId?: string;
                         }[];
                         /** @default [] */
                         update: {
+                            restraint?: {
+                                canTranslateAlongX: boolean;
+                                canTranslateAlongY: boolean;
+                                canTranslateAlongZ: boolean;
+                                canRotateAboutX: boolean;
+                                canRotateAboutY: boolean;
+                                canRotateAboutZ: boolean;
+                            };
+                            location: {
+                                /** @constant */
+                                type: "spatial";
+                                point: {
+                                    x: number;
+                                    y: number;
+                                    z: number;
+                                };
+                            } | {
+                                /** @constant */
+                                type: "internal";
+                                /** Format: uuid */
+                                element1dId: string;
+                                ratioAlongElement1d: number;
+                            };
+                            /** Format: uuid */
                             id: string;
-                            /** @enum {string} */
-                            nodeTypeDescriminator?: "external" | "internal";
                         }[];
                         /** @default [] */
                         delete: string[];
@@ -1384,7 +1411,6 @@ export interface operations {
                     sectionProfiles: {
                         /** @default [] */
                         create: ({
-                            tempId?: string;
                             name: string;
                             area: number;
                             strongAxisMomentOfInertia: number;
@@ -1397,8 +1423,8 @@ export interface operations {
                             weakAxisElasticSectionModulus: number;
                             /** @constant */
                             discriminator: "STANDARD";
-                        } | {
                             tempId?: string;
+                        } | {
                             name: string;
                             area: number;
                             strongAxisMomentOfInertia: number;
@@ -1413,12 +1439,42 @@ export interface operations {
                             discriminator: "WITH_SHEAR_AREAS";
                             strongAxisShearArea: number;
                             weakAxisShearArea: number;
+                            tempId?: string;
                         })[];
                         /** @default [] */
-                        update: {
+                        update: ({
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "STANDARD";
+                            /** Format: uuid */
                             id: string;
-                            name?: string;
-                        }[];
+                        } | {
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "WITH_SHEAR_AREAS";
+                            strongAxisShearArea: number;
+                            weakAxisShearArea: number;
+                            /** Format: uuid */
+                            id: string;
+                        })[];
                         /** @default [] */
                         delete: string[];
                     };
@@ -1427,7 +1483,6 @@ export interface operations {
                     element1ds: {
                         /** @default [] */
                         create: {
-                            tempId?: string;
                             /** Format: uuid */
                             startNodeId: string;
                             /** Format: uuid */
@@ -1436,14 +1491,20 @@ export interface operations {
                             materialId: string;
                             /** Format: uuid */
                             sectionProfileId: string;
+                            tempId?: string;
                         }[];
                         /** @default [] */
                         update: {
+                            /** Format: uuid */
+                            startNodeId: string;
+                            /** Format: uuid */
+                            endNodeId: string;
+                            /** Format: uuid */
+                            materialId: string;
+                            /** Format: uuid */
+                            sectionProfileId: string;
+                            /** Format: uuid */
                             id: string;
-                            startNode?: string;
-                            endNode?: string;
-                            material?: string;
-                            section?: string;
                         }[];
                         /** @default [] */
                         delete: string[];
@@ -1451,7 +1512,6 @@ export interface operations {
                     nodes: {
                         /** @default [] */
                         create: {
-                            tempId?: string;
                             restraint?: {
                                 canTranslateAlongX: boolean;
                                 canTranslateAlongY: boolean;
@@ -1475,12 +1535,35 @@ export interface operations {
                                 element1dId: string;
                                 ratioAlongElement1d: number;
                             };
+                            tempId?: string;
                         }[];
                         /** @default [] */
                         update: {
+                            restraint?: {
+                                canTranslateAlongX: boolean;
+                                canTranslateAlongY: boolean;
+                                canTranslateAlongZ: boolean;
+                                canRotateAboutX: boolean;
+                                canRotateAboutY: boolean;
+                                canRotateAboutZ: boolean;
+                            };
+                            location: {
+                                /** @constant */
+                                type: "spatial";
+                                point: {
+                                    x: number;
+                                    y: number;
+                                    z: number;
+                                };
+                            } | {
+                                /** @constant */
+                                type: "internal";
+                                /** Format: uuid */
+                                element1dId: string;
+                                ratioAlongElement1d: number;
+                            };
+                            /** Format: uuid */
                             id: string;
-                            /** @enum {string} */
-                            nodeTypeDescriminator?: "external" | "internal";
                         }[];
                         /** @default [] */
                         delete: string[];
@@ -1515,7 +1598,6 @@ export interface operations {
                     sectionProfiles: {
                         /** @default [] */
                         create: ({
-                            tempId?: string;
                             name: string;
                             area: number;
                             strongAxisMomentOfInertia: number;
@@ -1528,8 +1610,8 @@ export interface operations {
                             weakAxisElasticSectionModulus: number;
                             /** @constant */
                             discriminator: "STANDARD";
-                        } | {
                             tempId?: string;
+                        } | {
                             name: string;
                             area: number;
                             strongAxisMomentOfInertia: number;
@@ -1544,12 +1626,42 @@ export interface operations {
                             discriminator: "WITH_SHEAR_AREAS";
                             strongAxisShearArea: number;
                             weakAxisShearArea: number;
+                            tempId?: string;
                         })[];
                         /** @default [] */
-                        update: {
+                        update: ({
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "STANDARD";
+                            /** Format: uuid */
                             id: string;
-                            name?: string;
-                        }[];
+                        } | {
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "WITH_SHEAR_AREAS";
+                            strongAxisShearArea: number;
+                            weakAxisShearArea: number;
+                            /** Format: uuid */
+                            id: string;
+                        })[];
                         /** @default [] */
                         delete: string[];
                     };
@@ -1558,7 +1670,6 @@ export interface operations {
                     element1ds: {
                         /** @default [] */
                         create: {
-                            tempId?: string;
                             /** Format: uuid */
                             startNodeId: string;
                             /** Format: uuid */
@@ -1567,14 +1678,20 @@ export interface operations {
                             materialId: string;
                             /** Format: uuid */
                             sectionProfileId: string;
+                            tempId?: string;
                         }[];
                         /** @default [] */
                         update: {
+                            /** Format: uuid */
+                            startNodeId: string;
+                            /** Format: uuid */
+                            endNodeId: string;
+                            /** Format: uuid */
+                            materialId: string;
+                            /** Format: uuid */
+                            sectionProfileId: string;
+                            /** Format: uuid */
                             id: string;
-                            startNode?: string;
-                            endNode?: string;
-                            material?: string;
-                            section?: string;
                         }[];
                         /** @default [] */
                         delete: string[];
@@ -1582,7 +1699,6 @@ export interface operations {
                     nodes: {
                         /** @default [] */
                         create: {
-                            tempId?: string;
                             restraint?: {
                                 canTranslateAlongX: boolean;
                                 canTranslateAlongY: boolean;
@@ -1606,12 +1722,35 @@ export interface operations {
                                 element1dId: string;
                                 ratioAlongElement1d: number;
                             };
+                            tempId?: string;
                         }[];
                         /** @default [] */
                         update: {
+                            restraint?: {
+                                canTranslateAlongX: boolean;
+                                canTranslateAlongY: boolean;
+                                canTranslateAlongZ: boolean;
+                                canRotateAboutX: boolean;
+                                canRotateAboutY: boolean;
+                                canRotateAboutZ: boolean;
+                            };
+                            location: {
+                                /** @constant */
+                                type: "spatial";
+                                point: {
+                                    x: number;
+                                    y: number;
+                                    z: number;
+                                };
+                            } | {
+                                /** @constant */
+                                type: "internal";
+                                /** Format: uuid */
+                                element1dId: string;
+                                ratioAlongElement1d: number;
+                            };
+                            /** Format: uuid */
                             id: string;
-                            /** @enum {string} */
-                            nodeTypeDescriminator?: "external" | "internal";
                         }[];
                         /** @default [] */
                         delete: string[];
@@ -1646,7 +1785,6 @@ export interface operations {
                     sectionProfiles: {
                         /** @default [] */
                         create: ({
-                            tempId?: string;
                             name: string;
                             area: number;
                             strongAxisMomentOfInertia: number;
@@ -1659,8 +1797,8 @@ export interface operations {
                             weakAxisElasticSectionModulus: number;
                             /** @constant */
                             discriminator: "STANDARD";
-                        } | {
                             tempId?: string;
+                        } | {
                             name: string;
                             area: number;
                             strongAxisMomentOfInertia: number;
@@ -1675,12 +1813,42 @@ export interface operations {
                             discriminator: "WITH_SHEAR_AREAS";
                             strongAxisShearArea: number;
                             weakAxisShearArea: number;
+                            tempId?: string;
                         })[];
                         /** @default [] */
-                        update: {
+                        update: ({
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "STANDARD";
+                            /** Format: uuid */
                             id: string;
-                            name?: string;
-                        }[];
+                        } | {
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "WITH_SHEAR_AREAS";
+                            strongAxisShearArea: number;
+                            weakAxisShearArea: number;
+                            /** Format: uuid */
+                            id: string;
+                        })[];
                         /** @default [] */
                         delete: string[];
                     };
@@ -1807,10 +1975,6 @@ export interface operations {
                             }[];
                             element1ds: {
                                 /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                                /** Format: uuid */
                                 startNodeId: string;
                                 /** Format: uuid */
                                 endNodeId: string;
@@ -1818,6 +1982,10 @@ export interface operations {
                                 materialId: string;
                                 /** Format: uuid */
                                 sectionProfileId: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                revisionId: string;
                             }[];
                         };
                     };
