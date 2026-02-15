@@ -30,6 +30,34 @@ export const NodeRestraints = {
   } as NodeRestraint,
 };
 
+export const parseRestraint = (value: unknown): NodeRestraint => {
+  if (!value || typeof value !== "object") {
+    throw new Error("restraint must be a valid object");
+  }
+
+  const obj = value as Record<string, unknown>;
+
+  if (
+    typeof obj.canTranslateAlongX !== "boolean" ||
+    typeof obj.canTranslateAlongY !== "boolean" ||
+    typeof obj.canTranslateAlongZ !== "boolean" ||
+    typeof obj.canRotateAboutX !== "boolean" ||
+    typeof obj.canRotateAboutY !== "boolean" ||
+    typeof obj.canRotateAboutZ !== "boolean"
+  ) {
+    throw new Error("restraint must have all required boolean properties");
+  }
+
+  return {
+    canTranslateAlongX: obj.canTranslateAlongX,
+    canTranslateAlongY: obj.canTranslateAlongY,
+    canTranslateAlongZ: obj.canTranslateAlongZ,
+    canRotateAboutX: obj.canRotateAboutX,
+    canRotateAboutY: obj.canRotateAboutY,
+    canRotateAboutZ: obj.canRotateAboutZ,
+  };
+};
+
 export type NodePoint = {
   x: number;
   y: number;

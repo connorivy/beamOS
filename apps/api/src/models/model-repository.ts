@@ -15,7 +15,7 @@ import type { ModelDomainEvent } from "./model-events";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
-import { NodeRestraints } from "../nodes/node-entity";
+import { NodeRestraints, parseRestraint } from "../nodes/node-entity";
 
 const applyNodeChanges = (input: {
   current: Map<string, NodeSnapshot>;
@@ -353,7 +353,7 @@ const buildNodesFromRevisions = async (input: {
 };
 
 const toNodeSnapshotFromRow = (row: typeof nodes.$inferSelect): NodeSnapshot => {
-  const restraint = parseNodeRestraint(row.restraint);
+  const restraint = parseRestraint(row.restraint);
 
   if (row.locationDiscriminator === "internal") {
     return {
@@ -380,34 +380,6 @@ const toNodeSnapshotFromRow = (row: typeof nodes.$inferSelect): NodeSnapshot => 
       z: row.pointZ ?? 0,
     },
     restraint,
-  };
-};
-
-const parseNodeRestraint = (value: unknown): NodeRestraint => {
-  if (!value || typeof value !== "object") {
-    throw new Error("restraint must be a valid object");
-  }
-
-  const obj = value as Record<string, unknown>;
-
-  if (
-    typeof obj.canTranslateAlongX !== "boolean" ||
-    typeof obj.canTranslateAlongY !== "boolean" ||
-    typeof obj.canTranslateAlongZ !== "boolean" ||
-    typeof obj.canRotateAboutX !== "boolean" ||
-    typeof obj.canRotateAboutY !== "boolean" ||
-    typeof obj.canRotateAboutZ !== "boolean"
-  ) {
-    throw new Error("restraint must have all required boolean properties");
-  }
-
-  return {
-    canTranslateAlongX: obj.canTranslateAlongX,
-    canTranslateAlongY: obj.canTranslateAlongY,
-    canTranslateAlongZ: obj.canTranslateAlongZ,
-    canRotateAboutX: obj.canRotateAboutX,
-    canRotateAboutY: obj.canRotateAboutY,
-    canRotateAboutZ: obj.canRotateAboutZ,
   };
 };
 
