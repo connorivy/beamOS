@@ -389,7 +389,7 @@ const parseNodeRestraint = (value: unknown): NodeRestraint => {
   }
 
   const obj = value as Record<string, unknown>;
-  
+
   if (
     typeof obj.canTranslateAlongX !== "boolean" ||
     typeof obj.canTranslateAlongY !== "boolean" ||
@@ -400,7 +400,7 @@ const parseNodeRestraint = (value: unknown): NodeRestraint => {
   ) {
     throw new Error("restraint must have all required boolean properties");
   }
-  
+
   return {
     canTranslateAlongX: obj.canTranslateAlongX,
     canTranslateAlongY: obj.canTranslateAlongY,

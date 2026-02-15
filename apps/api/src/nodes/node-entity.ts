@@ -203,7 +203,7 @@ export class NodeEntity {
     if (!restraint) {
       return { ...NodeRestraints.FREE };
     }
-    
+
     const normalized: NodeRestraint = {
       canTranslateAlongX: restraint.canTranslateAlongX ?? NodeRestraints.FREE.canTranslateAlongX,
       canTranslateAlongY: restraint.canTranslateAlongY ?? NodeRestraints.FREE.canTranslateAlongY,
