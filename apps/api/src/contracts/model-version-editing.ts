@@ -72,6 +72,8 @@ export const patchModelResSchema = z.object({
   model: z.object({
     id: uuidSchema,
     name: z.string(),
+    branchNames: z.array(z.string().trim().min(1)),
+    lastModified: z.iso.datetime(),
   }),
   version: modelVersionRefSchema,
 });

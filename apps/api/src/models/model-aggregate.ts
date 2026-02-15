@@ -5,12 +5,13 @@ import type { ModelDomainEvent } from "./model-events";
 export type ModelSnapshot = {
   id: string;
   name: string;
-  nodes: NodeSnapshot[];
+  branchNames: string[];
 };
 
 export class ModelAggregate {
   private _name: string;
   private _nodes: NodeEntity[];
+  private _branchNames: string[];
   private _domainEvents: ModelDomainEvent[];
   private _sourceRevisionId: string | null;
 
@@ -18,6 +19,7 @@ export class ModelAggregate {
     id: string;
     name: string;
     nodes: NodeSnapshot[];
+    branchNames?: string[];
     sourceRevisionId?: string | null;
   }) {
     assertUuid(snapshot.id, "id");
@@ -26,6 +28,9 @@ export class ModelAggregate {
     this.id = snapshot.id;
     this._name = snapshot.name.trim();
     this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
+    this._branchNames = (snapshot.branchNames ?? [])
+      .map((branchName) => branchName.trim())
+      .filter((branchName) => branchName.length > 0);
     this._domainEvents = [];
     this._sourceRevisionId = snapshot.sourceRevisionId ?? null;
   }
@@ -35,12 +40,14 @@ export class ModelAggregate {
   static create(snapshot: {
     name: string;
     nodes?: NodeSnapshot[];
+    branchNames?: string[];
     sourceRevisionId?: string | null;
   }): ModelAggregate {
     const model = new ModelAggregate({
       id: Bun.randomUUIDv7(),
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
+      branchNames: snapshot.branchNames ?? ["main"],
       sourceRevisionId: snapshot.sourceRevisionId ?? null,
     });
     model._domainEvents.push({
@@ -54,12 +61,14 @@ export class ModelAggregate {
     id: string;
     name: string;
     nodes?: NodeSnapshot[];
+    branchNames?: string[];
     sourceRevisionId?: string | null;
   }): ModelAggregate {
     return new ModelAggregate({
       id: snapshot.id,
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
+      branchNames: snapshot.branchNames ?? [],
       sourceRevisionId: snapshot.sourceRevisionId ?? null,
     });
   }
@@ -74,6 +83,10 @@ export class ModelAggregate {
 
   get sourceRevisionId(): string | null {
     return this._sourceRevisionId;
+  }
+
+  get branchNames(): readonly string[] {
+    return this._branchNames;
   }
 
   rename(name: string): void {
@@ -117,7 +130,7 @@ export class ModelAggregate {
     return {
       id: this.id,
       name: this._name,
-      nodes: this._nodes.map((node) => node.toSnapshot()),
+      branchNames: this._branchNames,
     };
   }
 

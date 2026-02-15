@@ -15,6 +15,8 @@ export const createModelResSchema = z.object({
   model: z.object({
     id: uuidSchema,
     name: z.string(),
+    branchNames: z.array(z.string().trim().min(1)),
+    lastModified: z.iso.datetime(),
   }),
   version: z.object({
     modelId: uuidSchema,
@@ -35,6 +37,7 @@ export const createModel = defineEndpoint({
   req: createModelReqSchema,
   res: createModelResSchema,
   async handler(req, ctx: AppContext) {
+    const lastModified = new Date().toISOString();
     const model = ModelAggregate.create({
       name: req.body.name,
     });
@@ -55,6 +58,8 @@ export const createModel = defineEndpoint({
       model: {
         id: savedModel.id,
         name: savedModel.name,
+        branchNames: [...savedModel.branchNames],
+        lastModified,
       },
       version: {
         modelId: savedModel.id,
