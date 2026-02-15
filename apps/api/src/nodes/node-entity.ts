@@ -226,22 +226,14 @@ export class NodeEntity {
   }
 
   private normalizeRestraint(
-    restraint: Partial<NodeRestraint> | undefined,
+    restraint: NodeRestraint | undefined,
   ): NodeRestraint {
     if (!restraint) {
       return { ...NodeRestraints.FREE };
     }
 
-    const normalized: NodeRestraint = {
-      canTranslateAlongX: restraint.canTranslateAlongX ?? NodeRestraints.FREE.canTranslateAlongX,
-      canTranslateAlongY: restraint.canTranslateAlongY ?? NodeRestraints.FREE.canTranslateAlongY,
-      canTranslateAlongZ: restraint.canTranslateAlongZ ?? NodeRestraints.FREE.canTranslateAlongZ,
-      canRotateAboutX: restraint.canRotateAboutX ?? NodeRestraints.FREE.canRotateAboutX,
-      canRotateAboutY: restraint.canRotateAboutY ?? NodeRestraints.FREE.canRotateAboutY,
-      canRotateAboutZ: restraint.canRotateAboutZ ?? NodeRestraints.FREE.canRotateAboutZ,
-    };
-    this.assertRestraint(normalized);
-    return normalized;
+    this.assertRestraint(restraint);
+    return { ...restraint };
   }
 
   private assertRestraint(restraint: NodeRestraint): void {
