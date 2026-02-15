@@ -328,7 +328,6 @@ const buildRevisionChanges = (input: {
             ).Pascals,
             unit: "Pascals",
           },
-          ...(createMaterial.name ? { name: createMaterial.name } : {}),
         },
       }),
     );
@@ -349,14 +348,19 @@ const buildRevisionChanges = (input: {
           id: updateMaterial.id,
           revisionId: input.revisionId,
           pressureE: {
-            value: existing.pressureE.Pascals,
+            value: new Pressure(
+              updateMaterial.pressureE.value,
+              updateMaterial.pressureE.unit,
+            ).Pascals,
             unit: "Pascals",
           },
           pressureG: {
-            value: existing.pressureG.Pascals,
+            value: new Pressure(
+              updateMaterial.pressureG.value,
+              updateMaterial.pressureG.unit,
+            ).Pascals,
             unit: "Pascals",
           },
-          ...(updateMaterial.name ? { name: updateMaterial.name } : {}),
         },
       }),
     );

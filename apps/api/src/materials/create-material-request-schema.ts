@@ -1,14 +1,6 @@
-import { PressureUnits } from "unitsnet-js";
 import { z } from "zod";
+import { materialPropertiesSchema } from "./material-properties-schema";
 
-const pressureDtoSchema = z.object({
-  value: z.number().finite(),
-  unit: z.enum(PressureUnits),
-});
-
-export const createMaterialRequestSchema = z.object({
-  name: z.string().trim().min(1),
-  pressureE: pressureDtoSchema,
-  pressureG: pressureDtoSchema,
+export const createMaterialRequestSchema = materialPropertiesSchema.extend({
   tempId: z.string().trim().min(1).optional(),
 });
