@@ -2,6 +2,10 @@ import { DomainEvent } from "src/common/types";
 import { assertUuid, assertUuidV7 } from "../common/uuid";
 import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
 import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
+import {
+  ModelSettingsEntity,
+  type ModelSettingsSnapshot,
+} from "../model-settings/model-settings-entity";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import {
   SectionProfileEntity,
@@ -22,6 +26,7 @@ export type ModelRevisionSnapshot = {
   materials: MaterialSnapshot[];
   sectionProfiles: SectionProfileSnapshot[];
   element1ds: Element1dSnapshot[];
+  modelSettings: ModelSettingsSnapshot | null;
 };
 
 export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id"> & {
@@ -42,6 +47,7 @@ export class ModelRevisionAggregate {
   private _materials: MaterialEntity[];
   private _sectionProfiles: SectionProfileEntity[];
   private _element1ds: Element1dEntity[];
+  private _modelSettings: ModelSettingsEntity | null;
   private _domainEvents: DomainEvent[];
 
   private constructor(snapshot: ModelRevisionSnapshot | ModelRevisionCreateSnapshot) {
@@ -77,6 +83,9 @@ export class ModelRevisionAggregate {
     this._element1ds = snapshot.element1ds.map((element1d) =>
       Element1dEntity.rehydrate(element1d),
     );
+    this._modelSettings = snapshot.modelSettings
+      ? ModelSettingsEntity.rehydrate(snapshot.modelSettings)
+      : null;
     this._domainEvents = [];
   }
 
@@ -135,6 +144,10 @@ export class ModelRevisionAggregate {
     return this._element1ds;
   }
 
+  get modelSettings(): ModelSettingsEntity | null {
+    return this._modelSettings;
+  }
+
   addNode(node: NodeSnapshot): void {
     assertUuid(node.id, "nodeId");
     if (this._nodes.some((existing) => existing.id === node.id)) {
@@ -167,6 +180,10 @@ export class ModelRevisionAggregate {
     this._element1ds.push(Element1dEntity.create(element1d));
   }
 
+  setModelSettings(modelSettings: ModelSettingsSnapshot): void {
+    this._modelSettings = ModelSettingsEntity.create(modelSettings);
+  }
+
   deleteNode(nodeId: string): void {
     assertUuid(nodeId, "nodeId");
     const index = this._nodes.findIndex((node) => node.id === nodeId);
@@ -197,6 +214,7 @@ export class ModelRevisionAggregate {
         sectionProfile.toSnapshot(),
       ),
       element1ds: this._element1ds.map((element1d) => element1d.toSnapshot()),
+      modelSettings: this._modelSettings?.toSnapshot() ?? null,
     };
   }
 
@@ -213,7 +231,10 @@ export class ModelRevisionAggregate {
     const element1dEvents = this._element1ds.flatMap((element1d) =>
       element1d.pullDomainEvents(),
     );
-    const events = [...this._domainEvents, ...nodeEvents, ...materialEvents, ...sectionProfileEvents, ...element1dEvents];
+    const modelSettingsEvents = this._modelSettings
+      ? this._modelSettings.pullDomainEvents()
+      : [];
+    const events = [...this._domainEvents, ...nodeEvents, ...materialEvents, ...sectionProfileEvents, ...element1dEvents, ...modelSettingsEvents];
     this._domainEvents = [];
     return events;
   }

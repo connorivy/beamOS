@@ -23,6 +23,7 @@ describe("ModelRevisionAggregate", () => {
       materials: [],
       sectionProfiles: [],
       element1ds: [],
+      modelSettings: null,
     });
 
     aggregate.addMaterial({
@@ -52,6 +53,7 @@ describe("ModelRevisionAggregate", () => {
       materials: [],
       sectionProfiles: [],
       element1ds: [],
+      modelSettings: null,
     });
 
     aggregate.addSectionProfile({
@@ -73,6 +75,42 @@ describe("ModelRevisionAggregate", () => {
     const events = aggregate.pullDomainEvents();
     expect(events).toHaveLength(1);
     expect(events[0]?.type).toBe("section_profile_created");
+    expect(aggregate.pullDomainEvents()).toHaveLength(0);
+  });
+
+  it("pulls domain events from setting model settings", () => {
+    const aggregate = ModelRevisionAggregate.create({
+      modelId: Bun.randomUUIDv7(),
+      branchName: "main",
+      name: "Revision",
+      parentRevisionId: null,
+      secondParentRevisionId: null,
+      authorId: Bun.randomUUIDv7(),
+      message: "Create revision",
+      createdAt: new Date(),
+      nodes: [],
+      materials: [],
+      sectionProfiles: [],
+      element1ds: [],
+      modelSettings: null,
+    });
+
+    aggregate.setModelSettings({
+      id: Bun.randomUUIDv7(),
+      revisionId: aggregate.id,
+      units: {
+        pressure: "Pascals",
+        area: "SquareMeters",
+        areaMomentOfInertia: "MetersToTheFourth",
+        warpingMomentOfInertia: "MetersToTheSixth",
+        volume: "CubicMeters",
+      },
+      yAxisUp: true,
+    });
+
+    const events = aggregate.pullDomainEvents();
+    expect(events).toHaveLength(1);
+    expect(events[0]?.type).toBe("model_settings_set");
     expect(aggregate.pullDomainEvents()).toHaveLength(0);
   });
 });

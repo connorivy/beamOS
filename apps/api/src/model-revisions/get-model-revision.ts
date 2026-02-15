@@ -14,6 +14,7 @@ import { element1dResponseSchema } from "../element1ds/element1d-response-schema
 import { materialResponseSchema } from "../materials/material-contract-schemas";
 import { revisionNodeResponseSchema } from "../nodes/node-response-schema";
 import { sectionProfileResponseSchema } from "../section-profiles/section-profile-response-schema";
+import { modelSettingsResponseSchema } from "../model-settings/model-settings-contract-schemas";
 
 const uuidV7Schema = z
   .uuid()
@@ -40,6 +41,7 @@ export const getModelRevisionResSchema = z.object({
     materials: z.array(materialResponseSchema),
     sectionProfiles: z.array(sectionProfileResponseSchema),
     element1ds: z.array(element1dResponseSchema),
+    modelSettings: modelSettingsResponseSchema.nullable(),
   }),
 });
 
@@ -162,6 +164,14 @@ export const getModelRevision = defineEndpoint({
           materialId: element1d.materialId,
           sectionProfileId: element1d.sectionProfileId,
         })),
+        modelSettings: modelRevision.modelSettings
+          ? {
+              id: modelRevision.modelSettings.id,
+              revisionId: modelRevision.modelSettings.revisionId,
+              units: modelRevision.modelSettings.units,
+              yAxisUp: modelRevision.modelSettings.yAxisUp,
+            }
+          : null,
       },
     };
   },

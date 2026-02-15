@@ -463,4 +463,104 @@ describe("model revision integration", () => {
       2,
     );
   });
+
+  it("returns only the latest model settings in the model revision aggregate", async () => {
+    const client = createApiClient(baseUrl);
+
+    const createModelResponse = await client.POST("/api/models", {
+      body: {
+        name: "Model Settings Revision Model",
+        authorId: randomUUID(),
+        message: "Create base model",
+      },
+    });
+
+    expect(createModelResponse.error).toBeUndefined();
+    expect(createModelResponse.response.status).toBe(200);
+    expect(createModelResponse.data).toBeDefined();
+
+    if (!createModelResponse.data) {
+      throw new Error("Expected model response");
+    }
+
+    const modelId = createModelResponse.data.model.id;
+    const branchName = createModelResponse.data.version.branchName;
+
+    const revisionOneResponse = await client.POST(
+      "/api/models/{modelId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+        body: {
+          nodes: { create: [], update: [], delete: [] },
+          materials: { create: [], update: [], delete: [] },
+          sectionProfiles: { create: [], update: [], delete: [] },
+          element1ds: { create: [], update: [], delete: [] },
+          modelSettings: {
+            units: {
+              pressure: PressureUnits.Pascals,
+              area: AreaUnits.SquareMeters,
+              areaMomentOfInertia: AreaMomentOfInertiaUnits.MetersToTheFourth,
+              warpingMomentOfInertia:
+                WarpingMomentOfInertiaUnits.MetersToTheSixth,
+              volume: VolumeUnits.CubicMeters,
+            },
+            yAxisUp: true,
+          },
+        } as any,
+      },
+    );
+
+    expect(revisionOneResponse.error).toBeUndefined();
+    expect(revisionOneResponse.response.status).toBe(200);
+
+    const revisionTwoResponse = await client.POST(
+      "/api/models/{modelId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+        body: {
+          nodes: { create: [], update: [], delete: [] },
+          materials: { create: [], update: [], delete: [] },
+          sectionProfiles: { create: [], update: [], delete: [] },
+          element1ds: { create: [], update: [], delete: [] },
+          modelSettings: {
+            units: {
+              pressure: PressureUnits.Bars,
+              area: AreaUnits.SquareInches,
+              areaMomentOfInertia: AreaMomentOfInertiaUnits.InchesToTheFourth,
+              warpingMomentOfInertia:
+                WarpingMomentOfInertiaUnits.InchesToTheSixth,
+              volume: VolumeUnits.CubicInches,
+            },
+            yAxisUp: false,
+          },
+        } as any,
+      },
+    );
+
+    expect(revisionTwoResponse.error).toBeUndefined();
+    expect(revisionTwoResponse.response.status).toBe(200);
+
+    const getModelRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+      },
+    );
+
+    expect(getModelRevisionResponse.error).toBeUndefined();
+    expect(getModelRevisionResponse.response.status).toBe(200);
+    expect(getModelRevisionResponse.data).toBeDefined();
+
+    const modelRevision = (getModelRevisionResponse.data as any).modelRevision;
+    expect(modelRevision.modelSettings).not.toBeNull();
+    expect(modelRevision.modelSettings.yAxisUp).toBe(false);
+    expect(modelRevision.modelSettings.units.pressure).toBe(PressureUnits.Bars);
+    expect(modelRevision.modelSettings.units.area).toBe(AreaUnits.SquareInches);
+  });
 });

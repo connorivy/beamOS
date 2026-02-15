@@ -10,6 +10,7 @@ import type { RevisionChangeRepository } from "../revision-changes/revision-chan
 import type { DbTransaction } from "../db/client";
 import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
+import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
 
 export type DomainEvent =
   | {
@@ -27,6 +28,10 @@ export type DomainEvent =
   | {
       type: "section_profile_created";
       payload: SectionProfileSnapshot;
+    }
+  | {
+      type: "model_settings_set";
+      payload: ModelSettingsSnapshot;
     };
 
 export type UserRepository = {

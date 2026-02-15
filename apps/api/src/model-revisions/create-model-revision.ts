@@ -187,6 +187,14 @@ export const createModelRevision = defineEndpoint({
           materialId: element1d.materialId,
           sectionProfileId: element1d.sectionProfileId,
         })),
+        modelSettings: modelRevision.modelSettings
+          ? {
+              id: modelRevision.modelSettings.id,
+              revisionId: modelRevision.modelSettings.revisionId,
+              units: modelRevision.modelSettings.units,
+              yAxisUp: modelRevision.modelSettings.yAxisUp,
+            }
+          : null,
       },
     };
   },
@@ -203,7 +211,7 @@ const buildRevisionChanges = (input: {
 }): RevisionChangeEntity[] => {
   const changes: RevisionChangeEntity[] = [];
   const toEntity = (change: {
-    entityType: "node" | "material" | "sectionprofile" | "element1d";
+    entityType: "node" | "material" | "sectionprofile" | "element1d" | "model_settings";
     entityId: string;
     op: "insert" | "update" | "delete";
     payload: Record<string, unknown>;
@@ -579,6 +587,23 @@ const buildRevisionChanges = (input: {
     );
   }
 
+  if (input.req.body.modelSettings) {
+    const modelSettingsId = Bun.randomUUIDv7();
+    changes.push(
+      toEntity({
+        entityType: "model_settings",
+        entityId: modelSettingsId,
+        op: "insert",
+        payload: {
+          id: modelSettingsId,
+          revisionId: input.revisionId,
+          units: input.req.body.modelSettings.units,
+          yAxisUp: input.req.body.modelSettings.yAxisUp,
+        },
+      }),
+    );
+  }
+
   return changes;
 };
 
@@ -690,5 +715,6 @@ export async function createNewRevisionAggregateHandler(
     element1ds: parentRevision.element1ds.map((element1d) =>
       element1d.toSnapshot(),
     ),
+    modelSettings: parentRevision.modelSettings?.toSnapshot() ?? null,
   });
 }

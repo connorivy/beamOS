@@ -14,6 +14,7 @@ import { updateNodeRequestSchema } from "../nodes/update-node-request-schema";
 import { createSectionProfileRequestSchema } from "../section-profiles/create-section-profile-request-schema";
 import { deleteSectionProfileRequestSchema } from "../section-profiles/delete-section-profile-request-schema";
 import { updateSectionProfileRequestSchema } from "../section-profiles/update-section-profile-request-schema";
+import { modelSettingsPropertiesSchema } from "../model-settings/model-settings-contract-schemas";
 
 const element1dOperationsRequestSchema = z.object({
   create: z.array(createElement1dRequestSchema).default([]),
@@ -49,5 +50,6 @@ export const createModelRevisionReqSchema = z.object({
     nodes: nodeOperationsRequestSchema,
     materials: materialOperationsRequestSchema,
     sectionProfiles: sectionProfileOperationsRequestSchema,
+    modelSettings: modelSettingsPropertiesSchema.optional(),
   }),
 });

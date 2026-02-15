@@ -33,6 +33,7 @@ import type { SectionProfileSnapshot } from "../section-profiles/section-profile
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
 import { NodeRestraints, parseRestraint } from "../nodes/node-entity";
+import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -57,7 +58,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .where(eq(modelBranchHeads.headRevisionId, revision.id))
         .limit(1),
     ]);
-    const [nodesById, materialsById, sectionProfilesById, element1dsById] =
+    const [nodesById, materialsById, sectionProfilesById, element1dsById, modelSettings] =
       await Promise.all([
         buildNodesFromRevisions({
           revisions,
@@ -65,6 +66,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         buildMaterialsFromRevisions({ revisions }),
         buildSectionProfilesFromRevisions({ revisions }),
         buildElement1dsFromRevisions({ revisions }),
+        buildModelSettingsFromRevisions({ revisions }),
       ]);
 
     return ModelRevisionAggregate.rehydrate({
@@ -82,6 +84,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       materials: Array.from(materialsById.values()),
       sectionProfiles: Array.from(sectionProfilesById.values()),
       element1ds: Array.from(element1dsById.values()),
+      modelSettings,
     });
   },
 
@@ -521,7 +524,32 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
-  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...sectionProfileChanges, ...element1dChanges];
+  const modelSettingsChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "model_settings_set" }> =>
+        event.type === "model_settings_set",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          entityType: "model_settings",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            units: event.payload.units,
+            yAxisUp: event.payload.yAxisUp,
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
+  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...sectionProfileChanges, ...element1dChanges, ...modelSettingsChanges];
 };
 
 const buildModelRevisionChangeRow = (input: {
@@ -956,6 +984,54 @@ const buildElement1dsFromRevisions = async (input: {
   }
 
   return element1dsById;
+};
+
+const buildModelSettingsFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<ModelSettingsSnapshot | null> => {
+  if (input.revisions.length === 0) {
+    return null;
+  }
+
+  const rows = await loadOrderedRevisionChanges(input.revisions);
+  let latest: ModelSettingsSnapshot | null = null;
+
+  for (const row of rows) {
+    if (row.entityType !== "model_settings") {
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    const units = toObject(payload.units);
+    if (
+      typeof units.pressure !== "string" ||
+      typeof units.area !== "string" ||
+      typeof units.areaMomentOfInertia !== "string" ||
+      typeof units.warpingMomentOfInertia !== "string" ||
+      typeof units.volume !== "string" ||
+      typeof payload.yAxisUp !== "boolean"
+    ) {
+      continue;
+    }
+
+    latest = {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      units: {
+        pressure: units.pressure,
+        area: units.area,
+        areaMomentOfInertia: units.areaMomentOfInertia,
+        warpingMomentOfInertia: units.warpingMomentOfInertia,
+        volume: units.volume,
+      },
+      yAxisUp: payload.yAxisUp,
+    };
+  }
+
+  return latest;
 };
 
 const extractNodeName = (payload: unknown): string => {
