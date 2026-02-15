@@ -18,7 +18,10 @@ import {
 import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
 import { modelRevisionDraftMapper } from "../model-revision-drafts/model-revision-draft-mapper";
 import { ModelRevisionDraftAggregate } from "../model-revision-drafts/model-revision-draft-aggregate";
-import { ModelRevisionAggregate } from "./model-revision-aggregate";
+import {
+  DEFAULT_MODEL_REVISION_BRANCH_NAME,
+  ModelRevisionAggregate,
+} from "./model-revision-aggregate";
 import { modelRevisionMapper } from "./model-revision-mapper";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
@@ -65,7 +68,8 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     return ModelRevisionAggregate.rehydrate({
       id: revision.id,
       modelId: revision.modelId,
-      branchName: branchHeadRows[0]?.branchName ?? "detached",
+      branchName:
+        branchHeadRows[0]?.branchName ?? DEFAULT_MODEL_REVISION_BRANCH_NAME,
       name: revision.modelName,
       parentRevisionId: revision.parentRevisionId,
       secondParentRevisionId: revision.secondParentRevisionId,

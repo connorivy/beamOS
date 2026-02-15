@@ -28,6 +28,8 @@ export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id"> & {
   id?: string;
 };
 
+export const DEFAULT_MODEL_REVISION_BRANCH_NAME = "detached";
+
 export class ModelRevisionAggregate {
   private _branchName: string;
   private _name: string;

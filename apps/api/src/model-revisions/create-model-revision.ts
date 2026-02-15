@@ -645,6 +645,7 @@ export async function createNewRevisionAggregateHandler(
     params: { modelId: string; branchName: string };
   },
   ctx: AppContext,
+  message = "Batch create materials",
 ) {
   const { modelId, branchName } = req.params;
   const branch = await ctx.services.modelRevisionRepository.getBranchHead(
@@ -676,7 +677,7 @@ export async function createNewRevisionAggregateHandler(
     parentRevisionId: parentRevision.id,
     secondParentRevisionId: null,
     authorId: parentRevision.authorId,
-    message: "Batch create materials",
+    message,
     createdAt: new Date(),
     nodes: parentRevision.nodes.map((node) => node.toSnapshot()),
     materials: parentRevision.materials.map((material) => material.toSnapshot()),
