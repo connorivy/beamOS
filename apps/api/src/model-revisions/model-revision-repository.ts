@@ -42,9 +42,16 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     }
 
     const revision = revisionRows[0];
-    const revisions = await loadRevisionHistory({
-      revisionId: revision.id,
-    });
+    const [revisions, branchHeadRows] = await Promise.all([
+      loadRevisionHistory({
+        revisionId: revision.id,
+      }),
+      getDb()
+        .select()
+        .from(modelBranchHeads)
+        .where(eq(modelBranchHeads.headRevisionId, revision.id))
+        .limit(1),
+    ]);
     const [nodesById, materialsById, sectionProfilesById, element1dsById] =
       await Promise.all([
         buildNodesFromRevisions({
@@ -58,6 +65,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     return ModelRevisionAggregate.rehydrate({
       id: revision.id,
       modelId: revision.modelId,
+      branchName: branchHeadRows[0]?.branchName ?? "detached",
       name: revision.modelName,
       parentRevisionId: revision.parentRevisionId,
       secondParentRevisionId: revision.secondParentRevisionId,

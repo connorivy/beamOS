@@ -1,5 +1,5 @@
 import { DomainEvent } from "src/common/types";
-import { assertUuid } from "../common/uuid";
+import { assertUuid, assertUuidV7 } from "../common/uuid";
 import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
 import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
@@ -11,7 +11,7 @@ import {
 export type ModelRevisionSnapshot = {
   id: string;
   modelId: string;
-  branchName?: string | null;
+  branchName: string;
   name: string;
   parentRevisionId: string | null;
   secondParentRevisionId: string | null;
@@ -24,8 +24,12 @@ export type ModelRevisionSnapshot = {
   element1ds: Element1dSnapshot[];
 };
 
+export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id"> & {
+  id?: string;
+};
+
 export class ModelRevisionAggregate {
-  private _branchName: string | null;
+  private _branchName: string;
   private _name: string;
   private _parentRevisionId: string | null;
   private _secondParentRevisionId: string | null;
@@ -38,9 +42,11 @@ export class ModelRevisionAggregate {
   private _element1ds: Element1dEntity[];
   private _domainEvents: DomainEvent[];
 
-  private constructor(snapshot: ModelRevisionSnapshot) {
-    assertUuid(snapshot.id, "id");
+  private constructor(snapshot: ModelRevisionSnapshot | ModelRevisionCreateSnapshot) {
+    const revisionId = snapshot.id ?? Bun.randomUUIDv7();
+    assertUuidV7(revisionId, "id");
     assertUuid(snapshot.modelId, "modelId");
+    this.assertRequired(snapshot.branchName, "branchName");
     this.assertRequired(snapshot.name, "name");
     assertUuid(snapshot.authorId, "authorId");
     this.assertRequired(snapshot.message, "message");
@@ -50,9 +56,9 @@ export class ModelRevisionAggregate {
       "secondParentRevisionId",
     );
 
-    this.id = snapshot.id;
+    this.id = revisionId;
     this.modelId = snapshot.modelId;
-    this._branchName = snapshot.branchName?.trim() || null;
+    this._branchName = snapshot.branchName.trim();
     this._name = snapshot.name.trim();
     this._parentRevisionId = snapshot.parentRevisionId;
     this._secondParentRevisionId = snapshot.secondParentRevisionId;
@@ -75,7 +81,7 @@ export class ModelRevisionAggregate {
   readonly id: string;
   readonly modelId: string;
 
-  static create(snapshot: ModelRevisionSnapshot): ModelRevisionAggregate {
+  static create(snapshot: ModelRevisionCreateSnapshot): ModelRevisionAggregate {
     return new ModelRevisionAggregate(snapshot);
   }
 
@@ -87,7 +93,7 @@ export class ModelRevisionAggregate {
     return this._name;
   }
 
-  get branchName(): string | null {
+  get branchName(): string {
     return this._branchName;
   }
 

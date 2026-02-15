@@ -4,10 +4,9 @@ import { ModelRevisionAggregate } from "../../../src/model-revisions/model-revis
 
 describe("ModelRevisionAggregate", () => {
   it("pulls domain events from added materials", () => {
-    const revisionId = Bun.randomUUIDv7();
     const aggregate = ModelRevisionAggregate.create({
-      id: revisionId,
       modelId: Bun.randomUUIDv7(),
+      branchName: "main",
       name: "Revision",
       parentRevisionId: null,
       secondParentRevisionId: null,
@@ -22,7 +21,7 @@ describe("ModelRevisionAggregate", () => {
 
     aggregate.addMaterial({
       id: Bun.randomUUIDv7(),
-      revisionId,
+      revisionId: aggregate.id,
       pressureE: Pressure.FromPascals(1),
       pressureG: Pressure.FromPascals(2),
     });

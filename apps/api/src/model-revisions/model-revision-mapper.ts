@@ -13,6 +13,7 @@ export const modelRevisionMapper = {
     return ModelRevisionAggregate.rehydrate({
       id: row.id,
       modelId: row.modelId,
+      branchName: "detached",
       name: row.modelName,
       parentRevisionId: row.parentRevisionId,
       secondParentRevisionId: row.secondParentRevisionId,
@@ -64,7 +65,7 @@ export const modelRevisionMapper = {
     const snapshot: ModelRevisionSnapshot = {
       id: input.id,
       modelId: input.modelId,
-      branchName: input.branchName ?? null,
+      branchName: input.branchName ?? "detached",
       name: input.name,
       parentRevisionId: input.parentRevisionId,
       secondParentRevisionId: input.secondParentRevisionId,

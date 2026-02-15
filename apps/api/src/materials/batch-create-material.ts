@@ -4,11 +4,12 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
-import { MaterialEntity } from "./material-entity";
+import type { MaterialSnapshot } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
 import { materialResponseSchema } from "./material-response-schema";
 import { createMaterialRequestSchema } from "./create-material-request-schema";
 import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
+import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 
 export const batchCreateMaterialReqSchema = z.object({
   params: z.object({
@@ -25,7 +26,7 @@ export const batchCreateMaterialResSchema = z.object({
   tempIdToId: z.record(z.string(), uuidV7Schema),
 });
 
-const toResponseMaterial = (material: MaterialEntity) => ({
+const toResponseMaterial = (material: MaterialSnapshot) => ({
   id: material.id,
   revisionId: material.revisionId,
   pressureE: {
@@ -44,46 +45,7 @@ export const batchCreateMaterial = defineEndpoint({
   req: batchCreateMaterialReqSchema,
   res: batchCreateMaterialResSchema,
   async handler(req, ctx: AppContext) {
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-      req.params.modelId,
-      req.params.branchName,
-    );
-    if (!branch) {
-      throw httpError(
-        `Could not find branch ${req.params.branchName} on model with ID ${req.params.modelId}`,
-        404,
-      );
-    }
-
-    const parentRevision = await ctx.services.modelRevisionRepository.getRevisionById(
-      branch.headRevisionId,
-    );
-    if (!parentRevision) {
-      throw httpError(
-        `Could not find parent revision ${branch.headRevisionId} for branch ${req.params.branchName}`,
-        404,
-      );
-    }
-
-    const revision = ModelRevisionAggregate.create({
-      id: Bun.randomUUIDv7(),
-      modelId: req.params.modelId,
-      branchName: req.params.branchName,
-      name: parentRevision.name,
-      parentRevisionId: parentRevision.id,
-      secondParentRevisionId: null,
-      authorId: parentRevision.authorId,
-      message: "Batch create materials",
-      createdAt: new Date(),
-      nodes: parentRevision.nodes.map((node) => node.toSnapshot()),
-      materials: parentRevision.materials.map((material) => material.toSnapshot()),
-      sectionProfiles: parentRevision.sectionProfiles.map((sectionProfile) =>
-        sectionProfile.toSnapshot(),
-      ),
-      element1ds: parentRevision.element1ds.map((element1d) =>
-        element1d.toSnapshot(),
-      ),
-    });
+    const revision = await createNewRevisionAggregateHandler(req, ctx);
 
     const seenTempIds = new Set<string>();
     return await batchCreateMaterialHandler(req, seenTempIds, ctx, revision);
@@ -108,13 +70,13 @@ export async function batchCreateMaterialHandler(
 
   const tempIdToId: Record<string, string> = {};
 
-  const entities = req.body.materials.map((material) => {
+  const materials = req.body.materials.map((material) => {
     const id = Bun.randomUUIDv7();
     if (material.tempId) {
       tempIdToId[material.tempId] = id;
     }
 
-    const entity = MaterialEntity.create({
+    const snapshot: MaterialSnapshot = {
       id,
       revisionId: revision.id,
       pressureE: new Pressure(
@@ -125,9 +87,9 @@ export async function batchCreateMaterialHandler(
         material.pressureG.value,
         material.pressureG.unit,
       ),
-    });
-    revision.addMaterial(entity.toSnapshot());
-    return entity;
+    };
+    revision.addMaterial(snapshot);
+    return snapshot;
   });
 
   await getDb().transaction(async (tx) => {
@@ -139,7 +101,7 @@ export async function batchCreateMaterialHandler(
   });
 
   return {
-    materials: entities.map((material) => toResponseMaterial(material)),
+    materials: materials.map((material) => toResponseMaterial(material)),
     tempIdToId,
   };
 }
