@@ -1,5 +1,5 @@
 import { DomainEvent } from "src/common/types";
-import { assertUuid } from "../common/uuid";
+import { assertUuid, assertUuidV7 } from "../common/uuid";
 import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
 import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
@@ -11,6 +11,7 @@ import {
 export type ModelRevisionSnapshot = {
   id: string;
   modelId: string;
+  branchName: string;
   name: string;
   parentRevisionId: string | null;
   secondParentRevisionId: string | null;
@@ -23,7 +24,14 @@ export type ModelRevisionSnapshot = {
   element1ds: Element1dSnapshot[];
 };
 
+export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id"> & {
+  id?: string;
+};
+
+export const DEFAULT_MODEL_REVISION_BRANCH_NAME = "detached";
+
 export class ModelRevisionAggregate {
+  private _branchName: string;
   private _name: string;
   private _parentRevisionId: string | null;
   private _secondParentRevisionId: string | null;
@@ -36,9 +44,11 @@ export class ModelRevisionAggregate {
   private _element1ds: Element1dEntity[];
   private _domainEvents: DomainEvent[];
 
-  private constructor(snapshot: ModelRevisionSnapshot) {
-    assertUuid(snapshot.id, "id");
+  private constructor(snapshot: ModelRevisionSnapshot | ModelRevisionCreateSnapshot) {
+    const revisionId = snapshot.id ?? Bun.randomUUIDv7();
+    assertUuidV7(revisionId, "id");
     assertUuid(snapshot.modelId, "modelId");
+    this.assertRequired(snapshot.branchName, "branchName");
     this.assertRequired(snapshot.name, "name");
     assertUuid(snapshot.authorId, "authorId");
     this.assertRequired(snapshot.message, "message");
@@ -48,8 +58,9 @@ export class ModelRevisionAggregate {
       "secondParentRevisionId",
     );
 
-    this.id = snapshot.id;
+    this.id = revisionId;
     this.modelId = snapshot.modelId;
+    this._branchName = snapshot.branchName.trim();
     this._name = snapshot.name.trim();
     this._parentRevisionId = snapshot.parentRevisionId;
     this._secondParentRevisionId = snapshot.secondParentRevisionId;
@@ -72,7 +83,7 @@ export class ModelRevisionAggregate {
   readonly id: string;
   readonly modelId: string;
 
-  static create(snapshot: ModelRevisionSnapshot): ModelRevisionAggregate {
+  static create(snapshot: ModelRevisionCreateSnapshot): ModelRevisionAggregate {
     return new ModelRevisionAggregate(snapshot);
   }
 
@@ -82,6 +93,10 @@ export class ModelRevisionAggregate {
 
   get name(): string {
     return this._name;
+  }
+
+  get branchName(): string {
+    return this._branchName;
   }
 
   get parentRevisionId(): string | null {
@@ -133,6 +148,14 @@ export class ModelRevisionAggregate {
     });
   }
 
+  addMaterial(material: MaterialSnapshot): void {
+    assertUuid(material.id, "materialId");
+    if (this._materials.some((existing) => existing.id === material.id)) {
+      throw new Error("Material already exists");
+    }
+    this._materials.push(MaterialEntity.create(material));
+  }
+
   deleteNode(nodeId: string): void {
     assertUuid(nodeId, "nodeId");
     const index = this._nodes.findIndex((node) => node.id === nodeId);
@@ -150,6 +173,7 @@ export class ModelRevisionAggregate {
     return {
       id: this.id,
       modelId: this.modelId,
+      branchName: this._branchName,
       name: this._name,
       parentRevisionId: this._parentRevisionId,
       secondParentRevisionId: this._secondParentRevisionId,
@@ -166,7 +190,10 @@ export class ModelRevisionAggregate {
   }
 
   pullDomainEvents(): DomainEvent[] {
-    const events = [...this._domainEvents];
+    const materialEvents = this._materials.flatMap((material) =>
+      material.pullDomainEvents(),
+    );
+    const events = [...this._domainEvents, ...materialEvents];
     this._domainEvents = [];
     return events;
   }

@@ -4,12 +4,12 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
-import type { DbTransaction } from "../db/client";
-import { MaterialEntity } from "./material-entity";
+import type { MaterialSnapshot } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
 import { materialResponseSchema } from "./material-response-schema";
 import { createMaterialRequestSchema } from "./create-material-request-schema";
-import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
+import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
+import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 
 export const batchCreateMaterialReqSchema = z.object({
   params: z.object({
@@ -26,7 +26,7 @@ export const batchCreateMaterialResSchema = z.object({
   tempIdToId: z.record(z.string(), uuidV7Schema),
 });
 
-const toResponseMaterial = (material: MaterialEntity) => ({
+const toResponseMaterial = (material: MaterialSnapshot) => ({
   id: material.id,
   revisionId: material.revisionId,
   pressureE: {
@@ -45,17 +45,10 @@ export const batchCreateMaterial = defineEndpoint({
   req: batchCreateMaterialReqSchema,
   res: batchCreateMaterialResSchema,
   async handler(req, ctx: AppContext) {
+    const revision = await createNewRevisionAggregateHandler(req, ctx);
+
     const seenTempIds = new Set<string>();
-    return await getDb().transaction(async (tx) => {
-      const revisionId = await createNewRevisionHandler(req, ctx, tx);
-      return await batchCreateMaterialHandler(
-        req,
-        seenTempIds,
-        ctx,
-        tx,
-        revisionId,
-      );
-    });
+    return await batchCreateMaterialHandler(req, seenTempIds, ctx, revision);
   },
 });
 
@@ -63,8 +56,7 @@ export async function batchCreateMaterialHandler(
   req: z.infer<typeof batchCreateMaterialReqSchema>,
   seenTempIds: Set<string>,
   ctx: AppContext,
-  tx: DbTransaction,
-  revisionId: string,
+  revision: ModelRevisionAggregate,
 ) {
   for (const material of req.body.materials) {
     if (!material.tempId) {
@@ -78,15 +70,15 @@ export async function batchCreateMaterialHandler(
 
   const tempIdToId: Record<string, string> = {};
 
-  const entities = req.body.materials.map((material) => {
+  const materials = req.body.materials.map((material) => {
     const id = Bun.randomUUIDv7();
     if (material.tempId) {
       tempIdToId[material.tempId] = id;
     }
 
-    return MaterialEntity.create({
+    const snapshot: MaterialSnapshot = {
       id,
-      revisionId,
+      revisionId: revision.id,
       pressureE: new Pressure(
         material.pressureE.value,
         material.pressureE.unit,
@@ -95,12 +87,21 @@ export async function batchCreateMaterialHandler(
         material.pressureG.value,
         material.pressureG.unit,
       ),
+    };
+    revision.addMaterial(snapshot);
+    return snapshot;
+  });
+
+  await getDb().transaction(async (tx) => {
+    await ctx.services.modelRevisionRepository.save({
+      revision,
+      newRevision: true,
+      tx,
     });
   });
 
-  const saved = await ctx.services.materialRepository.batchCreate(tx, entities);
   return {
-    materials: saved.map((material) => toResponseMaterial(material)),
+    materials: materials.map((material) => toResponseMaterial(material)),
     tempIdToId,
   };
 }

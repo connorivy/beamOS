@@ -6,6 +6,7 @@ import { httpError } from "src/common/http-utils";
 import { DbTransaction, getDb } from "src/db/client";
 import { modelBranchHeads, modelRevisions } from "src/db/schema";
 import { RevisionChangeEntity } from "src/revision-changes/revision-change-entity";
+import { ModelRevisionAggregate } from "./model-revision-aggregate";
 import {
   AreaMomentOfInertiaUnits,
   AreaUnits,
@@ -637,4 +638,54 @@ export async function createNewRevisionHandler(
       },
     });
   return revisionId;
+}
+
+export async function createNewRevisionAggregateHandler(
+  req: {
+    params: { modelId: string; branchName: string };
+  },
+  ctx: AppContext,
+  message = "Batch create materials",
+) {
+  const { modelId, branchName } = req.params;
+  const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+    modelId,
+    branchName,
+  );
+  if (!branch) {
+    throw httpError(
+      `Could not find branch ${branchName} on model with ID ${modelId}`,
+      404,
+    );
+  }
+
+  const parentRevision =
+    await ctx.services.modelRevisionRepository.getRevisionById(
+      branch.headRevisionId,
+    );
+  if (!parentRevision) {
+    throw httpError(
+      `Could not find parent revision ${branch.headRevisionId} for branch ${branchName}`,
+      404,
+    );
+  }
+
+  return ModelRevisionAggregate.create({
+    modelId,
+    branchName,
+    name: parentRevision.name,
+    parentRevisionId: parentRevision.id,
+    secondParentRevisionId: null,
+    authorId: parentRevision.authorId,
+    message,
+    createdAt: new Date(),
+    nodes: parentRevision.nodes.map((node) => node.toSnapshot()),
+    materials: parentRevision.materials.map((material) => material.toSnapshot()),
+    sectionProfiles: parentRevision.sectionProfiles.map((sectionProfile) =>
+      sectionProfile.toSnapshot(),
+    ),
+    element1ds: parentRevision.element1ds.map((element1d) =>
+      element1d.toSnapshot(),
+    ),
+  });
 }

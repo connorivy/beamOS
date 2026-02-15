@@ -8,6 +8,8 @@ import type { MaterialRepository } from "../materials/material-repository";
 import type { SectionProfileRepository } from "../section-profiles/section-profile-repository";
 import type { Element1dRepository } from "../element1ds/element1d-repository";
 import type { RevisionChangeRepository } from "../revision-changes/revision-change-repository";
+import type { DbTransaction } from "../db/client";
+import type { MaterialSnapshot } from "../materials/material-entity";
 
 export type DomainEvent =
   | {
@@ -17,6 +19,10 @@ export type DomainEvent =
   | {
       type: "node_deleted";
       payload: NodeSnapshot;
+    }
+  | {
+      type: "material_created";
+      payload: MaterialSnapshot;
     };
 
 export type UserRepository = {
@@ -57,6 +63,7 @@ export type ModelRevisionRepository = {
   save: (input: {
     revision: ModelRevisionAggregate;
     newRevision?: boolean;
+    tx?: DbTransaction;
   }) => Promise<ModelRevisionAggregate | ModelRevisionDraftAggregate>;
   getBranchHead: (
     modelId: string,
