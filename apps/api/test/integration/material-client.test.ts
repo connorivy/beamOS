@@ -50,20 +50,20 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: tempIds[0],
-              E: 125000,
-              G: 85000,
+              E: 125000, // 1.25 Bars
+              G: 85000, // 85 Kilopascals
               units: { pressure: PressureUnits.Pascals },
             },
             {
               tempId: tempIds[1],
-              E: 101324.66370467292,
-              G: 101325,
+              E: 101324.66370467292, // 14.6959 PoundsForcePerSquareInch
+              G: 101325, // 1013.25 Millibars
               units: { pressure: PressureUnits.Pascals },
             },
             {
               tempId: tempIds[2],
-              E: 96258.75,
-              G: 95000,
+              E: 96258.75, // 0.95 Atmospheres
+              G: 95000, // 950 Hectopascals
               units: { pressure: PressureUnits.Pascals },
             },
           ],
@@ -217,8 +217,8 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: "mat-put-01",
-              E: 100000,
-              G: 200000,
+              E: 100000, // 100 Kilopascals
+              G: 200000, // 200 Kilopascals
               units: { pressure: PressureUnits.Pascals },
             },
           ],
@@ -251,8 +251,8 @@ describe("typed material api client integration", () => {
           materials: [
             {
               id: materialId,
-              E: 250000,
-              G: 206842.7185,
+              E: 250000, // 2.5 Bars
+              G: 206842.7185, // ~30 Bars (converted for consistency)
               units: { pressure: PressureUnits.Pascals },
             },
           ],
