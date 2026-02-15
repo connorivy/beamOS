@@ -50,20 +50,20 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: tempIds[0],
-              E: 125000, // 1.25 Bars
-              G: 85000, // 85 Kilopascals
+              modulusOfElasticity: 125000, // 1.25 Bars
+              modulusOfRigidity: 85000, // 85 Kilopascals
               units: { pressure: PressureUnits.Pascals },
             },
             {
               tempId: tempIds[1],
-              E: 101324.66370467292, // 14.6959 PoundsForcePerSquareInch
-              G: 101325, // 1013.25 Millibars
+              modulusOfElasticity: 101324.66370467292, // 14.6959 PoundsForcePerSquareInch
+              modulusOfRigidity: 101325, // 1013.25 Millibars
               units: { pressure: PressureUnits.Pascals },
             },
             {
               tempId: tempIds[2],
-              E: 96258.75, // 0.95 Atmospheres
-              G: 95000, // 950 Hectopascals
+              modulusOfElasticity: 96258.75, // 0.95 Atmospheres
+              modulusOfRigidity: 95000, // 950 Hectopascals
               units: { pressure: PressureUnits.Pascals },
             },
           ],
@@ -164,14 +164,14 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: "dup-1",
-              E: 1,
-              G: 1,
+              modulusOfElasticity: 1,
+              modulusOfRigidity: 1,
               units: { pressure: PressureUnits.Bars },
             },
             {
               tempId: "dup-1",
-              E: 2,
-              G: 2,
+              modulusOfElasticity: 2,
+              modulusOfRigidity: 2,
               units: { pressure: PressureUnits.Bars },
             },
           ],
@@ -217,8 +217,8 @@ describe("typed material api client integration", () => {
           materials: [
             {
               tempId: "mat-put-01",
-              E: 100000, // 100 Kilopascals
-              G: 200000, // 200 Kilopascals
+              modulusOfElasticity: 100000, // 100 Kilopascals
+              modulusOfRigidity: 200000, // 200 Kilopascals
               units: { pressure: PressureUnits.Pascals },
             },
           ],
@@ -251,8 +251,8 @@ describe("typed material api client integration", () => {
           materials: [
             {
               id: materialId,
-              E: 250000, // 2.5 Bars
-              G: 206842.7185, // ~30 Bars (converted for consistency)
+              modulusOfElasticity: 250000, // 2.5 Bars
+              modulusOfRigidity: 206842.7185, // ~30 Bars (converted for consistency)
               units: { pressure: PressureUnits.Pascals },
             },
           ],
@@ -279,8 +279,8 @@ describe("typed material api client integration", () => {
       throw new Error(`Expected material response for ${materialId}`);
     }
 
-    expect(getResponse.data.material.E).toBeCloseTo(250000, 6);
-    expect(getResponse.data.material.G).toBeCloseTo(206842.7185, 6);
+    expect(getResponse.data.material.modulusOfElasticity).toBeCloseTo(250000, 6);
+    expect(getResponse.data.material.modulusOfRigidity).toBeCloseTo(206842.7185, 6);
     expect(getResponse.data.material.units.pressure).toBe(PressureUnits.Pascals);
   });
 });

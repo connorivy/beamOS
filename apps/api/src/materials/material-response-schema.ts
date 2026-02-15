@@ -3,8 +3,8 @@ import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
 
 export const materialPropertiesResponseSchema = z.object({
-  E: z.number().finite(),
-  G: z.number().finite(),
+  modulusOfElasticity: z.number().finite(),
+  modulusOfRigidity: z.number().finite(),
   units: z.object({
     pressure: z.literal(PressureUnits.Pascals),
   }),

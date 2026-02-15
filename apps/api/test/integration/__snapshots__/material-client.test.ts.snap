@@ -2,9 +2,9 @@
 
 exports[`typed material api client integration batch creates materials and snapshots get responses 1`] = `
 {
-  "E": 125000,
-  "G": 85000,
   "id": "<db-id>",
+  "modulusOfElasticity": 125000,
+  "modulusOfRigidity": 85000,
   "revisionId": "<revision-id>",
   "units": {
     "pressure": "Pascal",
@@ -14,9 +14,9 @@ exports[`typed material api client integration batch creates materials and snaps
 
 exports[`typed material api client integration batch creates materials and snapshots get responses 2`] = `
 {
-  "E": 101324.66370467292,
-  "G": 101325,
   "id": "<db-id>",
+  "modulusOfElasticity": 101324.66370467292,
+  "modulusOfRigidity": 101325,
   "revisionId": "<revision-id>",
   "units": {
     "pressure": "Pascal",
@@ -26,9 +26,9 @@ exports[`typed material api client integration batch creates materials and snaps
 
 exports[`typed material api client integration batch creates materials and snapshots get responses 3`] = `
 {
-  "E": 96258.75,
-  "G": 95000,
   "id": "<db-id>",
+  "modulusOfElasticity": 96258.75,
+  "modulusOfRigidity": 95000,
   "revisionId": "<revision-id>",
   "units": {
     "pressure": "Pascal",
