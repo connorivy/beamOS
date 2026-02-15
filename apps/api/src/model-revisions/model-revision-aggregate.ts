@@ -195,7 +195,7 @@ export class ModelRevisionAggregate {
   pullDomainEvents(): DomainEvent[] {
     const nodeEvents = this._nodes.flatMap((node) =>
       node.pullDomainEvents(),
-    );
+    ) as DomainEvent[];
     const materialEvents = this._materials.flatMap((material) =>
       material.pullDomainEvents(),
     );
