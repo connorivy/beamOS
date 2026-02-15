@@ -37,7 +37,6 @@ export const createModel = defineEndpoint({
   req: createModelReqSchema,
   res: createModelResSchema,
   async handler(req, ctx: AppContext) {
-    const lastModified = new Date().toISOString();
     const model = ModelAggregate.create({
       name: req.body.name,
     });
@@ -53,6 +52,7 @@ export const createModel = defineEndpoint({
         nodes: [],
         includeModelChange: true,
       });
+    const lastModified = new Date().toISOString();
 
     return {
       model: {

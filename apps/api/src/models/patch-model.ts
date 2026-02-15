@@ -13,7 +13,6 @@ export const patchModel = defineEndpoint({
   req: patchModelReqSchema,
   res: patchModelResSchema,
   async handler(req, ctx: AppContext) {
-    const lastModified = new Date().toISOString();
     const model = await ctx.services.modelRepository.getById({
       modelId: req.params.modelId,
       revisionId: req.body.revisionId,
@@ -24,6 +23,7 @@ export const patchModel = defineEndpoint({
 
     model.rename(req.body.name);
     const savedModel = await ctx.services.modelRepository.save(model);
+    const lastModified = new Date().toISOString();
 
     return {
       model: {

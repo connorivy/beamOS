@@ -126,7 +126,6 @@ export const drizzleModelRepository: ModelRepository = {
     const branchNames = await listBranchNamesForModel(input.modelId);
     return ModelAggregate.rehydrate({
       ...model.toSnapshot(),
-      nodes: model.nodes.map((node) => node.toSnapshot()),
       branchNames,
       sourceRevisionId: model.sourceRevisionId,
     });

@@ -5,6 +5,7 @@ import type { ModelDomainEvent } from "./model-events";
 export type ModelSnapshot = {
   id: string;
   name: string;
+  nodes: NodeSnapshot[];
   branchNames: string[];
 };
 
@@ -130,6 +131,7 @@ export class ModelAggregate {
     return {
       id: this.id,
       name: this._name,
+      nodes: this._nodes.map((node) => node.toSnapshot()),
       branchNames: this._branchNames,
     };
   }
