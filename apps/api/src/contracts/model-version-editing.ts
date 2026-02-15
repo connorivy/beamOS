@@ -2,25 +2,9 @@ import { z } from "zod";
 
 const uuidSchema = z.string().uuid();
 
-const targetRevisionOrDraftSchema = z
-  .object({
-    revisionId: uuidSchema.optional(),
-    draftId: uuidSchema.optional(),
-  })
-  .refine(
-    (value) =>
-      (Boolean(value.revisionId) && !value.draftId) ||
-      (Boolean(value.draftId) && !value.revisionId),
-    {
-      message: "Exactly one of revisionId or draftId is required",
-      path: ["revisionId"],
-    },
-  );
-
 const modelVersionRefSchema = z.object({
   modelId: uuidSchema,
   revisionId: uuidSchema.nullable(),
-  draftId: uuidSchema.nullable(),
 });
 
 export const createModelReqSchema = z.object({
@@ -30,25 +14,7 @@ export const createModelReqSchema = z.object({
     authorId: uuidSchema,
     message: z.string().min(1),
     branchName: z.string().min(1).optional(),
-    target: z.enum(["revision", "draft"]).default("draft"),
     revisionId: uuidSchema.optional(),
-    draftId: uuidSchema.optional(),
-  }).superRefine((value, ctx) => {
-    if (value.target === "revision" && value.draftId) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "draftId is not allowed when target is revision",
-        path: ["draftId"],
-      });
-    }
-
-    if (value.target === "draft" && value.revisionId) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "revisionId is not allowed when target is draft",
-        path: ["revisionId"],
-      });
-    }
   }),
 });
 
@@ -59,7 +25,7 @@ export const createNodeReqSchema = z.object({
   body: z.object({
     nodeId: uuidSchema,
     name: z.string().min(1),
-    target: targetRevisionOrDraftSchema,
+    revisionId: uuidSchema,
   }),
 });
 
@@ -79,7 +45,7 @@ export const patchNodeReqSchema = z.object({
   }),
   body: z.object({
     name: z.string().min(1),
-    target: targetRevisionOrDraftSchema,
+    revisionId: uuidSchema,
   }),
 });
 
@@ -98,7 +64,7 @@ export const patchModelReqSchema = z.object({
   }),
   body: z.object({
     name: z.string().min(1),
-    target: targetRevisionOrDraftSchema,
+    revisionId: uuidSchema,
   }),
 });
 

@@ -42,7 +42,6 @@ export const drizzleMaterialRepository: MaterialRepository = {
           RevisionChangeEntity.create({
             id: Bun.randomUUIDv7(),
             revisionId: event.payload.revisionId,
-            draftId: null,
             entityType: "material",
             entityId: event.payload.id,
             schemaVersion: 1,

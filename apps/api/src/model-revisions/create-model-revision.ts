@@ -213,7 +213,6 @@ const buildRevisionChanges = (input: {
     RevisionChangeEntity.create({
       id: Bun.randomUUIDv7(),
       revisionId: input.revisionId,
-      draftId: null,
       entityType: change.entityType,
       entityId: change.entityId,
       schemaVersion: 1,

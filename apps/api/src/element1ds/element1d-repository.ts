@@ -37,7 +37,6 @@ export const drizzleElement1dRepository: Element1dRepository = {
           RevisionChangeEntity.create({
             id: Bun.randomUUIDv7(),
             revisionId: event.payload.revisionId,
-            draftId: null,
             entityType: "element1d",
             entityId: event.payload.id,
             schemaVersion: 1,

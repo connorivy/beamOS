@@ -15,11 +15,10 @@ export const patchModel = defineEndpoint({
   async handler(req, ctx: AppContext) {
     const model = await ctx.services.modelRepository.getById({
       modelId: req.params.modelId,
-      revisionId: req.body.target.revisionId,
-      draftId: req.body.target.draftId,
+      revisionId: req.body.revisionId,
     });
     if (!model) {
-      throw httpError("Model or target revision/draft not found", 404);
+      throw httpError("Model or target revision not found", 404);
     }
 
     model.rename(req.body.name);
@@ -32,7 +31,7 @@ export const patchModel = defineEndpoint({
       },
       version: {
         modelId: req.params.modelId,
-        ...toVersionRef(req.body.target),
+        ...toVersionRef({ revisionId: req.body.revisionId }),
       },
     };
   },

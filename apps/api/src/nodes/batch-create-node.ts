@@ -110,7 +110,6 @@ async function batchCreateNodeHandler(
         RevisionChangeEntity.create({
           id: Bun.randomUUIDv7(),
           revisionId,
-          draftId: null,
           entityType: "node",
           entityId: snapshot.id,
           schemaVersion: 1,
