@@ -1,7 +1,6 @@
 import type { User } from "../contracts/user";
 import type { ModelBranchHeadAggregate } from "../model-branch-heads/model-branch-head-aggregate";
 import type { ModelRevisionAggregate } from "../model-revisions/model-revision-aggregate";
-import type { ModelRevisionDraftAggregate } from "../model-revision-drafts/model-revision-draft-aggregate";
 import type { NodeSnapshot } from "../nodes/node-entity";
 import { ModelRepository } from "src/models/model-repository";
 import type { MaterialRepository } from "../materials/material-repository";
@@ -47,29 +46,15 @@ export type ModelRevisionCommitInput = {
   includeModelChange?: boolean;
 };
 
-export type ModelRevisionDraftInput = {
-  id: string;
-  modelId: string;
-  name: string;
-  parentRevisionId?: string | null;
-  secondParentRevisionId?: string | null;
-  authorId: string;
-  message: string;
-  nodes: { nodeId: string; name: string; op?: "upsert" | "delete" }[];
-};
-
 export type ModelRevisionRepository = {
   getRevisionById: (
     revisionId: string,
   ) => Promise<ModelRevisionAggregate | undefined>;
-  getDraftById: (
-    draftId: string,
-  ) => Promise<ModelRevisionDraftAggregate | undefined>;
   save: (input: {
     revision: ModelRevisionAggregate;
     newRevision?: boolean;
     tx?: DbTransaction;
-  }) => Promise<ModelRevisionAggregate | ModelRevisionDraftAggregate>;
+  }) => Promise<ModelRevisionAggregate>;
   getBranchHead: (
     modelId: string,
     branchName: string,
@@ -80,13 +65,6 @@ export type ModelRevisionRepository = {
     branchName: string;
     headRevisionId: string;
   }) => Promise<void>;
-  saveDraft: (
-    input: ModelRevisionDraftInput,
-  ) => Promise<ModelRevisionDraftAggregate>;
-  commitDraft: (input: {
-    draftId: string;
-    branchName?: string;
-  }) => Promise<ModelRevisionAggregate>;
   commitRevision: (
     input: ModelRevisionCommitInput,
   ) => Promise<ModelRevisionAggregate>;

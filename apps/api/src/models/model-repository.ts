@@ -3,7 +3,6 @@ import { eq, inArray } from "drizzle-orm";
 import { Ratio } from "unitsnet-js";
 import { getDb } from "../db/client";
 import {
-  modelRevisionDrafts,
   modelRevisions,
   models,
   revisionChanges,
@@ -75,7 +74,6 @@ export type ModelRepository = {
   getById: (input: {
     modelId: string;
     revisionId?: string;
-    draftId?: string;
   }) => Promise<ModelAggregate | undefined>;
   save: (model: ModelAggregate) => Promise<ModelAggregate>;
 };
@@ -90,70 +88,6 @@ export const drizzleModelRepository: ModelRepository = {
 
     if (!modelRows[0]) {
       return undefined;
-    }
-
-    if (input.draftId) {
-      const [draftRows, draftChangeRows] = await Promise.all([
-        getDb()
-          .select()
-          .from(modelRevisionDrafts)
-          .where(eq(modelRevisionDrafts.id, input.draftId))
-          .limit(1),
-        getDb()
-          .select()
-          .from(revisionChanges)
-          .where(eq(revisionChanges.draftId, input.draftId)),
-      ]);
-
-      if (!draftRows[0] || draftRows[0].modelId !== input.modelId) {
-        return undefined;
-      }
-
-      const orderedDraftChanges = [...draftChangeRows].sort((a, b) => {
-        const timeDiff = a.createdAt.getTime() - b.createdAt.getTime();
-        if (timeDiff !== 0) {
-          return timeDiff;
-        }
-
-        return a.id.localeCompare(b.id);
-      });
-
-      const baseRevisions = await loadRevisionHistory({
-        revisionId: draftRows[0].parentRevisionId,
-        secondRevisionId: draftRows[0].secondParentRevisionId,
-      });
-      const nodesById = await buildNodesFromRevisions({
-        revisions: baseRevisions,
-      });
-
-      applyNodeChanges({
-        current: nodesById,
-        changes: orderedDraftChanges
-          .filter((change) => change.entityType === "node")
-          .map((change) => ({
-            nodeId: change.entityId,
-            modelRevisionId: draftRows[0].id,
-            nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
-            op: change.op,
-          })),
-      });
-
-      const modelName = applyModelChanges({
-        currentName: draftRows[0].modelName,
-        changes: orderedDraftChanges
-          .filter((change) => change.entityType === "model")
-          .map((change) => ({
-            op: change.op,
-            payload: change.payload,
-          })),
-      });
-
-      return ModelAggregate.rehydrate({
-        id: input.modelId,
-        name: modelName,
-        nodes: Array.from(nodesById.values()),
-        sourceDraftId: input.draftId,
-      });
     }
 
     if (input.revisionId) {
@@ -209,18 +143,16 @@ export const drizzleModelRepository: ModelRepository = {
 
       if (revisionEvents.length > 0) {
         const targetRevisionId = model.sourceRevisionId;
-        const targetDraftId = model.sourceDraftId;
 
-        if (!targetRevisionId && !targetDraftId) {
+        if (!targetRevisionId) {
           throw new Error(
-            "Cannot persist model changes without a source revision or draft",
+            "Cannot persist model changes without a source revision",
           );
         }
 
         const changeRows = buildRevisionChanges({
           modelId: model.id,
           revisionId: targetRevisionId,
-          draftId: targetDraftId,
           events: revisionEvents,
         });
 
@@ -447,7 +379,6 @@ const buildModelNameFromRevisions = async (input: {
 const buildRevisionChanges = (input: {
   modelId: string;
   revisionId: string | null;
-  draftId: string | null;
   events: ModelDomainEvent[];
 }): (typeof revisionChanges.$inferInsert)[] => {
   const now = new Date();
@@ -462,7 +393,6 @@ const buildRevisionChanges = (input: {
       const entity = RevisionChangeEntity.create({
         id: crypto.randomUUID(),
         revisionId: input.revisionId,
-        draftId: input.draftId,
         entityType: "model",
         entityId: event.modelId,
         schemaVersion: 1,
@@ -484,7 +414,6 @@ const buildRevisionChanges = (input: {
       const entity = RevisionChangeEntity.create({
         id: crypto.randomUUID(),
         revisionId: input.revisionId,
-        draftId: input.draftId,
         entityType: "node",
         entityId: event.node.id,
         schemaVersion: 1,
@@ -506,7 +435,6 @@ const buildRevisionChanges = (input: {
       const entity = RevisionChangeEntity.create({
         id: crypto.randomUUID(),
         revisionId: input.revisionId,
-        draftId: input.draftId,
         entityType: "node",
         entityId: event.node.id,
         schemaVersion: 1,

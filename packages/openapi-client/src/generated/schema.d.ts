@@ -307,30 +307,18 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
+                    /** Format: uuid */
+                    revisionId: string;
                 };
                 "application/x-www-form-urlencoded": {
                     name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
+                    /** Format: uuid */
+                    revisionId: string;
                 };
                 "multipart/form-data": {
                     name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
+                    /** Format: uuid */
+                    revisionId: string;
                 };
             };
         };
@@ -352,7 +340,6 @@ export interface operations {
                             /** Format: uuid */
                             modelId: string;
                             revisionId: string | null;
-                            draftId: string | null;
                         };
                     };
                 };
@@ -494,30 +481,18 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
+                    /** Format: uuid */
+                    revisionId: string;
                 };
                 "application/x-www-form-urlencoded": {
                     name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
+                    /** Format: uuid */
+                    revisionId: string;
                 };
                 "multipart/form-data": {
                     name: string;
-                    target: {
-                        /** Format: uuid */
-                        revisionId?: string;
-                        /** Format: uuid */
-                        draftId?: string;
-                    };
+                    /** Format: uuid */
+                    revisionId: string;
                 };
             };
         };
@@ -538,7 +513,6 @@ export interface operations {
                             /** Format: uuid */
                             modelId: string;
                             revisionId: string | null;
-                            draftId: string | null;
                         };
                     };
                 };

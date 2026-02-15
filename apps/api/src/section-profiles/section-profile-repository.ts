@@ -95,7 +95,6 @@ export const drizzleSectionProfileRepository: SectionProfileRepository = {
           RevisionChangeEntity.create({
             id: Bun.randomUUIDv7(),
             revisionId: event.payload.revisionId,
-            draftId: null,
             entityType: "sectionprofile",
             entityId: event.payload.id,
             schemaVersion: 1,

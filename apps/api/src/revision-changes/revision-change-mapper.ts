@@ -13,7 +13,6 @@ export const revisionChangeMapper = {
     return RevisionChangeEntity.rehydrate({
       id: row.id,
       revisionId: row.revisionId,
-      draftId: row.draftId,
       entityType: row.entityType,
       entityId: row.entityId,
       schemaVersion: row.schemaVersion,
@@ -30,7 +29,6 @@ export const revisionChangeMapper = {
     return {
       id: snapshot.id,
       revisionId: snapshot.revisionId,
-      draftId: snapshot.draftId,
       entityType: snapshot.entityType,
       entityId: snapshot.entityId,
       schemaVersion: snapshot.schemaVersion,

@@ -10,7 +10,6 @@ const uuidSchema = z.uuid();
 const modelVersionRefSchema = z.object({
   modelId: uuidSchema,
   revisionId: uuidSchema.nullable(),
-  draftId: uuidSchema.nullable(),
 });
 
 export const patchNodeResSchema = z.object({
@@ -26,11 +25,10 @@ export const patchNode = defineEndpoint({
   async handler(req, ctx: AppContext) {
     const model = await ctx.services.modelRepository.getById({
       modelId: req.params.modelId,
-      revisionId: req.body.target.revisionId,
-      draftId: req.body.target.draftId,
+      revisionId: req.body.revisionId,
     });
     if (!model) {
-      throw httpError("Model or target revision/draft not found", 404);
+      throw httpError("Model or target revision not found", 404);
     }
 
     try {
@@ -60,7 +58,7 @@ export const patchNode = defineEndpoint({
       },
       version: {
         modelId: req.params.modelId,
-        ...toVersionRef(req.body.target),
+        ...toVersionRef({ revisionId: req.body.revisionId }),
       },
     };
   },

@@ -16,13 +16,10 @@ import {
 import { getDb, type DbTransaction } from "../db/client";
 import {
   modelBranchHeads,
-  modelRevisionDrafts,
   modelRevisions,
   revisionChanges,
 } from "../db/schema";
 import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
-import { modelRevisionDraftMapper } from "../model-revision-drafts/model-revision-draft-mapper";
-import { ModelRevisionDraftAggregate } from "../model-revision-drafts/model-revision-draft-aggregate";
 import {
   DEFAULT_MODEL_REVISION_BRANCH_NAME,
   ModelRevisionAggregate,
@@ -88,196 +85,66 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     });
   },
 
-  async getDraftById(draftId) {
-    const [draftRows, draftChangeRows] = await Promise.all([
-      getDb()
-        .select()
-        .from(modelRevisionDrafts)
-        .where(eq(modelRevisionDrafts.id, draftId))
-        .limit(1),
-      getDb()
-        .select()
-        .from(revisionChanges)
-        .where(eq(revisionChanges.draftId, draftId)),
-    ]);
-
-    if (!draftRows[0]) {
-      return undefined;
-    }
-
-    const draft = draftRows[0];
-    const baseRevisions = await loadRevisionHistory({
-      revisionId: draft.parentRevisionId,
-      secondRevisionId: draft.secondParentRevisionId,
-    });
-    const nodesById = await buildNodesFromRevisions({
-      revisions: baseRevisions,
-    });
-
-    applyNodeChanges({
-      current: nodesById,
-      changes: draftChangeRows
-        .filter((change) => change.entityType === "node")
-        .map((change) => ({
-          nodeId: change.entityId,
-          nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
-          op: change.op,
-        })),
-    });
-
-    return ModelRevisionDraftAggregate.rehydrate({
-      id: draft.id,
-      modelId: draft.modelId,
-      name: draft.modelName,
-      parentRevisionId: draft.parentRevisionId,
-      secondParentRevisionId: draft.secondParentRevisionId,
-      authorId: draft.authorId,
-      message: draft.message,
-      createdAt: draft.createdAt,
-      updatedAt: draft.updatedAt,
-      nodes: Array.from(nodesById.values()).map((node): NodeSnapshot => ({
-        ...node,
-        modelRevisionId: draft.id,
-      })),
-    });
-  },
-
   async save(input) {
     const { revision, newRevision = false, tx: existingTx } = input;
     const snapshot = revision.toSnapshot();
     const events = revision.pullDomainEvents();
 
-    if (newRevision) {
-      const persist = async (tx: DbTransaction) => {
-        const revisionRow = await tx
-          .insert(modelRevisions)
-          .values(modelRevisionMapper.toPersistence(revision))
-          .returning();
-
-        const changeRows = buildRevisionChangeRowsFromEvents({
-          modelId: snapshot.modelId,
-          revisionId: snapshot.id,
-          draftId: null,
-          events,
-        });
-
-        if (changeRows.length > 0) {
-          await tx
-            .insert(revisionChanges)
-            .values(changeRows);
-        }
-
-        if (snapshot.branchName) {
-          const branchHead = modelBranchHeadMapper.fromInput({
-            modelId: snapshot.modelId,
-            branchName: snapshot.branchName,
-            headRevisionId: snapshot.id,
-          });
-          const branchPersistence =
-            modelBranchHeadMapper.toPersistence(branchHead);
-
-          await tx
-            .insert(modelBranchHeads)
-            .values({
-              modelId: branchPersistence.modelId,
-              branchName: branchPersistence.branchName,
-              headRevisionId: branchPersistence.headRevisionId,
-            })
-            .onConflictDoUpdate({
-              target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
-              set: {
-                headRevisionId: branchPersistence.headRevisionId,
-                updatedAt: new Date(),
-              },
-            });
-        }
-
-        const persistedChangeRows = await tx
-          .select()
-          .from(revisionChanges)
-          .where(eq(revisionChanges.revisionId, snapshot.id));
-
-        return modelRevisionMapper.toDomain(
-          revisionRow[0],
-          persistedChangeRows,
-        );
-      };
-
-      return existingTx ? persist(existingTx) : getDb().transaction(persist);
+    if (!newRevision) {
+      throw new Error("Only new revisions can be saved");
     }
 
     const persist = async (tx: DbTransaction) => {
-      const now = new Date();
-      const draftRows = await tx
-        .select()
-        .from(modelRevisionDrafts)
-        .where(eq(modelRevisionDrafts.id, snapshot.id))
-        .limit(1);
-
-      const existingDraft = draftRows[0];
-      const draftId = existingDraft?.id ?? crypto.randomUUID();
-      const createdAt = existingDraft?.createdAt ?? now;
-      const parentRevisionId = existingDraft
-        ? (snapshot.parentRevisionId ?? null)
-        : snapshot.id;
-      const secondParentRevisionId = existingDraft
-        ? (snapshot.secondParentRevisionId ?? null)
-        : null;
-
-      await tx
-        .insert(modelRevisionDrafts)
-        .values({
-          id: draftId,
-          modelId: snapshot.modelId,
-          modelName: snapshot.name,
-          parentRevisionId,
-          secondParentRevisionId,
-          authorId: snapshot.authorId,
-          message: snapshot.message,
-          createdAt,
-          updatedAt: now,
-        })
-        .onConflictDoUpdate({
-          target: modelRevisionDrafts.id,
-          set: {
-            modelId: snapshot.modelId,
-            modelName: snapshot.name,
-            parentRevisionId,
-            secondParentRevisionId,
-            authorId: snapshot.authorId,
-            message: snapshot.message,
-            updatedAt: sql`excluded.updated_at`,
-          },
-        });
+      const revisionRow = await tx
+        .insert(modelRevisions)
+        .values(modelRevisionMapper.toPersistence(revision))
+        .returning();
 
       const changeRows = buildRevisionChangeRowsFromEvents({
         modelId: snapshot.modelId,
-        revisionId: null,
-        draftId,
+        revisionId: snapshot.id,
         events,
       });
 
       if (changeRows.length > 0) {
         await tx
           .insert(revisionChanges)
-          .values(changeRows as any);
+          .values(changeRows);
       }
 
-      const [savedDraftRows, savedChangeRows] = await Promise.all([
-        tx
-          .select()
-          .from(modelRevisionDrafts)
-          .where(eq(modelRevisionDrafts.id, draftId))
-          .limit(1),
-        tx
-          .select()
-          .from(revisionChanges)
-          .where(eq(revisionChanges.draftId, draftId)),
-      ]);
+      if (snapshot.branchName) {
+        const branchHead = modelBranchHeadMapper.fromInput({
+          modelId: snapshot.modelId,
+          branchName: snapshot.branchName,
+          headRevisionId: snapshot.id,
+        });
+        const branchPersistence =
+          modelBranchHeadMapper.toPersistence(branchHead);
 
-      return modelRevisionDraftMapper.toDomain(
-        savedDraftRows[0],
-        savedChangeRows,
+        await tx
+          .insert(modelBranchHeads)
+          .values({
+            modelId: branchPersistence.modelId,
+            branchName: branchPersistence.branchName,
+            headRevisionId: branchPersistence.headRevisionId,
+          })
+          .onConflictDoUpdate({
+            target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
+            set: {
+              headRevisionId: branchPersistence.headRevisionId,
+              updatedAt: new Date(),
+            },
+          });
+      }
+
+      const persistedChangeRows = await tx
+        .select()
+        .from(revisionChanges)
+        .where(eq(revisionChanges.revisionId, snapshot.id));
+
+      return modelRevisionMapper.toDomain(
+        revisionRow[0],
+        persistedChangeRows,
       );
     };
 
@@ -332,221 +199,6 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       });
   },
 
-  async saveDraft(input) {
-    const now = new Date();
-
-    return getDb().transaction(async (tx) => {
-      const existingRows = await tx
-        .select()
-        .from(modelRevisionDrafts)
-        .where(eq(modelRevisionDrafts.id, input.id))
-        .limit(1);
-
-      const createdAt = existingRows[0]?.createdAt ?? now;
-
-      const draftAggregate = ModelRevisionDraftAggregate.create({
-        id: input.id,
-        modelId: input.modelId,
-        name: input.name,
-        parentRevisionId: input.parentRevisionId ?? null,
-        secondParentRevisionId: input.secondParentRevisionId ?? null,
-        authorId: input.authorId,
-        message: input.message,
-        createdAt,
-        updatedAt: now,
-        nodes: input.nodes
-          .filter((node) => node.op !== "delete")
-          .map((node): NodeSnapshot => ({
-            id: node.nodeId,
-            modelRevisionId: input.id,
-            nodeType: "spatialNode",
-            nodeTypeDescriminator: "internal",
-        })),
-      });
-
-      const draftPersistence =
-        modelRevisionDraftMapper.toPersistence(draftAggregate);
-
-      await tx
-        .insert(modelRevisionDrafts)
-        .values(draftPersistence)
-        .onConflictDoUpdate({
-          target: modelRevisionDrafts.id,
-          set: {
-            modelId: draftPersistence.modelId,
-            modelName: draftPersistence.modelName,
-            parentRevisionId: draftPersistence.parentRevisionId,
-            secondParentRevisionId: draftPersistence.secondParentRevisionId,
-            authorId: draftPersistence.authorId,
-            message: draftPersistence.message,
-            updatedAt: sql`excluded.updated_at`,
-          },
-        });
-
-      await tx
-        .delete(revisionChanges)
-        .where(eq(revisionChanges.draftId, input.id));
-
-      const changeRows = input.nodes.map((node) => {
-        const op = node.op === "upsert" ? "update" : (node.op ?? "update");
-        const entity = RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: null,
-          draftId: input.id,
-          entityType: "node",
-          entityId: node.nodeId,
-          schemaVersion: 1,
-          op,
-          payload: {
-            id: node.nodeId,
-            modelId: input.modelId,
-            nodeType: "spatialNode",
-            nodeTypeDescriminator: "internal",
-          },
-          createdAt: now,
-        });
-
-        return revisionChangeMapper.toPersistence(entity);
-      });
-
-      if (changeRows.length > 0) {
-        await tx
-          .insert(revisionChanges)
-          .values(changeRows as any);
-      }
-
-      const [savedDraftRows, savedChangeRows] = await Promise.all([
-        tx
-          .select()
-          .from(modelRevisionDrafts)
-          .where(eq(modelRevisionDrafts.id, input.id))
-          .limit(1),
-        tx
-          .select()
-          .from(revisionChanges)
-          .where(eq(revisionChanges.draftId, input.id)),
-      ]);
-
-      return modelRevisionDraftMapper.toDomain(
-        savedDraftRows[0],
-        savedChangeRows,
-      );
-    });
-  },
-
-  async commitDraft(input) {
-    return getDb().transaction(async (tx) => {
-      const [draftRows, draftChangeRows] = await Promise.all([
-        tx
-          .select()
-          .from(modelRevisionDrafts)
-          .where(eq(modelRevisionDrafts.id, input.draftId))
-          .limit(1),
-        tx
-          .select()
-          .from(revisionChanges)
-          .where(eq(revisionChanges.draftId, input.draftId)),
-      ]);
-
-      if (!draftRows[0]) {
-        throw new Error("Model revision draft not found");
-      }
-
-      const draft = modelRevisionDraftMapper.toDomain(
-        draftRows[0],
-        draftChangeRows,
-      );
-      const draftSnapshot = draft.toSnapshot();
-      const draftNodeOps: {
-        nodeId: string;
-        nodeTypeDescriminator: "external" | "internal";
-        op: "insert" | "update" | "delete";
-      }[] = draftChangeRows
-        .filter((change) => change.entityType === "node")
-        .map((change) => ({
-          nodeId: change.entityId,
-          nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
-          op:
-            change.op === "delete"
-              ? "delete"
-              : change.op === "insert"
-                ? "insert"
-                : "update",
-        }));
-
-      const aggregate = modelRevisionMapper.fromCommitInput({
-        id: draftSnapshot.id,
-        modelId: draftSnapshot.modelId,
-        branchName: input.branchName,
-        name: draftSnapshot.name,
-        parentRevisionId: draftSnapshot.parentRevisionId,
-        secondParentRevisionId: draftSnapshot.secondParentRevisionId,
-        authorId: draftSnapshot.authorId,
-        message: draftSnapshot.message,
-        nodes: draftSnapshot.nodes,
-      });
-
-      const snapshot = aggregate.toSnapshot();
-
-      const revisionRow = await tx
-        .insert(modelRevisions)
-        .values(modelRevisionMapper.toPersistence(aggregate))
-        .returning();
-
-      const changeRows = buildRevisionChangeRowsFromNodeOps({
-        modelId: snapshot.modelId,
-        revisionId: snapshot.id,
-        draftId: null,
-        nodes: draftNodeOps,
-      });
-
-      if (changeRows.length > 0) {
-        await tx
-          .insert(revisionChanges)
-          .values(changeRows as any);
-      }
-
-      if (input.branchName) {
-        const branchHead = modelBranchHeadMapper.fromInput({
-          modelId: snapshot.modelId,
-          branchName: input.branchName,
-          headRevisionId: snapshot.id,
-        });
-        const branchPersistence =
-          modelBranchHeadMapper.toPersistence(branchHead);
-
-        await tx
-          .insert(modelBranchHeads)
-          .values({
-            modelId: branchPersistence.modelId,
-            branchName: branchPersistence.branchName,
-            headRevisionId: branchPersistence.headRevisionId,
-          })
-          .onConflictDoUpdate({
-            target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
-            set: {
-              headRevisionId: branchPersistence.headRevisionId,
-              updatedAt: new Date(),
-            },
-          });
-      }
-
-      await tx
-        .delete(revisionChanges)
-        .where(eq(revisionChanges.draftId, input.draftId));
-      await tx
-        .delete(modelRevisionDrafts)
-        .where(eq(modelRevisionDrafts.id, input.draftId));
-
-      const persistedChangeRows = await tx
-        .select()
-        .from(revisionChanges)
-        .where(eq(revisionChanges.revisionId, snapshot.id));
-
-      return modelRevisionMapper.toDomain(revisionRow[0], persistedChangeRows);
-    });
-  },
-
   async commitRevision(input) {
     const aggregate = modelRevisionMapper.fromCommitInput({
       id: input.id,
@@ -573,7 +225,6 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           modelId: snapshot.modelId,
           modelName: snapshot.name,
           revisionId: snapshot.id,
-          draftId: null,
           op: snapshot.parentRevisionId ? "update" : "insert",
         });
         await tx
@@ -585,7 +236,6 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         const changeRows = buildRevisionChangeRowsFromNodes({
           modelId: snapshot.modelId,
           revisionId: snapshot.id,
-          draftId: null,
           nodes: snapshot.nodes,
         });
 
@@ -634,7 +284,6 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
 const buildRevisionChangeRowsFromNodeOps = (input: {
   modelId: string;
   revisionId: string | null;
-  draftId: string | null;
   nodes: {
     nodeId: string;
     name?: string;
@@ -648,7 +297,6 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
     const entity = RevisionChangeEntity.create({
       id: crypto.randomUUID(),
       revisionId: input.revisionId,
-      draftId: input.draftId,
       entityType: "node",
       entityId: node.nodeId,
       schemaVersion: 1,
@@ -669,13 +317,11 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
 const buildRevisionChangeRowsFromNodes = (input: {
   modelId: string;
   revisionId: string | null;
-  draftId: string | null;
   nodes: NodeSnapshot[];
 }): (typeof revisionChanges.$inferInsert)[] =>
   buildRevisionChangeRowsFromNodeOps({
     modelId: input.modelId,
     revisionId: input.revisionId,
-    draftId: input.draftId,
     nodes: input.nodes.map((node) => ({
       nodeId: node.id,
       nodeTypeDescriminator: node.nodeTypeDescriminator,
@@ -686,7 +332,6 @@ const buildRevisionChangeRowsFromNodes = (input: {
 const buildRevisionChangeRowsFromEvents = (input: {
   modelId: string;
   revisionId: string | null;
-  draftId: string | null;
   events: DomainEvent[];
 }): (typeof revisionChanges.$inferInsert)[] => {
   const now = new Date();
@@ -702,7 +347,6 @@ const buildRevisionChangeRowsFromEvents = (input: {
         RevisionChangeEntity.create({
           id: crypto.randomUUID(),
           revisionId: input.revisionId,
-          draftId: input.draftId,
           entityType: "node",
           entityId: snapshot.id,
           schemaVersion: 1,
@@ -728,7 +372,6 @@ const buildRevisionChangeRowsFromEvents = (input: {
   const nodeDeleteChanges = buildRevisionChangeRowsFromNodeOps({
     modelId: input.modelId,
     revisionId: input.revisionId,
-    draftId: input.draftId,
     nodes: input.events
       .filter(
         (event): event is Extract<DomainEvent, { type: "node_deleted" }> =>
@@ -752,7 +395,6 @@ const buildRevisionChangeRowsFromEvents = (input: {
         RevisionChangeEntity.create({
           id: crypto.randomUUID(),
           revisionId: input.revisionId,
-          draftId: input.draftId,
           entityType: "material",
           entityId: event.payload.id,
           schemaVersion: 1,
@@ -784,7 +426,6 @@ const buildRevisionChangeRowsFromEvents = (input: {
         RevisionChangeEntity.create({
           id: crypto.randomUUID(),
           revisionId: input.revisionId,
-          draftId: input.draftId,
           entityType: "section_profile",
           entityId: event.payload.id,
           schemaVersion: 1,
@@ -859,13 +500,11 @@ const buildModelRevisionChangeRow = (input: {
   modelId: string;
   modelName: string;
   revisionId: string | null;
-  draftId: string | null;
   op: "insert" | "update";
 }): typeof revisionChanges.$inferInsert => {
   const entity = RevisionChangeEntity.create({
     id: crypto.randomUUID(),
     revisionId: input.revisionId,
-    draftId: input.draftId,
     entityType: "model",
     entityId: input.modelId,
     schemaVersion: 1,

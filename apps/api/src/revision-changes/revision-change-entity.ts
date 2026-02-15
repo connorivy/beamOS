@@ -3,7 +3,6 @@ import { assertUuid } from "../common/uuid";
 export type RevisionChangeSnapshot = {
   id: string;
   revisionId?: string | null;
-  draftId?: string | null;
   entityType: string;
   entityId: string;
   schemaVersion: number;
@@ -20,9 +19,6 @@ export class RevisionChangeEntity {
     if (snapshot.revisionId) {
       assertUuid(snapshot.revisionId, "revisionId");
     }
-    if (snapshot.draftId) {
-      assertUuid(snapshot.draftId, "draftId");
-    }
     this.assertRequired(snapshot.entityType, "entityType");
     assertUuid(snapshot.entityId, "entityId");
     this.assertSchemaVersion(snapshot.schemaVersion);
@@ -30,7 +26,6 @@ export class RevisionChangeEntity {
 
     this.id = snapshot.id;
     this.revisionId = snapshot.revisionId ?? null;
-    this.draftId = snapshot.draftId ?? null;
     this.entityType = snapshot.entityType;
     this.entityId = snapshot.entityId;
     this.schemaVersion = snapshot.schemaVersion;
@@ -41,7 +36,6 @@ export class RevisionChangeEntity {
 
   readonly id: string;
   readonly revisionId: string | null;
-  readonly draftId: string | null;
   readonly entityType: string;
   readonly entityId: string;
   readonly schemaVersion: number;
@@ -64,7 +58,6 @@ export class RevisionChangeEntity {
     return {
       id: this.id,
       revisionId: this.revisionId,
-      draftId: this.draftId,
       entityType: this.entityType,
       entityId: this.entityId,
       schemaVersion: this.schemaVersion,

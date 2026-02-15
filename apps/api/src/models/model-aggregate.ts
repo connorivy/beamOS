@@ -13,14 +13,12 @@ export class ModelAggregate {
   private _nodes: NodeEntity[];
   private _domainEvents: ModelDomainEvent[];
   private _sourceRevisionId: string | null;
-  private _sourceDraftId: string | null;
 
   private constructor(snapshot: {
     id: string;
     name: string;
     nodes: NodeSnapshot[];
     sourceRevisionId?: string | null;
-    sourceDraftId?: string | null;
   }) {
     assertUuid(snapshot.id, "id");
     this.assertName(snapshot.name);
@@ -30,7 +28,6 @@ export class ModelAggregate {
     this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
     this._domainEvents = [];
     this._sourceRevisionId = snapshot.sourceRevisionId ?? null;
-    this._sourceDraftId = snapshot.sourceDraftId ?? null;
   }
 
   readonly id: string;
@@ -39,14 +36,12 @@ export class ModelAggregate {
     name: string;
     nodes?: NodeSnapshot[];
     sourceRevisionId?: string | null;
-    sourceDraftId?: string | null;
   }): ModelAggregate {
     const model = new ModelAggregate({
       id: Bun.randomUUIDv7(),
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
       sourceRevisionId: snapshot.sourceRevisionId ?? null,
-      sourceDraftId: snapshot.sourceDraftId ?? null,
     });
     model._domainEvents.push({
       type: "model_created",
@@ -60,14 +55,12 @@ export class ModelAggregate {
     name: string;
     nodes?: NodeSnapshot[];
     sourceRevisionId?: string | null;
-    sourceDraftId?: string | null;
   }): ModelAggregate {
     return new ModelAggregate({
       id: snapshot.id,
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
       sourceRevisionId: snapshot.sourceRevisionId ?? null,
-      sourceDraftId: snapshot.sourceDraftId ?? null,
     });
   }
 
@@ -81,10 +74,6 @@ export class ModelAggregate {
 
   get sourceRevisionId(): string | null {
     return this._sourceRevisionId;
-  }
-
-  get sourceDraftId(): string | null {
-    return this._sourceDraftId;
   }
 
   rename(name: string): void {
