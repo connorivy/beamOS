@@ -114,13 +114,10 @@ export const createModelRevision = defineEndpoint({
         materials: modelRevision.materials.map((material) => ({
           id: material.id,
           revisionId: material.revisionId,
-          pressureE: {
-            value: material.pressureE.Pascals,
-            unit: PressureUnits.Pascals as const,
-          },
-          pressureG: {
-            value: material.pressureG.Pascals,
-            unit: PressureUnits.Pascals as const,
+          E: material.pressureE.Pascals,
+          G: material.pressureG.Pascals,
+          units: {
+            pressure: PressureUnits.Pascals as const,
           },
         })),
         sectionProfiles: modelRevision.sectionProfiles.map((sectionProfile) => ({
@@ -316,15 +313,15 @@ const buildRevisionChanges = (input: {
           revisionId: input.revisionId,
           pressureE: {
             value: new Pressure(
-              createMaterial.pressureE.value,
-              createMaterial.pressureE.unit,
+              createMaterial.E,
+              createMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },
           pressureG: {
             value: new Pressure(
-              createMaterial.pressureG.value,
-              createMaterial.pressureG.unit,
+              createMaterial.G,
+              createMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },
@@ -349,15 +346,15 @@ const buildRevisionChanges = (input: {
           revisionId: input.revisionId,
           pressureE: {
             value: new Pressure(
-              updateMaterial.pressureE.value,
-              updateMaterial.pressureE.unit,
+              updateMaterial.E,
+              updateMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },
           pressureG: {
             value: new Pressure(
-              updateMaterial.pressureG.value,
-              updateMaterial.pressureG.unit,
+              updateMaterial.G,
+              updateMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },

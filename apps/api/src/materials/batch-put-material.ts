@@ -28,13 +28,10 @@ export const batchPutMaterialResSchema = z.object({
 const toResponseMaterial = (material: MaterialEntity) => ({
   id: material.id,
   revisionId: material.revisionId,
-  pressureE: {
-    value: material.pressureE.Pascals,
-    unit: PressureUnits.Pascals as const,
-  },
-  pressureG: {
-    value: material.pressureG.Pascals,
-    unit: PressureUnits.Pascals as const,
+  E: material.pressureE.Pascals,
+  G: material.pressureG.Pascals,
+  units: {
+    pressure: PressureUnits.Pascals as const,
   },
 });
 
@@ -70,12 +67,12 @@ export async function batchPutMaterialHandler(
       id: material.id,
       revisionId,
       pressureE: new Pressure(
-        material.pressureE.value,
-        material.pressureE.unit,
+        material.E,
+        material.units.pressure,
       ),
       pressureG: new Pressure(
-        material.pressureG.value,
-        material.pressureG.unit,
+        material.G,
+        material.units.pressure,
       ),
     }),
   );

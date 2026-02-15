@@ -87,13 +87,10 @@ export const getModelRevision = defineEndpoint({
         materials: modelRevision.materials.map((material) => ({
           id: material.id,
           revisionId: material.revisionId,
-          pressureE: {
-            value: material.pressureE.Pascals,
-            unit: PressureUnits.Pascals as const,
-          },
-          pressureG: {
-            value: material.pressureG.Pascals,
-            unit: PressureUnits.Pascals as const,
+          E: material.pressureE.Pascals,
+          G: material.pressureG.Pascals,
+          units: {
+            pressure: PressureUnits.Pascals as const,
           },
         })),
         sectionProfiles: modelRevision.sectionProfiles.map(
