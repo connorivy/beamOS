@@ -251,42 +251,37 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const updateNode of input.req.body.nodes.update) {
-    const existing = input.currentNodesById.get(updateNode.id);
+  for (const putNode of input.req.body.nodes.put) {
+    const existing = input.currentNodesById.get(putNode.id);
     if (!existing) {
-      throw httpError(`Node ${updateNode.id} not found`, 400);
+      throw httpError(`Node ${putNode.id} not found`, 400);
     }
-
-    const nodeTypeDescriminator =
-      updateNode.nodeTypeDescriminator ?? existing.nodeTypeDescriminator ?? "internal";
+    const payload =
+      putNode.location.type === "internal"
+        ? {
+            id: putNode.id,
+            modelRevisionId: input.revisionId,
+            nodeType: "internalNode",
+            nodeTypeDescriminator: "internal" as const,
+            element1dId: putNode.location.element1dId,
+            distanceAlongElement1d: putNode.location.ratioAlongElement1d,
+            restraint: putNode.restraint,
+          }
+        : {
+            id: putNode.id,
+            modelRevisionId: input.revisionId,
+            nodeType: "spatialNode",
+            nodeTypeDescriminator: "external" as const,
+            point: putNode.location.point,
+            restraint: putNode.restraint,
+          };
 
     changes.push(
       toEntity({
         entityType: "node",
-        entityId: updateNode.id,
+        entityId: putNode.id,
         op: "update",
-        payload: {
-          id: updateNode.id,
-          modelRevisionId: input.revisionId,
-          nodeType:
-            nodeTypeDescriminator === "external"
-              ? "spatialNode"
-              : "internalNode",
-          nodeTypeDescriminator,
-          point:
-            nodeTypeDescriminator === "external"
-              ? (existing.point ?? { x: 0, y: 0, z: 0 })
-              : null,
-          element1dId:
-            nodeTypeDescriminator === "internal"
-              ? (existing.element1dId ?? updateNode.id)
-              : null,
-          distanceAlongElement1d:
-            nodeTypeDescriminator === "internal"
-              ? (existing.distanceAlongElement1d?.DecimalFractions ?? 0)
-              : null,
-          restraint: existing.restraint ?? {},
-        },
+        payload,
       }),
     );
   }
@@ -332,32 +327,32 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const updateMaterial of input.req.body.materials.update) {
-    const existing = input.currentMaterialsById.get(updateMaterial.id);
+  for (const putMaterial of input.req.body.materials.put) {
+    const existing = input.currentMaterialsById.get(putMaterial.id);
     if (!existing) {
-      throw httpError(`Material ${updateMaterial.id} not found`, 400);
+      throw httpError(`Material ${putMaterial.id} not found`, 400);
     }
 
     changes.push(
       toEntity({
         entityType: "material",
-        entityId: updateMaterial.id,
+        entityId: putMaterial.id,
         op: "update",
         payload: {
-          id: updateMaterial.id,
+          id: putMaterial.id,
           revisionId: input.revisionId,
-          name: updateMaterial.name,
+          name: putMaterial.name,
           pressureE: {
             value: new Pressure(
-              updateMaterial.modulusOfElasticity,
-              updateMaterial.units.pressure,
+              putMaterial.modulusOfElasticity,
+              putMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },
           pressureG: {
             value: new Pressure(
-              updateMaterial.modulusOfRigidity,
-              updateMaterial.units.pressure,
+              putMaterial.modulusOfRigidity,
+              putMaterial.units.pressure,
             ).Pascals,
             unit: "Pascals",
           },
@@ -442,70 +437,66 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const updateSectionProfile of input.req.body.sectionProfiles.update) {
-    const existing = input.currentSectionProfilesById.get(updateSectionProfile.id);
+  for (const putSectionProfile of input.req.body.sectionProfiles.put) {
+    const existing = input.currentSectionProfilesById.get(putSectionProfile.id);
     if (!existing) {
-      throw httpError(`Section profile ${updateSectionProfile.id} not found`, 400);
+      throw httpError(`Section profile ${putSectionProfile.id} not found`, 400);
     }
 
     changes.push(
       toEntity({
         entityType: "sectionprofile",
-        entityId: updateSectionProfile.id,
+        entityId: putSectionProfile.id,
         op: "update",
         payload: {
-          id: updateSectionProfile.id,
+          id: putSectionProfile.id,
           revisionId: input.revisionId,
-          name: updateSectionProfile.name ?? existing.name,
-          discriminator: existing.discriminator,
+          name: putSectionProfile.name,
+          discriminator: putSectionProfile.discriminator,
           area: {
-            value: existing.area.SquareMeters,
+            value: putSectionProfile.area,
             unit: "SquareMeters",
           },
           strongAxisMomentOfInertia: {
-            value: existing.strongAxisMomentOfInertia.MetersToTheFourth,
+            value: putSectionProfile.strongAxisMomentOfInertia,
             unit: "MetersToTheFourth",
           },
           weakAxisMomentOfInertia: {
-            value: existing.weakAxisMomentOfInertia.MetersToTheFourth,
+            value: putSectionProfile.weakAxisMomentOfInertia,
             unit: "MetersToTheFourth",
           },
           torsionalConstant: {
-            value: existing.torsionalConstant.MetersToTheFourth,
+            value: putSectionProfile.torsionalConstant,
             unit: "MetersToTheFourth",
           },
           warpingConstant: {
-            value: existing.warpingConstant.MetersToTheSixth,
+            value: putSectionProfile.warpingConstant,
             unit: "MetersToTheSixth",
           },
           strongAxisPlasticSectionModulus: {
-            value: existing.strongAxisPlasticSectionModulus.CubicMeters,
+            value: putSectionProfile.strongAxisPlasticSectionModulus,
             unit: "CubicMeters",
           },
           weakAxisPlasticSectionModulus: {
-            value: existing.weakAxisPlasticSectionModulus.CubicMeters,
+            value: putSectionProfile.weakAxisPlasticSectionModulus,
             unit: "CubicMeters",
           },
           strongAxisElasticSectionModulus: {
-            value: existing.strongAxisElasticSectionModulus.CubicMeters,
+            value: putSectionProfile.strongAxisElasticSectionModulus,
             unit: "CubicMeters",
           },
           weakAxisElasticSectionModulus: {
-            value: existing.weakAxisElasticSectionModulus.CubicMeters,
+            value: putSectionProfile.weakAxisElasticSectionModulus,
             unit: "CubicMeters",
           },
-          ...(existing.strongAxisShearArea
+          ...(putSectionProfile.discriminator === "WITH_SHEAR_AREAS"
             ? {
                 strongAxisShearArea: {
-                  value: existing.strongAxisShearArea.SquareMeters,
+                  value: putSectionProfile.strongAxisShearArea,
                   unit: "SquareMeters",
                 },
-              }
-            : {}),
-          ...(existing.weakAxisShearArea
-            ? {
                 weakAxisShearArea: {
-                  value: existing.weakAxisShearArea.SquareMeters,
+                  value: putSectionProfile.weakAxisShearArea,
                   unit: "SquareMeters",
                 },
               }
@@ -545,24 +536,24 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const updateElement1d of input.req.body.element1ds.update) {
-    const existing = input.currentElement1dsById.get(updateElement1d.id);
+  for (const putElement1d of input.req.body.element1ds.put) {
+    const existing = input.currentElement1dsById.get(putElement1d.id);
     if (!existing) {
-      throw httpError(`Element1d ${updateElement1d.id} not found`, 400);
+      throw httpError(`Element1d ${putElement1d.id} not found`, 400);
     }
 
     changes.push(
       toEntity({
         entityType: "element1d",
-        entityId: updateElement1d.id,
+        entityId: putElement1d.id,
         op: "update",
         payload: {
-          id: updateElement1d.id,
+          id: putElement1d.id,
           revisionId: input.revisionId,
-          startNodeId: updateElement1d.startNode ?? existing.startNodeId,
-          endNodeId: updateElement1d.endNode ?? existing.endNodeId,
-          materialId: updateElement1d.material ?? existing.materialId,
-          sectionProfileId: updateElement1d.section ?? existing.sectionProfileId,
+          startNodeId: putElement1d.startNodeId,
+          endNodeId: putElement1d.endNodeId,
+          materialId: putElement1d.materialId,
+          sectionProfileId: putElement1d.sectionProfileId,
         },
       }),
     );

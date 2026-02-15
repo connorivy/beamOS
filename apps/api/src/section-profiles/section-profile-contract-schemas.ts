@@ -8,6 +8,59 @@ import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
 import { SECTION_PROFILE_DISCRIMINATORS } from "./section-profile-entity";
 
+export const sectionPropertiesInputSchema = z.object({
+  area: z.number().finite(),
+  strongAxisMomentOfInertia: z.number().finite(),
+  weakAxisMomentOfInertia: z.number().finite(),
+  torsionalConstant: z.number().finite(),
+  warpingConstant: z.number().finite(),
+  strongAxisPlasticSectionModulus: z.number().finite(),
+  weakAxisPlasticSectionModulus: z.number().finite(),
+  strongAxisElasticSectionModulus: z.number().finite(),
+  weakAxisElasticSectionModulus: z.number().finite(),
+});
+
+const sectionProfileBasePropertiesSchema = z.object({
+  name: z.string().trim().min(1),
+  ...sectionPropertiesInputSchema.shape,
+});
+
+const standardSectionProfilePropertiesSchema = sectionProfileBasePropertiesSchema.extend({
+  discriminator: z.literal("STANDARD"),
+});
+
+const withShearAreasSectionProfilePropertiesSchema =
+  sectionProfileBasePropertiesSchema.extend({
+    discriminator: z.literal("WITH_SHEAR_AREAS"),
+    strongAxisShearArea: z.number().finite(),
+    weakAxisShearArea: z.number().finite(),
+  });
+
+export const sectionProfilePropertiesSchema = z.discriminatedUnion("discriminator", [
+  standardSectionProfilePropertiesSchema,
+  withShearAreasSectionProfilePropertiesSchema,
+]);
+
+export const createSectionProfileRequestSchema = z.discriminatedUnion("discriminator", [
+  standardSectionProfilePropertiesSchema.extend({
+    tempId: z.string().trim().min(1).optional(),
+  }),
+  withShearAreasSectionProfilePropertiesSchema.extend({
+    tempId: z.string().trim().min(1).optional(),
+  }),
+]);
+
+export const putSectionProfileRequestSchema = z.discriminatedUnion("discriminator", [
+  standardSectionProfilePropertiesSchema.extend({
+    id: uuidV7Schema,
+  }),
+  withShearAreasSectionProfilePropertiesSchema.extend({
+    id: uuidV7Schema,
+  }),
+]);
+
+export const deleteSectionProfileRequestSchema = z.string().trim().min(1);
+
 export const sectionProfileResponseSchema = z.object({
   id: uuidV7Schema,
   revisionId: uuidV7Schema,

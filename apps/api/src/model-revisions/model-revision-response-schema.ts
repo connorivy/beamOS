@@ -1,9 +1,9 @@
 import z from "zod";
 import { uuidV7Schema } from "../common/uuid";
-import { element1dResponseSchema } from "../element1ds/element1d-response-schema";
+import { element1dResponseSchema } from "../element1ds/element1d-contract-schemas";
 import { materialResponseSchema } from "../materials/material-contract-schemas";
-import { revisionNodeResponseSchema } from "../nodes/node-response-schema";
-import { sectionProfileResponseSchema } from "../section-profiles/section-profile-response-schema";
+import { revisionNodeResponseSchema } from "../nodes/node-contract-schemas";
+import { sectionProfileResponseSchema } from "../section-profiles/section-profile-contract-schemas";
 
 export const modelRevisionResponseSchema = z.object({
   modelRevision: z.object({

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { httpError } from "../common/http-utils";
 import { toVersionRef } from "../common/version-utils";
 import type { AppContext } from "../common/types";
-import { nodeResponseSchema } from "./node-response-schema";
+import { nodeResponseSchema } from "./node-contract-schemas";
 import { patchNodeReqSchema } from "src/contracts/model-version-editing";
 
 const uuidSchema = z.uuid();

@@ -9,7 +9,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
-import { sectionProfileResponseSchema } from "./section-profile-response-schema";
+import { sectionProfileResponseSchema } from "./section-profile-contract-schemas";
 
 const uuidV7Schema = z
   .uuid()

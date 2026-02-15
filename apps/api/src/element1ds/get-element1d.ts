@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
-import { element1dResponseSchema } from "./element1d-response-schema";
+import { element1dResponseSchema } from "./element1d-contract-schemas";
 
 const uuidV7Schema = z
   .uuid()

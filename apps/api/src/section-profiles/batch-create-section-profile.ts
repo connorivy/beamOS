@@ -14,14 +14,14 @@ import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
 import type { SectionProfileSnapshot } from "./section-profile-entity";
-import { sectionProfileResponseSchema } from "./section-profile-response-schema";
+import { sectionProfileResponseSchema } from "./section-profile-contract-schemas";
 import { uuidV7Schema } from "src/common/uuid";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 import {
   createSectionProfileRequestSchema,
   sectionPropertiesInputSchema,
-} from "./create-section-profile-request-schema";
+} from "./section-profile-contract-schemas";
 
 const sectionProfileUnitsInputSchema = z.object({
   area: z.enum(AreaUnits),

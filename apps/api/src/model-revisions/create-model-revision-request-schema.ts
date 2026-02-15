@@ -1,41 +1,47 @@
 import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
-import { createElement1dRequestSchema } from "../element1ds/create-element1d-request-schema";
-import { deleteElement1dRequestSchema } from "../element1ds/delete-element1d-request-schema";
-import { updateElement1dRequestSchema } from "../element1ds/update-element1d-request-schema";
+import {
+  createElement1dRequestSchema,
+  deleteElement1dRequestSchema,
+  putElement1dRequestSchema,
+} from "../element1ds/element1d-contract-schemas";
 import {
   createMaterialRequestSchema,
   deleteMaterialRequestSchema,
   putMaterialRequestSchema,
 } from "../materials/material-contract-schemas";
-import { createNodeRequestSchema } from "../nodes/create-node-request-schema";
-import { deleteNodeRequestSchema } from "../nodes/delete-node-request-schema";
-import { updateNodeRequestSchema } from "../nodes/update-node-request-schema";
-import { createSectionProfileRequestSchema } from "../section-profiles/create-section-profile-request-schema";
-import { deleteSectionProfileRequestSchema } from "../section-profiles/delete-section-profile-request-schema";
-import { updateSectionProfileRequestSchema } from "../section-profiles/update-section-profile-request-schema";
+import {
+  createNodeRequestSchema,
+  deleteNodeRequestSchema,
+  putNodeRequestSchema,
+} from "../nodes/node-contract-schemas";
+import {
+  createSectionProfileRequestSchema,
+  deleteSectionProfileRequestSchema,
+  putSectionProfileRequestSchema,
+} from "../section-profiles/section-profile-contract-schemas";
 
 const element1dOperationsRequestSchema = z.object({
   create: z.array(createElement1dRequestSchema).default([]),
-  update: z.array(updateElement1dRequestSchema).default([]),
+  put: z.array(putElement1dRequestSchema).default([]),
   delete: z.array(deleteElement1dRequestSchema).default([]),
 });
 
 const nodeOperationsRequestSchema = z.object({
   create: z.array(createNodeRequestSchema).default([]),
-  update: z.array(updateNodeRequestSchema).default([]),
+  put: z.array(putNodeRequestSchema).default([]),
   delete: z.array(deleteNodeRequestSchema).default([]),
 });
 
 const materialOperationsRequestSchema = z.object({
   create: z.array(createMaterialRequestSchema).default([]),
-  update: z.array(putMaterialRequestSchema).default([]),
+  put: z.array(putMaterialRequestSchema).default([]),
   delete: z.array(deleteMaterialRequestSchema).default([]),
 });
 
 const sectionProfileOperationsRequestSchema = z.object({
   create: z.array(createSectionProfileRequestSchema).default([]),
-  update: z.array(updateSectionProfileRequestSchema).default([]),
+  put: z.array(putSectionProfileRequestSchema).default([]),
   delete: z.array(deleteSectionProfileRequestSchema).default([]),
 });
 
