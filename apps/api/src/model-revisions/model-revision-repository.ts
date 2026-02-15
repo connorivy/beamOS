@@ -27,6 +27,7 @@ import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
+import { NodeRestraints, parseRestraint } from "../nodes/node-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -709,7 +710,7 @@ const applyNodeChanges = (input: {
         change.nodeTypeDescriminator === "external"
           ? undefined
           : Ratio.FromDecimalFractions(0),
-      restraint: {},
+      restraint: { ...NodeRestraints.FREE },
     });
   }
 };
@@ -806,7 +807,7 @@ const toNodeSnapshotFromRevisionChange = (input: {
     typeof payload.modelRevisionId === "string"
       ? payload.modelRevisionId
       : (input.row.revisionId ?? "");
-  const restraint = parseNodeRestraint(payload.restraint);
+  const restraint = parseRestraint(payload.restraint);
 
   if (nodeTypeDescriminator === "internal") {
     const distanceAlongElement1d = toFiniteNumber(payload.distanceAlongElement1d);
@@ -881,21 +882,6 @@ const toFiniteNumber = (value: unknown): number | undefined => {
   return typeof value === "number" && Number.isFinite(value)
     ? value
     : undefined;
-};
-
-const parseNodeRestraint = (value: unknown): NodeRestraint => {
-  if (!value || typeof value !== "object") {
-    return {};
-  }
-
-  const parsed: NodeRestraint = {};
-  for (const [key, entry] of Object.entries(value)) {
-    if (typeof entry === "boolean") {
-      parsed[key] = entry;
-    }
-  }
-
-  return parsed;
 };
 
 const buildMaterialsFromRevisions = async (input: {

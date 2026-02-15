@@ -50,7 +50,14 @@ describe("typed node api client integration", () => {
           nodes: [
             {
               tempId: tempIds[0],
-              restraint: { ux: true },
+              restraint: {
+                canTranslateAlongX: false,
+                canTranslateAlongY: true,
+                canTranslateAlongZ: true,
+                canRotateAboutX: true,
+                canRotateAboutY: true,
+                canRotateAboutZ: true,
+              },
               location: {
                 type: "spatial",
                 point: { x: 0, y: 1, z: 2 },
@@ -58,7 +65,14 @@ describe("typed node api client integration", () => {
             },
             {
               tempId: tempIds[1],
-              restraint: { uy: true },
+              restraint: {
+                canTranslateAlongX: true,
+                canTranslateAlongY: false,
+                canTranslateAlongZ: true,
+                canRotateAboutX: true,
+                canRotateAboutY: true,
+                canRotateAboutZ: true,
+              },
               location: {
                 type: "spatial",
                 point: { x: 3, y: 4, z: 5 },
@@ -132,7 +146,6 @@ describe("typed node api client integration", () => {
           nodes: [
             {
               tempId: "dup-1",
-              restraint: {},
               location: {
                 type: "spatial",
                 point: { x: 0, y: 0, z: 0 },
@@ -140,7 +153,6 @@ describe("typed node api client integration", () => {
             },
             {
               tempId: "dup-1",
-              restraint: {},
               location: {
                 type: "spatial",
                 point: { x: 1, y: 1, z: 1 },

@@ -2,7 +2,61 @@ import { assertUuid } from "../common/uuid";
 import { Ratio } from "unitsnet-js";
 import type { NodeDomainEvents } from "./node-events";
 
-export type NodeRestraint = Record<string, boolean>;
+export type NodeRestraint = {
+  canTranslateAlongX: boolean;
+  canTranslateAlongY: boolean;
+  canTranslateAlongZ: boolean;
+  canRotateAboutX: boolean;
+  canRotateAboutY: boolean;
+  canRotateAboutZ: boolean;
+};
+
+export const NodeRestraints = {
+  FREE: {
+    canTranslateAlongX: true,
+    canTranslateAlongY: true,
+    canTranslateAlongZ: true,
+    canRotateAboutX: true,
+    canRotateAboutY: true,
+    canRotateAboutZ: true,
+  } as NodeRestraint,
+  FIXED: {
+    canTranslateAlongX: false,
+    canTranslateAlongY: false,
+    canTranslateAlongZ: false,
+    canRotateAboutX: false,
+    canRotateAboutY: false,
+    canRotateAboutZ: false,
+  } as NodeRestraint,
+};
+
+export const parseRestraint = (value: unknown): NodeRestraint => {
+  if (!value || typeof value !== "object") {
+    throw new Error("restraint must be a valid object");
+  }
+
+  const obj = value as Record<string, unknown>;
+
+  if (
+    typeof obj.canTranslateAlongX !== "boolean" ||
+    typeof obj.canTranslateAlongY !== "boolean" ||
+    typeof obj.canTranslateAlongZ !== "boolean" ||
+    typeof obj.canRotateAboutX !== "boolean" ||
+    typeof obj.canRotateAboutY !== "boolean" ||
+    typeof obj.canRotateAboutZ !== "boolean"
+  ) {
+    throw new Error("restraint must have all required boolean properties");
+  }
+
+  return {
+    canTranslateAlongX: obj.canTranslateAlongX,
+    canTranslateAlongY: obj.canTranslateAlongY,
+    canTranslateAlongZ: obj.canTranslateAlongZ,
+    canRotateAboutX: obj.canRotateAboutX,
+    canRotateAboutY: obj.canRotateAboutY,
+    canRotateAboutZ: obj.canRotateAboutZ,
+  };
+};
 
 export type NodePoint = {
   x: number;
@@ -175,13 +229,23 @@ export class NodeEntity {
     restraint: NodeRestraint | undefined,
   ): NodeRestraint {
     if (!restraint) {
-      return {};
+      return { ...NodeRestraints.FREE };
     }
-    for (const value of Object.values(restraint)) {
-      if (typeof value !== "boolean") {
-        throw new Error("restraint must contain boolean values");
-      }
-    }
+
+    this.assertRestraint(restraint);
     return { ...restraint };
+  }
+
+  private assertRestraint(restraint: NodeRestraint): void {
+    if (
+      typeof restraint.canTranslateAlongX !== "boolean" ||
+      typeof restraint.canTranslateAlongY !== "boolean" ||
+      typeof restraint.canTranslateAlongZ !== "boolean" ||
+      typeof restraint.canRotateAboutX !== "boolean" ||
+      typeof restraint.canRotateAboutY !== "boolean" ||
+      typeof restraint.canRotateAboutZ !== "boolean"
+    ) {
+      throw new Error("restraint must contain boolean values for all fields");
+    }
   }
 }

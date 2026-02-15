@@ -58,7 +58,12 @@ describe("model revision integration", () => {
                   point: { x: 1, y: 2, z: 3 },
                 },
                 restraint: {
-                  rx: true,
+                  canTranslateAlongX: true,
+                  canTranslateAlongY: true,
+                  canTranslateAlongZ: true,
+                  canRotateAboutX: false,
+                  canRotateAboutY: true,
+                  canRotateAboutZ: true,
                 },
               },
             ],

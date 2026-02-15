@@ -14,6 +14,7 @@ import type { ModelDomainEvent } from "./model-events";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
+import { NodeRestraints, parseRestraint } from "../nodes/node-entity";
 
 const applyNodeChanges = (input: {
   current: Map<string, NodeSnapshot>;
@@ -48,7 +49,7 @@ const applyNodeChanges = (input: {
         change.nodeTypeDescriminator === "external"
           ? undefined
           : Ratio.FromDecimalFractions(0),
-      restraint: {},
+      restraint: { ...NodeRestraints.FREE },
     });
   }
 };
@@ -341,7 +342,7 @@ const toNodeSnapshotFromChange = (
       ? payload.modelRevisionId
       : (change.revisionId ?? "");
   const nodeTypeDescriminator = extractNodeTypeDescriminator(payload);
-  const restraint = parseNodeRestraint(payload.restraint);
+  const restraint = parseRestraint(payload.restraint);
 
   if (nodeTypeDescriminator === "internal") {
     const element1dId =
@@ -378,21 +379,6 @@ const toNodeSnapshotFromChange = (
     },
     restraint,
   };
-};
-
-const parseNodeRestraint = (value: unknown): NodeRestraint => {
-  if (!value || typeof value !== "object") {
-    return {};
-  }
-
-  const parsed: NodeRestraint = {};
-  for (const [key, entry] of Object.entries(value)) {
-    if (typeof entry === "boolean") {
-      parsed[key] = entry;
-    }
-  }
-
-  return parsed;
 };
 
 const extractNodeTypeDescriminator = (

@@ -1,7 +1,14 @@
 import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
 
-const restraintSchema = z.record(z.string(), z.boolean());
+const restraintSchema = z.object({
+  canTranslateAlongX: z.boolean(),
+  canTranslateAlongY: z.boolean(),
+  canTranslateAlongZ: z.boolean(),
+  canRotateAboutX: z.boolean(),
+  canRotateAboutY: z.boolean(),
+  canRotateAboutZ: z.boolean(),
+}).optional();
 
 const spatialNodeLocationSchema = z.object({
   type: z.literal("spatial"),
@@ -20,7 +27,7 @@ const internalNodeLocationSchema = z.object({
 
 export const createNodeRequestSchema = z.object({
   tempId: z.string().trim().min(1).optional(),
-  restraint: restraintSchema.default({}),
+  restraint: restraintSchema,
   location: z.discriminatedUnion("type", [
     spatialNodeLocationSchema,
     internalNodeLocationSchema,
