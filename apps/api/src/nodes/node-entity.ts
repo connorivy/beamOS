@@ -11,13 +11,23 @@ export type NodeRestraint = {
   canRotateAboutZ: boolean;
 };
 
-export const DEFAULT_NODE_RESTRAINT: NodeRestraint = {
-  canTranslateAlongX: true,
-  canTranslateAlongY: true,
-  canTranslateAlongZ: true,
-  canRotateAboutX: true,
-  canRotateAboutY: true,
-  canRotateAboutZ: true,
+export const NodeRestraints = {
+  FREE: {
+    canTranslateAlongX: true,
+    canTranslateAlongY: true,
+    canTranslateAlongZ: true,
+    canRotateAboutX: true,
+    canRotateAboutY: true,
+    canRotateAboutZ: true,
+  } as NodeRestraint,
+  FIXED: {
+    canTranslateAlongX: false,
+    canTranslateAlongY: false,
+    canTranslateAlongZ: false,
+    canRotateAboutX: false,
+    canRotateAboutY: false,
+    canRotateAboutZ: false,
+  } as NodeRestraint,
 };
 
 export type NodePoint = {
@@ -190,14 +200,20 @@ export class NodeEntity {
   private normalizeRestraint(
     restraint: Partial<NodeRestraint> | undefined,
   ): NodeRestraint {
-    return {
-      canTranslateAlongX: restraint?.canTranslateAlongX ?? DEFAULT_NODE_RESTRAINT.canTranslateAlongX,
-      canTranslateAlongY: restraint?.canTranslateAlongY ?? DEFAULT_NODE_RESTRAINT.canTranslateAlongY,
-      canTranslateAlongZ: restraint?.canTranslateAlongZ ?? DEFAULT_NODE_RESTRAINT.canTranslateAlongZ,
-      canRotateAboutX: restraint?.canRotateAboutX ?? DEFAULT_NODE_RESTRAINT.canRotateAboutX,
-      canRotateAboutY: restraint?.canRotateAboutY ?? DEFAULT_NODE_RESTRAINT.canRotateAboutY,
-      canRotateAboutZ: restraint?.canRotateAboutZ ?? DEFAULT_NODE_RESTRAINT.canRotateAboutZ,
+    if (!restraint) {
+      return { ...NodeRestraints.FREE };
+    }
+    
+    const normalized: NodeRestraint = {
+      canTranslateAlongX: restraint.canTranslateAlongX ?? NodeRestraints.FREE.canTranslateAlongX,
+      canTranslateAlongY: restraint.canTranslateAlongY ?? NodeRestraints.FREE.canTranslateAlongY,
+      canTranslateAlongZ: restraint.canTranslateAlongZ ?? NodeRestraints.FREE.canTranslateAlongZ,
+      canRotateAboutX: restraint.canRotateAboutX ?? NodeRestraints.FREE.canRotateAboutX,
+      canRotateAboutY: restraint.canRotateAboutY ?? NodeRestraints.FREE.canRotateAboutY,
+      canRotateAboutZ: restraint.canRotateAboutZ ?? NodeRestraints.FREE.canRotateAboutZ,
     };
+    this.assertRestraint(normalized);
+    return normalized;
   }
 
   private assertRestraint(restraint: NodeRestraint): void {

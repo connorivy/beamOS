@@ -27,7 +27,7 @@ import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
-import { DEFAULT_NODE_RESTRAINT } from "../nodes/node-entity";
+import { NodeRestraints } from "../nodes/node-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -710,7 +710,7 @@ const applyNodeChanges = (input: {
         change.nodeTypeDescriminator === "external"
           ? undefined
           : Ratio.FromDecimalFractions(0),
-      restraint: { ...DEFAULT_NODE_RESTRAINT },
+      restraint: { ...NodeRestraints.FREE },
     });
   }
 };
@@ -886,17 +886,29 @@ const toFiniteNumber = (value: unknown): number | undefined => {
 
 const parseNodeRestraint = (value: unknown): NodeRestraint => {
   if (!value || typeof value !== "object") {
-    return { ...DEFAULT_NODE_RESTRAINT };
+    throw new Error("restraint must be a valid object");
   }
 
   const obj = value as Record<string, unknown>;
+  
+  if (
+    typeof obj.canTranslateAlongX !== "boolean" ||
+    typeof obj.canTranslateAlongY !== "boolean" ||
+    typeof obj.canTranslateAlongZ !== "boolean" ||
+    typeof obj.canRotateAboutX !== "boolean" ||
+    typeof obj.canRotateAboutY !== "boolean" ||
+    typeof obj.canRotateAboutZ !== "boolean"
+  ) {
+    throw new Error("restraint must have all required boolean properties");
+  }
+  
   return {
-    canTranslateAlongX: typeof obj.canTranslateAlongX === "boolean" ? obj.canTranslateAlongX : DEFAULT_NODE_RESTRAINT.canTranslateAlongX,
-    canTranslateAlongY: typeof obj.canTranslateAlongY === "boolean" ? obj.canTranslateAlongY : DEFAULT_NODE_RESTRAINT.canTranslateAlongY,
-    canTranslateAlongZ: typeof obj.canTranslateAlongZ === "boolean" ? obj.canTranslateAlongZ : DEFAULT_NODE_RESTRAINT.canTranslateAlongZ,
-    canRotateAboutX: typeof obj.canRotateAboutX === "boolean" ? obj.canRotateAboutX : DEFAULT_NODE_RESTRAINT.canRotateAboutX,
-    canRotateAboutY: typeof obj.canRotateAboutY === "boolean" ? obj.canRotateAboutY : DEFAULT_NODE_RESTRAINT.canRotateAboutY,
-    canRotateAboutZ: typeof obj.canRotateAboutZ === "boolean" ? obj.canRotateAboutZ : DEFAULT_NODE_RESTRAINT.canRotateAboutZ,
+    canTranslateAlongX: obj.canTranslateAlongX,
+    canTranslateAlongY: obj.canTranslateAlongY,
+    canTranslateAlongZ: obj.canTranslateAlongZ,
+    canRotateAboutX: obj.canRotateAboutX,
+    canRotateAboutY: obj.canRotateAboutY,
+    canRotateAboutZ: obj.canRotateAboutZ,
   };
 };
 
