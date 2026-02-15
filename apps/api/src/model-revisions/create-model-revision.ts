@@ -18,7 +18,7 @@ import {
 import type { Element1dSnapshot } from "src/element1ds/element1d-entity";
 import type { MaterialSnapshot } from "src/materials/material-entity";
 import type { NodeSnapshot } from "src/nodes/node-entity";
-import type { SectionProfileSnapshot } from "src/section-profiles/section-profile-aggregate";
+import type { SectionProfileSnapshot } from "src/section-profiles/section-profile-entity";
 import { z } from "zod";
 
 export const createModelRevision = defineEndpoint({

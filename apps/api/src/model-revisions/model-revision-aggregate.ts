@@ -4,9 +4,9 @@ import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d
 import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import {
-  SectionProfileAggregate,
+  SectionProfileEntity,
   type SectionProfileSnapshot,
-} from "../section-profiles/section-profile-aggregate";
+} from "../section-profiles/section-profile-entity";
 
 export type ModelRevisionSnapshot = {
   id: string;
@@ -40,7 +40,7 @@ export class ModelRevisionAggregate {
   private _createdAt: Date;
   private _nodes: NodeEntity[];
   private _materials: MaterialEntity[];
-  private _sectionProfiles: SectionProfileAggregate[];
+  private _sectionProfiles: SectionProfileEntity[];
   private _element1ds: Element1dEntity[];
   private _domainEvents: DomainEvent[];
 
@@ -72,7 +72,7 @@ export class ModelRevisionAggregate {
       MaterialEntity.rehydrate(material),
     );
     this._sectionProfiles = snapshot.sectionProfiles.map((sectionProfile) =>
-      SectionProfileAggregate.rehydrate(sectionProfile),
+      SectionProfileEntity.rehydrate(sectionProfile),
     );
     this._element1ds = snapshot.element1ds.map((element1d) =>
       Element1dEntity.rehydrate(element1d),
@@ -127,7 +127,7 @@ export class ModelRevisionAggregate {
     return this._materials;
   }
 
-  get sectionProfiles(): readonly SectionProfileAggregate[] {
+  get sectionProfiles(): readonly SectionProfileEntity[] {
     return this._sectionProfiles;
   }
 
@@ -156,7 +156,7 @@ export class ModelRevisionAggregate {
     if (this._sectionProfiles.some((existing) => existing.id === sectionProfile.id)) {
       throw new Error("Section profile already exists");
     }
-    this._sectionProfiles.push(SectionProfileAggregate.create(sectionProfile));
+    this._sectionProfiles.push(SectionProfileEntity.create(sectionProfile));
   }
 
   deleteNode(nodeId: string): void {

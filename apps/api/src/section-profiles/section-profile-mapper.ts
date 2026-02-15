@@ -4,7 +4,7 @@ import {
   Volume,
   WarpingMomentOfInertia,
 } from "unitsnet-js";
-import { SectionProfileAggregate } from "./section-profile-aggregate";
+import { SectionProfileEntity } from "./section-profile-entity";
 
 export type SectionProfilePersistence = {
   id: string;
@@ -25,8 +25,8 @@ export type SectionProfilePersistence = {
 };
 
 export const sectionProfileMapper = {
-  toDomain(row: SectionProfilePersistence): SectionProfileAggregate {
-    return SectionProfileAggregate.rehydrate({
+  toDomain(row: SectionProfilePersistence): SectionProfileEntity {
+    return SectionProfileEntity.rehydrate({
       id: row.id,
       revisionId: row.revisionId,
       name: row.name,
@@ -68,7 +68,7 @@ export const sectionProfileMapper = {
   },
 
   toPersistence(
-    aggregate: SectionProfileAggregate,
+    aggregate: SectionProfileEntity,
   ): SectionProfilePersistence {
     return {
       id: aggregate.id,
