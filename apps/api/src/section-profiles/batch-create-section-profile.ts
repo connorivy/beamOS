@@ -13,7 +13,7 @@ import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
-import { SectionProfileAggregate } from "./section-profile-aggregate";
+import type { SectionProfileSnapshot } from "./section-profile-entity";
 import { sectionProfileResponseSchema } from "./section-profile-response-schema";
 import { uuidV7Schema } from "src/common/uuid";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
@@ -87,7 +87,7 @@ const toDomainProperties = (
   };
 };
 
-const toResponseSectionProfile = (sectionProfile: SectionProfileAggregate) => ({
+const toResponseSectionProfile = (sectionProfile: SectionProfileSnapshot) => ({
   id: sectionProfile.id,
   revisionId: sectionProfile.revisionId,
   name: sectionProfile.name,
@@ -223,7 +223,7 @@ async function batchCreateSectionProfileHandler(
 
   const tempIdToId: Record<string, string> = {};
 
-  const entities = req.body.sectionProfiles.map((sectionProfile) => {
+  const sectionProfiles = req.body.sectionProfiles.map((sectionProfile) => {
     const id = Bun.randomUUIDv7();
 
     if (sectionProfile.tempId) {
@@ -248,7 +248,7 @@ async function batchCreateSectionProfileHandler(
             weakAxisShearArea: undefined,
           };
 
-    return SectionProfileAggregate.create({
+    const snapshot: SectionProfileSnapshot = {
       id,
       revisionId: revision.id,
       name: sectionProfile.name,
@@ -266,12 +266,10 @@ async function batchCreateSectionProfileHandler(
       weakAxisElasticSectionModulus: converted.weakAxisElasticSectionModulus,
       strongAxisShearArea: shearAreas.strongAxisShearArea,
       weakAxisShearArea: shearAreas.weakAxisShearArea,
-    });
+    };
+    revision.addSectionProfile(snapshot);
+    return snapshot;
   });
-
-  for (const sectionProfile of entities) {
-    revision.addSectionProfile(sectionProfile.toSnapshot());
-  }
 
   await getDb().transaction(async (tx) => {
     await ctx.services.modelRevisionRepository.save({
@@ -282,7 +280,7 @@ async function batchCreateSectionProfileHandler(
   });
 
   return {
-    sectionProfiles: entities.map((sectionProfile) =>
+    sectionProfiles: sectionProfiles.map((sectionProfile) =>
       toResponseSectionProfile(sectionProfile),
     ),
     tempIdToId,

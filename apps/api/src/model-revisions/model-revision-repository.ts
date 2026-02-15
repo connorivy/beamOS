@@ -29,7 +29,7 @@ import { RevisionChangeEntity } from "../revision-changes/revision-change-entity
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { DomainEvent, ModelRevisionRepository } from "../common/types";
 import type { MaterialSnapshot } from "../materials/material-entity";
-import type { SectionProfileSnapshot } from "../section-profiles/section-profile-aggregate";
+import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
 import { NodeRestraints, parseRestraint } from "../nodes/node-entity";

@@ -33,7 +33,7 @@ export type SectionProfileSnapshot = {
   weakAxisShearArea?: Area;
 };
 
-export class SectionProfileAggregate {
+export class SectionProfileEntity {
   private _domainEvents: SectionProfileDomainEvent[];
 
   private constructor(snapshot: SectionProfileSnapshot) {
@@ -141,8 +141,8 @@ export class SectionProfileAggregate {
   readonly strongAxisShearArea?: Area;
   readonly weakAxisShearArea?: Area;
 
-  static create(snapshot: SectionProfileSnapshot): SectionProfileAggregate {
-    const entity = new SectionProfileAggregate(snapshot);
+  static create(snapshot: SectionProfileSnapshot): SectionProfileEntity {
+    const entity = new SectionProfileEntity(snapshot);
     entity._domainEvents.push({
       type: "section_profile_created",
       payload: entity.toSnapshot(),
@@ -150,12 +150,11 @@ export class SectionProfileAggregate {
     return entity;
   }
 
-  static rehydrate(snapshot: SectionProfileSnapshot): SectionProfileAggregate {
-    return new SectionProfileAggregate(snapshot);
+  static rehydrate(snapshot: SectionProfileSnapshot): SectionProfileEntity {
+    return new SectionProfileEntity(snapshot);
   }
 
   toSnapshot(): SectionProfileSnapshot {
-
     return {
       id: this.id,
       revisionId: this.revisionId,

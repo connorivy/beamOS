@@ -2,7 +2,7 @@ import { and, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
 import type { DbTransaction } from "../db/client";
 import { revisionChanges } from "../db/schema";
-import { SectionProfileAggregate } from "./section-profile-aggregate";
+import { SectionProfileEntity } from "./section-profile-entity";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import {
@@ -75,11 +75,11 @@ const sectionProfilePayloadSchema = z.object({
 export type SectionProfileRepository = {
   batchCreate: (
     tx: DbTransaction,
-    input: SectionProfileAggregate[],
-  ) => Promise<SectionProfileAggregate[]>;
+    input: SectionProfileEntity[],
+  ) => Promise<SectionProfileEntity[]>;
   getById: (
     sectionProfileId: string,
-  ) => Promise<SectionProfileAggregate | undefined>;
+  ) => Promise<SectionProfileEntity | undefined>;
 };
 
 export const drizzleSectionProfileRepository: SectionProfileRepository = {
@@ -196,7 +196,7 @@ export const drizzleSectionProfileRepository: SectionProfileRepository = {
     }
 
     const payload = sectionProfilePayloadSchema.parse(latestChange.payload);
-    return SectionProfileAggregate.rehydrate({
+    return SectionProfileEntity.rehydrate({
       id: payload.id,
       revisionId: payload.revisionId,
       name: payload.name,

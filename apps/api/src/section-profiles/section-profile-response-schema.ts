@@ -6,7 +6,7 @@ import {
 } from "unitsnet-js";
 import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
-import { SECTION_PROFILE_DISCRIMINATORS } from "./section-profile-aggregate";
+import { SECTION_PROFILE_DISCRIMINATORS } from "./section-profile-entity";
 
 export const sectionProfileResponseSchema = z.object({
   id: uuidV7Schema,
