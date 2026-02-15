@@ -1,0 +1,32 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`model revision integration creates a model revision from batched entity operations 1`] = `
+{
+  "element1ds": [
+    {
+      "endNodeInModel": true,
+      "materialInModel": true,
+      "sectionProfileInModel": true,
+      "startNodeInModel": true,
+    },
+  ],
+  "materials": [
+    {
+      "pressureE": 101,
+      "pressureG": 202,
+    },
+    {
+      "pressureE": 505,
+      "pressureG": 606,
+    },
+  ],
+  "nodes": [
+    "external",
+    "external",
+  ],
+  "sectionProfiles": [
+    "Section Created",
+    "Section Keep Updated",
+  ],
+}
+`;

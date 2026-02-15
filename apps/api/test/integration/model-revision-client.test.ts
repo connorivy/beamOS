@@ -43,6 +43,9 @@ describe("model revision integration", () => {
     const modelId = createModelResponse.data.model.id;
     const branchName = createModelResponse.data.version.branchName;
 
+    const sectionProfileKeepId = randomUUID();
+    const sectionProfileDeleteId = randomUUID();
+
     const createRevisionResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/revisions",
       {
@@ -61,22 +64,56 @@ describe("model revision integration", () => {
                   rx: true,
                 },
               },
+              {
+                location: {
+                  type: "internal",
+                  element1dId: Bun.randomUUIDv7(),
+                  ratioAlongElement1d: 0.5,
+                },
+              },
             ],
             update: [],
             delete: [],
           },
           materials: {
-            create: [],
+            create: [
+              {
+                name: "Material Keep",
+                pressureE: { value: 101, unit: PressureUnits.Pascals },
+                pressureG: { value: 202, unit: PressureUnits.Pascals },
+              },
+              {
+                name: "Material Delete",
+                pressureE: { value: 303, unit: PressureUnits.Pascals },
+                pressureG: { value: 404, unit: PressureUnits.Pascals },
+              },
+            ],
             update: [],
             delete: [],
           },
           sectionProfiles: {
-            create: [],
+            create: [
+              {
+                id: sectionProfileKeepId,
+                name: "Section Keep",
+              },
+              {
+                id: sectionProfileDeleteId,
+                name: "Section Delete",
+              },
+            ],
             update: [],
             delete: [],
           },
           element1ds: {
-            create: [],
+            create: [
+              {
+                startNodeId: Bun.randomUUIDv7(),
+                endNodeId: Bun.randomUUIDv7(),
+                materialId: Bun.randomUUIDv7(),
+                sectionProfileId: Bun.randomUUIDv7(),
+              },
+            ],
             update: [],
             delete: [],
           },
@@ -92,19 +129,32 @@ describe("model revision integration", () => {
       throw new Error("Expected create model revision response");
     }
 
-    expect(createRevisionResponse.data.modelRevision.modelId).toBe(modelId);
-    expect(createRevisionResponse.data.modelRevision.version.branchName).toBe(
-      branchName,
-    );
-    expect(createRevisionResponse.data.modelRevision.nodes).toHaveLength(1);
-    const createdNodeId = createRevisionResponse.data.modelRevision.nodes[0]?.id;
-    expect(createdNodeId).toBeDefined();
+    const initialModelRevision = createRevisionResponse.data.modelRevision;
+    const externalNodeId = initialModelRevision.nodes.find(
+      (node) => node.nodeTypeDescriminator === "external",
+    )?.id;
+    const internalNodeId = initialModelRevision.nodes.find(
+      (node) => node.nodeTypeDescriminator === "internal",
+    )?.id;
+    const materialKeepId = initialModelRevision.materials.find(
+      (material) => material.pressureE.value === 101,
+    )?.id;
+    const materialDeleteId = initialModelRevision.materials.find(
+      (material) => material.pressureE.value === 303,
+    )?.id;
+    const initialElementId = initialModelRevision.element1ds[0]?.id;
 
-    if (!createdNodeId) {
-      throw new Error("Expected created node id");
+    if (
+      !externalNodeId ||
+      !internalNodeId ||
+      !materialKeepId ||
+      !materialDeleteId ||
+      !initialElementId
+    ) {
+      throw new Error("Expected initial model revision entities");
     }
 
-    const deleteRevisionResponse = await client.POST(
+    const secondRevisionResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/revisions",
       {
         params: {
@@ -112,41 +162,86 @@ describe("model revision integration", () => {
         },
         body: {
           nodes: {
-            create: [],
+            create: [
+              {
+                location: {
+                  type: "spatial",
+                  point: { x: 7, y: 8, z: 9 },
+                },
+              },
+            ],
             update: [],
-            delete: [createdNodeId],
+            delete: [internalNodeId],
           },
           materials: {
-            create: [],
+            create: [
+              {
+                name: "Material Created",
+                pressureE: { value: 505, unit: PressureUnits.Pascals },
+                pressureG: { value: 606, unit: PressureUnits.Pascals },
+              },
+            ],
             update: [],
-            delete: [],
+            delete: [materialDeleteId],
           },
           sectionProfiles: {
-            create: [],
-            update: [],
-            delete: [],
+            create: [{ id: randomUUID(), name: "Section Created" }],
+            update: [{ id: sectionProfileKeepId, name: "Section Keep Updated" }],
+            delete: [sectionProfileDeleteId],
           },
           element1ds: {
-            create: [],
+            create: [
+              {
+                startNodeId: externalNodeId,
+                endNodeId: externalNodeId,
+                materialId: materialKeepId,
+                sectionProfileId: sectionProfileKeepId,
+              },
+            ],
             update: [],
-            delete: [],
+            delete: [initialElementId],
           },
         },
       },
     );
 
-    expect(deleteRevisionResponse.error).toBeUndefined();
-    expect(deleteRevisionResponse.response.status).toBe(200);
-    expect(deleteRevisionResponse.data).toBeDefined();
+    expect(secondRevisionResponse.error).toBeUndefined();
+    expect(secondRevisionResponse.response.status).toBe(200);
+    expect(secondRevisionResponse.data).toBeDefined();
 
-    if (!deleteRevisionResponse.data) {
-      throw new Error("Expected delete model revision response");
+    if (!secondRevisionResponse.data) {
+      throw new Error("Expected second model revision response");
     }
 
-    expect(deleteRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
-    expect(deleteRevisionResponse.data.modelRevision.parentRevisionId).toBe(
-      createRevisionResponse.data.modelRevision.id,
-    );
+    const finalModelRevision = secondRevisionResponse.data.modelRevision;
+    expect({
+      nodes: finalModelRevision.nodes
+        .map((node) => node.nodeTypeDescriminator)
+        .sort(),
+      materials: finalModelRevision.materials
+        .map((material) => ({
+          pressureE: material.pressureE.value,
+          pressureG: material.pressureG.value,
+        }))
+        .sort((a, b) => a.pressureE - b.pressureE),
+      sectionProfiles: finalModelRevision.sectionProfiles
+        .map((sectionProfile) => sectionProfile.name)
+        .sort(),
+      element1ds: finalModelRevision.element1ds.map((element1d) => ({
+        startNodeInModel: finalModelRevision.nodes.some(
+          (node) => node.id === element1d.startNodeId,
+        ),
+        endNodeInModel: finalModelRevision.nodes.some(
+          (node) => node.id === element1d.endNodeId,
+        ),
+        materialInModel: finalModelRevision.materials.some(
+          (material) => material.id === element1d.materialId,
+        ),
+        sectionProfileInModel: finalModelRevision.sectionProfiles.some(
+          (sectionProfile) => sectionProfile.id === element1d.sectionProfileId,
+        ),
+      })),
+    }).toMatchSnapshot();
   });
 
   it("gets a branch model revision built by stacking revisions", async () => {
