@@ -17,6 +17,10 @@ import { SectionProfileAggregate } from "./section-profile-aggregate";
 import { sectionProfileResponseSchema } from "./section-profile-response-schema";
 import { uuidV7Schema } from "src/common/uuid";
 import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
+import {
+  createSectionProfileRequestSchema,
+  sectionPropertiesInputSchema,
+} from "./create-section-profile-request-schema";
 
 const sectionProfileUnitsInputSchema = z.object({
   area: z.enum(AreaUnits),
@@ -25,39 +29,6 @@ const sectionProfileUnitsInputSchema = z.object({
   volume: z.enum(VolumeUnits),
 });
 
-const sectionPropertiesInputSchema = z.object({
-  area: z.number().finite(),
-  strongAxisMomentOfInertia: z.number().finite(),
-  weakAxisMomentOfInertia: z.number().finite(),
-  torsionalConstant: z.number().finite(),
-  warpingConstant: z.number().finite(),
-  strongAxisPlasticSectionModulus: z.number().finite(),
-  weakAxisPlasticSectionModulus: z.number().finite(),
-  strongAxisElasticSectionModulus: z.number().finite(),
-  weakAxisElasticSectionModulus: z.number().finite(),
-});
-
-const baseSectionInputSchema = z.object({
-  tempId: z.string().trim().min(1).optional(),
-  name: z.string().trim().min(1),
-  ...sectionPropertiesInputSchema.shape,
-});
-
-const standardSectionInputSchema = baseSectionInputSchema.extend({
-  discriminator: z.literal("STANDARD"),
-});
-
-const withShearAreasSectionInputSchema = baseSectionInputSchema.extend({
-  discriminator: z.literal("WITH_SHEAR_AREAS"),
-  strongAxisShearArea: z.number().finite(),
-  weakAxisShearArea: z.number().finite(),
-});
-
-const sectionInputSchema = z.discriminatedUnion("discriminator", [
-  standardSectionInputSchema,
-  withShearAreasSectionInputSchema,
-]);
-
 export const batchCreateSectionProfileReqSchema = z.object({
   params: z.object({
     modelId: uuidV7Schema,
@@ -65,7 +36,7 @@ export const batchCreateSectionProfileReqSchema = z.object({
   }),
   body: z.object({
     units: sectionProfileUnitsInputSchema,
-    sectionProfiles: z.array(sectionInputSchema).min(1),
+    sectionProfiles: z.array(createSectionProfileRequestSchema).min(1),
   }),
 });
 

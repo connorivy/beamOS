@@ -374,9 +374,13 @@ export interface operations {
                 "application/json": {
                     nodes: {
                         tempId?: string;
-                        /** @default {} */
-                        restraint: {
-                            [key: string]: boolean;
+                        restraint?: {
+                            canTranslateAlongX: boolean;
+                            canTranslateAlongY: boolean;
+                            canTranslateAlongZ: boolean;
+                            canRotateAboutX: boolean;
+                            canRotateAboutY: boolean;
+                            canRotateAboutZ: boolean;
                         };
                         location: {
                             /** @constant */
@@ -398,9 +402,13 @@ export interface operations {
                 "application/x-www-form-urlencoded": {
                     nodes: {
                         tempId?: string;
-                        /** @default {} */
-                        restraint: {
-                            [key: string]: boolean;
+                        restraint?: {
+                            canTranslateAlongX: boolean;
+                            canTranslateAlongY: boolean;
+                            canTranslateAlongZ: boolean;
+                            canRotateAboutX: boolean;
+                            canRotateAboutY: boolean;
+                            canRotateAboutZ: boolean;
                         };
                         location: {
                             /** @constant */
@@ -422,9 +430,13 @@ export interface operations {
                 "multipart/form-data": {
                     nodes: {
                         tempId?: string;
-                        /** @default {} */
-                        restraint: {
-                            [key: string]: boolean;
+                        restraint?: {
+                            canTranslateAlongX: boolean;
+                            canTranslateAlongY: boolean;
+                            canTranslateAlongZ: boolean;
+                            canRotateAboutX: boolean;
+                            canRotateAboutY: boolean;
+                            canRotateAboutZ: boolean;
                         };
                         location: {
                             /** @constant */
@@ -1368,9 +1380,13 @@ export interface operations {
                         /** @default [] */
                         create: {
                             tempId?: string;
-                            /** @default {} */
-                            restraint: {
-                                [key: string]: boolean;
+                            restraint?: {
+                                canTranslateAlongX: boolean;
+                                canTranslateAlongY: boolean;
+                                canTranslateAlongZ: boolean;
+                                canRotateAboutX: boolean;
+                                canRotateAboutY: boolean;
+                                canRotateAboutZ: boolean;
                             };
                             location: {
                                 /** @constant */
@@ -1423,10 +1439,37 @@ export interface operations {
                     };
                     sectionProfiles: {
                         /** @default [] */
-                        create: {
-                            id: string;
+                        create: ({
+                            tempId?: string;
                             name: string;
-                        }[];
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "STANDARD";
+                        } | {
+                            tempId?: string;
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "WITH_SHEAR_AREAS";
+                            strongAxisShearArea: number;
+                            weakAxisShearArea: number;
+                        })[];
                         /** @default [] */
                         update: {
                             id: string;
@@ -1465,9 +1508,13 @@ export interface operations {
                         /** @default [] */
                         create: {
                             tempId?: string;
-                            /** @default {} */
-                            restraint: {
-                                [key: string]: boolean;
+                            restraint?: {
+                                canTranslateAlongX: boolean;
+                                canTranslateAlongY: boolean;
+                                canTranslateAlongZ: boolean;
+                                canRotateAboutX: boolean;
+                                canRotateAboutY: boolean;
+                                canRotateAboutZ: boolean;
                             };
                             location: {
                                 /** @constant */
@@ -1520,10 +1567,37 @@ export interface operations {
                     };
                     sectionProfiles: {
                         /** @default [] */
-                        create: {
-                            id: string;
+                        create: ({
+                            tempId?: string;
                             name: string;
-                        }[];
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "STANDARD";
+                        } | {
+                            tempId?: string;
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "WITH_SHEAR_AREAS";
+                            strongAxisShearArea: number;
+                            weakAxisShearArea: number;
+                        })[];
                         /** @default [] */
                         update: {
                             id: string;
@@ -1562,9 +1636,13 @@ export interface operations {
                         /** @default [] */
                         create: {
                             tempId?: string;
-                            /** @default {} */
-                            restraint: {
-                                [key: string]: boolean;
+                            restraint?: {
+                                canTranslateAlongX: boolean;
+                                canTranslateAlongY: boolean;
+                                canTranslateAlongZ: boolean;
+                                canRotateAboutX: boolean;
+                                canRotateAboutY: boolean;
+                                canRotateAboutZ: boolean;
                             };
                             location: {
                                 /** @constant */
@@ -1617,10 +1695,37 @@ export interface operations {
                     };
                     sectionProfiles: {
                         /** @default [] */
-                        create: {
-                            id: string;
+                        create: ({
+                            tempId?: string;
                             name: string;
-                        }[];
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "STANDARD";
+                        } | {
+                            tempId?: string;
+                            name: string;
+                            area: number;
+                            strongAxisMomentOfInertia: number;
+                            weakAxisMomentOfInertia: number;
+                            torsionalConstant: number;
+                            warpingConstant: number;
+                            strongAxisPlasticSectionModulus: number;
+                            weakAxisPlasticSectionModulus: number;
+                            strongAxisElasticSectionModulus: number;
+                            weakAxisElasticSectionModulus: number;
+                            /** @constant */
+                            discriminator: "WITH_SHEAR_AREAS";
+                            strongAxisShearArea: number;
+                            weakAxisShearArea: number;
+                        })[];
                         /** @default [] */
                         update: {
                             id: string;
