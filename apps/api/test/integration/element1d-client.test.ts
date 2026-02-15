@@ -57,9 +57,9 @@ describe("typed element1d api client integration", () => {
           materials: [
             {
               tempId: "mat-for-element",
-              name: "Material for Element1d",
-              pressureE: { value: 1.25, unit: PressureUnits.Bars },
-              pressureG: { value: 85, unit: PressureUnits.Kilopascals },
+              modulusOfElasticity: 125000, // 1.25 Bars
+              modulusOfRigidity: 85000, // 85 Kilopascals
+              units: { pressure: PressureUnits.Pascals },
             },
           ],
         },
