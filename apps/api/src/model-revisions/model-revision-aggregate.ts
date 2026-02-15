@@ -133,6 +133,14 @@ export class ModelRevisionAggregate {
     });
   }
 
+  addMaterial(material: MaterialSnapshot): void {
+    assertUuid(material.id, "materialId");
+    if (this._materials.some((existing) => existing.id === material.id)) {
+      throw new Error("Material already exists");
+    }
+    this._materials.push(MaterialEntity.create(material));
+  }
+
   deleteNode(nodeId: string): void {
     assertUuid(nodeId, "nodeId");
     const index = this._nodes.findIndex((node) => node.id === nodeId);
@@ -166,7 +174,10 @@ export class ModelRevisionAggregate {
   }
 
   pullDomainEvents(): DomainEvent[] {
-    const events = [...this._domainEvents];
+    const materialEvents = this._materials.flatMap((material) =>
+      material.pullDomainEvents(),
+    );
+    const events = [...this._domainEvents, ...materialEvents];
     this._domainEvents = [];
     return events;
   }

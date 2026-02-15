@@ -8,7 +8,7 @@ import {
   Volume,
   WarpingMomentOfInertia,
 } from "unitsnet-js";
-import { getDb } from "../db/client";
+import { getDb, type DbTransaction } from "../db/client";
 import {
   modelBranchHeads,
   modelRevisionDrafts,
@@ -126,12 +126,12 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
   },
 
   async save(input) {
-    const { revision, newRevision = false } = input;
+    const { revision, newRevision = false, tx: existingTx } = input;
     const snapshot = revision.toSnapshot();
     const events = revision.pullDomainEvents();
 
     if (newRevision) {
-      return getDb().transaction(async (tx) => {
+      const persist = async (tx: DbTransaction) => {
         const revisionRow = await tx
           .insert(modelRevisions)
           .values(modelRevisionMapper.toPersistence(revision))
@@ -159,10 +159,12 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
           revisionRow[0],
           persistedChangeRows,
         );
-      });
+      };
+
+      return existingTx ? persist(existingTx) : getDb().transaction(persist);
     }
 
-    return getDb().transaction(async (tx) => {
+    const persist = async (tx: DbTransaction) => {
       const now = new Date();
       const draftRows = await tx
         .select()
@@ -235,7 +237,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         savedDraftRows[0],
         savedChangeRows,
       );
-    });
+    };
+
+    return existingTx ? persist(existingTx) : getDb().transaction(persist);
   },
 
   async getBranchHead(modelId, branchName) {
@@ -640,18 +644,59 @@ const buildRevisionChangeRowsFromEvents = (input: {
   revisionId: string | null;
   draftId: string | null;
   events: DomainEvent[];
-}): (typeof revisionChanges.$inferInsert)[] =>
-  buildRevisionChangeRowsFromNodeOps({
+}): (typeof revisionChanges.$inferInsert)[] => {
+  const nodeChanges = buildRevisionChangeRowsFromNodeOps({
     modelId: input.modelId,
     revisionId: input.revisionId,
     draftId: input.draftId,
-    nodes: input.events.map((event) => ({
-      nodeId: event.payload.id,
-      name: extractNodeName(event.payload),
-      nodeTypeDescriminator: extractNodeTypeDescriminator(event.payload),
-      op: event.type === "node_deleted" ? "delete" : "insert",
-    })),
+    nodes: input.events
+      .filter(
+        (event): event is Extract<DomainEvent, { type: "node_added" | "node_deleted" }> =>
+          event.type === "node_added" || event.type === "node_deleted",
+      )
+      .map((event) => ({
+        nodeId: event.payload.id,
+        name: extractNodeName(event.payload),
+        nodeTypeDescriminator: extractNodeTypeDescriminator(event.payload),
+        op: event.type === "node_deleted" ? "delete" : "insert",
+      })),
   });
+
+  const now = new Date();
+  const materialChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "material_created" }> =>
+        event.type === "material_created",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          draftId: input.draftId,
+          entityType: "material",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            pressureE: {
+              value: event.payload.pressureE.Pascals,
+              unit: "Pascals",
+            },
+            pressureG: {
+              value: event.payload.pressureG.Pascals,
+              unit: "Pascals",
+            },
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
+  return [...nodeChanges, ...materialChanges];
+};
 
 const buildModelRevisionChangeRow = (input: {
   modelId: string;

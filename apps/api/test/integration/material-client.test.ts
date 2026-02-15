@@ -84,6 +84,26 @@ describe("typed material api client integration", () => {
       throw new Error("Expected batch create response");
     }
 
+    const getRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+      },
+    );
+
+    expect(getRevisionResponse.error).toBeUndefined();
+    expect(getRevisionResponse.response.status).toBe(200);
+    expect(getRevisionResponse.data).toBeDefined();
+    expect(
+      getRevisionResponse.data?.modelRevision.materials.map((material) => material.id),
+    ).toEqual(
+      expect.arrayContaining(
+        Object.values(batchCreateResponse.data.tempIdToId),
+      ),
+    );
+
     for (const tempId of tempIds) {
       const materialId = batchCreateResponse.data.tempIdToId[tempId];
       expect(materialId).toBeDefined();
