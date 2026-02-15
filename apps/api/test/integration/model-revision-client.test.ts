@@ -82,22 +82,22 @@ describe("model revision integration", () => {
                 },
               },
             ],
-            put: [],
+            update: [],
             delete: [],
           },
           materials: {
             create: [],
-            put: [],
+            update: [],
             delete: [],
           },
           sectionProfiles: {
             create: [createSectionProfileInput("sp-rev-create")],
-            put: [],
+            update: [],
             delete: [],
           },
           element1ds: {
             create: [],
-            put: [],
+            update: [],
             delete: [],
           },
         },
@@ -136,22 +136,22 @@ describe("model revision integration", () => {
         body: {
           nodes: {
             create: [],
-            put: [],
+            update: [],
             delete: [createdNodeId],
           },
           materials: {
             create: [],
-            put: [],
+            update: [],
             delete: [],
           },
           sectionProfiles: {
             create: [],
-            put: [],
+            update: [],
             delete: [],
           },
           element1ds: {
             create: [],
-            put: [],
+            update: [],
             delete: [],
           },
         },

@@ -251,7 +251,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putNode of input.req.body.nodes.put) {
+  for (const putNode of input.req.body.nodes.update) {
     const existing = input.currentNodesById.get(putNode.id);
     if (!existing) {
       throw httpError(`Node ${putNode.id} not found`, 400);
@@ -327,7 +327,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putMaterial of input.req.body.materials.put) {
+  for (const putMaterial of input.req.body.materials.update) {
     const existing = input.currentMaterialsById.get(putMaterial.id);
     if (!existing) {
       throw httpError(`Material ${putMaterial.id} not found`, 400);
@@ -437,7 +437,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putSectionProfile of input.req.body.sectionProfiles.put) {
+  for (const putSectionProfile of input.req.body.sectionProfiles.update) {
     const existing = input.currentSectionProfilesById.get(putSectionProfile.id);
     if (!existing) {
       throw httpError(`Section profile ${putSectionProfile.id} not found`, 400);
@@ -536,7 +536,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putElement1d of input.req.body.element1ds.put) {
+  for (const putElement1d of input.req.body.element1ds.update) {
     const existing = input.currentElement1dsById.get(putElement1d.id);
     if (!existing) {
       throw httpError(`Element1d ${putElement1d.id} not found`, 400);

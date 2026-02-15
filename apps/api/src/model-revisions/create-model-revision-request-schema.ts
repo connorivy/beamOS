@@ -3,45 +3,45 @@ import { uuidV7Schema } from "../common/uuid";
 import {
   createElement1dRequestSchema,
   deleteElement1dRequestSchema,
-  putElement1dRequestSchema,
+  putElement1dRequestSchema as updateElement1dRequestSchema,
 } from "../element1ds/element1d-contract-schemas";
 import {
   createMaterialRequestSchema,
   deleteMaterialRequestSchema,
-  putMaterialRequestSchema,
+  putMaterialRequestSchema as updateMaterialRequestSchema,
 } from "../materials/material-contract-schemas";
 import {
   createNodeRequestSchema,
   deleteNodeRequestSchema,
-  putNodeRequestSchema,
+  putNodeRequestSchema as updateNodeRequestSchema,
 } from "../nodes/node-contract-schemas";
 import {
   createSectionProfileRequestSchema,
   deleteSectionProfileRequestSchema,
-  putSectionProfileRequestSchema,
+  putSectionProfileRequestSchema as updateSectionProfileRequestSchema,
 } from "../section-profiles/section-profile-contract-schemas";
 
 const element1dOperationsRequestSchema = z.object({
   create: z.array(createElement1dRequestSchema).default([]),
-  put: z.array(putElement1dRequestSchema).default([]),
+  update: z.array(updateElement1dRequestSchema).default([]),
   delete: z.array(deleteElement1dRequestSchema).default([]),
 });
 
 const nodeOperationsRequestSchema = z.object({
   create: z.array(createNodeRequestSchema).default([]),
-  put: z.array(putNodeRequestSchema).default([]),
+  update: z.array(updateNodeRequestSchema).default([]),
   delete: z.array(deleteNodeRequestSchema).default([]),
 });
 
 const materialOperationsRequestSchema = z.object({
   create: z.array(createMaterialRequestSchema).default([]),
-  put: z.array(putMaterialRequestSchema).default([]),
+  update: z.array(updateMaterialRequestSchema).default([]),
   delete: z.array(deleteMaterialRequestSchema).default([]),
 });
 
 const sectionProfileOperationsRequestSchema = z.object({
   create: z.array(createSectionProfileRequestSchema).default([]),
-  put: z.array(putSectionProfileRequestSchema).default([]),
+  update: z.array(updateSectionProfileRequestSchema).default([]),
   delete: z.array(deleteSectionProfileRequestSchema).default([]),
 });
 
