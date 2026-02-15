@@ -155,7 +155,6 @@ export class SectionProfileEntity {
   }
 
   toSnapshot(): SectionProfileSnapshot {
-
     return {
       id: this.id,
       revisionId: this.revisionId,
