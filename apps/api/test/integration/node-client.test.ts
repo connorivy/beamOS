@@ -14,9 +14,9 @@ afterAll(async () => {
 }, 10_000);
 
 describe("typed node api client integration", () => {
-  it("batch creates nodes", async () => {
+  it("batch creates nodes and verifies persistence in revision", async () => {
     const client = createApiClient(baseUrl);
-    const tempIds = ["node-01", "node-02"];
+    const tempIds = ["node-01", "node-02", "node-03"];
 
     const createModelResponse = await client.POST("/api/models", {
       body: {
@@ -78,6 +78,21 @@ describe("typed node api client integration", () => {
                 point: { x: 3, y: 4, z: 5 },
               },
             },
+            {
+              tempId: tempIds[2],
+              restraint: {
+                canTranslateAlongX: false,
+                canTranslateAlongY: false,
+                canTranslateAlongZ: false,
+                canRotateAboutX: false,
+                canRotateAboutY: false,
+                canRotateAboutZ: false,
+              },
+              location: {
+                type: "spatial",
+                point: { x: 10, y: 20, z: 30 },
+              },
+            },
           ],
         },
       },
@@ -87,30 +102,59 @@ describe("typed node api client integration", () => {
     expect(batchCreateResponse.response.status).toBe(200);
     expect(batchCreateResponse.data).toBeDefined();
     expect(batchCreateResponse.data?.nodes).toHaveLength(tempIds.length);
+    expect(batchCreateResponse.data?.tempIdToId).toBeDefined();
 
     if (!batchCreateResponse.data) {
       throw new Error("Expected batch create response");
     }
 
-    for (const tempId of tempIds) {
-      expect(batchCreateResponse.data.tempIdToId[tempId]).toBeDefined();
-    }
-
-    const responseByTempId = new Map(
-      batchCreateResponse.data.nodes.map((node) => [node.id, node]),
+    const getRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+      },
     );
 
+    expect(getRevisionResponse.error).toBeUndefined();
+    expect(getRevisionResponse.response.status).toBe(200);
+    expect(getRevisionResponse.data).toBeDefined();
+    expect(
+      getRevisionResponse.data?.modelRevision.nodes.map((node) => node.id),
+    ).toEqual(
+      expect.arrayContaining(
+        Object.values(batchCreateResponse.data.tempIdToId),
+      ),
+    );
+
+    // Verify all created nodes are in the revision
     for (const tempId of tempIds) {
       const nodeId = batchCreateResponse.data.tempIdToId[tempId];
-      const node = responseByTempId.get(nodeId);
-      expect(node).toBeDefined();
-      expect(node?.modelId).toBe(modelId);
+      expect(nodeId).toBeDefined();
+
+      if (!nodeId) {
+        throw new Error(`Expected node ID for tempId ${tempId}`);
+      }
+
+      const nodeInRevision = getRevisionResponse.data?.modelRevision.nodes.find(
+        (n) => n.id === nodeId,
+      );
+      expect(nodeInRevision).toBeDefined();
+      expect(nodeInRevision?.id).toBe(nodeId);
+      expect(nodeInRevision?.modelId).toBe(modelId);
+      expect(nodeInRevision?.nodeTypeDescriminator).toBe("external");
     }
 
-    const nodeTypes = batchCreateResponse.data.nodes.map(
-      (node) => node.nodeTypeDescriminator,
+    // Snapshot the nodes data structure
+    const nodesSnapshot = getRevisionResponse.data?.modelRevision.nodes.map(
+      (node) => ({
+        ...node,
+        id: "<db-id>",
+        modelId: "<model-id>",
+      }),
     );
-    expect(nodeTypes).toEqual(["external", "external"]);
+    expect(nodesSnapshot).toMatchSnapshot();
   });
 
   it("rejects duplicate temp ids in batch create", async () => {

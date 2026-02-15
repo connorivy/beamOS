@@ -334,23 +334,57 @@ const buildRevisionChangeRowsFromEvents = (input: {
   revisionId: string | null;
   events: DomainEvent[];
 }): (typeof revisionChanges.$inferInsert)[] => {
-  const nodeChanges = buildRevisionChangeRowsFromNodeOps({
+  const now = new Date();
+
+  const nodeChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "node_created" }> =>
+        event.type === "node_created",
+    )
+    .map((event) => {
+      const snapshot = event.payload;
+      return revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          entityType: "node",
+          entityId: snapshot.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: snapshot.id,
+            modelRevisionId: snapshot.modelRevisionId,
+            nodeType: snapshot.nodeType,
+            nodeTypeDescriminator: snapshot.nodeTypeDescriminator,
+            point: snapshot.point ?? null,
+            element1dId: snapshot.element1dId ?? null,
+            distanceAlongElement1d:
+              snapshot.distanceAlongElement1d instanceof Ratio
+                ? snapshot.distanceAlongElement1d.DecimalFractions
+                : null,
+            restraint: snapshot.restraint,
+          },
+          createdAt: now,
+        }),
+      );
+    });
+
+  const nodeDeleteChanges = buildRevisionChangeRowsFromNodeOps({
     modelId: input.modelId,
     revisionId: input.revisionId,
     nodes: input.events
       .filter(
-        (event): event is Extract<DomainEvent, { type: "node_added" | "node_deleted" }> =>
-          event.type === "node_added" || event.type === "node_deleted",
+        (event): event is Extract<DomainEvent, { type: "node_deleted" }> =>
+          event.type === "node_deleted",
       )
       .map((event) => ({
         nodeId: event.payload.id,
         name: extractNodeName(event.payload),
         nodeTypeDescriminator: extractNodeTypeDescriminator(event.payload),
-        op: event.type === "node_deleted" ? "delete" : "insert",
+        op: "delete",
       })),
   });
 
-  const now = new Date();
   const materialChanges = input.events
     .filter(
       (event): event is Extract<DomainEvent, { type: "material_created" }> =>
@@ -459,7 +493,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
-  return [...nodeChanges, ...materialChanges, ...sectionProfileChanges];
+  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...sectionProfileChanges];
 };
 
 const buildModelRevisionChangeRow = (input: {

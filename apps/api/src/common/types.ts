@@ -13,7 +13,7 @@ import type { SectionProfileSnapshot } from "../section-profiles/section-profile
 
 export type DomainEvent =
   | {
-      type: "node_added";
+      type: "node_created";
       payload: NodeSnapshot;
     }
   | {

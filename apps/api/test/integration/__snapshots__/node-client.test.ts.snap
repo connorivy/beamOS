@@ -1,0 +1,21 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`typed node api client integration batch creates nodes and verifies persistence in revision 1`] = `
+[
+  {
+    "id": "<db-id>",
+    "modelId": "<model-id>",
+    "nodeTypeDescriminator": "external",
+  },
+  {
+    "id": "<db-id>",
+    "modelId": "<model-id>",
+    "nodeTypeDescriminator": "external",
+  },
+  {
+    "id": "<db-id>",
+    "modelId": "<model-id>",
+    "nodeTypeDescriminator": "external",
+  },
+]
+`;
