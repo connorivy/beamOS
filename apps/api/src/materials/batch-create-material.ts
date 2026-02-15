@@ -5,7 +5,6 @@ import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
 import { MaterialEntity } from "./material-entity";
-import { modelBranchHeads } from "src/db/schema";
 import { uuidV7Schema } from "src/common/uuid";
 import { materialResponseSchema } from "./material-response-schema";
 import { createMaterialRequestSchema } from "./create-material-request-schema";
@@ -69,6 +68,7 @@ export const batchCreateMaterial = defineEndpoint({
     const revision = ModelRevisionAggregate.create({
       id: Bun.randomUUIDv7(),
       modelId: req.params.modelId,
+      branchName: req.params.branchName,
       name: parentRevision.name,
       parentRevisionId: parentRevision.id,
       secondParentRevisionId: null,
@@ -136,21 +136,6 @@ export async function batchCreateMaterialHandler(
       newRevision: true,
       tx,
     });
-    await tx
-      .insert(modelBranchHeads)
-      .values({
-        modelId: req.params.modelId,
-        branchName: req.params.branchName,
-        headRevisionId: revision.id,
-        updatedAt: revision.createdAt,
-      })
-      .onConflictDoUpdate({
-        target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
-        set: {
-          headRevisionId: revision.id,
-          updatedAt: revision.createdAt,
-        },
-      });
   });
 
   return {

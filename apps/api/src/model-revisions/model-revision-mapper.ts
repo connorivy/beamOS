@@ -53,6 +53,7 @@ export const modelRevisionMapper = {
   fromCommitInput(input: {
     id: string;
     modelId: string;
+    branchName?: string;
     name: string;
     parentRevisionId: string | null;
     secondParentRevisionId: string | null;
@@ -63,6 +64,7 @@ export const modelRevisionMapper = {
     const snapshot: ModelRevisionSnapshot = {
       id: input.id,
       modelId: input.modelId,
+      branchName: input.branchName ?? null,
       name: input.name,
       parentRevisionId: input.parentRevisionId,
       secondParentRevisionId: input.secondParentRevisionId,

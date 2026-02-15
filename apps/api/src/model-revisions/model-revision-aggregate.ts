@@ -11,6 +11,7 @@ import {
 export type ModelRevisionSnapshot = {
   id: string;
   modelId: string;
+  branchName?: string | null;
   name: string;
   parentRevisionId: string | null;
   secondParentRevisionId: string | null;
@@ -24,6 +25,7 @@ export type ModelRevisionSnapshot = {
 };
 
 export class ModelRevisionAggregate {
+  private _branchName: string | null;
   private _name: string;
   private _parentRevisionId: string | null;
   private _secondParentRevisionId: string | null;
@@ -50,6 +52,7 @@ export class ModelRevisionAggregate {
 
     this.id = snapshot.id;
     this.modelId = snapshot.modelId;
+    this._branchName = snapshot.branchName?.trim() || null;
     this._name = snapshot.name.trim();
     this._parentRevisionId = snapshot.parentRevisionId;
     this._secondParentRevisionId = snapshot.secondParentRevisionId;
@@ -82,6 +85,10 @@ export class ModelRevisionAggregate {
 
   get name(): string {
     return this._name;
+  }
+
+  get branchName(): string | null {
+    return this._branchName;
   }
 
   get parentRevisionId(): string | null {
@@ -158,6 +165,7 @@ export class ModelRevisionAggregate {
     return {
       id: this.id,
       modelId: this.modelId,
+      branchName: this._branchName,
       name: this._name,
       parentRevisionId: this._parentRevisionId,
       secondParentRevisionId: this._secondParentRevisionId,

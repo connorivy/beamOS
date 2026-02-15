@@ -150,6 +150,31 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
             .values(changeRows);
         }
 
+        if (snapshot.branchName) {
+          const branchHead = modelBranchHeadMapper.fromInput({
+            modelId: snapshot.modelId,
+            branchName: snapshot.branchName,
+            headRevisionId: snapshot.id,
+          });
+          const branchPersistence =
+            modelBranchHeadMapper.toPersistence(branchHead);
+
+          await tx
+            .insert(modelBranchHeads)
+            .values({
+              modelId: branchPersistence.modelId,
+              branchName: branchPersistence.branchName,
+              headRevisionId: branchPersistence.headRevisionId,
+            })
+            .onConflictDoUpdate({
+              target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
+              set: {
+                headRevisionId: branchPersistence.headRevisionId,
+                updatedAt: new Date(),
+              },
+            });
+        }
+
         const persistedChangeRows = await tx
           .select()
           .from(revisionChanges)
@@ -435,6 +460,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       const aggregate = modelRevisionMapper.fromCommitInput({
         id: draftSnapshot.id,
         modelId: draftSnapshot.modelId,
+        branchName: input.branchName,
         name: draftSnapshot.name,
         parentRevisionId: draftSnapshot.parentRevisionId,
         secondParentRevisionId: draftSnapshot.secondParentRevisionId,
@@ -508,6 +534,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     const aggregate = modelRevisionMapper.fromCommitInput({
       id: input.id,
       modelId: input.modelId,
+      branchName: input.branchName,
       name: input.name,
       parentRevisionId: input.parentRevisionId ?? null,
       secondParentRevisionId: input.secondParentRevisionId ?? null,
