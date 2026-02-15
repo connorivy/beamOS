@@ -4,10 +4,12 @@ exports[`model revision integration creates a model revision from batched entity
 {
   "element1ds": [
     {
-      "endNodeInModel": true,
-      "materialInModel": true,
-      "sectionProfileInModel": true,
-      "startNodeInModel": true,
+      "endNodeId": "<end-node-id>",
+      "id": "<db-id>",
+      "materialId": "<material-id>",
+      "revisionId": "<revision-id>",
+      "sectionProfileId": "<section-profile-id>",
+      "startNodeId": "<start-node-id>",
     },
   ],
   "materials": [

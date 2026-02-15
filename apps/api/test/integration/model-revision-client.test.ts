@@ -228,18 +228,28 @@ describe("model revision integration", () => {
         .map((sectionProfile) => sectionProfile.name)
         .sort(),
       element1ds: finalModelRevision.element1ds.map((element1d) => ({
-        startNodeInModel: finalModelRevision.nodes.some(
+        id: "<db-id>",
+        revisionId: "<revision-id>",
+        startNodeId: finalModelRevision.nodes.some(
           (node) => node.id === element1d.startNodeId,
-        ),
-        endNodeInModel: finalModelRevision.nodes.some(
+        )
+          ? "<start-node-id>"
+          : "<missing-start-node-id>",
+        endNodeId: finalModelRevision.nodes.some(
           (node) => node.id === element1d.endNodeId,
-        ),
-        materialInModel: finalModelRevision.materials.some(
+        )
+          ? "<end-node-id>"
+          : "<missing-end-node-id>",
+        materialId: finalModelRevision.materials.some(
           (material) => material.id === element1d.materialId,
-        ),
-        sectionProfileInModel: finalModelRevision.sectionProfiles.some(
+        )
+          ? "<material-id>"
+          : "<missing-material-id>",
+        sectionProfileId: finalModelRevision.sectionProfiles.some(
           (sectionProfile) => sectionProfile.id === element1d.sectionProfileId,
-        ),
+        )
+          ? "<section-profile-id>"
+          : "<missing-section-profile-id>",
       })),
     }).toMatchSnapshot();
   });
