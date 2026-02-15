@@ -58,7 +58,8 @@ describe("model revision integration", () => {
     const modelId = createModelResponse.data.model.id;
     const branchName = createModelResponse.data.version.branchName;
 
-    const createRevisionResponse = await client.POST(
+    // Initial setup operation: create multiple entities of all types
+    const setupRevisionResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/revisions",
       {
         params: {
@@ -68,15 +69,46 @@ describe("model revision integration", () => {
           nodes: {
             create: [
               {
+                tempId: "node-1",
                 location: {
                   type: "spatial",
-                  point: { x: 1, y: 2, z: 3 },
+                  point: { x: 0, y: 0, z: 0 },
+                },
+                restraint: {
+                  canTranslateAlongX: false,
+                  canTranslateAlongY: false,
+                  canTranslateAlongZ: false,
+                  canRotateAboutX: false,
+                  canRotateAboutY: false,
+                  canRotateAboutZ: false,
+                },
+              },
+              {
+                tempId: "node-2",
+                location: {
+                  type: "spatial",
+                  point: { x: 10, y: 0, z: 0 },
                 },
                 restraint: {
                   canTranslateAlongX: true,
                   canTranslateAlongY: true,
                   canTranslateAlongZ: true,
-                  canRotateAboutX: false,
+                  canRotateAboutX: true,
+                  canRotateAboutY: true,
+                  canRotateAboutZ: true,
+                },
+              },
+              {
+                tempId: "node-3",
+                location: {
+                  type: "spatial",
+                  point: { x: 20, y: 0, z: 0 },
+                },
+                restraint: {
+                  canTranslateAlongX: true,
+                  canTranslateAlongY: true,
+                  canTranslateAlongZ: true,
+                  canRotateAboutX: true,
                   canRotateAboutY: true,
                   canRotateAboutZ: true,
                 },
@@ -86,12 +118,41 @@ describe("model revision integration", () => {
             delete: [],
           },
           materials: {
-            create: [],
+            create: [
+              {
+                tempId: "mat-1",
+                name: "Material 1",
+                pressureE: { value: 200, unit: PressureUnits.Gigapascals },
+                pressureG: { value: 80, unit: PressureUnits.Gigapascals },
+              },
+              {
+                tempId: "mat-2",
+                name: "Material 2",
+                pressureE: { value: 210, unit: PressureUnits.Gigapascals },
+                pressureG: { value: 85, unit: PressureUnits.Gigapascals },
+              },
+            ],
             update: [],
             delete: [],
           },
           sectionProfiles: {
-            create: [createSectionProfileInput("sp-rev-create")],
+            create: [
+              createSectionProfileInput("sp-1"),
+              {
+                tempId: "sp-2",
+                name: "W14x30",
+                discriminator: "STANDARD" as const,
+                area: 8.85,
+                strongAxisMomentOfInertia: 291,
+                weakAxisMomentOfInertia: 19.6,
+                torsionalConstant: 0.462,
+                warpingConstant: 450,
+                strongAxisPlasticSectionModulus: 47.3,
+                weakAxisPlasticSectionModulus: 10.3,
+                strongAxisElasticSectionModulus: 41.8,
+                weakAxisElasticSectionModulus: 6.55,
+              },
+            ],
             update: [],
             delete: [],
           },
@@ -104,30 +165,40 @@ describe("model revision integration", () => {
       },
     );
 
-    expect(createRevisionResponse.error).toBeUndefined();
-    expect(createRevisionResponse.response.status).toBe(200);
-    expect(createRevisionResponse.data).toBeDefined();
+    expect(setupRevisionResponse.error).toBeUndefined();
+    expect(setupRevisionResponse.response.status).toBe(200);
+    expect(setupRevisionResponse.data).toBeDefined();
 
-    if (!createRevisionResponse.data) {
-      throw new Error("Expected create model revision response");
+    if (!setupRevisionResponse.data) {
+      throw new Error("Expected setup model revision response");
     }
 
-    expect(createRevisionResponse.data.modelRevision.modelId).toBe(modelId);
-    expect(createRevisionResponse.data.modelRevision.version.branchName).toBe(
-      branchName,
-    );
-    expect(createRevisionResponse.data.modelRevision.nodes).toHaveLength(1);
-    expect(createRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(
-      1,
-    );
-    const createdNodeId = createRevisionResponse.data.modelRevision.nodes[0]?.id;
-    expect(createdNodeId).toBeDefined();
+    expect(setupRevisionResponse.data.modelRevision.nodes).toHaveLength(3);
+    expect(setupRevisionResponse.data.modelRevision.materials).toHaveLength(2);
+    expect(setupRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(2);
 
-    if (!createdNodeId) {
-      throw new Error("Expected created node id");
+    // Get entity IDs from the setup revision
+    // Since we can't access detailed properties from the revision response,
+    // we'll use the order they were created
+    const nodes = setupRevisionResponse.data.modelRevision.nodes;
+    const node1Id = nodes[0]?.id;
+    const node2Id = nodes[1]?.id;
+    const node3Id = nodes[2]?.id;
+    
+    const materials = setupRevisionResponse.data.modelRevision.materials;
+    const mat1Id = materials[0]?.id;
+    const mat2Id = materials[1]?.id;
+    
+    const sectionProfiles = setupRevisionResponse.data.modelRevision.sectionProfiles;
+    const sp1Id = sectionProfiles[0]?.id;
+    const sp2Id = sectionProfiles[1]?.id;
+
+    if (!node1Id || !node2Id || !node3Id || !mat1Id || !mat2Id || !sp1Id || !sp2Id) {
+      throw new Error("Expected all entity IDs");
     }
 
-    const deleteRevisionResponse = await client.POST(
+    // Second operation: create, update, and delete entities
+    const updateRevisionResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/revisions",
       {
         params: {
@@ -135,22 +206,90 @@ describe("model revision integration", () => {
         },
         body: {
           nodes: {
-            create: [],
-            update: [],
-            delete: [createdNodeId],
+            create: [
+              {
+                tempId: "node-4",
+                location: {
+                  type: "spatial",
+                  point: { x: 30, y: 0, z: 0 },
+                },
+                restraint: {
+                  canTranslateAlongX: true,
+                  canTranslateAlongY: true,
+                  canTranslateAlongZ: true,
+                  canRotateAboutX: true,
+                  canRotateAboutY: true,
+                  canRotateAboutZ: true,
+                },
+              },
+            ],
+            update: [
+              {
+                id: node3Id,
+                nodeTypeDescriminator: "internal" as const,
+              },
+            ],
+            delete: [],
           },
           materials: {
-            create: [],
-            update: [],
+            create: [
+              {
+                tempId: "mat-3",
+                name: "Material 3",
+                pressureE: { value: 190, unit: PressureUnits.Gigapascals },
+                pressureG: { value: 75, unit: PressureUnits.Gigapascals },
+              },
+            ],
+            update: [
+              {
+                id: mat2Id,
+                name: "Material 2 Updated",
+              },
+            ],
             delete: [],
           },
           sectionProfiles: {
-            create: [],
-            update: [],
-            delete: [],
+            create: [
+              {
+                tempId: "sp-3",
+                name: "W16x26",
+                discriminator: "STANDARD" as const,
+                area: 7.68,
+                strongAxisMomentOfInertia: 301,
+                weakAxisMomentOfInertia: 9.59,
+                torsionalConstant: 0.262,
+                warpingConstant: 341,
+                strongAxisPlasticSectionModulus: 43.1,
+                weakAxisPlasticSectionModulus: 6.31,
+                strongAxisElasticSectionModulus: 37.7,
+                weakAxisElasticSectionModulus: 3.98,
+              },
+            ],
+            update: [
+              {
+                id: sp1Id,
+                name: "W12x26 Updated",
+              },
+            ],
+            delete: [sp2Id],
           },
           element1ds: {
-            create: [],
+            create: [
+              {
+                tempId: "elem-1",
+                startNodeId: node1Id,
+                endNodeId: node2Id,
+                materialId: mat1Id,
+                sectionProfileId: sp1Id,
+              },
+              {
+                tempId: "elem-2",
+                startNodeId: node2Id,
+                endNodeId: node3Id,
+                materialId: mat2Id,
+                sectionProfileId: sp1Id,
+              },
+            ],
             update: [],
             delete: [],
           },
@@ -158,18 +297,70 @@ describe("model revision integration", () => {
       },
     );
 
-    expect(deleteRevisionResponse.error).toBeUndefined();
-    expect(deleteRevisionResponse.response.status).toBe(200);
-    expect(deleteRevisionResponse.data).toBeDefined();
+    expect(updateRevisionResponse.error).toBeUndefined();
+    expect(updateRevisionResponse.response.status).toBe(200);
+    expect(updateRevisionResponse.data).toBeDefined();
 
-    if (!deleteRevisionResponse.data) {
-      throw new Error("Expected delete model revision response");
+    if (!updateRevisionResponse.data) {
+      throw new Error("Expected update model revision response");
     }
 
-    expect(deleteRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
-    expect(deleteRevisionResponse.data.modelRevision.parentRevisionId).toBe(
-      createRevisionResponse.data.modelRevision.id,
+    expect(updateRevisionResponse.data.modelRevision.parentRevisionId).toBe(
+      setupRevisionResponse.data.modelRevision.id,
     );
+
+    // Get the final model revision state for snapshot verification
+    const finalRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+      },
+    );
+
+    expect(finalRevisionResponse.error).toBeUndefined();
+    expect(finalRevisionResponse.response.status).toBe(200);
+    expect(finalRevisionResponse.data).toBeDefined();
+
+    if (!finalRevisionResponse.data) {
+      throw new Error("Expected final model revision response");
+    }
+
+    // Create snapshot with normalized IDs for consistent testing
+    const modelSnapshot = {
+      nodes: finalRevisionResponse.data.modelRevision.nodes.map((node) => ({
+        ...node,
+        id: "<node-id>",
+        modelId: "<model-id>",
+      })),
+      materials: finalRevisionResponse.data.modelRevision.materials.map((material) => ({
+        ...material,
+        id: "<material-id>",
+        modelId: "<model-id>",
+        revisionId: "<revision-id>",
+      })),
+      sectionProfiles: finalRevisionResponse.data.modelRevision.sectionProfiles.map(
+        (sp) => ({
+          ...sp,
+          id: "<section-profile-id>",
+          modelId: "<model-id>",
+          revisionId: "<revision-id>",
+        }),
+      ),
+      element1ds: finalRevisionResponse.data.modelRevision.element1ds.map((elem) => ({
+        ...elem,
+        id: "<element-id>",
+        modelId: "<model-id>",
+        startNodeId: "<node-id>",
+        endNodeId: "<node-id>",
+        materialId: "<material-id>",
+        sectionProfileId: "<section-profile-id>",
+        revisionId: "<revision-id>",
+      })),
+    };
+
+    expect(modelSnapshot).toMatchSnapshot();
   });
 
   it("gets a branch model revision built by stacking revisions", async () => {
