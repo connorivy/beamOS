@@ -140,12 +140,7 @@ export class ModelRevisionAggregate {
     if (this._nodes.some((existing) => existing.id === node.id)) {
       throw new Error("Node already exists");
     }
-    const entity = NodeEntity.create(node);
-    this._nodes.push(entity);
-    this._domainEvents.push({
-      type: "node_added",
-      payload: entity.toSnapshot(),
-    });
+    this._nodes.push(NodeEntity.create(node));
   }
 
   addMaterial(material: MaterialSnapshot): void {
@@ -198,13 +193,16 @@ export class ModelRevisionAggregate {
   }
 
   pullDomainEvents(): DomainEvent[] {
+    const nodeEvents = this._nodes.flatMap((node) =>
+      node.pullDomainEvents(),
+    );
     const materialEvents = this._materials.flatMap((material) =>
       material.pullDomainEvents(),
     );
     const sectionProfileEvents = this._sectionProfiles.flatMap(
       (sectionProfile) => sectionProfile.pullDomainEvents(),
     );
-    const events = [...this._domainEvents, ...materialEvents, ...sectionProfileEvents];
+    const events = [...this._domainEvents, ...nodeEvents, ...materialEvents, ...sectionProfileEvents];
     this._domainEvents = [];
     return events;
   }
