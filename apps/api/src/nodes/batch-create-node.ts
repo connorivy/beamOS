@@ -85,7 +85,9 @@ async function batchCreateNodeHandler(
         nodeType: "internalNode",
         nodeTypeDescriminator: "internal",
         element1dId: node.location.element1dId,
-        distanceAlongElement1d: node.location.ratioAlongElement1d,
+        distanceAlongElement1d: Ratio.FromDecimalFractions(
+          node.location.ratioAlongElement1d,
+        ),
         restraint: node.restraint,
       });
     }

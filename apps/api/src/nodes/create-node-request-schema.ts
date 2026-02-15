@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
-import { Ratio } from "unitsnet-js";
 
 const restraintSchema = z.record(z.string(), z.boolean());
 
@@ -16,7 +15,7 @@ const spatialNodeLocationSchema = z.object({
 const internalNodeLocationSchema = z.object({
   type: z.literal("internal"),
   element1dId: uuidV7Schema,
-  ratioAlongElement1d: z.instanceof(Ratio),
+  ratioAlongElement1d: z.number().finite().min(0).max(1),
 });
 
 export const createNodeRequestSchema = z.object({

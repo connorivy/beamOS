@@ -21,6 +21,134 @@ afterAll(async () => {
 }, 10_000);
 
 describe("model revision integration", () => {
+  it("creates a model revision from batched entity operations", async () => {
+    const client = createApiClient(baseUrl);
+
+    const createModelResponse = await client.POST("/api/models", {
+      body: {
+        name: "Create Revision Operations Model",
+        authorId: randomUUID(),
+        message: "Create base model",
+      },
+    });
+
+    expect(createModelResponse.error).toBeUndefined();
+    expect(createModelResponse.response.status).toBe(200);
+    expect(createModelResponse.data).toBeDefined();
+
+    if (!createModelResponse.data) {
+      throw new Error("Expected model response");
+    }
+
+    const modelId = createModelResponse.data.model.id;
+    const branchName = createModelResponse.data.version.branchName;
+
+    const createRevisionResponse = await client.POST(
+      "/api/models/{modelId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+        body: {
+          nodes: {
+            create: [
+              {
+                location: {
+                  type: "spatial",
+                  point: { x: 1, y: 2, z: 3 },
+                },
+                restraint: {
+                  rx: true,
+                },
+              },
+            ],
+            update: [],
+            delete: [],
+          },
+          materials: {
+            create: [],
+            update: [],
+            delete: [],
+          },
+          sectionProfiles: {
+            create: [],
+            update: [],
+            delete: [],
+          },
+          element1ds: {
+            create: [],
+            update: [],
+            delete: [],
+          },
+        },
+      },
+    );
+
+    expect(createRevisionResponse.error).toBeUndefined();
+    expect(createRevisionResponse.response.status).toBe(200);
+    expect(createRevisionResponse.data).toBeDefined();
+
+    if (!createRevisionResponse.data) {
+      throw new Error("Expected create model revision response");
+    }
+
+    expect(createRevisionResponse.data.modelRevision.modelId).toBe(modelId);
+    expect(createRevisionResponse.data.modelRevision.version.branchName).toBe(
+      branchName,
+    );
+    expect(createRevisionResponse.data.modelRevision.nodes).toHaveLength(1);
+    const createdNodeId = createRevisionResponse.data.modelRevision.nodes[0]?.id;
+    expect(createdNodeId).toBeDefined();
+
+    if (!createdNodeId) {
+      throw new Error("Expected created node id");
+    }
+
+    const deleteRevisionResponse = await client.POST(
+      "/api/models/{modelId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { modelId, branchName },
+        },
+        body: {
+          nodes: {
+            create: [],
+            update: [],
+            delete: [createdNodeId],
+          },
+          materials: {
+            create: [],
+            update: [],
+            delete: [],
+          },
+          sectionProfiles: {
+            create: [],
+            update: [],
+            delete: [],
+          },
+          element1ds: {
+            create: [],
+            update: [],
+            delete: [],
+          },
+        },
+      },
+    );
+
+    expect(deleteRevisionResponse.error).toBeUndefined();
+    expect(deleteRevisionResponse.response.status).toBe(200);
+    expect(deleteRevisionResponse.data).toBeDefined();
+
+    if (!deleteRevisionResponse.data) {
+      throw new Error("Expected delete model revision response");
+    }
+
+    expect(deleteRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
+    expect(deleteRevisionResponse.data.modelRevision.parentRevisionId).toBe(
+      createRevisionResponse.data.modelRevision.id,
+    );
+  });
+
   it("gets a branch model revision built by stacking revisions", async () => {
     const client = createApiClient(baseUrl);
 
