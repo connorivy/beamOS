@@ -7,12 +7,20 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
+import { Link as RouterLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/auth-store";
 import { useUiStore } from "../store/ui-store";
 
 export const AppLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { mode, setMode } = useUiStore();
+  const { isAuthenticated, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <Box sx={{ minHeight: "100vh" }}>
@@ -36,6 +44,19 @@ export const AppLayout = () => {
             >
               Models
             </Button>
+            {isAuthenticated ? (
+              <Button variant="outlined" onClick={handleLogout}>
+                Log Out
+              </Button>
+            ) : (
+              <Button
+                component={RouterLink}
+                to="/login"
+                variant={location.pathname === "/login" ? "contained" : "outlined"}
+              >
+                Log In
+              </Button>
+            )}
             <Button variant="outlined" onClick={() => setMode(mode === "light" ? "dark" : "light")}>
               {mode === "light" ? "Dark" : "Light"}
             </Button>
