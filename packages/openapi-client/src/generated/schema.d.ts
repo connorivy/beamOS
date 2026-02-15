@@ -533,6 +533,7 @@ export interface operations {
             content: {
                 "application/json": {
                     materials: {
+                        name: string;
                         modulusOfElasticity: number;
                         modulusOfRigidity: number;
                         units: {
@@ -545,6 +546,7 @@ export interface operations {
                 };
                 "application/x-www-form-urlencoded": {
                     materials: {
+                        name: string;
                         modulusOfElasticity: number;
                         modulusOfRigidity: number;
                         units: {
@@ -557,6 +559,7 @@ export interface operations {
                 };
                 "multipart/form-data": {
                     materials: {
+                        name: string;
                         modulusOfElasticity: number;
                         modulusOfRigidity: number;
                         units: {
@@ -578,6 +581,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         materials: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -608,6 +612,7 @@ export interface operations {
             content: {
                 "application/json": {
                     materials: {
+                        name: string;
                         modulusOfElasticity: number;
                         modulusOfRigidity: number;
                         units: {
@@ -619,6 +624,7 @@ export interface operations {
                 };
                 "application/x-www-form-urlencoded": {
                     materials: {
+                        name: string;
                         modulusOfElasticity: number;
                         modulusOfRigidity: number;
                         units: {
@@ -630,6 +636,7 @@ export interface operations {
                 };
                 "multipart/form-data": {
                     materials: {
+                        name: string;
                         modulusOfElasticity: number;
                         modulusOfRigidity: number;
                         units: {
@@ -650,6 +657,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         materials: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -688,6 +696,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         material: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -1175,6 +1184,7 @@ export interface operations {
                                 nodeTypeDescriminator: "external" | "internal";
                             }[];
                             materials: {
+                                name: string;
                                 modulusOfElasticity: number;
                                 modulusOfRigidity: number;
                                 units: {
@@ -1347,6 +1357,7 @@ export interface operations {
                     materials: {
                         /** @default [] */
                         create: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -1357,6 +1368,7 @@ export interface operations {
                         }[];
                         /** @default [] */
                         update: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -1476,6 +1488,7 @@ export interface operations {
                     materials: {
                         /** @default [] */
                         create: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -1486,6 +1499,7 @@ export interface operations {
                         }[];
                         /** @default [] */
                         update: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -1605,6 +1619,7 @@ export interface operations {
                     materials: {
                         /** @default [] */
                         create: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -1615,6 +1630,7 @@ export interface operations {
                         }[];
                         /** @default [] */
                         update: {
+                            name: string;
                             modulusOfElasticity: number;
                             modulusOfRigidity: number;
                             units: {
@@ -1713,6 +1729,7 @@ export interface operations {
                                 nodeTypeDescriminator: "external" | "internal";
                             }[];
                             materials: {
+                                name: string;
                                 modulusOfElasticity: number;
                                 modulusOfRigidity: number;
                                 units: {

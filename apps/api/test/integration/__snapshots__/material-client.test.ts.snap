@@ -5,6 +5,7 @@ exports[`typed material api client integration batch creates materials and snaps
   "id": "<db-id>",
   "modulusOfElasticity": 125000,
   "modulusOfRigidity": 85000,
+  "name": "Material 1",
   "revisionId": "<revision-id>",
   "units": {
     "pressure": "Pascal",
@@ -17,6 +18,7 @@ exports[`typed material api client integration batch creates materials and snaps
   "id": "<db-id>",
   "modulusOfElasticity": 101324.66370467292,
   "modulusOfRigidity": 101325,
+  "name": "Material 2",
   "revisionId": "<revision-id>",
   "units": {
     "pressure": "Pascal",
@@ -29,6 +31,7 @@ exports[`typed material api client integration batch creates materials and snaps
   "id": "<db-id>",
   "modulusOfElasticity": 96258.75,
   "modulusOfRigidity": 95000,
+  "name": "Material 3",
   "revisionId": "<revision-id>",
   "units": {
     "pressure": "Pascal",

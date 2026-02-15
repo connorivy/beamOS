@@ -31,6 +31,7 @@ export const batchCreateMaterialResSchema = z.object({
 const toResponseMaterial = (material: MaterialSnapshot) => ({
   id: material.id,
   revisionId: material.revisionId,
+  name: material.name,
   modulusOfElasticity: material.pressureE.Pascals,
   modulusOfRigidity: material.pressureG.Pascals,
   units: {
@@ -78,6 +79,7 @@ export async function batchCreateMaterialHandler(
     const snapshot: MaterialSnapshot = {
       id,
       revisionId: revision.id,
+      name: material.name,
       pressureE: new Pressure(
         material.modulusOfElasticity,
         material.units.pressure,

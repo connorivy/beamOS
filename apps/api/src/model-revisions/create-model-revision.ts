@@ -114,6 +114,7 @@ export const createModelRevision = defineEndpoint({
         materials: modelRevision.materials.map((material) => ({
           id: material.id,
           revisionId: material.revisionId,
+          name: material.name,
           modulusOfElasticity: material.pressureE.Pascals,
           modulusOfRigidity: material.pressureG.Pascals,
           units: {
@@ -311,6 +312,7 @@ const buildRevisionChanges = (input: {
         payload: {
           id,
           revisionId: input.revisionId,
+          name: createMaterial.name,
           pressureE: {
             value: new Pressure(
               createMaterial.modulusOfElasticity,
@@ -344,6 +346,7 @@ const buildRevisionChanges = (input: {
         payload: {
           id: updateMaterial.id,
           revisionId: input.revisionId,
+          name: updateMaterial.name,
           pressureE: {
             value: new Pressure(
               updateMaterial.modulusOfElasticity,

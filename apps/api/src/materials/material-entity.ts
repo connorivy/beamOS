@@ -5,6 +5,7 @@ import type { MaterialDomainEvent } from "./material-events";
 export type MaterialSnapshot = {
   id: string;
   revisionId: string;
+  name: string;
   pressureE: Pressure;
   pressureG: Pressure;
 };
@@ -20,6 +21,7 @@ export class MaterialEntity {
 
     this.id = snapshot.id;
     this.revisionId = snapshot.revisionId;
+    this.name = snapshot.name;
     this.pressureE = snapshot.pressureE;
     this.pressureG = snapshot.pressureG;
     this._domainEvents = [];
@@ -27,6 +29,7 @@ export class MaterialEntity {
 
   readonly id: string;
   readonly revisionId: string;
+  readonly name: string;
   readonly pressureE: Pressure;
   readonly pressureG: Pressure;
 
@@ -47,6 +50,7 @@ export class MaterialEntity {
     return {
       id: this.id,
       revisionId: this.revisionId,
+      name: this.name,
       pressureE: this.pressureE,
       pressureG: this.pressureG,
     };

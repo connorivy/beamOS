@@ -4,6 +4,7 @@ import { uuidV7Schema } from "../common/uuid";
 
 // Base material properties schema
 export const materialPropertiesSchema = z.object({
+  name: z.string().trim().min(1),
   modulusOfElasticity: z.number().finite(),
   modulusOfRigidity: z.number().finite(),
   units: z.object({
@@ -26,6 +27,7 @@ export const deleteMaterialRequestSchema = z.string().trim().min(1);
 
 // Material response schemas
 export const materialPropertiesResponseSchema = z.object({
+  name: z.string().min(1),
   modulusOfElasticity: z.number().finite(),
   modulusOfRigidity: z.number().finite(),
   units: z.object({

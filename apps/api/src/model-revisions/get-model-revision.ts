@@ -87,6 +87,7 @@ export const getModelRevision = defineEndpoint({
         materials: modelRevision.materials.map((material) => ({
           id: material.id,
           revisionId: material.revisionId,
+          name: material.name,
           modulusOfElasticity: material.pressureE.Pascals,
           modulusOfRigidity: material.pressureG.Pascals,
           units: {

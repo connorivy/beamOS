@@ -38,6 +38,7 @@ export const getMaterial = defineEndpoint({
       material: {
         id: material.id,
         revisionId: material.revisionId,
+        name: material.name,
         modulusOfElasticity: material.pressureE.Pascals,
         modulusOfRigidity: material.pressureG.Pascals,
         units: {
