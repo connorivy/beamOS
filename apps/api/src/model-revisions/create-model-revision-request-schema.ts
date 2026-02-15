@@ -1,19 +1,25 @@
 import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
-import { createElement1dRequestSchema } from "../element1ds/create-element1d-request-schema";
-import { deleteElement1dRequestSchema } from "../element1ds/delete-element1d-request-schema";
-import { updateElement1dRequestSchema } from "../element1ds/update-element1d-request-schema";
+import {
+  createElement1dRequestSchema,
+  deleteElement1dRequestSchema,
+  putElement1dRequestSchema as updateElement1dRequestSchema,
+} from "../element1ds/element1d-contract-schemas";
 import {
   createMaterialRequestSchema,
   deleteMaterialRequestSchema,
-  putMaterialRequestSchema,
+  putMaterialRequestSchema as updateMaterialRequestSchema,
 } from "../materials/material-contract-schemas";
-import { createNodeRequestSchema } from "../nodes/create-node-request-schema";
-import { deleteNodeRequestSchema } from "../nodes/delete-node-request-schema";
-import { updateNodeRequestSchema } from "../nodes/update-node-request-schema";
-import { createSectionProfileRequestSchema } from "../section-profiles/create-section-profile-request-schema";
-import { deleteSectionProfileRequestSchema } from "../section-profiles/delete-section-profile-request-schema";
-import { updateSectionProfileRequestSchema } from "../section-profiles/update-section-profile-request-schema";
+import {
+  createNodeRequestSchema,
+  deleteNodeRequestSchema,
+  putNodeRequestSchema as updateNodeRequestSchema,
+} from "../nodes/node-contract-schemas";
+import {
+  createSectionProfileRequestSchema,
+  deleteSectionProfileRequestSchema,
+  putSectionProfileRequestSchema as updateSectionProfileRequestSchema,
+} from "../section-profiles/section-profile-contract-schemas";
 
 const element1dOperationsRequestSchema = z.object({
   create: z.array(createElement1dRequestSchema).default([]),
@@ -29,7 +35,7 @@ const nodeOperationsRequestSchema = z.object({
 
 const materialOperationsRequestSchema = z.object({
   create: z.array(createMaterialRequestSchema).default([]),
-  update: z.array(putMaterialRequestSchema).default([]),
+  update: z.array(updateMaterialRequestSchema).default([]),
   delete: z.array(deleteMaterialRequestSchema).default([]),
 });
 
