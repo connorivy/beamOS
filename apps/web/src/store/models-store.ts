@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createApiClient } from "@beamos/openapi-client";
+import { apiClient } from "../api/client";
 
 export type ModelRole = "owner" | "contributor" | "reviewer";
 
@@ -16,13 +16,6 @@ type ModelsState = {
   error: string | null;
   loadModels: () => Promise<void>;
 };
-
-const apiClient = createApiClient(
-  import.meta.env.VITE_API_BASE_URL ??
-    (typeof window === "undefined"
-      ? "http://127.0.0.1:3001"
-      : window.location.origin),
-);
 
 const roleMap: Record<"Owner" | "Contributor" | "Reviewer", ModelRole> = {
   Owner: "owner",
