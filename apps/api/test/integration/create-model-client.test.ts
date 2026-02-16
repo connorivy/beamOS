@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
+import { drizzleModelRepository } from "../../src/models/model-repository";
 import {
   setupIntegrationApp,
   teardownIntegrationApp,
@@ -40,12 +41,22 @@ describe("typed openapi client integration", () => {
 
     expect(data.model.name).toBe(requestBody.name);
     expect(data.model.id).toMatch(/^[0-9a-f-]{36}$/i);
+    expect(data.model.description).toBe("");
 
-    // const storedModel = await drizzleModelRepository.getById({
-    //   modelId: data.model.id,
-    // });
+    const storedModelWithoutBranchHeads = await drizzleModelRepository.getById({
+      modelId: data.model.id,
+    });
+    expect(storedModelWithoutBranchHeads).toBeDefined();
+    expect(storedModelWithoutBranchHeads?.modelBranchHeads).toBeNull();
 
-    // expect(storedModel).toBeDefined();
-    // expect(storedModel?.name).toBe(requestBody.name);
+    const storedModelWithBranchHeads = await drizzleModelRepository.getById({
+      modelId: data.model.id,
+      loadModelBranchHeadAggregates: true,
+    });
+    expect(storedModelWithBranchHeads).toBeDefined();
+    expect(storedModelWithBranchHeads?.modelBranchHeads).not.toBeNull();
+    expect(
+      storedModelWithBranchHeads?.modelBranchHeads?.map((branch) => branch.branchName),
+    ).toContain("main");
   });
 });

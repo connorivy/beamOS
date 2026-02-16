@@ -15,6 +15,7 @@ export const createModelResSchema = z.object({
   model: z.object({
     id: uuidSchema,
     name: z.string(),
+    description: z.string(),
   }),
   version: z.object({
     modelId: uuidSchema,
@@ -38,7 +39,9 @@ export const createModel = defineEndpoint({
     const model = ModelAggregate.create({
       name: req.body.name,
     });
-    const savedModel = await ctx.services.modelRepository.save(model);
+    const savedModel = await ctx.services.modelRepository.save({
+      model,
+    });
     const initialRevision =
       await ctx.services.modelRevisionRepository.commitRevision({
         id: Bun.randomUUIDv7(),
@@ -50,11 +53,11 @@ export const createModel = defineEndpoint({
         nodes: [],
         includeModelChange: true,
       });
-
     return {
       model: {
         id: savedModel.id,
         name: savedModel.name,
+        description: savedModel.description,
       },
       version: {
         modelId: savedModel.id,

@@ -7,6 +7,8 @@ export const modelMapper = {
       id: row.id,
       name: row.name,
       nodes: [],
+      description: "",
+      modelBranchHeads: null,
     });
   },
   toPersistence(aggregate: ModelAggregate): typeof models.$inferInsert {

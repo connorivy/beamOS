@@ -291,6 +291,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             name: string;
+                            description: string;
                         };
                         version: {
                             /** Format: uuid */
@@ -524,6 +525,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             name: string;
+                            description: string;
                         };
                         version: {
                             /** Format: uuid */

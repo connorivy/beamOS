@@ -30,30 +30,30 @@ export const patchNode = defineEndpoint({
     if (!model) {
       throw httpError("Model or target revision not found", 404);
     }
-
-    try {
-      model.updateNode({
-        nodeId: req.params.nodeId,
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        throw httpError(error.message, 400);
-      }
-      throw error;
-    }
-
-    await ctx.services.modelRepository.save(model);
-
-    const patchedNode = model.nodes.find(
-      (node) => node.id === req.params.nodeId,
+    const revision = await ctx.services.modelRevisionRepository.getRevisionById(
+      req.body.revisionId,
     );
-    if (!patchedNode) {
-      throw httpError("Node not found after patch", 500);
+    if (!revision) {
+      throw httpError("Revision not found", 400);
     }
+    if (revision.modelId !== req.params.modelId) {
+      throw httpError("Revision does not belong to this model", 400);
+    }
+    if (!revision.nodes.some((node) => node.id === req.params.nodeId)) {
+      throw httpError(
+        `Node ${req.params.nodeId} does not exist in revision ${req.body.revisionId}`,
+        400,
+      );
+    }
+
+    await ctx.services.modelRepository.save({
+      model,
+      sourceRevisionId: req.body.revisionId,
+    });
 
     return {
       node: {
-        id: patchedNode.id,
+        id: req.params.nodeId,
         modelId: req.params.modelId,
       },
       version: {
