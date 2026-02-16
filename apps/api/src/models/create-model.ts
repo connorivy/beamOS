@@ -39,7 +39,9 @@ export const createModel = defineEndpoint({
     const model = ModelAggregate.create({
       name: req.body.name,
     });
-    const savedModel = await ctx.services.modelRepository.save(model);
+    const savedModel = await ctx.services.modelRepository.save({
+      model,
+    });
     const initialRevision =
       await ctx.services.modelRevisionRepository.commitRevision({
         id: Bun.randomUUIDv7(),

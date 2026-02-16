@@ -1,6 +1,5 @@
 import crypto from "crypto";
 import { eq, inArray } from "drizzle-orm";
-import { Ratio } from "unitsnet-js";
 import { getDb } from "../db/client";
 import {
   modelBranchHeads,
@@ -14,46 +13,6 @@ import { modelMapper } from "./model-mapper";
 import type { ModelDomainEvent } from "./model-events";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
-import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
-import { NodeRestraints, parseRestraint } from "../nodes/node-entity";
-
-const applyNodeChanges = (input: {
-  current: Map<string, NodeSnapshot>;
-  changes: {
-    nodeId: string;
-    modelRevisionId: string;
-    nodeTypeDescriminator: "external" | "internal";
-    op: string;
-  }[];
-}) => {
-  for (const change of input.changes) {
-    if (change.op === "delete") {
-      input.current.delete(change.nodeId);
-      continue;
-    }
-
-    input.current.set(change.nodeId, {
-      id: change.nodeId,
-      modelRevisionId: change.modelRevisionId,
-      nodeType:
-        change.nodeTypeDescriminator === "external"
-          ? "spatialNode"
-          : "internalNode",
-      nodeTypeDescriminator: change.nodeTypeDescriminator ?? "internal",
-      point:
-        change.nodeTypeDescriminator === "external"
-          ? { x: 0, y: 0, z: 0 }
-          : undefined,
-      element1dId:
-        change.nodeTypeDescriminator === "external" ? undefined : change.nodeId,
-      distanceAlongElement1d:
-        change.nodeTypeDescriminator === "external"
-          ? undefined
-          : Ratio.FromDecimalFractions(0),
-      restraint: { ...NodeRestraints.FREE },
-    });
-  }
-};
 
 const applyModelChanges = (input: {
   currentName: string;
@@ -78,7 +37,10 @@ export type ModelRepository = {
     revisionId?: string;
     loadModelBranchHeadAggregates?: boolean;
   }) => Promise<ModelAggregate | undefined>;
-  save: (model: ModelAggregate) => Promise<ModelAggregate>;
+  save: (input: {
+    model: ModelAggregate;
+    sourceRevisionId?: string | null;
+  }) => Promise<ModelAggregate>;
 };
 
 export const drizzleModelRepository: ModelRepository = {
@@ -108,10 +70,6 @@ export const drizzleModelRepository: ModelRepository = {
         return undefined;
       }
 
-      const nodesById = await buildNodesFromRevisions({
-        revisions,
-      });
-
       const modelName = await buildModelNameFromRevisions({
         initialName: revisions[revisions.length - 1].modelName,
         revisions,
@@ -120,10 +78,8 @@ export const drizzleModelRepository: ModelRepository = {
       return ModelAggregate.rehydrate({
         id: input.modelId,
         name: modelName,
-        nodes: Array.from(nodesById.values()),
         description: "",
         modelBranchHeads: loadedModelBranchHeads,
-        sourceRevisionId: input.revisionId,
       });
     }
 
@@ -133,9 +89,9 @@ export const drizzleModelRepository: ModelRepository = {
     });
   },
 
-  async save(model) {
-    const persistence = modelMapper.toPersistence(model);
-    const events = model.pullDomainEvents();
+  async save(input) {
+    const persistence = modelMapper.toPersistence(input.model);
+    const events = input.model.pullDomainEvents();
     const revisionEvents = events.filter(
       (event) => event.type !== "model_created",
     );
@@ -153,17 +109,17 @@ export const drizzleModelRepository: ModelRepository = {
         .returning();
 
       if (revisionEvents.length > 0) {
-        const targetRevisionId = model.sourceRevisionId;
+        const sourceRevisionId = input.sourceRevisionId;
 
-        if (!targetRevisionId) {
+        if (!sourceRevisionId) {
           throw new Error(
             "Cannot persist model changes without a source revision",
           );
         }
 
         const changeRows = buildRevisionChanges({
-          modelId: model.id,
-          revisionId: targetRevisionId,
+          modelId: input.model.id,
+          revisionId: sourceRevisionId,
           events: revisionEvents,
         });
 
@@ -175,10 +131,8 @@ export const drizzleModelRepository: ModelRepository = {
       return ModelAggregate.rehydrate({
         id: row[0].id,
         name: row[0].name,
-        nodes: model.nodes.map((node) => node.toSnapshot()),
-        description: model.description,
-        modelBranchHeads: model.modelBranchHeads,
-        sourceRevisionId: model.sourceRevisionId,
+        description: input.model.description,
+        modelBranchHeads: input.model.modelBranchHeads,
       });
     });
 
@@ -247,111 +201,6 @@ const loadRevisionHistory = async (input: {
   });
 };
 
-const buildNodesFromRevisions = async (input: {
-  revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, NodeSnapshot>> => {
-  if (input.revisions.length === 0) {
-    return new Map();
-  }
-
-  const revisionIds = input.revisions.map((revision) => revision.id);
-  const revisionOrder = new Map(
-    input.revisions.map((revision, index) => [revision.id, index]),
-  );
-
-  const changeRows = await getDb()
-    .select()
-    .from(revisionChanges)
-    .where(inArray(revisionChanges.revisionId, revisionIds));
-
-  changeRows.sort((a, b) => {
-    const orderA = revisionOrder.get(a.revisionId ?? "") ?? 0;
-    const orderB = revisionOrder.get(b.revisionId ?? "") ?? 0;
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.entityId.localeCompare(b.entityId);
-  });
-
-  const nodesById = new Map<string, NodeSnapshot>();
-  for (const change of changeRows) {
-    if (change.entityType !== "node") {
-      continue;
-    }
-    if (change.op === "delete") {
-      nodesById.delete(change.entityId);
-      continue;
-    }
-    nodesById.set(change.entityId, toNodeSnapshotFromChange(change));
-  }
-
-  return nodesById;
-};
-
-const toNodeSnapshotFromChange = (
-  change: typeof revisionChanges.$inferSelect,
-): NodeSnapshot => {
-  const payload =
-    change.payload && typeof change.payload === "object"
-      ? (change.payload as Record<string, unknown>)
-      : {};
-  const modelRevisionId =
-    typeof payload.modelRevisionId === "string"
-      ? payload.modelRevisionId
-      : (change.revisionId ?? "");
-  const nodeTypeDescriminator = extractNodeTypeDescriminator(payload);
-  const restraint = parseRestraint(payload.restraint);
-
-  if (nodeTypeDescriminator === "internal") {
-    const element1dId =
-      typeof payload.element1dId === "string" ? payload.element1dId : change.entityId;
-    const distanceAlongElement1d =
-      typeof payload.distanceAlongElement1d === "number" &&
-      Number.isFinite(payload.distanceAlongElement1d)
-        ? payload.distanceAlongElement1d
-        : 0;
-    return {
-      id: change.entityId,
-      modelRevisionId,
-      nodeType: "internalNode",
-      nodeTypeDescriminator: "internal",
-      element1dId,
-      distanceAlongElement1d: Ratio.FromDecimalFractions(distanceAlongElement1d),
-      restraint,
-    };
-  }
-
-  const point =
-    payload.point && typeof payload.point === "object"
-      ? (payload.point as Record<string, unknown>)
-      : {};
-  return {
-    id: change.entityId,
-    modelRevisionId,
-    nodeType: "spatialNode",
-    nodeTypeDescriminator: "external",
-    point: {
-      x: typeof point.x === "number" && Number.isFinite(point.x) ? point.x : 0,
-      y: typeof point.y === "number" && Number.isFinite(point.y) ? point.y : 0,
-      z: typeof point.z === "number" && Number.isFinite(point.z) ? point.z : 0,
-    },
-    restraint,
-  };
-};
-
-const extractNodeTypeDescriminator = (
-  payload: unknown,
-): "external" | "internal" => {
-  if (payload && typeof payload === "object") {
-    const nodeTypeDescriminator = (
-      payload as { nodeTypeDescriminator?: unknown }
-    ).nodeTypeDescriminator;
-    if (nodeTypeDescriminator === "external") {
-      return "external";
-    }
-  }
-  return "internal";
-};
 
 const extractModelName = (payload: unknown, fallback: string): string => {
   if (payload && typeof payload === "object") {
