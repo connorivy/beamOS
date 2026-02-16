@@ -6,7 +6,7 @@ export const modelMapper = {
     return ModelAggregate.rehydrate({
       id: row.id,
       name: row.name,
-      description: row.description,
+      description: row.description ?? "",
       modelBranchHeads: null,
     });
   },
