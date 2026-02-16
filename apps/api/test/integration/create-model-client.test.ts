@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import { drizzleModelRepository } from "../../src/models/model-repository";
+import { drizzleModelVersionRepository } from "../../src/model-revisions/model-revision-repository";
 import {
   setupIntegrationApp,
   teardownIntegrationApp,
@@ -42,6 +43,9 @@ describe("typed openapi client integration", () => {
     expect(data.model.name).toBe(requestBody.name);
     expect(data.model.id).toMatch(/^[0-9a-f-]{36}$/i);
     expect(data.model.description).toBe("");
+    expect(data.version.branchName).toBe("main");
+    expect(data.version.revisionId).toMatch(/^[0-9a-f-]{36}$/i);
+    expect(data.version.inProgressRevisionId).toBe(data.version.revisionId);
 
     const storedModelWithoutBranchHeads = await drizzleModelRepository.getById({
       modelId: data.model.id,
@@ -58,5 +62,11 @@ describe("typed openapi client integration", () => {
     expect(
       storedModelWithBranchHeads?.modelBranchHeads?.map((branch) => branch.branchName),
     ).toContain("main");
+
+    const initialRevision =
+      await drizzleModelVersionRepository.getRevisionById(data.version.revisionId);
+    expect(initialRevision).toBeDefined();
+    expect(initialRevision?.authorId).toBe(requestBody.authorId);
+    expect(initialRevision?.message).toBe(requestBody.message);
   });
 });

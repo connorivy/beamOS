@@ -1,6 +1,5 @@
-import crypto from "crypto";
 import { eq, inArray } from "drizzle-orm";
-import { getDb } from "../db/client";
+import { getDb, type DbTransaction } from "../db/client";
 import {
   modelBranchHeads,
   modelRevisions,
@@ -39,7 +38,12 @@ export type ModelRepository = {
   }) => Promise<ModelAggregate | undefined>;
   save: (input: {
     model: ModelAggregate;
-    sourceRevisionId?: string | null;
+    initialCommit?: {
+      authorId: string;
+      message: string;
+      revisionId?: string;
+      branchName?: string;
+    };
   }) => Promise<ModelAggregate>;
 };
 
@@ -92,9 +96,6 @@ export const drizzleModelRepository: ModelRepository = {
   async save(input) {
     const persistence = modelMapper.toPersistence(input.model);
     const events = input.model.pullDomainEvents();
-    const revisionEvents = events.filter(
-      (event) => event.type !== "model_created",
-    );
 
     const savedModel = await getDb().transaction(async (tx) => {
       const row = await tx
@@ -104,34 +105,21 @@ export const drizzleModelRepository: ModelRepository = {
           target: models.id,
           set: {
             name: persistence.name,
+            description: persistence.description,
           },
         })
         .returning();
 
-      if (revisionEvents.length > 0) {
-        const sourceRevisionId = input.sourceRevisionId;
-
-        if (!sourceRevisionId) {
-          throw new Error(
-            "Cannot persist model changes without a source revision",
-          );
-        }
-
-        const changeRows = buildRevisionChanges({
-          modelId: input.model.id,
-          revisionId: sourceRevisionId,
-          events: revisionEvents,
-        });
-
-        if (changeRows.length > 0) {
-          await tx.insert(revisionChanges).values(changeRows);
-        }
-      }
+      await publishModelDomainEvents({
+        tx,
+        events,
+        initialCommit: input.initialCommit,
+      });
 
       return ModelAggregate.rehydrate({
         id: row[0].id,
         name: row[0].name,
-        description: input.model.description,
+        description: row[0].description ?? "",
         modelBranchHeads: input.model.modelBranchHeads,
       });
     });
@@ -251,76 +239,86 @@ const buildModelNameFromRevisions = async (input: {
   });
 };
 
-const buildRevisionChanges = (input: {
-  modelId: string;
-  revisionId: string | null;
+const publishModelDomainEvents = async (input: {
+  tx: DbTransaction;
   events: ModelDomainEvent[];
-}): (typeof revisionChanges.$inferInsert)[] => {
-  const now = new Date();
-
-  return input.events.map((event) => {
-    if (event.type === "model_renamed") {
-      const payload = {
-        id: event.modelId,
-        name: event.name,
-      };
-
-      const entity = RevisionChangeEntity.create({
-        id: crypto.randomUUID(),
-        revisionId: input.revisionId,
-        entityType: "model",
-        entityId: event.modelId,
-        schemaVersion: 1,
-        op: "update",
-        payload,
-        createdAt: now,
+  initialCommit?: {
+    authorId: string;
+    message: string;
+    revisionId?: string;
+    branchName?: string;
+  };
+}) => {
+  for (const event of input.events) {
+    if (event.type === "model_created") {
+      await handleModelCreatedEvent({
+        tx: input.tx,
+        event,
+        initialCommit: input.initialCommit,
       });
-
-      return revisionChangeMapper.toPersistence(entity);
     }
+  }
+};
 
-    if (event.type === "node_added") {
-      const payload = {
-        id: event.node.id,
-        modelId: input.modelId,
-        name: event.node.name,
-      };
+const handleModelCreatedEvent = async (input: {
+  tx: DbTransaction;
+  event: Extract<ModelDomainEvent, { type: "model_created" }>;
+  initialCommit?: {
+    authorId: string;
+    message: string;
+    revisionId?: string;
+    branchName?: string;
+  };
+}) => {
+  if (!input.initialCommit) {
+    throw new Error(
+      "Cannot handle model_created event without initial commit metadata",
+    );
+  }
 
-      const entity = RevisionChangeEntity.create({
-        id: crypto.randomUUID(),
-        revisionId: input.revisionId,
-        entityType: "node",
-        entityId: event.node.id,
-        schemaVersion: 1,
-        op: "insert",
-        payload,
-        createdAt: now,
-      });
+  const revisionId = input.initialCommit.revisionId ?? Bun.randomUUIDv7();
+  const branchName = input.initialCommit.branchName ?? "main";
 
-      return revisionChangeMapper.toPersistence(entity);
-    }
-
-    if (event.type === "node_updated") {
-      const payload = {
-        id: event.node.id,
-        modelId: input.modelId,
-        name: event.node.name,
-      };
-
-      const entity = RevisionChangeEntity.create({
-        id: crypto.randomUUID(),
-        revisionId: input.revisionId,
-        entityType: "node",
-        entityId: event.node.id,
-        schemaVersion: 1,
-        op: "update",
-        payload,
-        createdAt: now,
-      });
-
-      return revisionChangeMapper.toPersistence(entity);
-    }
-
-    throw new Error(`Unsupported model domain event: ${event}`);
+  await input.tx.insert(modelRevisions).values({
+    id: revisionId,
+    modelId: input.event.payload.id,
+    modelName: input.event.payload.name,
+    parentRevisionId: null,
+    secondParentRevisionId: null,
+    authorId: input.initialCommit.authorId,
+    message: input.initialCommit.message,
   });
+
+  const modelRevisionChange = revisionChangeMapper.toPersistence(
+    RevisionChangeEntity.create({
+      id: Bun.randomUUIDv7(),
+      revisionId,
+      entityType: "model",
+      entityId: input.event.payload.id,
+      schemaVersion: 1,
+      op: "insert",
+      payload: {
+        id: input.event.payload.id,
+        name: input.event.payload.name,
+      },
+      createdAt: new Date(),
+    }),
+  );
+
+  await input.tx.insert(revisionChanges).values(modelRevisionChange);
+
+  await input.tx
+    .insert(modelBranchHeads)
+    .values({
+      modelId: input.event.payload.id,
+      branchName,
+      headRevisionId: revisionId,
+    })
+    .onConflictDoUpdate({
+      target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
+      set: {
+        headRevisionId: revisionId,
+        updatedAt: new Date(),
+      },
+    });
 };
