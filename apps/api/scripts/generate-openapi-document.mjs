@@ -111,7 +111,10 @@ for (const endpoint of endpoints) {
 
   if (reqShape.body) {
     operation.requestBody = {
-      required: true,
+      required:
+        typeof reqShape.body?.isOptional === "function"
+          ? !reqShape.body.isOptional()
+          : true,
       content: {
         "application/json": {
           schema: zodToOpenApiJsonSchema(reqShape.body),
