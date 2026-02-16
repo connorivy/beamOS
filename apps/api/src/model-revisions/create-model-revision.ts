@@ -121,6 +121,14 @@ export const createModelRevision = defineEndpoint({
             pressure: PressureUnits.Pascals as const,
           },
         })),
+        modelSettings: modelRevision.modelSettings
+          ? {
+              id: modelRevision.modelSettings.id,
+              revisionId: modelRevision.modelSettings.revisionId,
+              units: modelRevision.modelSettings.units,
+              yAxisUp: modelRevision.modelSettings.yAxisUp,
+            }
+          : null,
         sectionProfiles: modelRevision.sectionProfiles.map((sectionProfile) => ({
           id: sectionProfile.id,
           revisionId: sectionProfile.revisionId,
@@ -675,6 +683,7 @@ export async function createNewRevisionAggregateHandler(
     createdAt: new Date(),
     nodes: parentRevision.nodes.map((node) => node.toSnapshot()),
     materials: parentRevision.materials.map((material) => material.toSnapshot()),
+    modelSettings: parentRevision.modelSettings?.toSnapshot() ?? null,
     sectionProfiles: parentRevision.sectionProfiles.map((sectionProfile) =>
       sectionProfile.toSnapshot(),
     ),
