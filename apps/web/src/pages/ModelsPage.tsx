@@ -29,6 +29,16 @@ type ModelCardItem = {
   role?: ModelRole;
 };
 
+const sampleModelCards: ModelCardItem[] = [
+  {
+    id: "sample-001",
+    name: "Tutorial",
+    description: "Learn the basics of BeamOS with this interactive tutorial",
+    createdAt: "2024-01-01T12:00:00Z",
+    badgeLabel: "Sample",
+  },
+];
+
 const ModelCardsSection = ({
   title,
   models,
@@ -155,7 +165,12 @@ export const ModelsPage = () => {
   }, [isAuthenticated, loadModels]);
 
   if (!isAuthenticated) {
-    return <UnauthenticatedModelsView />;
+    return (
+      <Stack spacing={5}>
+        <UnauthenticatedModelsView />
+        <ModelCardsSection title="Sample Models" models={sampleModelCards} />
+      </Stack>
+    );
   }
 
   return (
@@ -163,6 +178,7 @@ export const ModelsPage = () => {
       {isLoading ? <Typography color="text.secondary">Loading models...</Typography> : null}
       {error ? <Typography color="error">{error}</Typography> : null}
       {!isLoading ? <ModelCardsSection title="My Models" models={userModelCards} /> : null}
+      <ModelCardsSection title="Sample Models" models={sampleModelCards} />
     </Stack>
   );
 };
