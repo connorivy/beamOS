@@ -231,13 +231,1625 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        GetApiModelsResponse200ApplicationJson: {
+            models: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                description: string;
+                lastModified: string | null;
+                /** @enum {string} */
+                role: "Owner" | "Contributor" | "Reviewer";
+            }[];
+        };
+        PostApiModelsRequestApplicationJson: {
+            name: string;
+            /** Format: uuid */
+            authorId: string;
+            message: string;
+        };
+        PostApiModelsRequestApplicationXWwwFormUrlencoded: {
+            name: string;
+            /** Format: uuid */
+            authorId: string;
+            message: string;
+        };
+        PostApiModelsRequestMultipartFormData: {
+            name: string;
+            /** Format: uuid */
+            authorId: string;
+            message: string;
+        };
+        PostApiModelsResponse200ApplicationJson: {
+            model: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                description: string;
+            };
+            version: {
+                /** Format: uuid */
+                modelId: string;
+                branchName: string;
+                /** Format: uuid */
+                revisionId: string;
+                /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
+                revisionsAhead: number;
+                revisionsBehind: number;
+            };
+        };
+        PatchApiModelsByModelIdNodesByNodeIdRequestApplicationJson: {
+            name: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        PatchApiModelsByModelIdNodesByNodeIdRequestApplicationXWwwFormUrlencoded: {
+            name: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        PatchApiModelsByModelIdNodesByNodeIdRequestMultipartFormData: {
+            name: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        PatchApiModelsByModelIdNodesByNodeIdResponse200ApplicationJson: {
+            node: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                modelId: string;
+            };
+            version: {
+                /** Format: uuid */
+                modelId: string;
+                revisionId: string | null;
+            };
+        };
+        PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationJson: {
+            nodes: {
+                restraint?: {
+                    canTranslateAlongX: boolean;
+                    canTranslateAlongY: boolean;
+                    canTranslateAlongZ: boolean;
+                    canRotateAboutX: boolean;
+                    canRotateAboutY: boolean;
+                    canRotateAboutZ: boolean;
+                };
+                location: {
+                    /** @constant */
+                    type: "spatial";
+                    point: {
+                        x: number;
+                        y: number;
+                        z: number;
+                    };
+                } | {
+                    /** @constant */
+                    type: "internal";
+                    /** Format: uuid */
+                    element1dId: string;
+                    ratioAlongElement1d: number;
+                };
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationXWwwFormUrlencoded: {
+            nodes: {
+                restraint?: {
+                    canTranslateAlongX: boolean;
+                    canTranslateAlongY: boolean;
+                    canTranslateAlongZ: boolean;
+                    canRotateAboutX: boolean;
+                    canRotateAboutY: boolean;
+                    canRotateAboutZ: boolean;
+                };
+                location: {
+                    /** @constant */
+                    type: "spatial";
+                    point: {
+                        x: number;
+                        y: number;
+                        z: number;
+                    };
+                } | {
+                    /** @constant */
+                    type: "internal";
+                    /** Format: uuid */
+                    element1dId: string;
+                    ratioAlongElement1d: number;
+                };
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestMultipartFormData: {
+            nodes: {
+                restraint?: {
+                    canTranslateAlongX: boolean;
+                    canTranslateAlongY: boolean;
+                    canTranslateAlongZ: boolean;
+                    canRotateAboutX: boolean;
+                    canRotateAboutY: boolean;
+                    canRotateAboutZ: boolean;
+                };
+                location: {
+                    /** @constant */
+                    type: "spatial";
+                    point: {
+                        x: number;
+                        y: number;
+                        z: number;
+                    };
+                } | {
+                    /** @constant */
+                    type: "internal";
+                    /** Format: uuid */
+                    element1dId: string;
+                    ratioAlongElement1d: number;
+                };
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameNodesBatchResponse200ApplicationJson: {
+            nodes: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                modelId: string;
+                /** @enum {string} */
+                nodeTypeDescriminator: "external" | "internal";
+            }[];
+            tempIdToId: {
+                [key: string]: string;
+            };
+        };
+        PatchApiModelsByModelIdRequestApplicationJson: {
+            name: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        PatchApiModelsByModelIdRequestApplicationXWwwFormUrlencoded: {
+            name: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        PatchApiModelsByModelIdRequestMultipartFormData: {
+            name: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        PatchApiModelsByModelIdResponse200ApplicationJson: {
+            model: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                description: string;
+            };
+            version: {
+                /** Format: uuid */
+                modelId: string;
+                revisionId: string | null;
+            };
+        };
+        PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @enum {string} */
+                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                };
+                /** Format: uuid */
+                id: string;
+            }[];
+        };
+        PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @enum {string} */
+                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                };
+                /** Format: uuid */
+                id: string;
+            }[];
+        };
+        PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @enum {string} */
+                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                };
+                /** Format: uuid */
+                id: string;
+            }[];
+        };
+        PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @constant */
+                    pressure: "Pascal";
+                };
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @enum {string} */
+                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                };
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @enum {string} */
+                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                };
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @enum {string} */
+                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                };
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson: {
+            materials: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @constant */
+                    pressure: "Pascal";
+                };
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+            }[];
+            tempIdToId: {
+                [key: string]: string;
+            };
+        };
+        PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationJson: {
+            units: {
+                /** @enum {string} */
+                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
+            yAxisUp: boolean;
+        };
+        PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationXWwwFormUrlencoded: {
+            units: {
+                /** @enum {string} */
+                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
+            yAxisUp: boolean;
+        };
+        PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestMultipartFormData: {
+            units: {
+                /** @enum {string} */
+                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
+            yAxisUp: boolean;
+        };
+        PutApiModelsByModelIdBranchesByBranchNameModelSettingsResponse200ApplicationJson: {
+            modelSettings: {
+                units: {
+                    /** @enum {string} */
+                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                    /** @enum {string} */
+                    area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                    /** @enum {string} */
+                    areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                    /** @enum {string} */
+                    warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                    /** @enum {string} */
+                    volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+                };
+                yAxisUp: boolean;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+            };
+        };
+        GetApiMaterialsByMaterialIdResponse200ApplicationJson: {
+            material: {
+                name: string;
+                modulusOfElasticity: number;
+                modulusOfRigidity: number;
+                units: {
+                    /** @constant */
+                    pressure: "Pascal";
+                };
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+            };
+        };
+        PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationJson: {
+            units: {
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
+            sectionProfiles: ({
+                name: string;
+                area: number;
+                strongAxisMomentOfInertia: number;
+                weakAxisMomentOfInertia: number;
+                torsionalConstant: number;
+                warpingConstant: number;
+                strongAxisPlasticSectionModulus: number;
+                weakAxisPlasticSectionModulus: number;
+                strongAxisElasticSectionModulus: number;
+                weakAxisElasticSectionModulus: number;
+                /** @constant */
+                discriminator: "STANDARD";
+                tempId?: string;
+            } | {
+                name: string;
+                area: number;
+                strongAxisMomentOfInertia: number;
+                weakAxisMomentOfInertia: number;
+                torsionalConstant: number;
+                warpingConstant: number;
+                strongAxisPlasticSectionModulus: number;
+                weakAxisPlasticSectionModulus: number;
+                strongAxisElasticSectionModulus: number;
+                weakAxisElasticSectionModulus: number;
+                /** @constant */
+                discriminator: "WITH_SHEAR_AREAS";
+                strongAxisShearArea: number;
+                weakAxisShearArea: number;
+                tempId?: string;
+            })[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationXWwwFormUrlencoded: {
+            units: {
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
+            sectionProfiles: ({
+                name: string;
+                area: number;
+                strongAxisMomentOfInertia: number;
+                weakAxisMomentOfInertia: number;
+                torsionalConstant: number;
+                warpingConstant: number;
+                strongAxisPlasticSectionModulus: number;
+                weakAxisPlasticSectionModulus: number;
+                strongAxisElasticSectionModulus: number;
+                weakAxisElasticSectionModulus: number;
+                /** @constant */
+                discriminator: "STANDARD";
+                tempId?: string;
+            } | {
+                name: string;
+                area: number;
+                strongAxisMomentOfInertia: number;
+                weakAxisMomentOfInertia: number;
+                torsionalConstant: number;
+                warpingConstant: number;
+                strongAxisPlasticSectionModulus: number;
+                weakAxisPlasticSectionModulus: number;
+                strongAxisElasticSectionModulus: number;
+                weakAxisElasticSectionModulus: number;
+                /** @constant */
+                discriminator: "WITH_SHEAR_AREAS";
+                strongAxisShearArea: number;
+                weakAxisShearArea: number;
+                tempId?: string;
+            })[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestMultipartFormData: {
+            units: {
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
+            sectionProfiles: ({
+                name: string;
+                area: number;
+                strongAxisMomentOfInertia: number;
+                weakAxisMomentOfInertia: number;
+                torsionalConstant: number;
+                warpingConstant: number;
+                strongAxisPlasticSectionModulus: number;
+                weakAxisPlasticSectionModulus: number;
+                strongAxisElasticSectionModulus: number;
+                weakAxisElasticSectionModulus: number;
+                /** @constant */
+                discriminator: "STANDARD";
+                tempId?: string;
+            } | {
+                name: string;
+                area: number;
+                strongAxisMomentOfInertia: number;
+                weakAxisMomentOfInertia: number;
+                torsionalConstant: number;
+                warpingConstant: number;
+                strongAxisPlasticSectionModulus: number;
+                weakAxisPlasticSectionModulus: number;
+                strongAxisElasticSectionModulus: number;
+                weakAxisElasticSectionModulus: number;
+                /** @constant */
+                discriminator: "WITH_SHEAR_AREAS";
+                strongAxisShearArea: number;
+                weakAxisShearArea: number;
+                tempId?: string;
+            })[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchResponse200ApplicationJson: {
+            sectionProfiles: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+                name: string;
+                /** @enum {string} */
+                discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
+                area: {
+                    value: number;
+                    /** @constant */
+                    unit: "SquareMeter";
+                };
+                strongAxisMomentOfInertia: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheFourth";
+                };
+                weakAxisMomentOfInertia: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheFourth";
+                };
+                torsionalConstant: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheFourth";
+                };
+                warpingConstant: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheSixth";
+                };
+                strongAxisPlasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                weakAxisPlasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                strongAxisElasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                weakAxisElasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                strongAxisShearArea?: {
+                    value: number;
+                    /** @constant */
+                    unit: "SquareMeter";
+                };
+                weakAxisShearArea?: {
+                    value: number;
+                    /** @constant */
+                    unit: "SquareMeter";
+                };
+            }[];
+            tempIdToId: {
+                [key: string]: string;
+            };
+        };
+        GetApiSectionProfilesBySectionProfileIdResponse200ApplicationJson: {
+            sectionProfile: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+                name: string;
+                /** @enum {string} */
+                discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
+                area: {
+                    value: number;
+                    /** @constant */
+                    unit: "SquareMeter";
+                };
+                strongAxisMomentOfInertia: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheFourth";
+                };
+                weakAxisMomentOfInertia: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheFourth";
+                };
+                torsionalConstant: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheFourth";
+                };
+                warpingConstant: {
+                    value: number;
+                    /** @constant */
+                    unit: "MeterToTheSixth";
+                };
+                strongAxisPlasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                weakAxisPlasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                strongAxisElasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                weakAxisElasticSectionModulus: {
+                    value: number;
+                    /** @constant */
+                    unit: "CubicMeter";
+                };
+                strongAxisShearArea?: {
+                    value: number;
+                    /** @constant */
+                    unit: "SquareMeter";
+                };
+                weakAxisShearArea?: {
+                    value: number;
+                    /** @constant */
+                    unit: "SquareMeter";
+                };
+            };
+        };
+        PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationJson: {
+            element1ds: {
+                /** Format: uuid */
+                startNodeId: string;
+                /** Format: uuid */
+                endNodeId: string;
+                /** Format: uuid */
+                materialId: string;
+                /** Format: uuid */
+                sectionProfileId: string;
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationXWwwFormUrlencoded: {
+            element1ds: {
+                /** Format: uuid */
+                startNodeId: string;
+                /** Format: uuid */
+                endNodeId: string;
+                /** Format: uuid */
+                materialId: string;
+                /** Format: uuid */
+                sectionProfileId: string;
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestMultipartFormData: {
+            element1ds: {
+                /** Format: uuid */
+                startNodeId: string;
+                /** Format: uuid */
+                endNodeId: string;
+                /** Format: uuid */
+                materialId: string;
+                /** Format: uuid */
+                sectionProfileId: string;
+                tempId?: string;
+            }[];
+        };
+        PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchResponse200ApplicationJson: {
+            element1ds: {
+                /** Format: uuid */
+                startNodeId: string;
+                /** Format: uuid */
+                endNodeId: string;
+                /** Format: uuid */
+                materialId: string;
+                /** Format: uuid */
+                sectionProfileId: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+            }[];
+            tempIdToId: {
+                [key: string]: string;
+            };
+        };
+        GetApiElement1dsByElement1dIdResponse200ApplicationJson: {
+            element1d: {
+                /** Format: uuid */
+                startNodeId: string;
+                /** Format: uuid */
+                endNodeId: string;
+                /** Format: uuid */
+                materialId: string;
+                /** Format: uuid */
+                sectionProfileId: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                revisionId: string;
+            };
+        };
+        GetApiModelsByModelIdBranchesByBranchNameRevisionResponse200ApplicationJson: {
+            modelRevision: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                modelId: string;
+                name: string;
+                parentRevisionId: string | null;
+                secondParentRevisionId: string | null;
+                /** Format: uuid */
+                authorId: string;
+                message: string;
+                /** Format: date-time */
+                createdAt: string;
+                nodes: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    modelId: string;
+                    /** @enum {string} */
+                    nodeTypeDescriminator: "external" | "internal";
+                }[];
+                materials: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @constant */
+                        pressure: "Pascal";
+                    };
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                }[];
+                modelSettings: {
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                        /** @enum {string} */
+                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                        /** @enum {string} */
+                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                        /** @enum {string} */
+                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                        /** @enum {string} */
+                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+                    };
+                    yAxisUp: boolean;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                } | null;
+                sectionProfiles: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                    name: string;
+                    /** @enum {string} */
+                    discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
+                    area: {
+                        value: number;
+                        /** @constant */
+                        unit: "SquareMeter";
+                    };
+                    strongAxisMomentOfInertia: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheFourth";
+                    };
+                    weakAxisMomentOfInertia: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheFourth";
+                    };
+                    torsionalConstant: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheFourth";
+                    };
+                    warpingConstant: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheSixth";
+                    };
+                    strongAxisPlasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    weakAxisPlasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    strongAxisElasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    weakAxisElasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    strongAxisShearArea?: {
+                        value: number;
+                        /** @constant */
+                        unit: "SquareMeter";
+                    };
+                    weakAxisShearArea?: {
+                        value: number;
+                        /** @constant */
+                        unit: "SquareMeter";
+                    };
+                }[];
+                element1ds: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                }[];
+            };
+        };
+        PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationJson: {
+            element1ds: {
+                /** @default [] */
+                create: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            nodes: {
+                /** @default [] */
+                create: {
+                    restraint?: {
+                        canTranslateAlongX: boolean;
+                        canTranslateAlongY: boolean;
+                        canTranslateAlongZ: boolean;
+                        canRotateAboutX: boolean;
+                        canRotateAboutY: boolean;
+                        canRotateAboutZ: boolean;
+                    };
+                    location: {
+                        /** @constant */
+                        type: "spatial";
+                        point: {
+                            x: number;
+                            y: number;
+                            z: number;
+                        };
+                    } | {
+                        /** @constant */
+                        type: "internal";
+                        /** Format: uuid */
+                        element1dId: string;
+                        ratioAlongElement1d: number;
+                    };
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    restraint?: {
+                        canTranslateAlongX: boolean;
+                        canTranslateAlongY: boolean;
+                        canTranslateAlongZ: boolean;
+                        canRotateAboutX: boolean;
+                        canRotateAboutY: boolean;
+                        canRotateAboutZ: boolean;
+                    };
+                    location: {
+                        /** @constant */
+                        type: "spatial";
+                        point: {
+                            x: number;
+                            y: number;
+                            z: number;
+                        };
+                    } | {
+                        /** @constant */
+                        type: "internal";
+                        /** Format: uuid */
+                        element1dId: string;
+                        ratioAlongElement1d: number;
+                    };
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            materials: {
+                /** @default [] */
+                create: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                    };
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                    };
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            sectionProfiles: {
+                /** @default [] */
+                create: ({
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "STANDARD";
+                    tempId?: string;
+                } | {
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "WITH_SHEAR_AREAS";
+                    strongAxisShearArea: number;
+                    weakAxisShearArea: number;
+                    tempId?: string;
+                })[];
+                /** @default [] */
+                update: ({
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "STANDARD";
+                    /** Format: uuid */
+                    id: string;
+                } | {
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "WITH_SHEAR_AREAS";
+                    strongAxisShearArea: number;
+                    weakAxisShearArea: number;
+                    /** Format: uuid */
+                    id: string;
+                })[];
+                /** @default [] */
+                delete: string[];
+            };
+        };
+        PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationXWwwFormUrlencoded: {
+            element1ds: {
+                /** @default [] */
+                create: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            nodes: {
+                /** @default [] */
+                create: {
+                    restraint?: {
+                        canTranslateAlongX: boolean;
+                        canTranslateAlongY: boolean;
+                        canTranslateAlongZ: boolean;
+                        canRotateAboutX: boolean;
+                        canRotateAboutY: boolean;
+                        canRotateAboutZ: boolean;
+                    };
+                    location: {
+                        /** @constant */
+                        type: "spatial";
+                        point: {
+                            x: number;
+                            y: number;
+                            z: number;
+                        };
+                    } | {
+                        /** @constant */
+                        type: "internal";
+                        /** Format: uuid */
+                        element1dId: string;
+                        ratioAlongElement1d: number;
+                    };
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    restraint?: {
+                        canTranslateAlongX: boolean;
+                        canTranslateAlongY: boolean;
+                        canTranslateAlongZ: boolean;
+                        canRotateAboutX: boolean;
+                        canRotateAboutY: boolean;
+                        canRotateAboutZ: boolean;
+                    };
+                    location: {
+                        /** @constant */
+                        type: "spatial";
+                        point: {
+                            x: number;
+                            y: number;
+                            z: number;
+                        };
+                    } | {
+                        /** @constant */
+                        type: "internal";
+                        /** Format: uuid */
+                        element1dId: string;
+                        ratioAlongElement1d: number;
+                    };
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            materials: {
+                /** @default [] */
+                create: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                    };
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                    };
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            sectionProfiles: {
+                /** @default [] */
+                create: ({
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "STANDARD";
+                    tempId?: string;
+                } | {
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "WITH_SHEAR_AREAS";
+                    strongAxisShearArea: number;
+                    weakAxisShearArea: number;
+                    tempId?: string;
+                })[];
+                /** @default [] */
+                update: ({
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "STANDARD";
+                    /** Format: uuid */
+                    id: string;
+                } | {
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "WITH_SHEAR_AREAS";
+                    strongAxisShearArea: number;
+                    weakAxisShearArea: number;
+                    /** Format: uuid */
+                    id: string;
+                })[];
+                /** @default [] */
+                delete: string[];
+            };
+        };
+        PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestMultipartFormData: {
+            element1ds: {
+                /** @default [] */
+                create: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            nodes: {
+                /** @default [] */
+                create: {
+                    restraint?: {
+                        canTranslateAlongX: boolean;
+                        canTranslateAlongY: boolean;
+                        canTranslateAlongZ: boolean;
+                        canRotateAboutX: boolean;
+                        canRotateAboutY: boolean;
+                        canRotateAboutZ: boolean;
+                    };
+                    location: {
+                        /** @constant */
+                        type: "spatial";
+                        point: {
+                            x: number;
+                            y: number;
+                            z: number;
+                        };
+                    } | {
+                        /** @constant */
+                        type: "internal";
+                        /** Format: uuid */
+                        element1dId: string;
+                        ratioAlongElement1d: number;
+                    };
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    restraint?: {
+                        canTranslateAlongX: boolean;
+                        canTranslateAlongY: boolean;
+                        canTranslateAlongZ: boolean;
+                        canRotateAboutX: boolean;
+                        canRotateAboutY: boolean;
+                        canRotateAboutZ: boolean;
+                    };
+                    location: {
+                        /** @constant */
+                        type: "spatial";
+                        point: {
+                            x: number;
+                            y: number;
+                            z: number;
+                        };
+                    } | {
+                        /** @constant */
+                        type: "internal";
+                        /** Format: uuid */
+                        element1dId: string;
+                        ratioAlongElement1d: number;
+                    };
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            materials: {
+                /** @default [] */
+                create: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                    };
+                    tempId?: string;
+                }[];
+                /** @default [] */
+                update: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                    };
+                    /** Format: uuid */
+                    id: string;
+                }[];
+                /** @default [] */
+                delete: string[];
+            };
+            sectionProfiles: {
+                /** @default [] */
+                create: ({
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "STANDARD";
+                    tempId?: string;
+                } | {
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "WITH_SHEAR_AREAS";
+                    strongAxisShearArea: number;
+                    weakAxisShearArea: number;
+                    tempId?: string;
+                })[];
+                /** @default [] */
+                update: ({
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "STANDARD";
+                    /** Format: uuid */
+                    id: string;
+                } | {
+                    name: string;
+                    area: number;
+                    strongAxisMomentOfInertia: number;
+                    weakAxisMomentOfInertia: number;
+                    torsionalConstant: number;
+                    warpingConstant: number;
+                    strongAxisPlasticSectionModulus: number;
+                    weakAxisPlasticSectionModulus: number;
+                    strongAxisElasticSectionModulus: number;
+                    weakAxisElasticSectionModulus: number;
+                    /** @constant */
+                    discriminator: "WITH_SHEAR_AREAS";
+                    strongAxisShearArea: number;
+                    weakAxisShearArea: number;
+                    /** Format: uuid */
+                    id: string;
+                })[];
+                /** @default [] */
+                delete: string[];
+            };
+        };
+        PostApiModelsByModelIdBranchesByBranchNameRevisionsResponse200ApplicationJson: {
+            modelRevision: {
+                /** Format: uuid */
+                id: string;
+                version: {
+                    /** Format: uuid */
+                    modelId: string;
+                    branchName: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                    /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
+                    revisionsAhead: number;
+                    revisionsBehind: number;
+                };
+                /** Format: uuid */
+                modelId: string;
+                name: string;
+                parentRevisionId: string | null;
+                secondParentRevisionId: string | null;
+                /** Format: uuid */
+                authorId: string;
+                message: string;
+                /** Format: date-time */
+                createdAt: string;
+                nodes: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    modelId: string;
+                    /** @enum {string} */
+                    nodeTypeDescriminator: "external" | "internal";
+                }[];
+                materials: {
+                    name: string;
+                    modulusOfElasticity: number;
+                    modulusOfRigidity: number;
+                    units: {
+                        /** @constant */
+                        pressure: "Pascal";
+                    };
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                }[];
+                modelSettings: {
+                    units: {
+                        /** @enum {string} */
+                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+                        /** @enum {string} */
+                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                        /** @enum {string} */
+                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                        /** @enum {string} */
+                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                        /** @enum {string} */
+                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+                    };
+                    yAxisUp: boolean;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                } | null;
+                sectionProfiles: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                    name: string;
+                    /** @enum {string} */
+                    discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
+                    area: {
+                        value: number;
+                        /** @constant */
+                        unit: "SquareMeter";
+                    };
+                    strongAxisMomentOfInertia: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheFourth";
+                    };
+                    weakAxisMomentOfInertia: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheFourth";
+                    };
+                    torsionalConstant: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheFourth";
+                    };
+                    warpingConstant: {
+                        value: number;
+                        /** @constant */
+                        unit: "MeterToTheSixth";
+                    };
+                    strongAxisPlasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    weakAxisPlasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    strongAxisElasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    weakAxisElasticSectionModulus: {
+                        value: number;
+                        /** @constant */
+                        unit: "CubicMeter";
+                    };
+                    strongAxisShearArea?: {
+                        value: number;
+                        /** @constant */
+                        unit: "SquareMeter";
+                    };
+                    weakAxisShearArea?: {
+                        value: number;
+                        /** @constant */
+                        unit: "SquareMeter";
+                    };
+                }[];
+                element1ds: {
+                    /** Format: uuid */
+                    startNodeId: string;
+                    /** Format: uuid */
+                    endNodeId: string;
+                    /** Format: uuid */
+                    materialId: string;
+                    /** Format: uuid */
+                    sectionProfileId: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    revisionId: string;
+                }[];
+            };
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;
     headers: never;
     pathItems: never;
 }
+export type GetApiModelsResponse200ApplicationJson = components['schemas']['GetApiModelsResponse200ApplicationJson'];
+export type PostApiModelsRequestApplicationJson = components['schemas']['PostApiModelsRequestApplicationJson'];
+export type PostApiModelsRequestApplicationXWwwFormUrlencoded = components['schemas']['PostApiModelsRequestApplicationXWwwFormUrlencoded'];
+export type PostApiModelsRequestMultipartFormData = components['schemas']['PostApiModelsRequestMultipartFormData'];
+export type PostApiModelsResponse200ApplicationJson = components['schemas']['PostApiModelsResponse200ApplicationJson'];
+export type PatchApiModelsByModelIdNodesByNodeIdRequestApplicationJson = components['schemas']['PatchApiModelsByModelIdNodesByNodeIdRequestApplicationJson'];
+export type PatchApiModelsByModelIdNodesByNodeIdRequestApplicationXWwwFormUrlencoded = components['schemas']['PatchApiModelsByModelIdNodesByNodeIdRequestApplicationXWwwFormUrlencoded'];
+export type PatchApiModelsByModelIdNodesByNodeIdRequestMultipartFormData = components['schemas']['PatchApiModelsByModelIdNodesByNodeIdRequestMultipartFormData'];
+export type PatchApiModelsByModelIdNodesByNodeIdResponse200ApplicationJson = components['schemas']['PatchApiModelsByModelIdNodesByNodeIdResponse200ApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationXWwwFormUrlencoded = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationXWwwFormUrlencoded'];
+export type PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestMultipartFormData = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestMultipartFormData'];
+export type PostApiModelsByModelIdBranchesByBranchNameNodesBatchResponse200ApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameNodesBatchResponse200ApplicationJson'];
+export type PatchApiModelsByModelIdRequestApplicationJson = components['schemas']['PatchApiModelsByModelIdRequestApplicationJson'];
+export type PatchApiModelsByModelIdRequestApplicationXWwwFormUrlencoded = components['schemas']['PatchApiModelsByModelIdRequestApplicationXWwwFormUrlencoded'];
+export type PatchApiModelsByModelIdRequestMultipartFormData = components['schemas']['PatchApiModelsByModelIdRequestMultipartFormData'];
+export type PatchApiModelsByModelIdResponse200ApplicationJson = components['schemas']['PatchApiModelsByModelIdResponse200ApplicationJson'];
+export type PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson'];
+export type PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded'];
+export type PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData'];
+export type PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded'];
+export type PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData'];
+export type PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson'];
+export type PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationJson = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationJson'];
+export type PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationXWwwFormUrlencoded = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationXWwwFormUrlencoded'];
+export type PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestMultipartFormData = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestMultipartFormData'];
+export type PutApiModelsByModelIdBranchesByBranchNameModelSettingsResponse200ApplicationJson = components['schemas']['PutApiModelsByModelIdBranchesByBranchNameModelSettingsResponse200ApplicationJson'];
+export type GetApiMaterialsByMaterialIdResponse200ApplicationJson = components['schemas']['GetApiMaterialsByMaterialIdResponse200ApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationXWwwFormUrlencoded = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationXWwwFormUrlencoded'];
+export type PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestMultipartFormData = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestMultipartFormData'];
+export type PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchResponse200ApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchResponse200ApplicationJson'];
+export type GetApiSectionProfilesBySectionProfileIdResponse200ApplicationJson = components['schemas']['GetApiSectionProfilesBySectionProfileIdResponse200ApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationXWwwFormUrlencoded = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationXWwwFormUrlencoded'];
+export type PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestMultipartFormData = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestMultipartFormData'];
+export type PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchResponse200ApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchResponse200ApplicationJson'];
+export type GetApiElement1dsByElement1dIdResponse200ApplicationJson = components['schemas']['GetApiElement1dsByElement1dIdResponse200ApplicationJson'];
+export type GetApiModelsByModelIdBranchesByBranchNameRevisionResponse200ApplicationJson = components['schemas']['GetApiModelsByModelIdBranchesByBranchNameRevisionResponse200ApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationJson'];
+export type PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationXWwwFormUrlencoded = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationXWwwFormUrlencoded'];
+export type PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestMultipartFormData = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestMultipartFormData'];
+export type PostApiModelsByModelIdBranchesByBranchNameRevisionsResponse200ApplicationJson = components['schemas']['PostApiModelsByModelIdBranchesByBranchNameRevisionsResponse200ApplicationJson'];
 export type $defs = Record<string, never>;
 export interface operations {
     getHealth: {
@@ -265,17 +1877,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        models: {
-                            /** Format: uuid */
-                            id: string;
-                            name: string;
-                            description: string;
-                            lastModified: string | null;
-                            /** @enum {string} */
-                            role: "Owner" | "Contributor" | "Reviewer";
-                        }[];
-                    };
+                    "application/json": components["schemas"]["GetApiModelsResponse200ApplicationJson"];
                 };
             };
         };
@@ -289,24 +1891,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    name: string;
-                    /** Format: uuid */
-                    authorId: string;
-                    message: string;
-                };
-                "application/x-www-form-urlencoded": {
-                    name: string;
-                    /** Format: uuid */
-                    authorId: string;
-                    message: string;
-                };
-                "multipart/form-data": {
-                    name: string;
-                    /** Format: uuid */
-                    authorId: string;
-                    message: string;
-                };
+                "application/json": components["schemas"]["PostApiModelsRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PostApiModelsRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PostApiModelsRequestMultipartFormData"];
             };
         };
         responses: {
@@ -316,24 +1903,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        model: {
-                            /** Format: uuid */
-                            id: string;
-                            name: string;
-                            description: string;
-                        };
-                        version: {
-                            /** Format: uuid */
-                            modelId: string;
-                            branchName: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                            /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
-                            revisionsAhead: number;
-                            revisionsBehind: number;
-                        };
-                    };
+                    "application/json": components["schemas"]["PostApiModelsResponse200ApplicationJson"];
                 };
             };
         };
@@ -350,21 +1920,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    name: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                };
-                "application/x-www-form-urlencoded": {
-                    name: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                };
-                "multipart/form-data": {
-                    name: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                };
+                "application/json": components["schemas"]["PatchApiModelsByModelIdNodesByNodeIdRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchApiModelsByModelIdNodesByNodeIdRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PatchApiModelsByModelIdNodesByNodeIdRequestMultipartFormData"];
             };
         };
         responses: {
@@ -374,19 +1932,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        node: {
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            modelId: string;
-                        };
-                        version: {
-                            /** Format: uuid */
-                            modelId: string;
-                            revisionId: string | null;
-                        };
-                    };
+                    "application/json": components["schemas"]["PatchApiModelsByModelIdNodesByNodeIdResponse200ApplicationJson"];
                 };
             };
         };
@@ -403,90 +1949,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    nodes: {
-                        restraint?: {
-                            canTranslateAlongX: boolean;
-                            canTranslateAlongY: boolean;
-                            canTranslateAlongZ: boolean;
-                            canRotateAboutX: boolean;
-                            canRotateAboutY: boolean;
-                            canRotateAboutZ: boolean;
-                        };
-                        location: {
-                            /** @constant */
-                            type: "spatial";
-                            point: {
-                                x: number;
-                                y: number;
-                                z: number;
-                            };
-                        } | {
-                            /** @constant */
-                            type: "internal";
-                            /** Format: uuid */
-                            element1dId: string;
-                            ratioAlongElement1d: number;
-                        };
-                        tempId?: string;
-                    }[];
-                };
-                "application/x-www-form-urlencoded": {
-                    nodes: {
-                        restraint?: {
-                            canTranslateAlongX: boolean;
-                            canTranslateAlongY: boolean;
-                            canTranslateAlongZ: boolean;
-                            canRotateAboutX: boolean;
-                            canRotateAboutY: boolean;
-                            canRotateAboutZ: boolean;
-                        };
-                        location: {
-                            /** @constant */
-                            type: "spatial";
-                            point: {
-                                x: number;
-                                y: number;
-                                z: number;
-                            };
-                        } | {
-                            /** @constant */
-                            type: "internal";
-                            /** Format: uuid */
-                            element1dId: string;
-                            ratioAlongElement1d: number;
-                        };
-                        tempId?: string;
-                    }[];
-                };
-                "multipart/form-data": {
-                    nodes: {
-                        restraint?: {
-                            canTranslateAlongX: boolean;
-                            canTranslateAlongY: boolean;
-                            canTranslateAlongZ: boolean;
-                            canRotateAboutX: boolean;
-                            canRotateAboutY: boolean;
-                            canRotateAboutZ: boolean;
-                        };
-                        location: {
-                            /** @constant */
-                            type: "spatial";
-                            point: {
-                                x: number;
-                                y: number;
-                                z: number;
-                            };
-                        } | {
-                            /** @constant */
-                            type: "internal";
-                            /** Format: uuid */
-                            element1dId: string;
-                            ratioAlongElement1d: number;
-                        };
-                        tempId?: string;
-                    }[];
-                };
+                "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameNodesBatchRequestMultipartFormData"];
             };
         };
         responses: {
@@ -496,19 +1961,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        nodes: {
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            modelId: string;
-                            /** @enum {string} */
-                            nodeTypeDescriminator: "external" | "internal";
-                        }[];
-                        tempIdToId: {
-                            [key: string]: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameNodesBatchResponse200ApplicationJson"];
                 };
             };
         };
@@ -524,21 +1977,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    name: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                };
-                "application/x-www-form-urlencoded": {
-                    name: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                };
-                "multipart/form-data": {
-                    name: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                };
+                "application/json": components["schemas"]["PatchApiModelsByModelIdRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchApiModelsByModelIdRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PatchApiModelsByModelIdRequestMultipartFormData"];
             };
         };
         responses: {
@@ -548,19 +1989,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        model: {
-                            /** Format: uuid */
-                            id: string;
-                            name: string;
-                            description: string;
-                        };
-                        version: {
-                            /** Format: uuid */
-                            modelId: string;
-                            revisionId: string | null;
-                        };
-                    };
+                    "application/json": components["schemas"]["PatchApiModelsByModelIdResponse200ApplicationJson"];
                 };
             };
         };
@@ -577,45 +2006,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    materials: {
-                        name: string;
-                        modulusOfElasticity: number;
-                        modulusOfRigidity: number;
-                        units: {
-                            /** @enum {string} */
-                            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        };
-                        /** Format: uuid */
-                        id: string;
-                    }[];
-                };
-                "application/x-www-form-urlencoded": {
-                    materials: {
-                        name: string;
-                        modulusOfElasticity: number;
-                        modulusOfRigidity: number;
-                        units: {
-                            /** @enum {string} */
-                            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        };
-                        /** Format: uuid */
-                        id: string;
-                    }[];
-                };
-                "multipart/form-data": {
-                    materials: {
-                        name: string;
-                        modulusOfElasticity: number;
-                        modulusOfRigidity: number;
-                        units: {
-                            /** @enum {string} */
-                            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        };
-                        /** Format: uuid */
-                        id: string;
-                    }[];
-                };
+                "application/json": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData"];
             };
         };
         responses: {
@@ -625,21 +2018,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        materials: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @constant */
-                                pressure: "Pascal";
-                            };
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                        }[];
-                    };
+                    "application/json": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson"];
                 };
             };
         };
@@ -656,42 +2035,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    materials: {
-                        name: string;
-                        modulusOfElasticity: number;
-                        modulusOfRigidity: number;
-                        units: {
-                            /** @enum {string} */
-                            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        };
-                        tempId?: string;
-                    }[];
-                };
-                "application/x-www-form-urlencoded": {
-                    materials: {
-                        name: string;
-                        modulusOfElasticity: number;
-                        modulusOfRigidity: number;
-                        units: {
-                            /** @enum {string} */
-                            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        };
-                        tempId?: string;
-                    }[];
-                };
-                "multipart/form-data": {
-                    materials: {
-                        name: string;
-                        modulusOfElasticity: number;
-                        modulusOfRigidity: number;
-                        units: {
-                            /** @enum {string} */
-                            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        };
-                        tempId?: string;
-                    }[];
-                };
+                "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchRequestMultipartFormData"];
             };
         };
         responses: {
@@ -701,24 +2047,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        materials: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @constant */
-                                pressure: "Pascal";
-                            };
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                        }[];
-                        tempIdToId: {
-                            [key: string]: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameMaterialsBatchResponse200ApplicationJson"];
                 };
             };
         };
@@ -735,51 +2064,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    units: {
-                        /** @enum {string} */
-                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        /** @enum {string} */
-                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                        /** @enum {string} */
-                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                        /** @enum {string} */
-                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                        /** @enum {string} */
-                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                    };
-                    yAxisUp: boolean;
-                };
-                "application/x-www-form-urlencoded": {
-                    units: {
-                        /** @enum {string} */
-                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        /** @enum {string} */
-                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                        /** @enum {string} */
-                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                        /** @enum {string} */
-                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                        /** @enum {string} */
-                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                    };
-                    yAxisUp: boolean;
-                };
-                "multipart/form-data": {
-                    units: {
-                        /** @enum {string} */
-                        pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                        /** @enum {string} */
-                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                        /** @enum {string} */
-                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                        /** @enum {string} */
-                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                        /** @enum {string} */
-                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                    };
-                    yAxisUp: boolean;
-                };
+                "application/json": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameModelSettingsRequestMultipartFormData"];
             };
         };
         responses: {
@@ -789,27 +2076,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        modelSettings: {
-                            units: {
-                                /** @enum {string} */
-                                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                                /** @enum {string} */
-                                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                                /** @enum {string} */
-                                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                                /** @enum {string} */
-                                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                                /** @enum {string} */
-                                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                            };
-                            yAxisUp: boolean;
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["PutApiModelsByModelIdBranchesByBranchNameModelSettingsResponse200ApplicationJson"];
                 };
             };
         };
@@ -831,21 +2098,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        material: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @constant */
-                                pressure: "Pascal";
-                            };
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["GetApiMaterialsByMaterialIdResponse200ApplicationJson"];
                 };
             };
         };
@@ -862,135 +2115,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    units: {
-                        /** @enum {string} */
-                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                        /** @enum {string} */
-                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                        /** @enum {string} */
-                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                        /** @enum {string} */
-                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                    };
-                    sectionProfiles: ({
-                        name: string;
-                        area: number;
-                        strongAxisMomentOfInertia: number;
-                        weakAxisMomentOfInertia: number;
-                        torsionalConstant: number;
-                        warpingConstant: number;
-                        strongAxisPlasticSectionModulus: number;
-                        weakAxisPlasticSectionModulus: number;
-                        strongAxisElasticSectionModulus: number;
-                        weakAxisElasticSectionModulus: number;
-                        /** @constant */
-                        discriminator: "STANDARD";
-                        tempId?: string;
-                    } | {
-                        name: string;
-                        area: number;
-                        strongAxisMomentOfInertia: number;
-                        weakAxisMomentOfInertia: number;
-                        torsionalConstant: number;
-                        warpingConstant: number;
-                        strongAxisPlasticSectionModulus: number;
-                        weakAxisPlasticSectionModulus: number;
-                        strongAxisElasticSectionModulus: number;
-                        weakAxisElasticSectionModulus: number;
-                        /** @constant */
-                        discriminator: "WITH_SHEAR_AREAS";
-                        strongAxisShearArea: number;
-                        weakAxisShearArea: number;
-                        tempId?: string;
-                    })[];
-                };
-                "application/x-www-form-urlencoded": {
-                    units: {
-                        /** @enum {string} */
-                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                        /** @enum {string} */
-                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                        /** @enum {string} */
-                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                        /** @enum {string} */
-                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                    };
-                    sectionProfiles: ({
-                        name: string;
-                        area: number;
-                        strongAxisMomentOfInertia: number;
-                        weakAxisMomentOfInertia: number;
-                        torsionalConstant: number;
-                        warpingConstant: number;
-                        strongAxisPlasticSectionModulus: number;
-                        weakAxisPlasticSectionModulus: number;
-                        strongAxisElasticSectionModulus: number;
-                        weakAxisElasticSectionModulus: number;
-                        /** @constant */
-                        discriminator: "STANDARD";
-                        tempId?: string;
-                    } | {
-                        name: string;
-                        area: number;
-                        strongAxisMomentOfInertia: number;
-                        weakAxisMomentOfInertia: number;
-                        torsionalConstant: number;
-                        warpingConstant: number;
-                        strongAxisPlasticSectionModulus: number;
-                        weakAxisPlasticSectionModulus: number;
-                        strongAxisElasticSectionModulus: number;
-                        weakAxisElasticSectionModulus: number;
-                        /** @constant */
-                        discriminator: "WITH_SHEAR_AREAS";
-                        strongAxisShearArea: number;
-                        weakAxisShearArea: number;
-                        tempId?: string;
-                    })[];
-                };
-                "multipart/form-data": {
-                    units: {
-                        /** @enum {string} */
-                        area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                        /** @enum {string} */
-                        areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                        /** @enum {string} */
-                        warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                        /** @enum {string} */
-                        volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                    };
-                    sectionProfiles: ({
-                        name: string;
-                        area: number;
-                        strongAxisMomentOfInertia: number;
-                        weakAxisMomentOfInertia: number;
-                        torsionalConstant: number;
-                        warpingConstant: number;
-                        strongAxisPlasticSectionModulus: number;
-                        weakAxisPlasticSectionModulus: number;
-                        strongAxisElasticSectionModulus: number;
-                        weakAxisElasticSectionModulus: number;
-                        /** @constant */
-                        discriminator: "STANDARD";
-                        tempId?: string;
-                    } | {
-                        name: string;
-                        area: number;
-                        strongAxisMomentOfInertia: number;
-                        weakAxisMomentOfInertia: number;
-                        torsionalConstant: number;
-                        warpingConstant: number;
-                        strongAxisPlasticSectionModulus: number;
-                        weakAxisPlasticSectionModulus: number;
-                        strongAxisElasticSectionModulus: number;
-                        weakAxisElasticSectionModulus: number;
-                        /** @constant */
-                        discriminator: "WITH_SHEAR_AREAS";
-                        strongAxisShearArea: number;
-                        weakAxisShearArea: number;
-                        tempId?: string;
-                    })[];
-                };
+                "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchRequestMultipartFormData"];
             };
         };
         responses: {
@@ -1000,75 +2127,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        sectionProfiles: {
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                            name: string;
-                            /** @enum {string} */
-                            discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
-                            area: {
-                                value: number;
-                                /** @constant */
-                                unit: "SquareMeter";
-                            };
-                            strongAxisMomentOfInertia: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheFourth";
-                            };
-                            weakAxisMomentOfInertia: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheFourth";
-                            };
-                            torsionalConstant: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheFourth";
-                            };
-                            warpingConstant: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheSixth";
-                            };
-                            strongAxisPlasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            weakAxisPlasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            strongAxisElasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            weakAxisElasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            strongAxisShearArea?: {
-                                value: number;
-                                /** @constant */
-                                unit: "SquareMeter";
-                            };
-                            weakAxisShearArea?: {
-                                value: number;
-                                /** @constant */
-                                unit: "SquareMeter";
-                            };
-                        }[];
-                        tempIdToId: {
-                            [key: string]: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameSectionProfilesBatchResponse200ApplicationJson"];
                 };
             };
         };
@@ -1090,72 +2149,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        sectionProfile: {
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                            name: string;
-                            /** @enum {string} */
-                            discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
-                            area: {
-                                value: number;
-                                /** @constant */
-                                unit: "SquareMeter";
-                            };
-                            strongAxisMomentOfInertia: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheFourth";
-                            };
-                            weakAxisMomentOfInertia: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheFourth";
-                            };
-                            torsionalConstant: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheFourth";
-                            };
-                            warpingConstant: {
-                                value: number;
-                                /** @constant */
-                                unit: "MeterToTheSixth";
-                            };
-                            strongAxisPlasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            weakAxisPlasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            strongAxisElasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            weakAxisElasticSectionModulus: {
-                                value: number;
-                                /** @constant */
-                                unit: "CubicMeter";
-                            };
-                            strongAxisShearArea?: {
-                                value: number;
-                                /** @constant */
-                                unit: "SquareMeter";
-                            };
-                            weakAxisShearArea?: {
-                                value: number;
-                                /** @constant */
-                                unit: "SquareMeter";
-                            };
-                        };
-                    };
+                    "application/json": components["schemas"]["GetApiSectionProfilesBySectionProfileIdResponse200ApplicationJson"];
                 };
             };
         };
@@ -1172,45 +2166,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    element1ds: {
-                        /** Format: uuid */
-                        startNodeId: string;
-                        /** Format: uuid */
-                        endNodeId: string;
-                        /** Format: uuid */
-                        materialId: string;
-                        /** Format: uuid */
-                        sectionProfileId: string;
-                        tempId?: string;
-                    }[];
-                };
-                "application/x-www-form-urlencoded": {
-                    element1ds: {
-                        /** Format: uuid */
-                        startNodeId: string;
-                        /** Format: uuid */
-                        endNodeId: string;
-                        /** Format: uuid */
-                        materialId: string;
-                        /** Format: uuid */
-                        sectionProfileId: string;
-                        tempId?: string;
-                    }[];
-                };
-                "multipart/form-data": {
-                    element1ds: {
-                        /** Format: uuid */
-                        startNodeId: string;
-                        /** Format: uuid */
-                        endNodeId: string;
-                        /** Format: uuid */
-                        materialId: string;
-                        /** Format: uuid */
-                        sectionProfileId: string;
-                        tempId?: string;
-                    }[];
-                };
+                "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchRequestMultipartFormData"];
             };
         };
         responses: {
@@ -1220,25 +2178,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        element1ds: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                        }[];
-                        tempIdToId: {
-                            [key: string]: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameElement1dsBatchResponse200ApplicationJson"];
                 };
             };
         };
@@ -1260,22 +2200,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        element1d: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            revisionId: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["GetApiElement1dsByElement1dIdResponse200ApplicationJson"];
                 };
             };
         };
@@ -1298,140 +2223,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        modelRevision: {
-                            /** Format: uuid */
-                            id: string;
-                            /** Format: uuid */
-                            modelId: string;
-                            name: string;
-                            parentRevisionId: string | null;
-                            secondParentRevisionId: string | null;
-                            /** Format: uuid */
-                            authorId: string;
-                            message: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            nodes: {
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                modelId: string;
-                                /** @enum {string} */
-                                nodeTypeDescriminator: "external" | "internal";
-                            }[];
-                            materials: {
-                                name: string;
-                                modulusOfElasticity: number;
-                                modulusOfRigidity: number;
-                                units: {
-                                    /** @constant */
-                                    pressure: "Pascal";
-                                };
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                            }[];
-                            modelSettings: {
-                                units: {
-                                    /** @enum {string} */
-                                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                                    /** @enum {string} */
-                                    area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                                    /** @enum {string} */
-                                    areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                                    /** @enum {string} */
-                                    warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                                    /** @enum {string} */
-                                    volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                                };
-                                yAxisUp: boolean;
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                            } | null;
-                            sectionProfiles: {
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                                name: string;
-                                /** @enum {string} */
-                                discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
-                                area: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "SquareMeter";
-                                };
-                                strongAxisMomentOfInertia: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheFourth";
-                                };
-                                weakAxisMomentOfInertia: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheFourth";
-                                };
-                                torsionalConstant: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheFourth";
-                                };
-                                warpingConstant: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheSixth";
-                                };
-                                strongAxisPlasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                weakAxisPlasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                strongAxisElasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                weakAxisElasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                strongAxisShearArea?: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "SquareMeter";
-                                };
-                                weakAxisShearArea?: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "SquareMeter";
-                                };
-                            }[];
-                            element1ds: {
-                                /** Format: uuid */
-                                startNodeId: string;
-                                /** Format: uuid */
-                                endNodeId: string;
-                                /** Format: uuid */
-                                materialId: string;
-                                /** Format: uuid */
-                                sectionProfileId: string;
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                            }[];
-                        };
-                    };
+                    "application/json": components["schemas"]["GetApiModelsByModelIdBranchesByBranchNameRevisionResponse200ApplicationJson"];
                 };
             };
         };
@@ -1448,567 +2240,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    element1ds: {
-                        /** @default [] */
-                        create: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    nodes: {
-                        /** @default [] */
-                        create: {
-                            restraint?: {
-                                canTranslateAlongX: boolean;
-                                canTranslateAlongY: boolean;
-                                canTranslateAlongZ: boolean;
-                                canRotateAboutX: boolean;
-                                canRotateAboutY: boolean;
-                                canRotateAboutZ: boolean;
-                            };
-                            location: {
-                                /** @constant */
-                                type: "spatial";
-                                point: {
-                                    x: number;
-                                    y: number;
-                                    z: number;
-                                };
-                            } | {
-                                /** @constant */
-                                type: "internal";
-                                /** Format: uuid */
-                                element1dId: string;
-                                ratioAlongElement1d: number;
-                            };
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            restraint?: {
-                                canTranslateAlongX: boolean;
-                                canTranslateAlongY: boolean;
-                                canTranslateAlongZ: boolean;
-                                canRotateAboutX: boolean;
-                                canRotateAboutY: boolean;
-                                canRotateAboutZ: boolean;
-                            };
-                            location: {
-                                /** @constant */
-                                type: "spatial";
-                                point: {
-                                    x: number;
-                                    y: number;
-                                    z: number;
-                                };
-                            } | {
-                                /** @constant */
-                                type: "internal";
-                                /** Format: uuid */
-                                element1dId: string;
-                                ratioAlongElement1d: number;
-                            };
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    materials: {
-                        /** @default [] */
-                        create: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @enum {string} */
-                                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                            };
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @enum {string} */
-                                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                            };
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    sectionProfiles: {
-                        /** @default [] */
-                        create: ({
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "STANDARD";
-                            tempId?: string;
-                        } | {
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "WITH_SHEAR_AREAS";
-                            strongAxisShearArea: number;
-                            weakAxisShearArea: number;
-                            tempId?: string;
-                        })[];
-                        /** @default [] */
-                        update: ({
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "STANDARD";
-                            /** Format: uuid */
-                            id: string;
-                        } | {
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "WITH_SHEAR_AREAS";
-                            strongAxisShearArea: number;
-                            weakAxisShearArea: number;
-                            /** Format: uuid */
-                            id: string;
-                        })[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                };
-                "application/x-www-form-urlencoded": {
-                    element1ds: {
-                        /** @default [] */
-                        create: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    nodes: {
-                        /** @default [] */
-                        create: {
-                            restraint?: {
-                                canTranslateAlongX: boolean;
-                                canTranslateAlongY: boolean;
-                                canTranslateAlongZ: boolean;
-                                canRotateAboutX: boolean;
-                                canRotateAboutY: boolean;
-                                canRotateAboutZ: boolean;
-                            };
-                            location: {
-                                /** @constant */
-                                type: "spatial";
-                                point: {
-                                    x: number;
-                                    y: number;
-                                    z: number;
-                                };
-                            } | {
-                                /** @constant */
-                                type: "internal";
-                                /** Format: uuid */
-                                element1dId: string;
-                                ratioAlongElement1d: number;
-                            };
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            restraint?: {
-                                canTranslateAlongX: boolean;
-                                canTranslateAlongY: boolean;
-                                canTranslateAlongZ: boolean;
-                                canRotateAboutX: boolean;
-                                canRotateAboutY: boolean;
-                                canRotateAboutZ: boolean;
-                            };
-                            location: {
-                                /** @constant */
-                                type: "spatial";
-                                point: {
-                                    x: number;
-                                    y: number;
-                                    z: number;
-                                };
-                            } | {
-                                /** @constant */
-                                type: "internal";
-                                /** Format: uuid */
-                                element1dId: string;
-                                ratioAlongElement1d: number;
-                            };
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    materials: {
-                        /** @default [] */
-                        create: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @enum {string} */
-                                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                            };
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @enum {string} */
-                                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                            };
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    sectionProfiles: {
-                        /** @default [] */
-                        create: ({
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "STANDARD";
-                            tempId?: string;
-                        } | {
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "WITH_SHEAR_AREAS";
-                            strongAxisShearArea: number;
-                            weakAxisShearArea: number;
-                            tempId?: string;
-                        })[];
-                        /** @default [] */
-                        update: ({
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "STANDARD";
-                            /** Format: uuid */
-                            id: string;
-                        } | {
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "WITH_SHEAR_AREAS";
-                            strongAxisShearArea: number;
-                            weakAxisShearArea: number;
-                            /** Format: uuid */
-                            id: string;
-                        })[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                };
-                "multipart/form-data": {
-                    element1ds: {
-                        /** @default [] */
-                        create: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            /** Format: uuid */
-                            startNodeId: string;
-                            /** Format: uuid */
-                            endNodeId: string;
-                            /** Format: uuid */
-                            materialId: string;
-                            /** Format: uuid */
-                            sectionProfileId: string;
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    nodes: {
-                        /** @default [] */
-                        create: {
-                            restraint?: {
-                                canTranslateAlongX: boolean;
-                                canTranslateAlongY: boolean;
-                                canTranslateAlongZ: boolean;
-                                canRotateAboutX: boolean;
-                                canRotateAboutY: boolean;
-                                canRotateAboutZ: boolean;
-                            };
-                            location: {
-                                /** @constant */
-                                type: "spatial";
-                                point: {
-                                    x: number;
-                                    y: number;
-                                    z: number;
-                                };
-                            } | {
-                                /** @constant */
-                                type: "internal";
-                                /** Format: uuid */
-                                element1dId: string;
-                                ratioAlongElement1d: number;
-                            };
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            restraint?: {
-                                canTranslateAlongX: boolean;
-                                canTranslateAlongY: boolean;
-                                canTranslateAlongZ: boolean;
-                                canRotateAboutX: boolean;
-                                canRotateAboutY: boolean;
-                                canRotateAboutZ: boolean;
-                            };
-                            location: {
-                                /** @constant */
-                                type: "spatial";
-                                point: {
-                                    x: number;
-                                    y: number;
-                                    z: number;
-                                };
-                            } | {
-                                /** @constant */
-                                type: "internal";
-                                /** Format: uuid */
-                                element1dId: string;
-                                ratioAlongElement1d: number;
-                            };
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    materials: {
-                        /** @default [] */
-                        create: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @enum {string} */
-                                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                            };
-                            tempId?: string;
-                        }[];
-                        /** @default [] */
-                        update: {
-                            name: string;
-                            modulusOfElasticity: number;
-                            modulusOfRigidity: number;
-                            units: {
-                                /** @enum {string} */
-                                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                            };
-                            /** Format: uuid */
-                            id: string;
-                        }[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                    sectionProfiles: {
-                        /** @default [] */
-                        create: ({
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "STANDARD";
-                            tempId?: string;
-                        } | {
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "WITH_SHEAR_AREAS";
-                            strongAxisShearArea: number;
-                            weakAxisShearArea: number;
-                            tempId?: string;
-                        })[];
-                        /** @default [] */
-                        update: ({
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "STANDARD";
-                            /** Format: uuid */
-                            id: string;
-                        } | {
-                            name: string;
-                            area: number;
-                            strongAxisMomentOfInertia: number;
-                            weakAxisMomentOfInertia: number;
-                            torsionalConstant: number;
-                            warpingConstant: number;
-                            strongAxisPlasticSectionModulus: number;
-                            weakAxisPlasticSectionModulus: number;
-                            strongAxisElasticSectionModulus: number;
-                            weakAxisElasticSectionModulus: number;
-                            /** @constant */
-                            discriminator: "WITH_SHEAR_AREAS";
-                            strongAxisShearArea: number;
-                            weakAxisShearArea: number;
-                            /** Format: uuid */
-                            id: string;
-                        })[];
-                        /** @default [] */
-                        delete: string[];
-                    };
-                };
+                "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationJson"];
+                "application/x-www-form-urlencoded": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestApplicationXWwwFormUrlencoded"];
+                "multipart/form-data": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameRevisionsRequestMultipartFormData"];
             };
         };
         responses: {
@@ -2018,150 +2252,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        modelRevision: {
-                            /** Format: uuid */
-                            id: string;
-                            version: {
-                                /** Format: uuid */
-                                modelId: string;
-                                branchName: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                                /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
-                                revisionsAhead: number;
-                                revisionsBehind: number;
-                            };
-                            /** Format: uuid */
-                            modelId: string;
-                            name: string;
-                            parentRevisionId: string | null;
-                            secondParentRevisionId: string | null;
-                            /** Format: uuid */
-                            authorId: string;
-                            message: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            nodes: {
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                modelId: string;
-                                /** @enum {string} */
-                                nodeTypeDescriminator: "external" | "internal";
-                            }[];
-                            materials: {
-                                name: string;
-                                modulusOfElasticity: number;
-                                modulusOfRigidity: number;
-                                units: {
-                                    /** @constant */
-                                    pressure: "Pascal";
-                                };
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                            }[];
-                            modelSettings: {
-                                units: {
-                                    /** @enum {string} */
-                                    pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-                                    /** @enum {string} */
-                                    area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                                    /** @enum {string} */
-                                    areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                                    /** @enum {string} */
-                                    warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                                    /** @enum {string} */
-                                    volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-                                };
-                                yAxisUp: boolean;
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                            } | null;
-                            sectionProfiles: {
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                                name: string;
-                                /** @enum {string} */
-                                discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
-                                area: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "SquareMeter";
-                                };
-                                strongAxisMomentOfInertia: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheFourth";
-                                };
-                                weakAxisMomentOfInertia: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheFourth";
-                                };
-                                torsionalConstant: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheFourth";
-                                };
-                                warpingConstant: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "MeterToTheSixth";
-                                };
-                                strongAxisPlasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                weakAxisPlasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                strongAxisElasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                weakAxisElasticSectionModulus: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "CubicMeter";
-                                };
-                                strongAxisShearArea?: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "SquareMeter";
-                                };
-                                weakAxisShearArea?: {
-                                    value: number;
-                                    /** @constant */
-                                    unit: "SquareMeter";
-                                };
-                            }[];
-                            element1ds: {
-                                /** Format: uuid */
-                                startNodeId: string;
-                                /** Format: uuid */
-                                endNodeId: string;
-                                /** Format: uuid */
-                                materialId: string;
-                                /** Format: uuid */
-                                sectionProfileId: string;
-                                /** Format: uuid */
-                                id: string;
-                                /** Format: uuid */
-                                revisionId: string;
-                            }[];
-                        };
-                    };
+                    "application/json": components["schemas"]["PostApiModelsByModelIdBranchesByBranchNameRevisionsResponse200ApplicationJson"];
                 };
             };
         };
