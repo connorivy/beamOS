@@ -3,10 +3,12 @@ import { eq, inArray } from "drizzle-orm";
 import { Ratio } from "unitsnet-js";
 import { getDb } from "../db/client";
 import {
+  modelBranchHeads,
   modelRevisions,
   models,
   revisionChanges,
 } from "../db/schema";
+import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
 import { ModelAggregate } from "./model-aggregate";
 import { modelMapper } from "./model-mapper";
 import type { ModelDomainEvent } from "./model-events";
@@ -74,6 +76,7 @@ export type ModelRepository = {
   getById: (input: {
     modelId: string;
     revisionId?: string;
+    loadModelBranchHeadAggregates?: boolean;
   }) => Promise<ModelAggregate | undefined>;
   save: (model: ModelAggregate) => Promise<ModelAggregate>;
 };
@@ -89,6 +92,9 @@ export const drizzleModelRepository: ModelRepository = {
     if (!modelRows[0]) {
       return undefined;
     }
+    const loadedModelBranchHeads = input.loadModelBranchHeadAggregates
+      ? await listModelBranchHeads(input.modelId)
+      : null;
 
     if (input.revisionId) {
       const revisions = await loadRevisionHistory({
@@ -116,11 +122,15 @@ export const drizzleModelRepository: ModelRepository = {
         name: modelName,
         nodes: Array.from(nodesById.values()),
         description: "",
+        modelBranchHeads: loadedModelBranchHeads,
         sourceRevisionId: input.revisionId,
       });
     }
 
-    return modelMapper.toDomain(modelRows[0]);
+    return ModelAggregate.rehydrate({
+      ...modelMapper.toDomain(modelRows[0]).toSnapshot(),
+      modelBranchHeads: loadedModelBranchHeads,
+    });
   },
 
   async save(model) {
@@ -167,12 +177,21 @@ export const drizzleModelRepository: ModelRepository = {
         name: row[0].name,
         nodes: model.nodes.map((node) => node.toSnapshot()),
         description: model.description,
+        modelBranchHeads: model.modelBranchHeads,
         sourceRevisionId: model.sourceRevisionId,
       });
     });
 
     return savedModel;
   },
+};
+
+const listModelBranchHeads = async (modelId: string) => {
+  const rows = await getDb()
+    .select()
+    .from(modelBranchHeads)
+    .where(eq(modelBranchHeads.modelId, modelId));
+  return rows.map((row) => modelBranchHeadMapper.toDomain(row));
 };
 
 const loadRevisionHistory = async (input: {

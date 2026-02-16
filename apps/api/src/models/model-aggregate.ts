@@ -1,4 +1,5 @@
 import { assertUuid } from "../common/uuid";
+import type { ModelBranchHeadAggregate } from "../model-branch-heads/model-branch-head-aggregate";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import type { ModelDomainEvent } from "./model-events";
 
@@ -12,6 +13,7 @@ export class ModelAggregate {
   private _name: string;
   private _description: string;
   private _nodes: NodeEntity[];
+  private _modelBranchHeads: ModelBranchHeadAggregate[] | null;
   private _domainEvents: ModelDomainEvent[];
   private _sourceRevisionId: string | null;
 
@@ -20,6 +22,7 @@ export class ModelAggregate {
     name: string;
     nodes: NodeSnapshot[];
     description?: string;
+    modelBranchHeads?: ModelBranchHeadAggregate[] | null;
     sourceRevisionId?: string | null;
   }) {
     assertUuid(snapshot.id, "id");
@@ -29,6 +32,7 @@ export class ModelAggregate {
     this._name = snapshot.name.trim();
     this._description = snapshot.description?.trim() ?? "";
     this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
+    this._modelBranchHeads = snapshot.modelBranchHeads ?? null;
     this._domainEvents = [];
     this._sourceRevisionId = snapshot.sourceRevisionId ?? null;
   }
@@ -39,6 +43,7 @@ export class ModelAggregate {
     name: string;
     nodes?: NodeSnapshot[];
     description?: string;
+    modelBranchHeads?: ModelBranchHeadAggregate[] | null;
     sourceRevisionId?: string | null;
   }): ModelAggregate {
     const model = new ModelAggregate({
@@ -46,6 +51,7 @@ export class ModelAggregate {
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
       description: snapshot.description ?? "",
+      modelBranchHeads: snapshot.modelBranchHeads ?? null,
       sourceRevisionId: snapshot.sourceRevisionId ?? null,
     });
     model._domainEvents.push({
@@ -60,6 +66,7 @@ export class ModelAggregate {
     name: string;
     nodes?: NodeSnapshot[];
     description?: string;
+    modelBranchHeads?: ModelBranchHeadAggregate[] | null;
     sourceRevisionId?: string | null;
   }): ModelAggregate {
     return new ModelAggregate({
@@ -67,6 +74,7 @@ export class ModelAggregate {
       name: snapshot.name,
       nodes: snapshot.nodes ?? [],
       description: snapshot.description ?? "",
+      modelBranchHeads: snapshot.modelBranchHeads ?? null,
       sourceRevisionId: snapshot.sourceRevisionId ?? null,
     });
   }
@@ -85,6 +93,10 @@ export class ModelAggregate {
 
   get description(): string {
     return this._description;
+  }
+
+  get modelBranchHeads(): readonly ModelBranchHeadAggregate[] | null {
+    return this._modelBranchHeads;
   }
 
   rename(name: string): void {
