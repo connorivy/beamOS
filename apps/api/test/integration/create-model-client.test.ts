@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import { drizzleModelRepository } from "../../src/models/model-repository";
+import { drizzleModelVersionRepository } from "../../src/model-revisions/model-revision-repository";
 import {
   setupIntegrationApp,
   teardownIntegrationApp,
@@ -58,5 +59,15 @@ describe("typed openapi client integration", () => {
     expect(
       storedModelWithBranchHeads?.modelBranchHeads?.map((branch) => branch.branchName),
     ).toContain("main");
+    const mainBranchHead = storedModelWithBranchHeads?.modelBranchHeads?.find(
+      (branch) => branch.branchName === "main",
+    );
+    expect(mainBranchHead?.headRevisionId).toBe(data.version.revisionId);
+
+    const initialRevision = await drizzleModelVersionRepository.getRevisionById(
+      data.version.revisionId,
+    );
+    expect(initialRevision).toBeDefined();
+    expect(initialRevision?.modelId).toBe(data.model.id);
   });
 });

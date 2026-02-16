@@ -39,33 +39,24 @@ export const createModel = defineEndpoint({
     const model = ModelAggregate.create({
       name: req.body.name,
     });
-    const savedModel = await ctx.services.modelRepository.save({
+    const createdModel = await ctx.services.modelRepository.create({
       model,
+      authorId: req.body.authorId,
+      message: req.body.message,
     });
-    const initialRevision =
-      await ctx.services.modelRevisionRepository.commitRevision({
-        id: Bun.randomUUIDv7(),
-        modelId: savedModel.id,
-        branchName: "main",
-        name: savedModel.name,
-        authorId: req.body.authorId,
-        message: req.body.message,
-        nodes: [],
-        includeModelChange: true,
-      });
     return {
       model: {
-        id: savedModel.id,
-        name: savedModel.name,
-        description: savedModel.description,
+        id: createdModel.model.id,
+        name: createdModel.model.name,
+        description: createdModel.model.description,
       },
       version: {
-        modelId: savedModel.id,
+        modelId: createdModel.model.id,
         branchName: "main",
-        revisionId: initialRevision.id,
+        revisionId: createdModel.revisionId,
         revisionsAhead: 0,
         revisionsBehind: 0,
-        inProgressRevisionId: initialRevision.id,
+        inProgressRevisionId: createdModel.revisionId,
       },
     };
   },

@@ -37,9 +37,14 @@ export type ModelRepository = {
     revisionId?: string;
     loadModelBranchHeadAggregates?: boolean;
   }) => Promise<ModelAggregate | undefined>;
-  save: (input: {
+  create: (input: {
     model: ModelAggregate;
-    sourceRevisionId?: string | null;
+    authorId: string;
+    message: string;
+  }) => Promise<{ model: ModelAggregate; revisionId: string }>;
+  update: (input: {
+    model: ModelAggregate;
+    revisionId?: string | null;
   }) => Promise<ModelAggregate>;
 };
 
@@ -89,7 +94,63 @@ export const drizzleModelRepository: ModelRepository = {
     });
   },
 
-  async save(input) {
+  async create(input) {
+    const persistence = modelMapper.toPersistence(input.model);
+    const initialRevisionId = crypto.randomUUID();
+    input.model.pullDomainEvents();
+
+    const model = await getDb().transaction(async (tx) => {
+      const row = await tx
+        .insert(models)
+        .values(persistence)
+        .returning();
+
+      await tx.insert(modelRevisions).values({
+        id: initialRevisionId,
+        modelId: input.model.id,
+        modelName: input.model.name,
+        parentRevisionId: null,
+        secondParentRevisionId: null,
+        authorId: input.authorId,
+        message: input.message,
+      });
+      await tx.insert(modelBranchHeads).values({
+        modelId: input.model.id,
+        branchName: "main",
+        headRevisionId: initialRevisionId,
+      });
+
+      const modelChange = RevisionChangeEntity.create({
+        id: crypto.randomUUID(),
+        revisionId: initialRevisionId,
+        entityType: "model",
+        entityId: input.model.id,
+        schemaVersion: 1,
+        op: "insert",
+        payload: {
+          id: input.model.id,
+          modelId: input.model.id,
+          name: input.model.name,
+        },
+        createdAt: new Date(),
+      });
+      await tx.insert(revisionChanges).values(revisionChangeMapper.toPersistence(modelChange));
+
+      return ModelAggregate.rehydrate({
+        id: row[0].id,
+        name: row[0].name,
+        description: input.model.description,
+        modelBranchHeads: input.model.modelBranchHeads,
+      });
+    });
+
+    return {
+      model,
+      revisionId: initialRevisionId,
+    };
+  },
+
+  async update(input) {
     const persistence = modelMapper.toPersistence(input.model);
     const events = input.model.pullDomainEvents();
     const revisionEvents = events.filter(
@@ -109,9 +170,9 @@ export const drizzleModelRepository: ModelRepository = {
         .returning();
 
       if (revisionEvents.length > 0) {
-        const sourceRevisionId = input.sourceRevisionId;
+        const revisionId = input.revisionId;
 
-        if (!sourceRevisionId) {
+        if (!revisionId) {
           throw new Error(
             "Cannot persist model changes without a source revision",
           );
@@ -119,7 +180,7 @@ export const drizzleModelRepository: ModelRepository = {
 
         const changeRows = buildRevisionChanges({
           modelId: input.model.id,
-          revisionId: sourceRevisionId,
+          revisionId,
           events: revisionEvents,
         });
 
