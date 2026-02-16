@@ -23,14 +23,12 @@ export const patchModel = defineEndpoint({
 
     model.rename(req.body.name);
     const savedModel = await ctx.services.modelRepository.save(model);
-    const lastModified = new Date().toISOString();
 
     return {
       model: {
         id: savedModel.id,
         name: savedModel.name,
-        branchNames: [...savedModel.branchNames],
-        lastModified,
+        description: savedModel.description,
       },
       version: {
         modelId: req.params.modelId,

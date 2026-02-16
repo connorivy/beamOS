@@ -40,8 +40,7 @@ describe("typed openapi client integration", () => {
 
     expect(data.model.name).toBe(requestBody.name);
     expect(data.model.id).toMatch(/^[0-9a-f-]{36}$/i);
-    expect(data.model.branchNames).toEqual(["main"]);
-    expect(new Date(data.model.lastModified).toString()).not.toBe("Invalid Date");
+    expect(data.model.description).toBe("");
 
     // const storedModel = await drizzleModelRepository.getById({
     //   modelId: data.model.id,

@@ -15,8 +15,7 @@ export const createModelResSchema = z.object({
   model: z.object({
     id: uuidSchema,
     name: z.string(),
-    branchNames: z.array(z.string().trim().min(1)),
-    lastModified: z.iso.datetime(),
+    description: z.string(),
   }),
   version: z.object({
     modelId: uuidSchema,
@@ -52,14 +51,11 @@ export const createModel = defineEndpoint({
         nodes: [],
         includeModelChange: true,
       });
-    const lastModified = new Date().toISOString();
-
     return {
       model: {
         id: savedModel.id,
         name: savedModel.name,
-        branchNames: [...savedModel.branchNames],
-        lastModified,
+        description: savedModel.description,
       },
       version: {
         modelId: savedModel.id,

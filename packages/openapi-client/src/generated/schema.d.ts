@@ -275,9 +275,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             name: string;
-                            branchNames: string[];
-                            /** Format: date-time */
-                            lastModified: string;
+                            description: string;
                         };
                         version: {
                             /** Format: uuid */
@@ -511,9 +509,7 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             name: string;
-                            branchNames: string[];
-                            /** Format: date-time */
-                            lastModified: string;
+                            description: string;
                         };
                         version: {
                             /** Format: uuid */

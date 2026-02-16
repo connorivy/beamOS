@@ -3,7 +3,6 @@ import { eq, inArray } from "drizzle-orm";
 import { Ratio } from "unitsnet-js";
 import { getDb } from "../db/client";
 import {
-  modelBranchHeads,
   modelRevisions,
   models,
   revisionChanges,
@@ -92,7 +91,6 @@ export const drizzleModelRepository: ModelRepository = {
     }
 
     if (input.revisionId) {
-      const branchNames = await listBranchNamesForModel(input.modelId);
       const revisions = await loadRevisionHistory({
         revisionId: input.revisionId,
       });
@@ -117,18 +115,12 @@ export const drizzleModelRepository: ModelRepository = {
         id: input.modelId,
         name: modelName,
         nodes: Array.from(nodesById.values()),
-        branchNames,
+        description: "",
         sourceRevisionId: input.revisionId,
       });
     }
 
-    const model = modelMapper.toDomain(modelRows[0]);
-    const branchNames = await listBranchNamesForModel(input.modelId);
-    return ModelAggregate.rehydrate({
-      ...model.toSnapshot(),
-      branchNames,
-      sourceRevisionId: model.sourceRevisionId,
-    });
+    return modelMapper.toDomain(modelRows[0]);
   },
 
   async save(model) {
@@ -174,22 +166,13 @@ export const drizzleModelRepository: ModelRepository = {
         id: row[0].id,
         name: row[0].name,
         nodes: model.nodes.map((node) => node.toSnapshot()),
-        branchNames: [...model.branchNames],
+        description: model.description,
         sourceRevisionId: model.sourceRevisionId,
       });
     });
 
     return savedModel;
   },
-};
-
-const listBranchNamesForModel = async (modelId: string): Promise<string[]> => {
-  const rows = await getDb()
-    .select({ branchName: modelBranchHeads.branchName })
-    .from(modelBranchHeads)
-    .where(eq(modelBranchHeads.modelId, modelId));
-
-  return rows.map((row) => row.branchName);
 };
 
 const loadRevisionHistory = async (input: {
