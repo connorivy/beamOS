@@ -24,7 +24,6 @@ export const patchModel = defineEndpoint({
     model.rename(req.body.name);
     const savedModel = await ctx.services.modelRepository.update({
       model,
-      revisionId: req.body.revisionId,
     });
 
     return {

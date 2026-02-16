@@ -48,7 +48,6 @@ export const patchNode = defineEndpoint({
 
     await ctx.services.modelRepository.update({
       model,
-      revisionId: req.body.revisionId,
     });
 
     return {

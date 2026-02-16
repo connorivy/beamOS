@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import { eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
 import {
@@ -10,7 +9,6 @@ import {
 import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
 import { ModelAggregate } from "./model-aggregate";
 import { modelMapper } from "./model-mapper";
-import type { ModelDomainEvent } from "./model-events";
 
 const applyModelChanges = (input: {
   currentName: string;
@@ -42,7 +40,6 @@ export type ModelRepository = {
   }) => Promise<{ model: ModelAggregate; revisionId: string }>;
   update: (input: {
     model: ModelAggregate;
-    revisionId?: string | null;
   }) => Promise<ModelAggregate>;
 };
 
@@ -81,7 +78,7 @@ export const drizzleModelRepository: ModelRepository = {
       return ModelAggregate.rehydrate({
         id: input.modelId,
         name: modelName,
-        description: "",
+        description: modelRows[0].description,
         modelBranchHeads: loadedModelBranchHeads,
       });
     }
@@ -121,7 +118,7 @@ export const drizzleModelRepository: ModelRepository = {
       return ModelAggregate.rehydrate({
         id: row[0].id,
         name: row[0].name,
-        description: input.model.description,
+        description: row[0].description,
         modelBranchHeads: input.model.modelBranchHeads,
       });
     });
@@ -134,10 +131,7 @@ export const drizzleModelRepository: ModelRepository = {
 
   async update(input) {
     const persistence = modelMapper.toPersistence(input.model);
-    const events = input.model.pullDomainEvents();
-    const revisionEvents = events.filter(
-      (event) => event.type !== "model_created",
-    );
+    input.model.pullDomainEvents();
 
     const savedModel = await getDb().transaction(async (tx) => {
       const row = await tx
@@ -147,34 +141,15 @@ export const drizzleModelRepository: ModelRepository = {
           target: models.id,
           set: {
             name: persistence.name,
+            description: persistence.description,
           },
         })
         .returning();
 
-      if (revisionEvents.length > 0) {
-        const revisionId = input.revisionId;
-
-        if (!revisionId) {
-          throw new Error(
-            "Cannot persist model changes without a source revision",
-          );
-        }
-
-        const changeRows = buildRevisionChanges({
-          modelId: input.model.id,
-          revisionId,
-          events: revisionEvents,
-        });
-
-        if (changeRows.length > 0) {
-          await tx.insert(revisionChanges).values(changeRows);
-        }
-      }
-
       return ModelAggregate.rehydrate({
         id: row[0].id,
         name: row[0].name,
-        description: input.model.description,
+        description: row[0].description,
         modelBranchHeads: input.model.modelBranchHeads,
       });
     });
@@ -291,70 +266,5 @@ const buildModelNameFromRevisions = async (input: {
         op: change.op,
         payload: change.payload,
       })),
-  });
-};
-
-const buildRevisionChanges = (input: {
-  modelId: string;
-  revisionId: string | null;
-  events: ModelDomainEvent[];
-}): (typeof revisionChanges.$inferInsert)[] => {
-  const now = new Date();
-
-  return input.events.map((event) => {
-    if (event.type === "model_renamed") {
-      const payload = {
-        id: event.modelId,
-        name: event.name,
-      };
-      return {
-        id: crypto.randomUUID(),
-        revisionId: input.revisionId,
-        entityType: "model",
-        entityId: event.modelId,
-        schemaVersion: 1,
-        op: "update",
-        payload,
-        createdAt: now,
-      };
-    }
-
-    if (event.type === "node_added") {
-      const payload = {
-        id: event.node.id,
-        modelId: input.modelId,
-        name: event.node.name,
-      };
-      return {
-        id: crypto.randomUUID(),
-        revisionId: input.revisionId,
-        entityType: "node",
-        entityId: event.node.id,
-        schemaVersion: 1,
-        op: "insert",
-        payload,
-        createdAt: now,
-      };
-    }
-
-    if (event.type === "node_updated") {
-      const payload = {
-        id: event.node.id,
-        modelId: input.modelId,
-        name: event.node.name,
-      };
-      return {
-        id: crypto.randomUUID(),
-        revisionId: input.revisionId,
-        entityType: "node",
-        entityId: event.node.id,
-        schemaVersion: 1,
-        op: "update",
-        payload,
-        createdAt: now,
-      };
-    }
-
-    throw new Error(`Unsupported model domain event: ${event}`);
   });
 };
