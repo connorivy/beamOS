@@ -5,7 +5,7 @@ Bun full-stack scaffold with:
 - Three.js viewer component
 - Bun API with Zod-validated DIY endpoint pattern
 - Drizzle ORM (SQLite)
-- TDD setup: unit, integration, and Playwright E2E tests
+- TDD setup: unit and integration tests
 
 ## Quick Start
 
@@ -22,18 +22,16 @@ bun run dev
 
 ```bash
 bun run test            # unit + integration
-bun run test:e2e        # playwright (auto-starts db + api + web)
 ```
 
 ## TDD Workflow
 
-1. Write or update a failing unit/integration/e2e test.
+1. Write or update a failing unit/integration test.
 2. Implement code in `apps/api` / `apps/web`.
 3. Run targeted tests:
    - `bun run --cwd apps/api test:unit`
    - `bun run --cwd apps/api test:integration`
    - `bun run --cwd apps/web test:unit`
-   - `bun run test:e2e`
 4. Refactor while keeping tests green.
 
 ## Drizzle
