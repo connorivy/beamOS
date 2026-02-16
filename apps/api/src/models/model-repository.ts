@@ -28,6 +28,15 @@ const applyModelChanges = (input: {
 };
 
 export type ModelRepository = {
+  getUserModels: () => Promise<
+    {
+      id: string;
+      name: string;
+      description: string;
+      lastModified: Date | null;
+      role: "Owner" | "Contributor" | "Reviewer";
+    }[]
+  >;
   getById: (input: {
     modelId: string;
     revisionId?: string;
@@ -44,6 +53,34 @@ export type ModelRepository = {
 };
 
 export const drizzleModelRepository: ModelRepository = {
+  async getUserModels() {
+    const [modelRows, revisionRows] = await Promise.all([
+      getDb().select().from(models),
+      getDb()
+        .select({
+          modelId: modelRevisions.modelId,
+          createdAt: modelRevisions.createdAt,
+        })
+        .from(modelRevisions),
+    ]);
+
+    const latestRevisionByModelId = new Map<string, Date>();
+    for (const revision of revisionRows) {
+      const currentLatest = latestRevisionByModelId.get(revision.modelId);
+      if (!currentLatest || revision.createdAt > currentLatest) {
+        latestRevisionByModelId.set(revision.modelId, revision.createdAt);
+      }
+    }
+
+    return modelRows.map((model) => ({
+      id: model.id,
+      name: model.name,
+      description: model.description,
+      lastModified: latestRevisionByModelId.get(model.id) ?? null,
+      role: "Owner" as const,
+    }));
+  },
+
   async getById(input) {
     const modelRows = await getDb()
       .select()

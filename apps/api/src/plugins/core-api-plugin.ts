@@ -1,4 +1,5 @@
 import { createModel } from "src/models/create-model";
+import { getModels } from "src/models/get-models";
 import { patchModel } from "../models/patch-model";
 import { defineApiPlugin } from "./types";
 import { patchNode } from "src/nodes/patch-node";
@@ -18,6 +19,7 @@ export const coreApiPlugin = defineApiPlugin({
   id: "core.users",
   endpoints: [
     createModel,
+    getModels,
     patchNode,
     batchCreateNode,
     patchModel,
