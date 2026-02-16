@@ -137,6 +137,7 @@ const UnauthenticatedModelsView = () => {
 export const ModelsPage = () => {
   const models = useModelsStore((state) => state.models);
   const isLoading = useModelsStore((state) => state.isLoading);
+  const error = useModelsStore((state) => state.error);
   const loadModels = useModelsStore((state) => state.loadModels);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const userModelCards: ModelCardItem[] = models.map((model) => ({
@@ -159,10 +160,9 @@ export const ModelsPage = () => {
 
   return (
     <Stack spacing={5}>
-      {isLoading ? (
-        <Typography color="text.secondary">Loading models...</Typography>
-      ) : null}
-      <ModelCardsSection title="My Models" models={userModelCards} />
+      {isLoading ? <Typography color="text.secondary">Loading models...</Typography> : null}
+      {error ? <Typography color="error">{error}</Typography> : null}
+      {!isLoading ? <ModelCardsSection title="My Models" models={userModelCards} /> : null}
     </Stack>
   );
 };
