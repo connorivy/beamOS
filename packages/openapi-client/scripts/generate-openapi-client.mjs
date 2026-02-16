@@ -133,7 +133,14 @@ async function main() {
     await waitForOpenApi(devProcess);
     await runCommand(
       "npx",
-      ["openapi-typescript", openApiUrl, "-o", schemaPath],
+      [
+        "openapi-typescript",
+        openApiUrl,
+        "-o",
+        schemaPath,
+        "--root-types",
+        "--root-types-no-schema-prefix",
+      ],
       {
         cwd: rootDir,
         stdio: "inherit",

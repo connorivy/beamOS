@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
+import type { operations } from "@beamos/openapi-client";
 import {
   setupIntegrationApp,
   teardownIntegrationApp,
@@ -137,15 +138,7 @@ describe("typed openapi client integration", () => {
 
     expect(listResponse.status).toBe(200);
 
-    const body = (await listResponse.json()) as {
-      models: Array<{
-        id: string;
-        name: string;
-        description: string;
-        lastModified: string | null;
-        role: "Owner" | "Contributor" | "Reviewer";
-      }>;
-    };
+    const body = (await listResponse.json()) as operations["getApiModels"]["responses"]["200"]["content"]["application/json"];
 
     const listedModel = body.models.find(
       (model) => model.id === createResponse.data?.model.id,
