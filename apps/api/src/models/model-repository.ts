@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, max } from "drizzle-orm";
 import { getDb } from "../db/client";
 import {
   modelBranchHeads,
@@ -54,29 +54,30 @@ export type ModelRepository = {
 
 export const drizzleModelRepository: ModelRepository = {
   async getUserModels() {
-    const [modelRows, revisionRows] = await Promise.all([
-      getDb().select().from(models),
-      getDb()
-        .select({
-          modelId: modelRevisions.modelId,
-          createdAt: modelRevisions.createdAt,
-        })
-        .from(modelRevisions),
-    ]);
+    const latestRevisionByModel = getDb()
+      .select({
+        modelId: modelRevisions.modelId,
+        lastModified: max(modelRevisions.createdAt).as("lastModified"),
+      })
+      .from(modelRevisions)
+      .groupBy(modelRevisions.modelId)
+      .as("latest_revision_by_model");
 
-    const latestRevisionByModelId = new Map<string, Date>();
-    for (const revision of revisionRows) {
-      const currentLatest = latestRevisionByModelId.get(revision.modelId);
-      if (!currentLatest || revision.createdAt > currentLatest) {
-        latestRevisionByModelId.set(revision.modelId, revision.createdAt);
-      }
-    }
+    const modelRows = await getDb()
+      .select({
+        id: models.id,
+        name: models.name,
+        description: models.description,
+        lastModified: latestRevisionByModel.lastModified,
+      })
+      .from(models)
+      .leftJoin(latestRevisionByModel, eq(models.id, latestRevisionByModel.modelId));
 
     return modelRows.map((model) => ({
       id: model.id,
       name: model.name,
       description: model.description,
-      lastModified: latestRevisionByModelId.get(model.id) ?? null,
+      lastModified: model.lastModified,
       role: "Owner" as const,
     }));
   },
