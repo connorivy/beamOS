@@ -18,6 +18,7 @@ export const users = pgTable("users", {
 export const models = pgTable("models", {
   id: uuid("id").primaryKey(),
   name: text("name").notNull(),
+  description: text("description").notNull().default(""),
 });
 
 export const modelRevisions = pgTable("model_revisions", {
