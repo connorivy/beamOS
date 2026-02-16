@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiClient } from "../api/client";
 
 export type ModelRole = "owner" | "contributor" | "reviewer";
 
@@ -11,32 +12,39 @@ export type UserModel = {
 
 type ModelsState = {
   models: UserModel[];
+  isLoading: boolean;
+  error: string | null;
+  loadModels: () => Promise<void>;
 };
 
-const mockModels: UserModel[] = [
-  {
-    id: "m-001",
-    name: "Tower Drift Check",
-    description:
-      "60-story lateral system study with wind and seismic combinations.",
-    role: "owner",
-  },
-  {
-    id: "m-002",
-    name: "Warehouse Frame Retrofit",
-    description:
-      "Steel frame strengthening alternatives and connection demand tracking.",
-    role: "contributor",
-  },
-  {
-    id: "m-003",
-    name: "Bridge Truss Variant B",
-    description:
-      "Comparative dead/live load envelope validation for the revised truss.",
-    role: "reviewer",
-  },
-];
+const roleMap: Record<"Owner" | "Contributor" | "Reviewer", ModelRole> = {
+  Owner: "owner",
+  Contributor: "contributor",
+  Reviewer: "reviewer",
+};
 
-export const useModelsStore = create<ModelsState>(() => ({
-  models: mockModels,
+export const useModelsStore = create<ModelsState>((set) => ({
+  models: [],
+  isLoading: false,
+  error: null,
+  loadModels: async () => {
+    try {
+      set({ isLoading: true, error: null });
+      const { data } = await apiClient.GET("/api/models");
+      set({
+        models:
+          data?.models.map((model) => ({
+            id: model.id,
+            name: model.name,
+            description: model.description,
+            role: roleMap[model.role],
+          })) ?? [],
+      });
+    } catch (error) {
+      console.error(error);
+      set({ error: "Failed to load models. Please try again." });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));
