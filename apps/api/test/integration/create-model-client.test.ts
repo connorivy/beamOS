@@ -7,6 +7,9 @@ import {
   teardownIntegrationApp,
 } from "./shared-test-app";
 
+type GetModelsResponse =
+  operations["getApiModels"]["responses"]["200"]["content"]["application/json"];
+
 let baseUrl = "";
 
 beforeAll(async () => {
@@ -138,7 +141,7 @@ describe("typed openapi client integration", () => {
 
     expect(listResponse.status).toBe(200);
 
-    const body = (await listResponse.json()) as operations["getApiModels"]["responses"]["200"]["content"]["application/json"];
+    const body = (await listResponse.json()) as GetModelsResponse;
 
     const listedModel = body.models.find(
       (model) => model.id === createResponse.data?.model.id,
