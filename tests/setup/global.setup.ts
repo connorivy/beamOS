@@ -175,6 +175,9 @@ setup("start postgres and api", async () => {
       WEB_LOG_FILE,
       {
         ...process.env,
+        BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE:
+          process.env.BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE ??
+          "./src/plugins/additional-plugins.ts",
       },
     );
     currentState.webPid = web.pid;
