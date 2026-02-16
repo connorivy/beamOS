@@ -846,25 +846,31 @@ const buildModelSettingsFromRevisions = async (input: {
     const units = toObject(payload.units);
     const pressure =
       typeof units.pressure === "string" &&
-      units.pressure in PressureUnits
+      Object.values(PressureUnits).includes(units.pressure as PressureUnits)
         ? (units.pressure as PressureUnits)
         : PressureUnits.Pascals;
     const area =
-      typeof units.area === "string" && units.area in AreaUnits
+      typeof units.area === "string" &&
+      Object.values(AreaUnits).includes(units.area as AreaUnits)
         ? (units.area as AreaUnits)
         : AreaUnits.SquareMeters;
     const areaMomentOfInertia =
       typeof units.areaMomentOfInertia === "string" &&
-      units.areaMomentOfInertia in AreaMomentOfInertiaUnits
+      Object.values(AreaMomentOfInertiaUnits).includes(
+        units.areaMomentOfInertia as AreaMomentOfInertiaUnits,
+      )
         ? (units.areaMomentOfInertia as AreaMomentOfInertiaUnits)
         : AreaMomentOfInertiaUnits.MetersToTheFourth;
     const warpingMomentOfInertia =
       typeof units.warpingMomentOfInertia === "string" &&
-      units.warpingMomentOfInertia in WarpingMomentOfInertiaUnits
+      Object.values(WarpingMomentOfInertiaUnits).includes(
+        units.warpingMomentOfInertia as WarpingMomentOfInertiaUnits,
+      )
         ? (units.warpingMomentOfInertia as WarpingMomentOfInertiaUnits)
         : WarpingMomentOfInertiaUnits.MetersToTheSixth;
     const volume =
-      typeof units.volume === "string" && units.volume in VolumeUnits
+      typeof units.volume === "string" &&
+      Object.values(VolumeUnits).includes(units.volume as VolumeUnits)
         ? (units.volume as VolumeUnits)
         : VolumeUnits.CubicMeters;
 

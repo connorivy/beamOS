@@ -1,13 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
-import {
-  AreaMomentOfInertiaUnits,
-  AreaUnits,
-  PressureUnits,
-  VolumeUnits,
-  WarpingMomentOfInertiaUnits,
-} from "unitsnet-js";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
@@ -44,13 +37,7 @@ describe("model settings integration", () => {
     const branchName = createModelResponse.data.version.branchName;
 
     const putSettings = async (body: {
-      units: {
-        pressure: PressureUnits;
-        area: AreaUnits;
-        areaMomentOfInertia: AreaMomentOfInertiaUnits;
-        warpingMomentOfInertia: WarpingMomentOfInertiaUnits;
-        volume: VolumeUnits;
-      };
+      units: Record<string, string>;
       yAxisUp: boolean;
     }) =>
       fetch(
@@ -66,12 +53,11 @@ describe("model settings integration", () => {
 
     const firstResponse = await putSettings({
       units: {
-        pressure: PressureUnits.Pascals,
-        area: AreaUnits.SquareMeters,
-        areaMomentOfInertia: AreaMomentOfInertiaUnits.MetersToTheFourth,
-        warpingMomentOfInertia:
-          WarpingMomentOfInertiaUnits.MetersToTheSixth,
-        volume: VolumeUnits.CubicMeters,
+        pressure: "Pascal",
+        area: "SquareMeter",
+        areaMomentOfInertia: "MeterToTheFourth",
+        warpingMomentOfInertia: "MeterToTheSixth",
+        volume: "CubicMeter",
       },
       yAxisUp: true,
     });
@@ -80,11 +66,11 @@ describe("model settings integration", () => {
 
     const secondResponse = await putSettings({
       units: {
-        pressure: PressureUnits.Bars,
-        area: AreaUnits.SquareFeet,
-        areaMomentOfInertia: AreaMomentOfInertiaUnits.FootToTheFourth,
-        warpingMomentOfInertia: WarpingMomentOfInertiaUnits.FootToTheSixth,
-        volume: VolumeUnits.CubicFeet,
+        pressure: "Bar",
+        area: "SquareFoot",
+        areaMomentOfInertia: "FootToTheFourth",
+        warpingMomentOfInertia: "FootToTheSixth",
+        volume: "CubicFoot",
       },
       yAxisUp: false,
     });
@@ -114,11 +100,11 @@ describe("model settings integration", () => {
       id: expect.any(String),
       revisionId: expect.any(String),
       units: {
-        pressure: PressureUnits.Bars,
-        area: AreaUnits.SquareFeet,
-        areaMomentOfInertia: AreaMomentOfInertiaUnits.FootToTheFourth,
-        warpingMomentOfInertia: WarpingMomentOfInertiaUnits.FootToTheSixth,
-        volume: VolumeUnits.CubicFeet,
+        pressure: "Bar",
+        area: "SquareFoot",
+        areaMomentOfInertia: "FootToTheFourth",
+        warpingMomentOfInertia: "FootToTheSixth",
+        volume: "CubicFoot",
       },
       yAxisUp: false,
     });
