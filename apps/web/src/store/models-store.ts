@@ -47,7 +47,8 @@ export const useModelsStore = create<ModelsState>((set) => ({
             role: roleMap[model.role],
           })) ?? [],
       });
-    } catch {
+    } catch (error) {
+      console.error(error);
       set({ error: "Failed to load models. Please try again." });
     } finally {
       set({ isLoading: false });
