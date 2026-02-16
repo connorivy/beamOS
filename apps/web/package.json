@@ -19,9 +19,12 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.8.2",
     "zustand": "^5.0.8",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "camera-controls": "^2.10.1",
+    "three": "^0.159.0"
   },
   "devDependencies": {
+    "@types/three": "^0.159.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
