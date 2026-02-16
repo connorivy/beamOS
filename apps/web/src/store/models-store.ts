@@ -83,6 +83,7 @@ const roleMap: Record<"Owner" | "Contributor" | "Reviewer", ModelRole> = {
   Contributor: "contributor",
   Reviewer: "reviewer",
 };
+const MAX_EDITOR_EVENTS = 20;
 
 export const useModelsStore = create<ModelsState>((set) => ({
   models: [],
@@ -176,7 +177,7 @@ export const useModelsStore = create<ModelsState>((set) => ({
           sectionProfileId: element1d.sectionProfileId,
         })),
         editorEvents: [
-          ...state.editorEvents,
+          ...state.editorEvents.slice(-(MAX_EDITOR_EVENTS - 1)),
           {
             type: "model_revision_loaded",
             revisionId: modelRevision.id,

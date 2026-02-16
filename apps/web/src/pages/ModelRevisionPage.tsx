@@ -1,6 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BeamOsEditor } from "../components/beamOS.Editor/BeamOsEditor";
+import type {
+  Element1dResponse,
+  ModelSettings,
+  NodeResponse,
+} from "../components/beamOS.Editor/EditorApi/EditorApiAlpha";
 import type { IEditorEventsApi } from "../components/beamOS.Editor/EditorApi/EditorEventsApi";
 import { EditorConfigurations } from "../components/beamOS.Editor/EditorConfigurations";
 import { getModelRouteParams } from "./model-route-utils";
@@ -29,8 +34,12 @@ export const ModelRevisionPage = () => {
   const modelRevision = useModelsStore((state) => state.modelRevision);
   const revisionNodes = useModelsStore((state) => state.revisionNodes);
   const revisionElement1ds = useModelsStore((state) => state.revisionElement1ds);
+  const revisionMaterials = useModelsStore((state) => state.revisionMaterials);
   const revisionModelSettings = useModelsStore(
     (state) => state.revisionModelSettings,
+  );
+  const revisionSectionProfiles = useModelsStore(
+    (state) => state.revisionSectionProfiles,
   );
   const modelRevisionIsLoading = useModelsStore(
     (state) => state.modelRevisionIsLoading,
@@ -81,58 +90,73 @@ export const ModelRevisionPage = () => {
         return;
       }
 
-      for (let eventIndex = processedEditorEventsRef.current; eventIndex < editorEvents.length; eventIndex += 1) {
-        const event = editorEvents[eventIndex];
-        if (event.type !== "model_revision_loaded") {
-          continue;
-        }
-        if (event.revisionId !== modelRevision.id) {
-          continue;
-        }
-
-        const externalNodes = revisionNodes.filter(
-          (node) => node.nodeTypeDescriminator === "external",
+      const pendingEvents = editorEvents
+        .slice(processedEditorEventsRef.current)
+        .filter(
+          (event) =>
+            event.type === "model_revision_loaded" &&
+            event.revisionId === modelRevision.id,
         );
-        const nodeIdMap = new Map(
-          externalNodes.map((node, index) => [node.id, index + 1]),
-        );
-
-        const editorNodes = externalNodes.map((node, index) => ({
-          id: index + 1,
-          modelId: node.modelId,
-          locationPoint: { x: index * 3, y: 0, z: 0, lengthUnit: 0 },
-          restraint: createEditorNodeRestraint(),
-        }));
-
-        const editorElement1ds = revisionElement1ds
-          .map((element1d, index) => ({
-            id: index + 1,
-            modelId: modelRevision.modelId,
-            startNodeId: nodeIdMap.get(element1d.startNodeId),
-            endNodeId: nodeIdMap.get(element1d.endNodeId),
-            materialId: 1,
-            sectionProfileId: 1,
-            sectionProfileRotation: { value: 0, unit: 0 },
-          }))
-          .filter(
-            (element1d): element1d is {
-              id: number;
-              modelId: string;
-              startNodeId: number;
-              endNodeId: number;
-              materialId: number;
-              sectionProfileId: number;
-              sectionProfileRotation: { value: number; unit: number };
-            } => !!element1d.startNodeId && !!element1d.endNodeId,
-          );
-
-        await editor.api.clear();
-        await editor.api.setSettings({
-          yAxisUp: revisionModelSettings?.yAxisUp ?? false,
-        } as never);
-        await editor.api.createNodes(editorNodes as never);
-        await editor.api.createElement1ds(editorElement1ds as never);
+      if (pendingEvents.length === 0) {
+        processedEditorEventsRef.current = editorEvents.length;
+        return;
       }
+
+      const externalNodes = revisionNodes.filter(
+        (node) => node.nodeTypeDescriminator === "external",
+      );
+      const nodeIdMap = new Map(
+        externalNodes.map((node, index) => [node.id, index + 1]),
+      );
+      const materialIdMap = new Map(
+        revisionMaterials.map((material, index) => [material.id, index + 1]),
+      );
+      const sectionProfileIdMap = new Map(
+        revisionSectionProfiles.map((sectionProfile, index) => [
+          sectionProfile.id,
+          index + 1,
+        ]),
+      );
+
+      const editorNodes = externalNodes.map((node, index) => ({
+        id: index + 1,
+        modelId: node.modelId,
+        locationPoint: { x: index * 3, y: 0, z: 0, lengthUnit: 0 },
+        restraint: createEditorNodeRestraint(),
+      }));
+
+      const editorElement1ds = revisionElement1ds
+        .map((element1d, index) => ({
+          id: index + 1,
+          modelId: modelRevision.modelId,
+          startNodeId: nodeIdMap.get(element1d.startNodeId),
+          endNodeId: nodeIdMap.get(element1d.endNodeId),
+          materialId: materialIdMap.get(element1d.materialId),
+          sectionProfileId: sectionProfileIdMap.get(element1d.sectionProfileId),
+          sectionProfileRotation: { value: 0, unit: 0 },
+        }))
+        .filter(
+          (element1d): element1d is {
+            id: number;
+            modelId: string;
+            startNodeId: number;
+            endNodeId: number;
+            materialId: number;
+            sectionProfileId: number;
+            sectionProfileRotation: { value: number; unit: number };
+          } =>
+            !!element1d.startNodeId &&
+            !!element1d.endNodeId &&
+            !!element1d.materialId &&
+            !!element1d.sectionProfileId,
+        );
+
+      await editor.api.clear();
+      await editor.api.setSettings({
+        yAxisUp: revisionModelSettings?.yAxisUp ?? false,
+      } as ModelSettings);
+      await editor.api.createNodes(editorNodes as NodeResponse[]);
+      await editor.api.createElement1ds(editorElement1ds as Element1dResponse[]);
 
       processedEditorEventsRef.current = editorEvents.length;
     };
@@ -143,8 +167,10 @@ export const ModelRevisionPage = () => {
     editorReady,
     modelRevision,
     revisionElement1ds,
+    revisionMaterials,
     revisionModelSettings?.yAxisUp,
     revisionNodes,
+    revisionSectionProfiles,
   ]);
 
   if (!params) {
