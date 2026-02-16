@@ -12,6 +12,7 @@ const apiDir = path.join(rootDir, "apps", "api");
 const schemaPath = path.join(packageDir, "src", "generated", "schema.d.ts");
 // const schemaPath = path.join(packageDir, "src", "kiota");
 const openApiUrl = "http://127.0.0.1:3001/openapi/json";
+const openApiTypeScriptCliArgs = process.argv.slice(2);
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -133,7 +134,7 @@ async function main() {
     await waitForOpenApi(devProcess);
     await runCommand(
       "npx",
-      ["openapi-typescript", openApiUrl, "-o", schemaPath],
+      ["openapi-typescript", ...openApiTypeScriptCliArgs, openApiUrl, "-o", schemaPath],
       {
         cwd: rootDir,
         stdio: "inherit",
