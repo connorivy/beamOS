@@ -10,7 +10,17 @@ const packageDir = path.resolve(__dirname, "..");
 const rootDir = path.resolve(packageDir, "..", "..");
 const apiDir = path.join(rootDir, "apps", "api");
 const schemaPath = path.join(packageDir, "src", "generated", "schema.d.ts");
-const openapiTypescriptCliArgs = process.argv.slice(2);
+const rootTypeCliFlags = new Set([
+  "--root-types",
+  "--root-types-no-schema-prefix",
+  "--root-types-keep-casing",
+]);
+const openapiTypescriptCliArgs = process.argv
+  .slice(2)
+  .filter((arg) => rootTypeCliFlags.has(arg));
+const defaultRootTypesArg = openapiTypescriptCliArgs.includes("--root-types")
+  ? []
+  : ["--root-types"];
 // const schemaPath = path.join(packageDir, "src", "kiota");
 const openApiUrl = "http://127.0.0.1:3001/openapi/json";
 
@@ -139,7 +149,7 @@ async function main() {
         openApiUrl,
         "-o",
         schemaPath,
-        "--root-types",
+        ...defaultRootTypesArg,
         ...openapiTypescriptCliArgs,
       ],
       {
