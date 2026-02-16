@@ -11,7 +11,8 @@
     "test:integration": "bun test --only-failures test/integration",
     "test": "bun run test:unit && bun run test:integration",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "bun run src/db/migrate.ts"
+    "db:migrate": "bun run src/db/migrate.ts",
+    "openapi:generate-document": "bun run scripts/generate-openapi-document.mjs"
   },
   "dependencies": {
     "@beamos/openapi-client": "workspace:*",
