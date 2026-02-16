@@ -302,8 +302,6 @@ export interface operations {
                             /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
                             revisionsAhead: number;
                             revisionsBehind: number;
-                            /** Format: uuid */
-                            inProgressRevisionId: string;
                         };
                     };
                 };
@@ -2003,8 +2001,6 @@ export interface operations {
                                 /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
                                 revisionsAhead: number;
                                 revisionsBehind: number;
-                                /** Format: uuid */
-                                inProgressRevisionId: string;
                             };
                             /** Format: uuid */
                             modelId: string;

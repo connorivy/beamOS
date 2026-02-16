@@ -1,7 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
-import { drizzleModelRepository } from "../../src/models/model-repository";
 import {
   setupIntegrationApp,
   teardownIntegrationApp,
@@ -43,20 +42,54 @@ describe("typed openapi client integration", () => {
     expect(data.model.id).toMatch(/^[0-9a-f-]{36}$/i);
     expect(data.model.description).toBe("");
 
-    const storedModelWithoutBranchHeads = await drizzleModelRepository.getById({
-      modelId: data.model.id,
-    });
-    expect(storedModelWithoutBranchHeads).toBeDefined();
-    expect(storedModelWithoutBranchHeads?.modelBranchHeads).toBeNull();
+    const mainBranchRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: {
+            modelId: data.model.id,
+            branchName: "main",
+          },
+        },
+      },
+    );
 
-    const storedModelWithBranchHeads = await drizzleModelRepository.getById({
-      modelId: data.model.id,
-      loadModelBranchHeadAggregates: true,
-    });
-    expect(storedModelWithBranchHeads).toBeDefined();
-    expect(storedModelWithBranchHeads?.modelBranchHeads).not.toBeNull();
-    expect(
-      storedModelWithBranchHeads?.modelBranchHeads?.map((branch) => branch.branchName),
-    ).toContain("main");
+    expect(mainBranchRevisionResponse.error).toBeUndefined();
+    expect(mainBranchRevisionResponse.response.status).toBe(200);
+    expect(mainBranchRevisionResponse.data).toBeDefined();
+
+    if (!mainBranchRevisionResponse.data) {
+      throw new Error("Expected response body from get model revision API");
+    }
+
+    expect(mainBranchRevisionResponse.data.modelRevision.id).toBe(
+      data.version.revisionId,
+    );
+    expect(mainBranchRevisionResponse.data.modelRevision.modelId).toBe(
+      data.model.id,
+    );
+    expect(mainBranchRevisionResponse.data.modelRevision.name).toBe(
+      requestBody.name,
+    );
+    expect(mainBranchRevisionResponse.data.modelRevision.parentRevisionId).toBeNull();
+    expect(mainBranchRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.modelRevision.materials).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.modelRevision.element1ds).toHaveLength(0);
+
+    const missingBranchRevisionResponse = await client.GET(
+      "/api/models/{modelId}/branches/{branchName}/revision",
+      {
+        params: {
+          path: {
+            modelId: data.model.id,
+            branchName: "missing",
+          },
+        },
+      },
+    );
+
+    expect(missingBranchRevisionResponse.data).toBeUndefined();
+    expect(missingBranchRevisionResponse.response.status).toBe(404);
   });
 });

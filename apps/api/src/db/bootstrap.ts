@@ -12,8 +12,13 @@ export const bootstrapDb = async () => {
   await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS models (
       id UUID PRIMARY KEY NOT NULL,
-      name TEXT NOT NULL
+      name TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT ''
     );
+  `);
+  await getDb().execute(sql`
+    ALTER TABLE models
+    ADD COLUMN IF NOT EXISTS description TEXT NOT NULL DEFAULT '';
   `);
 
   await getDb().execute(sql`

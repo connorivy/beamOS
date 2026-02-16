@@ -32,6 +32,7 @@ export const ensureSeedData = async () => {
     await getDb().insert(models).values({
       id: MODEL_ID,
       name: "Default Model",
+      description: "",
     });
   }
 

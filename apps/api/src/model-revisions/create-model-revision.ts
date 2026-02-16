@@ -95,7 +95,6 @@ export const createModelRevision = defineEndpoint({
           revisionId: modelRevision.id,
           revisionsAhead: 0,
           revisionsBehind: 0,
-          inProgressRevisionId: modelRevision.id,
         },
         modelId: modelRevision.modelId,
         name: modelRevision.name,
