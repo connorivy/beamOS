@@ -11,8 +11,6 @@ import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-m
 import { ModelAggregate } from "./model-aggregate";
 import { modelMapper } from "./model-mapper";
 import type { ModelDomainEvent } from "./model-events";
-import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
-import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 
 const applyModelChanges = (input: {
   currentName: string;
@@ -119,22 +117,6 @@ export const drizzleModelRepository: ModelRepository = {
         branchName: "main",
         headRevisionId: initialRevisionId,
       });
-
-      const modelChange = RevisionChangeEntity.create({
-        id: crypto.randomUUID(),
-        revisionId: initialRevisionId,
-        entityType: "model",
-        entityId: input.model.id,
-        schemaVersion: 1,
-        op: "insert",
-        payload: {
-          id: input.model.id,
-          modelId: input.model.id,
-          name: input.model.name,
-        },
-        createdAt: new Date(),
-      });
-      await tx.insert(revisionChanges).values(revisionChangeMapper.toPersistence(modelChange));
 
       return ModelAggregate.rehydrate({
         id: row[0].id,
@@ -325,8 +307,7 @@ const buildRevisionChanges = (input: {
         id: event.modelId,
         name: event.name,
       };
-
-      const entity = RevisionChangeEntity.create({
+      return {
         id: crypto.randomUUID(),
         revisionId: input.revisionId,
         entityType: "model",
@@ -335,9 +316,7 @@ const buildRevisionChanges = (input: {
         op: "update",
         payload,
         createdAt: now,
-      });
-
-      return revisionChangeMapper.toPersistence(entity);
+      };
     }
 
     if (event.type === "node_added") {
@@ -346,8 +325,7 @@ const buildRevisionChanges = (input: {
         modelId: input.modelId,
         name: event.node.name,
       };
-
-      const entity = RevisionChangeEntity.create({
+      return {
         id: crypto.randomUUID(),
         revisionId: input.revisionId,
         entityType: "node",
@@ -356,9 +334,7 @@ const buildRevisionChanges = (input: {
         op: "insert",
         payload,
         createdAt: now,
-      });
-
-      return revisionChangeMapper.toPersistence(entity);
+      };
     }
 
     if (event.type === "node_updated") {
@@ -367,8 +343,7 @@ const buildRevisionChanges = (input: {
         modelId: input.modelId,
         name: event.node.name,
       };
-
-      const entity = RevisionChangeEntity.create({
+      return {
         id: crypto.randomUUID(),
         revisionId: input.revisionId,
         entityType: "node",
@@ -377,9 +352,7 @@ const buildRevisionChanges = (input: {
         op: "update",
         payload,
         createdAt: now,
-      });
-
-      return revisionChangeMapper.toPersistence(entity);
+      };
     }
 
     throw new Error(`Unsupported model domain event: ${event}`);
