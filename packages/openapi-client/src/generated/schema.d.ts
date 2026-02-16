@@ -27,7 +27,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["getApiModels"];
         put?: never;
         post: operations["postApiModels"];
         delete?: never;
@@ -249,6 +249,36 @@ export interface operations {
         };
         requestBody?: never;
         responses: never;
+    };
+    getApiModels: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        models: {
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            description: string;
+                            lastModified: string | null;
+                            /** @enum {string} */
+                            role: "Owner" | "Contributor" | "Reviewer";
+                        }[];
+                    };
+                };
+            };
+        };
     };
     postApiModels: {
         parameters: {
