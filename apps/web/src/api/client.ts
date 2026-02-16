@@ -1,8 +1,9 @@
 import { createApiClient } from "@beamos/openapi-client";
 
-export const apiClient = createApiClient(
-  import.meta.env.VITE_API_BASE_URL ??
-    (typeof window === "undefined"
-      ? "http://127.0.0.1:3001"
-      : window.location.origin),
-);
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+if (!apiBaseUrl) {
+  throw new Error("Missing required VITE_API_BASE_URL environment variable");
+}
+
+export const apiClient = createApiClient(apiBaseUrl);
