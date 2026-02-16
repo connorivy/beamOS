@@ -26,7 +26,6 @@ export const createModelResSchema = z.object({
         "Number of revisions ahead of the parent branch. In progress revisions are not included in the number",
     }),
     revisionsBehind: z.number().min(0),
-    inProgressRevisionId: uuidSchema,
   }),
 });
 
@@ -56,7 +55,6 @@ export const createModel = defineEndpoint({
         revisionId: createdModel.revisionId,
         revisionsAhead: 0,
         revisionsBehind: 0,
-        inProgressRevisionId: createdModel.revisionId,
       },
     };
   },

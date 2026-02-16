@@ -96,7 +96,7 @@ export const drizzleModelRepository: ModelRepository = {
 
   async create(input) {
     const persistence = modelMapper.toPersistence(input.model);
-    const initialRevisionId = crypto.randomUUID();
+    const initialRevisionId = Bun.randomUUIDv7();
     input.model.pullDomainEvents();
 
     const model = await getDb().transaction(async (tx) => {
