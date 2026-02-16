@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAuthStore } from "../store/auth-store";
 import { useModelsStore, type ModelRole } from "../store/models-store";
@@ -19,13 +20,6 @@ const roleColor: Record<ModelRole, "primary" | "secondary" | "default"> = {
   reviewer: "default",
 };
 
-type SampleModel = {
-  id: string;
-  name: string;
-  description: string;
-  createdAt: string;
-};
-
 type ModelCardItem = {
   id: string;
   name: string;
@@ -34,22 +28,6 @@ type ModelCardItem = {
   createdAt?: string;
   role?: ModelRole;
 };
-
-const sampleModels: SampleModel[] = [
-  {
-    id: "sample-001",
-    name: "Tutorial",
-    description: "Learn the basics of BeamOS with this interactive tutorial",
-    createdAt: "2024-01-01T12:00:00Z",
-  },
-  {
-    id: "sample-002",
-    name: "Twisty Bowl Framing",
-    description:
-      "A crazy twisting bowl type structure. Made by Bjorn Steinhagen in grasshopper and then sent to beamOS using Speckle",
-    createdAt: "2023-11-01T12:00:00Z",
-  },
-];
 
 const ModelCardsSection = ({
   title,
@@ -158,11 +136,9 @@ const UnauthenticatedModelsView = () => {
 
 export const ModelsPage = () => {
   const models = useModelsStore((state) => state.models);
+  const isLoading = useModelsStore((state) => state.isLoading);
+  const loadModels = useModelsStore((state) => state.loadModels);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const sampleModelCards: ModelCardItem[] = sampleModels.map((model) => ({
-    ...model,
-    badgeLabel: "Sample",
-  }));
   const userModelCards: ModelCardItem[] = models.map((model) => ({
     id: model.id,
     name: model.name,
@@ -170,19 +146,23 @@ export const ModelsPage = () => {
     role: model.role,
   }));
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+    void loadModels();
+  }, [isAuthenticated, loadModels]);
+
   if (!isAuthenticated) {
-    return (
-      <Stack spacing={5}>
-        <UnauthenticatedModelsView />
-        <ModelCardsSection title="Sample Models" models={sampleModelCards} />
-      </Stack>
-    );
+    return <UnauthenticatedModelsView />;
   }
 
   return (
     <Stack spacing={5}>
+      {isLoading ? (
+        <Typography color="text.secondary">Loading models...</Typography>
+      ) : null}
       <ModelCardsSection title="My Models" models={userModelCards} />
-      <ModelCardsSection title="Sample Models" models={sampleModelCards} />
     </Stack>
   );
 };

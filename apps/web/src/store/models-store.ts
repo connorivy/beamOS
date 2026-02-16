@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { createApiClient } from "@beamos/openapi-client";
 
 export type ModelRole = "owner" | "contributor" | "reviewer";
 
@@ -11,32 +12,39 @@ export type UserModel = {
 
 type ModelsState = {
   models: UserModel[];
+  isLoading: boolean;
+  loadModels: () => Promise<void>;
 };
 
-const mockModels: UserModel[] = [
-  {
-    id: "m-001",
-    name: "Tower Drift Check",
-    description:
-      "60-story lateral system study with wind and seismic combinations.",
-    role: "owner",
-  },
-  {
-    id: "m-002",
-    name: "Warehouse Frame Retrofit",
-    description:
-      "Steel frame strengthening alternatives and connection demand tracking.",
-    role: "contributor",
-  },
-  {
-    id: "m-003",
-    name: "Bridge Truss Variant B",
-    description:
-      "Comparative dead/live load envelope validation for the revised truss.",
-    role: "reviewer",
-  },
-];
+const apiClient = createApiClient(
+  import.meta.env.VITE_API_BASE_URL ??
+    (typeof window === "undefined" ? "http://127.0.0.1:3001" : ""),
+);
 
-export const useModelsStore = create<ModelsState>(() => ({
-  models: mockModels,
+const roleMap: Record<"Owner" | "Contributor" | "Reviewer", ModelRole> = {
+  Owner: "owner",
+  Contributor: "contributor",
+  Reviewer: "reviewer",
+};
+
+export const useModelsStore = create<ModelsState>((set) => ({
+  models: [],
+  isLoading: false,
+  loadModels: async () => {
+    try {
+      set({ isLoading: true });
+      const { data } = await apiClient.GET("/api/models");
+      set({
+        models:
+          data?.models.map((model) => ({
+            id: model.id,
+            name: model.name,
+            description: model.description,
+            role: roleMap[model.role],
+          })) ?? [],
+      });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));
