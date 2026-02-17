@@ -22,6 +22,9 @@ describe("openapi document generator", () => {
 
     const document = JSON.parse(await readFile(outputPath, "utf8")) as {
       paths: Record<string, Record<string, unknown>>;
+      components?: {
+        schemas?: Record<string, unknown>;
+      };
     };
 
     expect(document.paths["/api/models"]?.post).toBeDefined();
@@ -30,5 +33,67 @@ describe("openapi document generator", () => {
       document.paths["/api/models/{modelId}/branches/{branchName}/nodes/batch"]
         ?.post,
     ).toBeDefined();
+    expect(Object.keys(document.components?.schemas ?? {}).length).toBeGreaterThan(
+      0,
+    );
+
+    const postModels = document.paths["/api/models"]?.post as
+      | {
+          requestBody?: {
+            content?: {
+              "application/json"?: {
+                schema?: {
+                  $ref?: string;
+                };
+              };
+            };
+          };
+          responses?: {
+            "200"?: {
+              content?: {
+                "application/json"?: {
+                  schema?: {
+                    $ref?: string;
+                  };
+                };
+              };
+            };
+          };
+        }
+      | undefined;
+
+    expect(
+      postModels?.requestBody?.content?.["application/json"]?.schema?.$ref,
+    ).toBeString();
+    expect(
+      postModels?.responses?.["200"]?.content?.["application/json"]?.schema
+        ?.$ref,
+    ).toBeString();
+    expect(
+      postModels?.responses?.["200"]?.content?.["application/json"]?.schema?.$ref,
+    ).toBe("#/components/schemas/Model");
+
+    const getModels = document.paths["/api/models"]?.get as
+      | {
+          responses?: {
+            "200"?: {
+              content?: {
+                "application/json"?: {
+                  schema?: {
+                    $ref?: string;
+                  };
+                };
+              };
+            };
+          };
+        }
+      | undefined;
+
+    expect(
+      getModels?.responses?.["200"]?.content?.["application/json"]?.schema?.$ref,
+    ).toBe("#/components/schemas/ModelList");
+    expect(document.components?.schemas?.Model).toBeDefined();
+    expect(document.components?.schemas?.ModelList).toBeDefined();
+    expect(JSON.stringify(document)).not.toContain("#/$defs/");
   });
 });

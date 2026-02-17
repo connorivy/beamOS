@@ -83,6 +83,135 @@ const outputPath =
   process.argv[2] ?? path.resolve(__dirname, "..", "openapi.json");
 
 const paths = {};
+const components = {
+  schemas: {},
+};
+const schemaNameByZodSchema = new WeakMap();
+const schemaNameCounts = new Map();
+
+const toPascalCase = (value) =>
+  value
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .map((segment) => segment[0].toUpperCase() + segment.slice(1))
+    .join("");
+
+const toUniqueSchemaName = (baseName) => {
+  const count = schemaNameCounts.get(baseName) ?? 0;
+  schemaNameCounts.set(baseName, count + 1);
+  return count === 0 ? baseName : `${baseName}${count + 1}`;
+};
+
+const getPreferredSchemaName = (schema) => {
+  if (typeof schema !== "object" || schema === null) {
+    return null;
+  }
+
+  const meta =
+    typeof schema.meta === "function"
+      ? schema.meta()
+      : null;
+
+  if (typeof meta?.id === "string" && meta.id.trim().length > 0) {
+    return meta.id.trim();
+  }
+
+  if (typeof meta?.title === "string" && meta.title.trim().length > 0) {
+    return meta.title.trim();
+  }
+
+  return null;
+};
+
+const rewriteDefRefs = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(rewriteDefRefs);
+  }
+
+  if (typeof value !== "object" || value === null) {
+    return value;
+  }
+
+  const rewritten = {};
+
+  for (const [key, rawChild] of Object.entries(value)) {
+    if (key === "$defs") {
+      continue;
+    }
+
+    if (
+      key === "$ref" &&
+      typeof rawChild === "string" &&
+      rawChild.startsWith("#/$defs/")
+    ) {
+      rewritten[key] = rawChild.replace(
+        "#/$defs/",
+        "#/components/schemas/",
+      );
+      continue;
+    }
+
+    rewritten[key] = rewriteDefRefs(rawChild);
+  }
+
+  return rewritten;
+};
+
+const hoistSchemaDefs = (value) => {
+  if (typeof value !== "object" || value === null) {
+    return;
+  }
+
+  if (
+    "$defs" in value &&
+    typeof value.$defs === "object" &&
+    value.$defs !== null &&
+    !Array.isArray(value.$defs)
+  ) {
+    for (const [defName, defSchema] of Object.entries(value.$defs)) {
+      if (!(defName in components.schemas)) {
+        components.schemas[defName] = rewriteDefRefs(defSchema);
+      }
+      hoistSchemaDefs(defSchema);
+    }
+  }
+
+  for (const child of Object.values(value)) {
+    if (Array.isArray(child)) {
+      for (const item of child) {
+        hoistSchemaDefs(item);
+      }
+      continue;
+    }
+    hoistSchemaDefs(child);
+  }
+};
+
+const toComponentSchemaRef = (schema, baseName) => {
+  if (typeof schema !== "object" || schema === null) {
+    return zodToOpenApiJsonSchema(schema);
+  }
+
+  const existingName = schemaNameByZodSchema.get(schema);
+  if (existingName) {
+    return {
+      $ref: `#/components/schemas/${existingName}`,
+    };
+  }
+
+  const preferredName = getPreferredSchemaName(schema);
+  const schemaName = toUniqueSchemaName(
+    toPascalCase(preferredName ?? baseName),
+  );
+  const jsonSchema = zodToOpenApiJsonSchema(schema);
+  hoistSchemaDefs(jsonSchema);
+  components.schemas[schemaName] = rewriteDefRefs(jsonSchema);
+  schemaNameByZodSchema.set(schema, schemaName);
+
+  return {
+    $ref: `#/components/schemas/${schemaName}`,
+  };
+};
 
 for (const endpoint of endpoints) {
   const reqShape = getSchemaShape(endpoint.req);
@@ -98,7 +227,10 @@ for (const endpoint of endpoints) {
         description: "Successful response",
         content: {
           "application/json": {
-            schema: zodToOpenApiJsonSchema(endpoint.res),
+            schema: toComponentSchemaRef(
+              endpoint.res,
+              `${endpoint.method} ${endpoint.path} response`,
+            ),
           },
         },
       },
@@ -117,7 +249,10 @@ for (const endpoint of endpoints) {
           : true,
       content: {
         "application/json": {
-          schema: zodToOpenApiJsonSchema(reqShape.body),
+          schema: toComponentSchemaRef(
+            reqShape.body,
+            `${endpoint.method} ${endpoint.path} request body`,
+          ),
         },
       },
     };
@@ -136,6 +271,7 @@ const document = {
     version: "0.0.1",
   },
   paths,
+  components,
 };
 
 await mkdir(path.dirname(outputPath), { recursive: true });
