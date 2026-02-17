@@ -5,14 +5,14 @@
 // import { ModelsPage } from "./pages/ModelsPage";
 // import type { WebPlugin } from "./plugins/types";
 
-import { collectPluginRoutes } from "./plugins/types";
+import { collectPluginRoutes, routePathMatches } from "./plugins/types";
 import { webPlugins } from "./plugins/registry";
 
 const routes = collectPluginRoutes(webPlugins);
 
 export const App = () => {
   const currentPath = window.location.pathname;
-  const route = routes.find((entry) => entry.path === currentPath);
+  const route = routes.find((entry) => routePathMatches(entry.path, currentPath));
 
   if (!route) {
     return (
