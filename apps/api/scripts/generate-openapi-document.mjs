@@ -83,6 +83,45 @@ const outputPath =
   process.argv[2] ?? path.resolve(__dirname, "..", "openapi.json");
 
 const paths = {};
+const components = {
+  schemas: {},
+};
+const schemaNameByZodSchema = new WeakMap();
+const schemaNameCounts = new Map();
+
+const toPascalCase = (value) =>
+  value
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .map((segment) => segment[0].toUpperCase() + segment.slice(1))
+    .join("");
+
+const toUniqueSchemaName = (baseName) => {
+  const count = schemaNameCounts.get(baseName) ?? 0;
+  schemaNameCounts.set(baseName, count + 1);
+  return count === 0 ? baseName : `${baseName}${count + 1}`;
+};
+
+const toComponentSchemaRef = (schema, baseName) => {
+  if (typeof schema !== "object" || schema === null) {
+    return zodToOpenApiJsonSchema(schema);
+  }
+
+  const existingName = schemaNameByZodSchema.get(schema);
+  if (existingName) {
+    return {
+      $ref: `#/components/schemas/${existingName}`,
+    };
+  }
+
+  const schemaName = toUniqueSchemaName(toPascalCase(baseName));
+  components.schemas[schemaName] = zodToOpenApiJsonSchema(schema);
+  schemaNameByZodSchema.set(schema, schemaName);
+
+  return {
+    $ref: `#/components/schemas/${schemaName}`,
+  };
+};
 
 for (const endpoint of endpoints) {
   const reqShape = getSchemaShape(endpoint.req);
@@ -98,7 +137,10 @@ for (const endpoint of endpoints) {
         description: "Successful response",
         content: {
           "application/json": {
-            schema: zodToOpenApiJsonSchema(endpoint.res),
+            schema: toComponentSchemaRef(
+              endpoint.res,
+              `${endpoint.method} ${endpoint.path} response`,
+            ),
           },
         },
       },
@@ -117,7 +159,10 @@ for (const endpoint of endpoints) {
           : true,
       content: {
         "application/json": {
-          schema: zodToOpenApiJsonSchema(reqShape.body),
+          schema: toComponentSchemaRef(
+            reqShape.body,
+            `${endpoint.method} ${endpoint.path} request body`,
+          ),
         },
       },
     };
@@ -136,6 +181,7 @@ const document = {
     version: "0.0.1",
   },
   paths,
+  components,
 };
 
 await mkdir(path.dirname(outputPath), { recursive: true });
