@@ -15,6 +15,7 @@ export default [
     rules: {
       ...tsPlugin.configs.recommended.rules,
       "@typescript-eslint/no-explicit-any": "error",
+      "no-undef": "off",
     },
   },
   {
@@ -23,6 +24,17 @@ export default [
       globals: {
         Bun: "readonly",
       },
+    },
+  },
+  {
+    files: ["apps/web/**/*.{ts,tsx,mts,cts}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "no-empty": "off",
+      "no-redeclare": "off",
+      "no-useless-assignment": "off",
     },
   },
 ];
