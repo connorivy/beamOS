@@ -4,7 +4,7 @@ import type { AppServices } from "src/common/types";
 export const modelsListResultSchema = z.object({
   models: z.array(
     z.object({
-      id: z.uuid(),
+      id: z.string().uuid(),
       name: z.string(),
       description: z.string(),
       lastModified: z.string().datetime().nullable(),
@@ -13,24 +13,32 @@ export const modelsListResultSchema = z.object({
   ),
 });
 
+export class TrpcProcedureNotFoundError extends Error {
+  readonly status = 404;
+}
+
 export async function handleTrpcProcedure(
   procedure: string,
   services: AppServices,
 ) {
-  if (procedure !== "models.list") {
-    const error = new Error("Not found");
-    (error as Error & { status?: number }).status = 404;
-    throw error;
-  }
+  const handlers = {
+    "models.list": async () => {
+      const models = await services.modelRepository.getUserModels();
+      return modelsListResultSchema.parse({
+        models: models.map((model) => ({
+          id: model.id,
+          name: model.name,
+          description: model.description,
+          lastModified: model.lastModified?.toISOString() ?? null,
+          role: model.role,
+        })),
+      });
+    },
+  } as const;
 
-  const models = await services.modelRepository.getUserModels();
-  return modelsListResultSchema.parse({
-    models: models.map((model) => ({
-      id: model.id,
-      name: model.name,
-      description: model.description,
-      lastModified: model.lastModified?.toISOString() ?? null,
-      role: model.role,
-    })),
-  });
+  const handler = handlers[procedure as keyof typeof handlers];
+  if (!handler) {
+    throw new TrpcProcedureNotFoundError("Not found");
+  }
+  return handler();
 }

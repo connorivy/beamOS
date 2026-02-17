@@ -1,18 +1,24 @@
+import { z } from "zod";
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 if (!apiBaseUrl) {
   throw new Error("Missing required VITE_API_BASE_URL environment variable");
 }
 
-type ModelsListResponse = {
-  models: Array<{
-    id: string;
-    name: string;
-    description: string;
-    lastModified: string | null;
-    role: "Owner" | "Contributor" | "Reviewer";
-  }>;
-};
+const modelsListResponseSchema = z.object({
+  models: z.array(
+    z.object({
+      id: z.string().uuid(),
+      name: z.string(),
+      description: z.string(),
+      lastModified: z.string().datetime().nullable(),
+      role: z.enum(["Owner", "Contributor", "Reviewer"]),
+    }),
+  ),
+});
+
+type ModelsListResponse = z.infer<typeof modelsListResponseSchema>;
 
 type TrpcApiClient = {
   models: {
@@ -30,9 +36,11 @@ export const apiClient: TrpcApiClient = {
           method: "POST",
         });
         if (!response.ok) {
-          throw new Error(`Failed to fetch models: ${response.status}`);
+          throw new Error(
+            `Failed to fetch models: ${response.status} ${response.statusText}`,
+          );
         }
-        return (await response.json()) as ModelsListResponse;
+        return modelsListResponseSchema.parse(await response.json());
       },
     },
   },
