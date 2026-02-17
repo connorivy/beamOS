@@ -9,7 +9,7 @@ import {
 } from "../EditorApi/EditorApiAlphaExtensions";
 
 export interface DiagramEventMap extends THREE.Object3DEventMap {
-    moved: {};
+    moved: object;
 }
 
 export class BeamOsDiagram extends BeamOsMesh<

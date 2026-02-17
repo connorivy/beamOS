@@ -8,7 +8,10 @@ import { EditorApi } from "./EditorApi";
 // import { SimpleGui } from './SimpleGui';
 import { EditorConfigurations } from "./EditorConfigurations";
 import { IEditorEventsApi } from "./EditorApi/EditorEventsApi";
-import { DotnetApiFactory } from "./EditorApi/DotnetApiFactory";
+import {
+    DotnetApiFactory,
+    DotnetReference,
+} from "./EditorApi/DotnetApiFactory";
 import { Controls } from "./Controls";
 import { Camera } from "./Camera";
 
@@ -112,7 +115,7 @@ export class BeamOsEditor {
 
     static createFromId(
         domElementId: string,
-        eventsApiDotnetRef: any,
+        eventsApiDotnetRef: DotnetReference,
         isReadOnly: boolean
     ): BeamOsEditor {
         const domElement = document.getElementById(domElementId);
@@ -154,7 +157,6 @@ export class BeamOsEditor {
 
         if (this.camera.camera instanceof THREE.PerspectiveCamera) {
             this.camera.camera.aspect = width / height;
-        } else if (this.camera.camera instanceof THREE.OrthographicCamera) {
         }
         this.camera.camera.updateProjectionMatrix();
 

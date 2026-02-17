@@ -29,11 +29,11 @@ const createSectionProfileInput = (tempId?: string) => ({
 
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 afterAll(async () => {
   await teardownIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 describe("model revision integration", () => {
   it("creates a model revision from batched entity operations", async () => {

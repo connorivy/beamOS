@@ -34,8 +34,7 @@ export class Raycaster {
 
         const intersects = this.raycaster
             .intersectObjects(this.scene.children)
-            .filter((o) => isBeamOsMesh(o.object))
-            .map((o) => (<any>o.object) as IBeamOsMesh);
+            .flatMap((o) => (isBeamOsMesh(o.object) ? [o.object] : []));
 
         if (intersects.length > 0) {
             this.tabIndex =
@@ -115,8 +114,12 @@ export class Raycaster {
     }
 }
 
-export function isBeamOsMesh(object: any): object is IBeamOsMesh {
-    return "beamOsId" in object;
+export function isBeamOsMesh(object: unknown): object is IBeamOsMesh {
+    return (
+        typeof object === "object" &&
+        object !== null &&
+        "beamOsId" in object
+    );
 }
 
 export class RaycastInfo {
