@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import {
   Area,
   AreaMomentOfInertia,
@@ -27,13 +27,14 @@ import {
 import { modelRevisionMapper } from "./model-revision-mapper";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
+import type { RevisionChangeInsertRow } from "../revision-changes/revision-change-mapper";
 import type { DomainEvent, ModelRevisionRepository } from "../common/types";
 import type { MaterialSnapshot } from "../materials/material-entity";
 import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
-import type { NodeRestraint, NodeSnapshot } from "../nodes/node-entity";
-import { NodeRestraints, parseRestraint } from "../nodes/node-entity";
+import type { NodeSnapshot } from "../nodes/node-entity";
+import { parseRestraint } from "../nodes/node-entity";
 
 export const drizzleModelVersionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -232,7 +233,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         });
         await tx
           .insert(revisionChanges)
-          .values(modelChangeRow as any);
+          .values(modelChangeRow);
       }
 
       if (snapshot.nodes.length > 0) {
@@ -245,7 +246,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         if (changeRows.length > 0) {
           await tx
             .insert(revisionChanges)
-            .values(changeRows as any);
+            .values(changeRows);
         }
       }
 
@@ -293,7 +294,7 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
     nodeTypeDescriminator?: "external" | "internal";
     op: "insert" | "update" | "delete";
   }[];
-}): (typeof revisionChanges.$inferInsert)[] => {
+}): RevisionChangeInsertRow[] => {
   const now = new Date();
 
   return input.nodes.map((node) => {
@@ -321,7 +322,7 @@ const buildRevisionChangeRowsFromNodes = (input: {
   modelId: string;
   revisionId: string | null;
   nodes: NodeSnapshot[];
-}): (typeof revisionChanges.$inferInsert)[] =>
+}): RevisionChangeInsertRow[] =>
   buildRevisionChangeRowsFromNodeOps({
     modelId: input.modelId,
     revisionId: input.revisionId,
@@ -336,7 +337,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
   modelId: string;
   revisionId: string | null;
   events: DomainEvent[];
-}): (typeof revisionChanges.$inferInsert)[] => {
+}): RevisionChangeInsertRow[] => {
   const now = new Date();
 
   const nodeChanges = input.events
@@ -557,7 +558,7 @@ const buildModelRevisionChangeRow = (input: {
   modelName: string;
   revisionId: string | null;
   op: "insert" | "update";
-}): typeof revisionChanges.$inferInsert => {
+}): RevisionChangeInsertRow => {
   const entity = RevisionChangeEntity.create({
     id: crypto.randomUUID(),
     revisionId: input.revisionId,
@@ -573,43 +574,6 @@ const buildModelRevisionChangeRow = (input: {
   });
 
   return revisionChangeMapper.toPersistence(entity);
-};
-
-const applyNodeChanges = (input: {
-  current: Map<string, NodeSnapshot>;
-  changes: {
-    nodeId: string;
-    nodeTypeDescriminator?: "external" | "internal";
-    op: string;
-  }[];
-}) => {
-  for (const change of input.changes) {
-    if (change.op === "delete") {
-      input.current.delete(change.nodeId);
-      continue;
-    }
-
-    input.current.set(change.nodeId, {
-      id: change.nodeId,
-      modelRevisionId: "",
-      nodeType:
-        change.nodeTypeDescriminator === "external"
-          ? "spatialNode"
-          : "internalNode",
-      nodeTypeDescriminator: change.nodeTypeDescriminator ?? "internal",
-      point:
-        change.nodeTypeDescriminator === "external"
-          ? { x: 0, y: 0, z: 0 }
-          : undefined,
-      element1dId:
-        change.nodeTypeDescriminator === "external" ? undefined : change.nodeId,
-      distanceAlongElement1d:
-        change.nodeTypeDescriminator === "external"
-          ? undefined
-          : Ratio.FromDecimalFractions(0),
-      restraint: { ...NodeRestraints.FREE },
-    });
-  }
 };
 
 const loadRevisionHistory = async (input: {

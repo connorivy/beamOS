@@ -63,11 +63,8 @@ const getSchemaShape = (
   return {};
 };
 
-type AnyEndpoint = Endpoint<
-  z.ZodType<any, any, any>,
-  z.ZodType<any, any, any>,
-  any
->;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyEndpoint = Endpoint<z.ZodType<any, any, any>, z.ZodType<any, any, any>, any>;
 
 const toRouteSchema = (endpoint: AnyEndpoint) => {
   const reqShape = getSchemaShape(endpoint.req);

@@ -45,7 +45,7 @@ export class SectionProfileEntity {
     }
 
     if (!SECTION_PROFILE_DISCRIMINATORS.includes(snapshot.discriminator)) {
-      throw new Error(`Invalid discriminator \"${snapshot.discriminator}\"`);
+      throw new Error(`Invalid discriminator "${snapshot.discriminator}"`);
     }
 
     this.assertArea(snapshot.area, "area");

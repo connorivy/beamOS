@@ -157,7 +157,9 @@ export const drizzleModelRepository: ModelRepository = {
         id: row[0].id,
         name: row[0].name,
         description: row[0].description,
-        modelBranchHeads: input.model.modelBranchHeads,
+        modelBranchHeads: input.model.modelBranchHeads
+          ? [...input.model.modelBranchHeads]
+          : input.model.modelBranchHeads,
       });
     });
 
@@ -188,7 +190,9 @@ export const drizzleModelRepository: ModelRepository = {
         id: row[0].id,
         name: row[0].name,
         description: row[0].description,
-        modelBranchHeads: input.model.modelBranchHeads,
+        modelBranchHeads: input.model.modelBranchHeads
+          ? [...input.model.modelBranchHeads]
+          : input.model.modelBranchHeads,
       });
     });
 

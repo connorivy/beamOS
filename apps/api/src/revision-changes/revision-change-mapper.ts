@@ -1,6 +1,13 @@
 import { revisionChanges } from "../db/schema";
 import { RevisionChangeEntity } from "./revision-change-entity";
 
+export type RevisionChangeInsertRow = Omit<
+  typeof revisionChanges.$inferInsert,
+  "payload"
+> & {
+  payload: unknown;
+};
+
 export const revisionChangeMapper = {
   toDomain(row: typeof revisionChanges.$inferSelect): RevisionChangeEntity {
     const op =
@@ -22,9 +29,7 @@ export const revisionChangeMapper = {
     });
   },
 
-  toPersistence(
-    entity: RevisionChangeEntity,
-  ): typeof revisionChanges.$inferInsert {
+  toPersistence(entity: RevisionChangeEntity): RevisionChangeInsertRow {
     const snapshot = entity.toSnapshot();
     return {
       id: snapshot.id,
