@@ -30,15 +30,14 @@ export const useModelsStore = create<ModelsState>((set) => ({
   loadModels: async () => {
     try {
       set({ isLoading: true, error: null });
-      const { data } = await apiClient.GET("/api/models");
+      const data = await apiClient.models.list.query();
       set({
-        models:
-          data?.models.map((model) => ({
-            id: model.id,
-            name: model.name,
-            description: model.description,
-            role: roleMap[model.role],
-          })) ?? [],
+        models: data.models.map((model) => ({
+          id: model.id,
+          name: model.name,
+          description: model.description,
+          role: roleMap[model.role],
+        })),
       });
     } catch (error) {
       console.error(error);

@@ -7,6 +7,7 @@ import { bootstrapDb } from "./db/bootstrap";
 import { apiPlugins } from "./plugins/registry";
 import { buildServices, collectPluginEndpoints } from "./plugins/types";
 import { createDefaultServices } from "./services";
+import { handleTrpcProcedure } from "./trpc/router";
 
 const endpoints = collectPluginEndpoints(apiPlugins);
 const services = buildServices(createDefaultServices(), apiPlugins);
@@ -111,6 +112,9 @@ export const createApp = () => {
       ok: true,
       plugins: apiPlugins.map((plugin) => plugin.id),
     }))
+    .post("/trpc/:procedure", async ({ params }) =>
+      handleTrpcProcedure(params.procedure, services),
+    )
     .onAfterHandle(({ set }) => {
       set.headers["x-powered-by"] = "beamos-api";
     })
