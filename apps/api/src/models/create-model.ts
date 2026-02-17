@@ -11,23 +11,25 @@ export const createModelReqSchema = z.object({
     message: z.string().min(1),
   }),
 });
-export const createModelResSchema = z.object({
-  model: z.object({
-    id: uuidSchema,
-    name: z.string(),
-    description: z.string(),
-  }),
-  version: z.object({
-    modelId: uuidSchema,
-    branchName: z.string(),
-    revisionId: uuidSchema,
-    revisionsAhead: z.number().min(0).meta({
-      description:
-        "Number of revisions ahead of the parent branch. In progress revisions are not included in the number",
+export const createModelResSchema = z
+  .object({
+    model: z.object({
+      id: uuidSchema,
+      name: z.string(),
+      description: z.string(),
     }),
-    revisionsBehind: z.number().min(0),
-  }),
-});
+    version: z.object({
+      modelId: uuidSchema,
+      branchName: z.string(),
+      revisionId: uuidSchema,
+      revisionsAhead: z.number().min(0).meta({
+        description:
+          "Number of revisions ahead of the parent branch. In progress revisions are not included in the number",
+      }),
+      revisionsBehind: z.number().min(0),
+    }),
+  })
+  .meta({ id: "Model" });
 
 export const createModel = defineEndpoint({
   method: "POST",

@@ -45,10 +45,12 @@ export const putNodeRequestSchema = nodePropertiesSchema.extend({
 
 export const deleteNodeRequestSchema = z.string().trim().min(1);
 
-export const nodeResponseSchema = z.object({
-  id: uuidV7Schema,
-  modelId: uuidV7Schema,
-});
+export const nodeResponseSchema = z
+  .object({
+    id: uuidV7Schema,
+    modelId: uuidV7Schema,
+  })
+  .meta({ id: "Node" });
 
 export const revisionNodeResponseSchema = z.object({
   id: uuidV7Schema,
