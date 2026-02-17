@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
-import { Pressure, PressureUnits } from "unitsnet-js";
+import { PressureUnits } from "unitsnet-js";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";

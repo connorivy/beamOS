@@ -2,6 +2,7 @@ import type { Endpoint } from "../contracts/endpoint";
 import type { z } from "zod";
 import type { AppServices } from "../common/types";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyEndpoint = Endpoint<z.ZodType<any, any, any>, z.ZodType<any, any, any>, any>;
 
 export type ApiPlugin = {

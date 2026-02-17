@@ -28,6 +28,7 @@ describe("ModelRevisionAggregate", () => {
     aggregate.addMaterial({
       id: Bun.randomUUIDv7(),
       revisionId: aggregate.id,
+      name: "A36 Steel",
       pressureE: Pressure.FromPascals(1),
       pressureG: Pressure.FromPascals(2),
     });
