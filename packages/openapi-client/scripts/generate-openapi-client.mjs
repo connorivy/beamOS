@@ -85,6 +85,25 @@ async function main() {
       stdio: "inherit",
     },
   );
+  try {
+    await runCommand(
+      "bunx",
+      ["openapi-generator-cli", "generate", "-i", "./openapi.json", "-g", "typescript-fetch", "-o", "./src/generated/ts-fetch.ts"],
+      {
+        cwd: packageDir,
+        stdio: "inherit",
+      },
+    );
+  } catch {
+    await runCommand(
+      "npx",
+      ["@openapitools/openapi-generator-cli", "generate", "-i", "./openapi.json", "-g", "typescript-fetch", "-o", "./src/generated/ts-fetch.ts"],
+      {
+        cwd: packageDir,
+        stdio: "inherit",
+      },
+    );
+  }
   // await runCommand(
   //   "dnx",
   //   ["Microsoft.OpenApi.Kiota@1.29.0", "--allow-roll-forward", "--yes", "--", "generate", "-l", "typescript", "-d", openApiDocumentPath, "-c", "Clientasdf", "-o", schemaPath],
