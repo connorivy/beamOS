@@ -130,7 +130,7 @@ for (const endpoint of endpoints) {
 }
 
 const document = {
-  openapi: "3.0.3",
+  openapi: "3.1.1",
   info: {
     title: "Beamos API",
     version: "0.0.1",
