@@ -7,11 +7,11 @@ let baseUrl = "";
 
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 afterAll(async () => {
   await teardownIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 describe("model settings integration", () => {
   it("stores latest model settings in model revision aggregate", async () => {

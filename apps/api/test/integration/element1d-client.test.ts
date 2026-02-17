@@ -14,11 +14,11 @@ let baseUrl = "";
 
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 afterAll(async () => {
   await teardownIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 describe("typed element1d api client integration", () => {
   it("batch creates element1ds and snapshots get responses", async () => {

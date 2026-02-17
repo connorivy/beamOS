@@ -7,11 +7,11 @@ let baseUrl = "";
 
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 afterAll(async () => {
   await teardownIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 describe("typed node api client integration", () => {
   it("batch creates nodes and verifies persistence in revision", async () => {

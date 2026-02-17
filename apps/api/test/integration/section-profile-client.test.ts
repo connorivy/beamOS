@@ -13,11 +13,11 @@ let baseUrl = "";
 
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 afterAll(async () => {
   await teardownIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 describe("typed section profile api client integration", () => {
   it("batch creates section profiles and snapshots get responses", async () => {

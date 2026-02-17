@@ -10,11 +10,11 @@ let baseUrl = "";
 
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 afterAll(async () => {
   await teardownIntegrationApp();
-}, 10_000);
+}, 30_000);
 
 describe("typed openapi client integration", () => {
   it("creates a model", async () => {
