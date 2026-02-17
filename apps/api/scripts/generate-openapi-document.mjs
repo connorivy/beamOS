@@ -102,6 +102,91 @@ const toUniqueSchemaName = (baseName) => {
   return count === 0 ? baseName : `${baseName}${count + 1}`;
 };
 
+const getPreferredSchemaName = (schema) => {
+  if (typeof schema !== "object" || schema === null) {
+    return null;
+  }
+
+  const meta =
+    typeof schema.meta === "function"
+      ? schema.meta()
+      : null;
+
+  if (typeof meta?.id === "string" && meta.id.trim().length > 0) {
+    return meta.id.trim();
+  }
+
+  if (typeof meta?.title === "string" && meta.title.trim().length > 0) {
+    return meta.title.trim();
+  }
+
+  return null;
+};
+
+const rewriteDefRefs = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(rewriteDefRefs);
+  }
+
+  if (typeof value !== "object" || value === null) {
+    return value;
+  }
+
+  const rewritten = {};
+
+  for (const [key, rawChild] of Object.entries(value)) {
+    if (key === "$defs") {
+      continue;
+    }
+
+    if (
+      key === "$ref" &&
+      typeof rawChild === "string" &&
+      rawChild.startsWith("#/$defs/")
+    ) {
+      rewritten[key] = rawChild.replace(
+        "#/$defs/",
+        "#/components/schemas/",
+      );
+      continue;
+    }
+
+    rewritten[key] = rewriteDefRefs(rawChild);
+  }
+
+  return rewritten;
+};
+
+const hoistSchemaDefs = (value) => {
+  if (typeof value !== "object" || value === null) {
+    return;
+  }
+
+  if (
+    "$defs" in value &&
+    typeof value.$defs === "object" &&
+    value.$defs !== null &&
+    !Array.isArray(value.$defs)
+  ) {
+    for (const [defName, defSchema] of Object.entries(value.$defs)) {
+      if (!(defName in components.schemas)) {
+        components.schemas[defName] = rewriteDefRefs(defSchema);
+      }
+      hoistSchemaDefs(defSchema);
+    }
+  }
+
+  for (const child of Object.values(value)) {
+    if (Array.isArray(child)) {
+      for (const item of child) {
+        hoistSchemaDefs(item);
+      }
+      continue;
+    }
+    hoistSchemaDefs(child);
+  }
+};
+
 const toComponentSchemaRef = (schema, baseName) => {
   if (typeof schema !== "object" || schema === null) {
     return zodToOpenApiJsonSchema(schema);
@@ -114,8 +199,13 @@ const toComponentSchemaRef = (schema, baseName) => {
     };
   }
 
-  const schemaName = toUniqueSchemaName(toPascalCase(baseName));
-  components.schemas[schemaName] = zodToOpenApiJsonSchema(schema);
+  const preferredName = getPreferredSchemaName(schema);
+  const schemaName = toUniqueSchemaName(
+    toPascalCase(preferredName ?? baseName),
+  );
+  const jsonSchema = zodToOpenApiJsonSchema(schema);
+  hoistSchemaDefs(jsonSchema);
+  components.schemas[schemaName] = rewriteDefRefs(jsonSchema);
   schemaNameByZodSchema.set(schema, schemaName);
 
   return {

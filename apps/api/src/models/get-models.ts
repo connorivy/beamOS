@@ -4,17 +4,19 @@ import { z } from "zod";
 
 const getModelsReqSchema = z.object({});
 
-const getModelsResSchema = z.object({
-  models: z.array(
-    z.object({
-      id: z.uuid(),
-      name: z.string(),
-      description: z.string(),
-      lastModified: z.string().datetime().nullable(),
-      role: z.enum(["Owner", "Contributor", "Reviewer"]),
-    }),
-  ),
-});
+const getModelsResSchema = z
+  .object({
+    models: z.array(
+      z.object({
+        id: z.uuid(),
+        name: z.string(),
+        description: z.string(),
+        lastModified: z.string().datetime().nullable(),
+        role: z.enum(["Owner", "Contributor", "Reviewer"]),
+      }),
+    ),
+  })
+  .meta({ id: "ModelList" });
 
 export const getModels = defineEndpoint({
   method: "GET",

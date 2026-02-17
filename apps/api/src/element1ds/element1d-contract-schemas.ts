@@ -18,7 +18,9 @@ export const putElement1dRequestSchema = element1dPropertiesSchema.extend({
 
 export const deleteElement1dRequestSchema = z.string().trim().min(1);
 
-export const element1dResponseSchema = element1dPropertiesSchema.extend({
-  id: uuidV7Schema,
-  revisionId: uuidV7Schema,
-});
+export const element1dResponseSchema = element1dPropertiesSchema
+  .extend({
+    id: uuidV7Schema,
+    revisionId: uuidV7Schema,
+  })
+  .meta({ id: "Element1d" });

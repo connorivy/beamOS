@@ -69,5 +69,31 @@ describe("openapi document generator", () => {
       postModels?.responses?.["200"]?.content?.["application/json"]?.schema
         ?.$ref,
     ).toBeString();
+    expect(
+      postModels?.responses?.["200"]?.content?.["application/json"]?.schema?.$ref,
+    ).toBe("#/components/schemas/Model");
+
+    const getModels = document.paths["/api/models"]?.get as
+      | {
+          responses?: {
+            "200"?: {
+              content?: {
+                "application/json"?: {
+                  schema?: {
+                    $ref?: string;
+                  };
+                };
+              };
+            };
+          };
+        }
+      | undefined;
+
+    expect(
+      getModels?.responses?.["200"]?.content?.["application/json"]?.schema?.$ref,
+    ).toBe("#/components/schemas/ModelList");
+    expect(document.components?.schemas?.Model).toBeDefined();
+    expect(document.components?.schemas?.ModelList).toBeDefined();
+    expect(JSON.stringify(document)).not.toContain("#/$defs/");
   });
 });

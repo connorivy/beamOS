@@ -26,7 +26,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["GETApiModelsResponse"];
+                        "application/json": components["schemas"]["ModelList"];
                     };
                 };
             };
@@ -51,7 +51,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["POSTApiModelsResponse"];
+                        "application/json": components["schemas"]["Model"];
                     };
                 };
             };
@@ -576,7 +576,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        POSTApiModelsResponse: {
+        Model: {
             model: {
                 /** Format: uuid */
                 id: string;
@@ -600,7 +600,7 @@ export interface components {
             authorId: string;
             message: string;
         };
-        GETApiModelsResponse: {
+        ModelList: {
             models: {
                 /** Format: uuid */
                 id: string;
@@ -611,13 +611,14 @@ export interface components {
                 role: "Owner" | "Contributor" | "Reviewer";
             }[];
         };
+        Node: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            modelId: string;
+        };
         PATCHApiModelsModelIdNodesNodeIdResponse: {
-            node: {
-                /** Format: uuid */
-                id: string;
-                /** Format: uuid */
-                modelId: string;
-            };
+            node: components["schemas"]["Node"];
             version: {
                 /** Format: uuid */
                 modelId: string;
@@ -975,21 +976,22 @@ export interface components {
                 };
             };
         };
+        Element1d: {
+            /** Format: uuid */
+            startNodeId: string;
+            /** Format: uuid */
+            endNodeId: string;
+            /** Format: uuid */
+            materialId: string;
+            /** Format: uuid */
+            sectionProfileId: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
         POSTApiModelsModelIdBranchesBranchNameElement1dsBatchResponse: {
-            element1ds: {
-                /** Format: uuid */
-                startNodeId: string;
-                /** Format: uuid */
-                endNodeId: string;
-                /** Format: uuid */
-                materialId: string;
-                /** Format: uuid */
-                sectionProfileId: string;
-                /** Format: uuid */
-                id: string;
-                /** Format: uuid */
-                revisionId: string;
-            }[];
+            element1ds: components["schemas"]["Element1d"][];
             tempIdToId: {
                 [key: string]: string;
             };
@@ -1008,20 +1010,7 @@ export interface components {
             }[];
         };
         GETApiElement1dsElement1dIdResponse: {
-            element1d: {
-                /** Format: uuid */
-                startNodeId: string;
-                /** Format: uuid */
-                endNodeId: string;
-                /** Format: uuid */
-                materialId: string;
-                /** Format: uuid */
-                sectionProfileId: string;
-                /** Format: uuid */
-                id: string;
-                /** Format: uuid */
-                revisionId: string;
-            };
+            element1d: components["schemas"]["Element1d"];
         };
         GETApiModelsModelIdBranchesBranchNameRevisionResponse: {
             modelRevision: {
@@ -1141,20 +1130,7 @@ export interface components {
                         unit: "SquareMeter";
                     };
                 }[];
-                element1ds: {
-                    /** Format: uuid */
-                    startNodeId: string;
-                    /** Format: uuid */
-                    endNodeId: string;
-                    /** Format: uuid */
-                    materialId: string;
-                    /** Format: uuid */
-                    sectionProfileId: string;
-                    /** Format: uuid */
-                    id: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                }[];
+                element1ds: components["schemas"]["Element1d"][];
             };
         };
         POSTApiModelsModelIdBranchesBranchNameRevisionsResponse: {
@@ -1285,20 +1261,7 @@ export interface components {
                         unit: "SquareMeter";
                     };
                 }[];
-                element1ds: {
-                    /** Format: uuid */
-                    startNodeId: string;
-                    /** Format: uuid */
-                    endNodeId: string;
-                    /** Format: uuid */
-                    materialId: string;
-                    /** Format: uuid */
-                    sectionProfileId: string;
-                    /** Format: uuid */
-                    id: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                }[];
+                element1ds: components["schemas"]["Element1d"][];
             };
         };
         POSTApiModelsModelIdBranchesBranchNameRevisionsRequestBody: {
@@ -1495,9 +1458,10 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type PostApiModelsResponse = components['schemas']['POSTApiModelsResponse'];
+export type Model = components['schemas']['Model'];
 export type PostApiModelsRequestBody = components['schemas']['POSTApiModelsRequestBody'];
-export type GetApiModelsResponse = components['schemas']['GETApiModelsResponse'];
+export type ModelList = components['schemas']['ModelList'];
+export type Node = components['schemas']['Node'];
 export type PatchApiModelsModelIdNodesNodeIdResponse = components['schemas']['PATCHApiModelsModelIdNodesNodeIdResponse'];
 export type PatchApiModelsModelIdNodesNodeIdRequestBody = components['schemas']['PATCHApiModelsModelIdNodesNodeIdRequestBody'];
 export type PostApiModelsModelIdBranchesBranchNameNodesBatchResponse = components['schemas']['POSTApiModelsModelIdBranchesBranchNameNodesBatchResponse'];
@@ -1514,6 +1478,7 @@ export type GetApiMaterialsMaterialIdResponse = components['schemas']['GETApiMat
 export type PostApiModelsModelIdBranchesBranchNameSectionProfilesBatchResponse = components['schemas']['POSTApiModelsModelIdBranchesBranchNameSectionProfilesBatchResponse'];
 export type PostApiModelsModelIdBranchesBranchNameSectionProfilesBatchRequestBody = components['schemas']['POSTApiModelsModelIdBranchesBranchNameSectionProfilesBatchRequestBody'];
 export type GetApiSectionProfilesSectionProfileIdResponse = components['schemas']['GETApiSectionProfilesSectionProfileIdResponse'];
+export type Element1d = components['schemas']['Element1d'];
 export type PostApiModelsModelIdBranchesBranchNameElement1dsBatchResponse = components['schemas']['POSTApiModelsModelIdBranchesBranchNameElement1dsBatchResponse'];
 export type PostApiModelsModelIdBranchesBranchNameElement1dsBatchRequestBody = components['schemas']['POSTApiModelsModelIdBranchesBranchNameElement1dsBatchRequestBody'];
 export type GetApiElement1dsElement1dIdResponse = components['schemas']['GETApiElement1dsElement1dIdResponse'];
