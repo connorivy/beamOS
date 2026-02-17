@@ -8,7 +8,7 @@ import { BeamOsObjectTypes } from "../EditorApi/EditorApiAlphaExtensions";
 import { BeamOsNodeBase } from "./BeamOsNodeBase";
 
 export interface PointLoadEventMap extends THREE.Object3DEventMap {
-    moved: {};
+    moved: object;
 }
 
 export class BeamOsPointLoad extends BeamOsMesh<
@@ -19,7 +19,7 @@ export class BeamOsPointLoad extends BeamOsMesh<
     public static beamOsObjectType: BeamOsObjectType =
         BeamOsObjectTypes.PointLoad;
     // public beamOsObjectType: string = "PointLoad";
-    private onNodeMovedFunc: (_event: any) => void;
+    private onNodeMovedFunc: () => void;
 
     private static PointLoadHex: number = 0xe3963e;
     private static pointLoadConeRadius: number = 0.1;
@@ -82,7 +82,7 @@ export class BeamOsPointLoad extends BeamOsMesh<
         return merged;
     }
 
-    onNodeMoved(_event: any) {
+    onNodeMoved() {
         this.setPositions();
         this.geometry.attributes.position.needsUpdate = true;
     }

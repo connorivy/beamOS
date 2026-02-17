@@ -15,7 +15,7 @@ export class BeamOsInternalNode extends BeamOsNodeBase {
         BeamOsObjectTypes.InternalNode;
     // public beamOsObjectType: string = BeamOsNode.beamOsObjectType;
     public static nodeRadius: number = 0.1;
-    private onElementMovedFunc: (_event: any) => void;
+    private onElementMovedFunc: () => void;
 
     private _restraint: Restraint;
 
@@ -72,7 +72,7 @@ export class BeamOsInternalNode extends BeamOsNodeBase {
         return position;
     }
 
-    onElementMoved(_event: any) {
+    onElementMoved() {
         this.setMeshPositionFromCoordinates();
         this.dispatchEvent({ type: "moved" });
     }

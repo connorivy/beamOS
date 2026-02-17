@@ -11,7 +11,7 @@ import {
 import { BeamOsNodeBase } from "./BeamOsNodeBase";
 
 export interface Element1dEventMap extends THREE.Object3DEventMap {
-    moved: {};
+    moved: object;
 }
 
 export class BeamOsElement1d extends Line2 implements IBeamOsMesh {
@@ -19,7 +19,7 @@ export class BeamOsElement1d extends Line2 implements IBeamOsMesh {
     public static beamOsObjectType: BeamOsObjectType =
         BeamOsObjectTypes.Element1d;
     public beamOsObjectType: BeamOsObjectType;
-    private onNodeMovedFunc: (_event: any) => void;
+    private onNodeMovedFunc: () => void;
     private previousMaterial: LineMaterial | undefined;
     public beamOsUniqueId: string;
 
@@ -91,21 +91,20 @@ export class BeamOsElement1d extends Line2 implements IBeamOsMesh {
         );
     }
 
-    // Strongly-typed event methods for custom event map
     public addEventListener<K extends keyof Element1dEventMap>(
         type: K,
         listener: (event: Element1dEventMap[K]) => void
     ): void {
-        super.addEventListener(type as string, listener as any);
+        super.addEventListener(type as never, listener as never);
     }
 
     public dispatchEvent<K extends keyof Element1dEventMap>(
         event: { type: K } & Element1dEventMap[K]
     ): void {
-        super.dispatchEvent(event as any);
+        super.dispatchEvent(event as never);
     }
 
-    onNodeMoved(_event: any) {
+    onNodeMoved() {
         this.setPositions();
         this.dispatchEvent({ type: "moved" });
     }

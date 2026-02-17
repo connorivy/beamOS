@@ -33,10 +33,17 @@ export class TransformController {
         );
     }
 
-    async onDraggingChanged(event: any) {
-        this.controls.enabled = !event.value;
+    async onDraggingChanged(
+        event: { value: unknown } & THREE.Event<"dragging-changed", TransformControls>
+    ) {
+        const isDragging = event.value === true;
+        this.controls.enabled = !isDragging;
+        const object = event.target.object as BeamOsNode | undefined;
+        if (!object) {
+            return;
+        }
 
-        if (!event.value) {
+        if (!isDragging) {
             if (this.startLocation === undefined) {
                 throw new Error("start location is undefined");
             }
@@ -44,12 +51,12 @@ export class TransformController {
             await this.dispatcher.dispatchMoveNodeCommand(
                 new MoveNodeCommand({
                     canvasId: this.domElement.id,
-                    nodeId: event.target.object.beamOsId,
+                    nodeId: object.beamOsId,
                     previousLocation: this.startLocation,
                     newLocation: new Coordinate3D({
-                        x: event.target.object.position.x,
-                        y: event.target.object.position.y,
-                        z: event.target.object.position.z,
+                        x: object.position.x,
+                        y: object.position.y,
+                        z: object.position.z,
                     }),
                     handledByBlazor: false,
                     handledByEditor: true,
@@ -60,14 +67,14 @@ export class TransformController {
             this.startLocation = undefined;
         } else {
             this.startLocation = new Coordinate3D({
-                x: event.target.object.position.x,
-                y: event.target.object.position.y,
-                z: event.target.object.position.z,
+                x: object.position.x,
+                y: object.position.y,
+                z: object.position.z,
             });
         }
     }
 
-    onObjectChanged(_event: any) {
+    onObjectChanged() {
         (this.transformControl.object as BeamOsNode).firePositionChangedEvent();
     }
 }

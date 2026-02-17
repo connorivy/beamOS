@@ -1,14 +1,20 @@
-export function DotnetApiFactory<T>(dotnetRef: any): T {
+export type DotnetReference = {
+    invokeMethodAsync?: (methodName: string, ...args: unknown[]) => unknown;
+    [key: string]: unknown;
+};
+
+export function DotnetApiFactory<T>(dotnetRef: DotnetReference): T {
     return new Proxy(dotnetRef, {
-        get(dotnetReference, prop: string, _) {
+        get(dotnetReference, prop: string) {
             const invokeMethodName = "invokeMethodAsync";
-            let invokeFunc = (<any>dotnetReference)[invokeMethodName];
-            if (invokeFunc instanceof Function) {
-                return function (...args: any[]) {
-                    return invokeFunc.apply(dotnetReference, [
+            const invokeFunc = dotnetReference[invokeMethodName];
+            if (typeof invokeFunc === "function") {
+                return (...args: unknown[]) => {
+                    return invokeFunc.call(
+                        dotnetReference,
                         GetCsMethodName(prop),
-                        ...args,
-                    ]);
+                        ...args
+                    );
                 };
             }
         },

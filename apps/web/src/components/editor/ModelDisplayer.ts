@@ -90,17 +90,16 @@ export class ModelDisplayer {
                                     internalNode.id
                                 )
                             ) {
-                                let element1dObj =
+                                if (
                                     this.tryGetObjectByBeamOsUniqueId<BeamOsElement1d>(
                                         BeamOsElement1d.beamOsObjectType,
                                         internalNode.element1dId
-                                    );
-                                if (element1dObj) {
+                                    )
+                                ) {
                                     await this.createInternalNode(internalNode);
                                     unprocessedInternalNodes.delete(
                                         internalNode
                                     );
-                                    progress = true;
                                 }
                             }
                         }
@@ -111,12 +110,12 @@ export class ModelDisplayer {
             }
             // Try to process internal nodes whose element1d exists
             for (const internalNode of Array.from(unprocessedInternalNodes)) {
-                let element1dObj =
+                if (
                     this.tryGetObjectByBeamOsUniqueId<BeamOsElement1d>(
                         BeamOsElement1d.beamOsObjectType,
                         internalNode.element1dId
-                    );
-                if (element1dObj) {
+                    )
+                ) {
                     await this.createInternalNode(internalNode);
                     unprocessedInternalNodes.delete(internalNode);
                     progress = true;

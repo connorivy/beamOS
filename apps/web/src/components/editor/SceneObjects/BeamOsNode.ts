@@ -9,7 +9,7 @@ import { BeamOsObjectType } from "../EditorApi/EditorEventsApi";
 import { BeamOsNodeBase } from "./BeamOsNodeBase";
 
 export interface NodeEventMap extends THREE.Object3DEventMap {
-    moved: {};
+    moved: object;
 }
 
 export class BeamOsNode extends BeamOsNodeBase {

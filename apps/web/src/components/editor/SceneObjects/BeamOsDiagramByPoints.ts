@@ -13,7 +13,7 @@ import {
 import { BeamOsNodeBase } from "./BeamOsNodeBase";
 
 export interface DiagramEventMap extends THREE.Object3DEventMap {
-    moved: {};
+    moved: object;
 }
 
 export class BeamOsDiagramByPoints extends Line2 implements IBeamOsMesh {
