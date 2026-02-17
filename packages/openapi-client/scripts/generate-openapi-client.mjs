@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,8 +9,8 @@ const __dirname = path.dirname(__filename);
 const packageDir = path.resolve(__dirname, "..");
 const rootDir = path.resolve(packageDir, "..", "..");
 const apiDir = path.join(rootDir, "apps", "api");
+const openApiPath = path.join(packageDir, "openapi.json");
 const schemaPath = path.join(packageDir, "src", "generated", "schema.d.ts");
-// const schemaPath = path.join(packageDir, "src", "kiota");
 const openApiUrl = "http://127.0.0.1:3001/openapi/json";
 
 function sleep(ms) {
@@ -120,6 +120,87 @@ async function stopProcess(devProcess) {
   }
 }
 
+function toSchemaNamePart(input) {
+  const words = String(input)
+    .replace(/[^a-zA-Z0-9]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+
+  if (words.length === 0) return "Schema";
+  if (/^[0-9]/.test(words[0])) words.unshift("Schema");
+  return words.join("");
+}
+
+function addComponentSchema(openApiDoc, baseName, suffix, schema, usedNames) {
+  if (!schema || typeof schema !== "object" || "$ref" in schema) {
+    return schema;
+  }
+
+  const schemas =
+    (openApiDoc.components ??= {}).schemas ??=
+      {};
+  let name = `${baseName}${suffix}`;
+  let copyIndex = 2;
+  while (usedNames.has(name) || name in schemas) {
+    name = `${baseName}${suffix}${copyIndex}`;
+    copyIndex += 1;
+  }
+
+  usedNames.add(name);
+  schemas[name] = schema;
+  return { $ref: `#/components/schemas/${name}` };
+}
+
+function hoistInlineSchemas(openApiDoc) {
+  const usedNames = new Set(Object.keys(openApiDoc.components?.schemas ?? {}));
+
+  for (const [pathKey, pathItem] of Object.entries(openApiDoc.paths ?? {})) {
+    if (!pathItem || typeof pathItem !== "object") continue;
+
+    for (const [method, operation] of Object.entries(pathItem)) {
+      if (!operation || typeof operation !== "object") continue;
+
+      const operationBaseName = toSchemaNamePart(operation.operationId ?? `${method}_${pathKey}`);
+
+      const requestBody = operation.requestBody;
+      if (requestBody?.content && typeof requestBody.content === "object") {
+        for (const [contentType, mediaType] of Object.entries(requestBody.content)) {
+          if (!mediaType || typeof mediaType !== "object") continue;
+          mediaType.schema = addComponentSchema(
+            openApiDoc,
+            operationBaseName,
+            `Request${toSchemaNamePart(contentType)}`,
+            mediaType.schema,
+            usedNames,
+          );
+        }
+      }
+
+      const responses = operation.responses;
+      if (!responses || typeof responses !== "object") continue;
+
+      for (const [statusCode, response] of Object.entries(responses)) {
+        if (!response || typeof response !== "object" || !response.content) continue;
+
+        for (const [contentType, mediaType] of Object.entries(response.content)) {
+          if (!mediaType || typeof mediaType !== "object") continue;
+          mediaType.schema = addComponentSchema(
+            openApiDoc,
+            operationBaseName,
+            `Response${toSchemaNamePart(statusCode)}${toSchemaNamePart(contentType)}`,
+            mediaType.schema,
+            usedNames,
+          );
+        }
+      }
+    }
+  }
+
+  return openApiDoc;
+}
+
 async function main() {
   await mkdir(path.dirname(schemaPath), { recursive: true });
 
@@ -131,9 +212,15 @@ async function main() {
 
   try {
     await waitForOpenApi(devProcess);
+    const response = await fetch(openApiUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch OpenAPI document from ${openApiUrl}: HTTP ${response.status}`);
+    }
+    const openApiDoc = hoistInlineSchemas(await response.json());
+    await writeFile(openApiPath, `${JSON.stringify(openApiDoc, null, 2)}\n`);
     await runCommand(
       "npx",
-      ["openapi-typescript", openApiUrl, "-o", schemaPath, "--root-types", "--root-types-no-schema-prefix"],
+      ["openapi-typescript", openApiPath, "-o", schemaPath, "--root-types", "--root-types-no-schema-prefix"],
       {
         cwd: rootDir,
         stdio: "inherit",
