@@ -1,0 +1,177 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`model revision integration creates a model revision from batched entity operations 1`] = `
+{
+  "element1ds": [
+    {
+      "endNodeId": "<node-id>",
+      "id": "<element-id>",
+      "materialId": "<material-id>",
+      "modelId": "<model-id>",
+      "revisionId": "<revision-id>",
+      "sectionProfileId": "<section-profile-id>",
+      "startNodeId": "<node-id>",
+    },
+    {
+      "endNodeId": "<node-id>",
+      "id": "<element-id>",
+      "materialId": "<material-id>",
+      "modelId": "<model-id>",
+      "revisionId": "<revision-id>",
+      "sectionProfileId": "<section-profile-id>",
+      "startNodeId": "<node-id>",
+    },
+  ],
+  "materials": [
+    {
+      "id": "<material-id>",
+      "modelId": "<model-id>",
+      "pressureE": {
+        "unit": "Pascal",
+        "value": 200000000000,
+      },
+      "pressureG": {
+        "unit": "Pascal",
+        "value": 80000000000,
+      },
+      "revisionId": "<revision-id>",
+    },
+    {
+      "id": "<material-id>",
+      "modelId": "<model-id>",
+      "pressureE": {
+        "unit": "Pascal",
+        "value": 210000000000,
+      },
+      "pressureG": {
+        "unit": "Pascal",
+        "value": 85000000000,
+      },
+      "revisionId": "<revision-id>",
+    },
+    {
+      "id": "<material-id>",
+      "modelId": "<model-id>",
+      "pressureE": {
+        "unit": "Pascal",
+        "value": 190000000000,
+      },
+      "pressureG": {
+        "unit": "Pascal",
+        "value": 75000000000,
+      },
+      "revisionId": "<revision-id>",
+    },
+  ],
+  "nodes": [
+    {
+      "id": "<node-id>",
+      "modelId": "<model-id>",
+      "nodeTypeDescriminator": "external",
+    },
+    {
+      "id": "<node-id>",
+      "modelId": "<model-id>",
+      "nodeTypeDescriminator": "external",
+    },
+    {
+      "id": "<node-id>",
+      "modelId": "<model-id>",
+      "nodeTypeDescriminator": "internal",
+    },
+    {
+      "id": "<node-id>",
+      "modelId": "<model-id>",
+      "nodeTypeDescriminator": "external",
+    },
+  ],
+  "sectionProfiles": [
+    {
+      "area": {
+        "unit": "SquareMeter",
+        "value": 7.65,
+      },
+      "discriminator": "STANDARD",
+      "id": "<section-profile-id>",
+      "modelId": "<model-id>",
+      "name": "W12x26 Updated",
+      "revisionId": "<revision-id>",
+      "strongAxisElasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 34,
+      },
+      "strongAxisMomentOfInertia": {
+        "unit": "MeterToTheFourth",
+        "value": 204,
+      },
+      "strongAxisPlasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 38.4,
+      },
+      "torsionalConstant": {
+        "unit": "MeterToTheFourth",
+        "value": 0.346,
+      },
+      "warpingConstant": {
+        "unit": "MeterToTheSixth",
+        "value": 337,
+      },
+      "weakAxisElasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 5.77,
+      },
+      "weakAxisMomentOfInertia": {
+        "unit": "MeterToTheFourth",
+        "value": 17.3,
+      },
+      "weakAxisPlasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 8.94,
+      },
+    },
+    {
+      "area": {
+        "unit": "SquareMeter",
+        "value": 7.68,
+      },
+      "discriminator": "STANDARD",
+      "id": "<section-profile-id>",
+      "modelId": "<model-id>",
+      "name": "W16x26",
+      "revisionId": "<revision-id>",
+      "strongAxisElasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 37.7,
+      },
+      "strongAxisMomentOfInertia": {
+        "unit": "MeterToTheFourth",
+        "value": 301,
+      },
+      "strongAxisPlasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 43.1,
+      },
+      "torsionalConstant": {
+        "unit": "MeterToTheFourth",
+        "value": 0.262,
+      },
+      "warpingConstant": {
+        "unit": "MeterToTheSixth",
+        "value": 341,
+      },
+      "weakAxisElasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 3.98,
+      },
+      "weakAxisMomentOfInertia": {
+        "unit": "MeterToTheFourth",
+        "value": 9.59,
+      },
+      "weakAxisPlasticSectionModulus": {
+        "unit": "CubicMeter",
+        "value": 6.31,
+      },
+    },
+  ],
+}
+`;
