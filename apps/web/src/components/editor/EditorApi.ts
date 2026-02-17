@@ -66,10 +66,12 @@ export class EditorApi implements IEditorApiAlpha {
         this.sceneRoot.add(this.currentOverlay);
     }
 
-    updatePointLoad(_: PointLoadResponse): Promise<Result> {
+    updatePointLoad(body: PointLoadResponse): Promise<Result> {
+        void body;
         throw new Error("Method not implemented.");
     }
-    updatePointLoads(_: PointLoadResponse[]): Promise<Result> {
+    updatePointLoads(body: PointLoadResponse[]): Promise<Result> {
+        void body;
         throw new Error("Method not implemented.");
     }
     async displayModelProposal(body: ModelProposalResponse): Promise<Result> {
@@ -87,7 +89,8 @@ export class EditorApi implements IEditorApiAlpha {
         this.currentProposal.clear();
         return Promise.resolve(ResultFactory.Success());
     }
-    reducePutNodeClientCommand(_body: PutNodeClientCommand): Promise<Result> {
+    reducePutNodeClientCommand(body: PutNodeClientCommand): Promise<Result> {
+        void body;
         throw new Error("Method not implemented.");
     }
     clearCurrentOverlay(): Promise<Result> {
@@ -575,8 +578,9 @@ export class EditorApi implements IEditorApiAlpha {
     }
 
     reduceChangeSelectionCommand(
-        _body: ChangeSelectionCommand
+        body: ChangeSelectionCommand
     ): Promise<Result> {
+        void body;
         throw new Error("Method not implemented.");
     }
 

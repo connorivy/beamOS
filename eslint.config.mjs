@@ -15,7 +15,6 @@ export default [
     rules: {
       ...tsPlugin.configs.recommended.rules,
       "@typescript-eslint/no-explicit-any": "error",
-      "no-undef": "off",
     },
   },
   {
@@ -28,13 +27,21 @@ export default [
   },
   {
     files: ["apps/web/**/*.{ts,tsx,mts,cts}"],
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-      "no-empty": "off",
-      "no-redeclare": "off",
-      "no-useless-assignment": "off",
+    languageOptions: {
+      globals: {
+        window: "readonly",
+        document: "readonly",
+        HTMLElement: "readonly",
+        HTMLDivElement: "readonly",
+        KeyboardEvent: "readonly",
+        MouseEvent: "readonly",
+        DragEvent: "readonly",
+        ResizeObserver: "readonly",
+        requestAnimationFrame: "readonly",
+        cancelAnimationFrame: "readonly",
+        console: "readonly",
+        process: "readonly",
+      },
     },
   },
 ];

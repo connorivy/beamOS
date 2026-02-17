@@ -8,6 +8,10 @@ import {
 import { BeamOsNode } from "./SceneObjects/BeamOsNode";
 import { Controls } from "./Controls";
 
+type DraggingChangedEvent = THREE.Event<"dragging-changed", TransformControls> & {
+    value: unknown;
+};
+
 export class TransformController {
     public transformControl: TransformControls;
     private startLocation: Coordinate3D | undefined;
@@ -33,10 +37,12 @@ export class TransformController {
         );
     }
 
-    async onDraggingChanged(event: any) {
-        this.controls.enabled = !event.value;
+    async onDraggingChanged(event: DraggingChangedEvent) {
+        const isDragging = Boolean(event.value);
+        this.controls.enabled = !isDragging;
+        const draggedObject = event.target.object as BeamOsNode;
 
-        if (!event.value) {
+        if (!isDragging) {
             if (this.startLocation === undefined) {
                 throw new Error("start location is undefined");
             }
@@ -44,12 +50,12 @@ export class TransformController {
             await this.dispatcher.dispatchMoveNodeCommand(
                 new MoveNodeCommand({
                     canvasId: this.domElement.id,
-                    nodeId: event.target.object.beamOsId,
+                    nodeId: draggedObject.beamOsId,
                     previousLocation: this.startLocation,
                     newLocation: new Coordinate3D({
-                        x: event.target.object.position.x,
-                        y: event.target.object.position.y,
-                        z: event.target.object.position.z,
+                        x: draggedObject.position.x,
+                        y: draggedObject.position.y,
+                        z: draggedObject.position.z,
                     }),
                     handledByBlazor: false,
                     handledByEditor: true,
@@ -60,14 +66,14 @@ export class TransformController {
             this.startLocation = undefined;
         } else {
             this.startLocation = new Coordinate3D({
-                x: event.target.object.position.x,
-                y: event.target.object.position.y,
-                z: event.target.object.position.z,
+                x: draggedObject.position.x,
+                y: draggedObject.position.y,
+                z: draggedObject.position.z,
             });
         }
     }
 
-    onObjectChanged(_event: any) {
+    onObjectChanged() {
         (this.transformControl.object as BeamOsNode).firePositionChangedEvent();
     }
 }

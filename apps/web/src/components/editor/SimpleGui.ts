@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { Line2 } from "three/addons/lines/Line2.js";
 import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";

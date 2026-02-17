@@ -112,7 +112,7 @@ export class BeamOsEditor {
 
     static createFromId(
         domElementId: string,
-        eventsApiDotnetRef: any,
+        eventsApiDotnetRef: unknown,
         isReadOnly: boolean
     ): BeamOsEditor {
         const domElement = document.getElementById(domElementId);
@@ -154,7 +154,6 @@ export class BeamOsEditor {
 
         if (this.camera.camera instanceof THREE.PerspectiveCamera) {
             this.camera.camera.aspect = width / height;
-        } else if (this.camera.camera instanceof THREE.OrthographicCamera) {
         }
         this.camera.camera.updateProjectionMatrix();
 

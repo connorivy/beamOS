@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import {
     BeamOsObjectType,
     Element1dResponse,
@@ -90,17 +91,16 @@ export class ModelDisplayer {
                                     internalNode.id
                                 )
                             ) {
-                                let element1dObj =
+                                if (
                                     this.tryGetObjectByBeamOsUniqueId<BeamOsElement1d>(
                                         BeamOsElement1d.beamOsObjectType,
                                         internalNode.element1dId
-                                    );
-                                if (element1dObj) {
+                                    )
+                                ) {
                                     await this.createInternalNode(internalNode);
                                     unprocessedInternalNodes.delete(
                                         internalNode
                                     );
-                                    progress = true;
                                 }
                             }
                         }

@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { ColorFilterBuilder } from "./ColorFilterer";
 import {
     BeamOsObjectType,
@@ -33,7 +34,7 @@ export class ModelProposalDisplayer {
             this.displayEntityAsRemoved(el, filterer);
         }
         for (const node of body.createNodeProposals ?? []) {
-            var newNode = new BeamOsNodeProposal(
+            const newNode = new BeamOsNodeProposal(
                 undefined,
                 node.id,
                 node.locationPoint.x,
@@ -56,12 +57,12 @@ export class ModelProposalDisplayer {
                 continue;
             }
 
-            var existingElement1d =
+            const existingElement1d =
                 this.getObjectByBeamOsUniqueId<BeamOsElement1d>(
                     BeamOsElement1d.beamOsObjectType,
                     el.element1dId.existingId
                 );
-            var newInternalNode = new BeamOsInternalNode(
+            const newInternalNode = new BeamOsInternalNode(
                 el.id,
                 existingElement1d,
                 el.ratioAlongElement1d.value,
@@ -74,7 +75,7 @@ export class ModelProposalDisplayer {
         // create dictionary of nodeProposals
         const nodeProposalsDict: { [key: string]: BeamOsNodeProposal } = {};
         for (const node of body.modifyNodeProposals ?? []) {
-            var existingNode = this.getObjectByBeamOsUniqueId<BeamOsNode>(
+            const existingNode = this.getObjectByBeamOsUniqueId<BeamOsNode>(
                 BeamOsNode.beamOsObjectType,
                 node.existingNodeId
             );
@@ -85,7 +86,7 @@ export class ModelProposalDisplayer {
                 true
             );
 
-            var newNode = new BeamOsNodeProposal(
+            const newNode = new BeamOsNodeProposal(
                 existingNode.beamOsId,
                 node.id,
                 node.locationPoint.x,
@@ -109,12 +110,12 @@ export class ModelProposalDisplayer {
                 continue;
             }
 
-            var existingElement1d =
+            const existingElement1d =
                 this.getObjectByBeamOsUniqueId<BeamOsElement1d>(
                     BeamOsElement1d.beamOsObjectType,
                     el.element1dId.existingId
                 );
-            var modifiedNode = new BeamOsInternalNode(
+            const modifiedNode = new BeamOsInternalNode(
                 el.id,
                 existingElement1d,
                 el.ratioAlongElement1d.value,
@@ -215,7 +216,7 @@ export class ModelProposalDisplayer {
                 );
             }
 
-            var newElement1d = new BeamOsElement1dProposal(
+            const newElement1d = new BeamOsElement1dProposal(
                 undefined,
                 el.id,
                 startNode,

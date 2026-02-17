@@ -8,7 +8,7 @@ import { BeamOsObjectType } from "../EditorApi/EditorEventsApi";
 import { BeamOsObjectTypes } from "../EditorApi/EditorApiAlphaExtensions";
 
 export interface DistributedLoadEventMap extends THREE.Object3DEventMap {
-    moved: {};
+    moved: object;
 }
 
 export class BeamOsDistributedLoad extends BeamOsMesh<
