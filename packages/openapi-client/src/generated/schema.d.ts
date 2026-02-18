@@ -644,11 +644,9 @@ export interface components {
         };
         BatchCreateMaterialResponse: {
             materials: components["schemas"]["Material"][];
-            tempIdToId: {
-                [key: string]: string;
-            };
         };
-        CreateMaterialRequest: {
+        CreateMaterialRequest: components["schemas"]["MaterialProperties"];
+        MaterialProperties: {
             name: string;
             modulusOfElasticity: number;
             modulusOfRigidity: number;
@@ -656,7 +654,6 @@ export interface components {
                 /** @enum {string} */
                 pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
             };
-            tempId?: string;
         };
         BatchCreateMaterialRequest: {
             materials: components["schemas"]["CreateMaterialRequest"][];
@@ -1133,6 +1130,7 @@ export type PatchModelRequest = components['schemas']['PatchModelRequest'];
 export type Material = components['schemas']['Material'];
 export type BatchCreateMaterialResponse = components['schemas']['BatchCreateMaterialResponse'];
 export type CreateMaterialRequest = components['schemas']['CreateMaterialRequest'];
+export type MaterialProperties = components['schemas']['MaterialProperties'];
 export type BatchCreateMaterialRequest = components['schemas']['BatchCreateMaterialRequest'];
 export type ModelSettings = components['schemas']['ModelSettings'];
 export type ModelSettingsUnits = components['schemas']['ModelSettingsUnits'];

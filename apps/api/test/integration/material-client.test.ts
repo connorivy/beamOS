@@ -16,7 +16,7 @@ afterAll(async () => {
 describe("typed material api client integration", () => {
   it("batch creates materials and snapshots get responses", async () => {
     const client = createApiClient(baseUrl);
-    const tempIds = ["mat-01", "mat-02", "mat-03"];
+    const materialNames = ["Material 1", "Material 2", "Material 3"];
 
     const createModelResponse = await client.POST("/api/projects", {
       body: {
@@ -47,22 +47,19 @@ describe("typed material api client integration", () => {
         body: {
           materials: [
             {
-              tempId: tempIds[0],
-              name: "Material 1",
+              name: materialNames[0],
               modulusOfElasticity: 125000, // 1.25 Bars
               modulusOfRigidity: 85000, // 85 Kilopascals
               units: { pressure: PressureUnits.Pascals },
             },
             {
-              tempId: tempIds[1],
-              name: "Material 2",
+              name: materialNames[1],
               modulusOfElasticity: 101324.66370467292, // 14.6959 PoundsForcePerSquareInch
               modulusOfRigidity: 101325, // 1013.25 Millibars
               units: { pressure: PressureUnits.Pascals },
             },
             {
-              tempId: tempIds[2],
-              name: "Material 3",
+              name: materialNames[2],
               modulusOfElasticity: 96258.75, // 0.95 Atmospheres
               modulusOfRigidity: 95000, // 950 Hectopascals
               units: { pressure: PressureUnits.Pascals },
@@ -75,12 +72,15 @@ describe("typed material api client integration", () => {
     expect(batchCreateResponse.error).toBeUndefined();
     expect(batchCreateResponse.response.status).toBe(200);
     expect(batchCreateResponse.data).toBeDefined();
-    expect(batchCreateResponse.data?.materials).toHaveLength(tempIds.length);
-    expect(batchCreateResponse.data?.tempIdToId).toBeDefined();
+    expect(batchCreateResponse.data?.materials).toHaveLength(materialNames.length);
 
     if (!batchCreateResponse.data) {
       throw new Error("Expected batch create response");
     }
+
+    const materialIdByName = new Map(
+      batchCreateResponse.data.materials.map((material) => [material.name, material.id] as const),
+    );
 
     const getRevisionResponse = await client.GET(
       "/api/projects/{projectId}/branches/{branchName}/revisions",
@@ -96,18 +96,14 @@ describe("typed material api client integration", () => {
     expect(getRevisionResponse.data).toBeDefined();
     expect(
       getRevisionResponse.data?.materials.map((material) => material.id),
-    ).toEqual(
-      expect.arrayContaining(
-        Object.values(batchCreateResponse.data.tempIdToId),
-      ),
-    );
+    ).toEqual(expect.arrayContaining(Array.from(materialIdByName.values())));
 
-    for (const tempId of tempIds) {
-      const materialId = batchCreateResponse.data.tempIdToId[tempId];
+    for (const materialName of materialNames) {
+      const materialId = materialIdByName.get(materialName);
       expect(materialId).toBeDefined();
 
       if (!materialId) {
-        throw new Error(`Expected material ID for tempId ${tempId}`);
+        throw new Error(`Expected material ID for material name ${materialName}`);
       }
 
       const getResponse = await client.GET("/api/materials/{materialId}", {
@@ -130,59 +126,6 @@ describe("typed material api client integration", () => {
         revisionId: "<revision-id>",
       }).toMatchSnapshot();
     }
-  });
-
-  it("rejects duplicate temp ids in batch create", async () => {
-    const client = createApiClient(baseUrl);
-
-    const createModelResponse = await client.POST("/api/projects", {
-      body: {
-        name: "Duplicate TempId Model",
-        description: "Create model for duplicate tempId test",
-      },
-    });
-
-    expect(createModelResponse.response.status).toBe(200);
-    expect(createModelResponse.data).toBeDefined();
-
-    if (!createModelResponse.data) {
-      throw new Error("Expected model response");
-    }
-
-    const projectId = createModelResponse.data.id;
-    const branchName = "main";
-    const batchCreateResponse = await client.POST(
-      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
-      {
-        params: {
-          path: {
-            projectId,
-            branchName,
-          },
-        },
-        body: {
-          materials: [
-            {
-              tempId: "dup-1",
-              name: "Duplicate Material 1",
-              modulusOfElasticity: 1,
-              modulusOfRigidity: 1,
-              units: { pressure: PressureUnits.Bars },
-            },
-            {
-              tempId: "dup-1",
-              name: "Duplicate Material 2",
-              modulusOfElasticity: 2,
-              modulusOfRigidity: 2,
-              units: { pressure: PressureUnits.Bars },
-            },
-          ],
-        },
-      },
-    );
-
-    expect(batchCreateResponse.data).toBeUndefined();
-    expect(batchCreateResponse.response.status).toBe(400);
   });
 
   it("rejects duplicate material names in batch create", async () => {
@@ -216,14 +159,12 @@ describe("typed material api client integration", () => {
         body: {
           materials: [
             {
-              tempId: "dup-name-1",
               name: "Duplicate Name",
               modulusOfElasticity: 1,
               modulusOfRigidity: 1,
               units: { pressure: PressureUnits.Bars },
             },
             {
-              tempId: "dup-name-2",
               name: "Duplicate Name",
               modulusOfElasticity: 2,
               modulusOfRigidity: 2,

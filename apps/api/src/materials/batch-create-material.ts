@@ -30,7 +30,6 @@ export const batchCreateMaterialReqSchema = z
 export const batchCreateMaterialResSchema = z
   .object({
     materials: z.array(materialResponseSchema),
-    tempIdToId: z.record(z.string(), uuidV7Schema),
   })
   .meta({ id: "BatchCreateMaterialResponse" });
 
@@ -52,29 +51,15 @@ export const batchCreateMaterial = defineEndpoint({
   res: batchCreateMaterialResSchema,
   async handler(req, ctx: AppContext) {
     const revision = await createNewRevisionAggregateHandler(req, ctx);
-
-    const seenTempIds = new Set<string>();
-    return await batchCreateMaterialHandler(req, seenTempIds, ctx, revision);
+    return await batchCreateMaterialHandler(req, ctx, revision);
   },
 });
 
 export async function batchCreateMaterialHandler(
   req: z.infer<typeof batchCreateMaterialReqSchema>,
-  seenTempIds: Set<string>,
   ctx: AppContext,
   revision: ModelRevisionAggregate,
 ) {
-  for (const material of req.body.materials) {
-    if (!material.tempId) {
-      continue;
-    }
-    if (seenTempIds.has(material.tempId)) {
-      throw httpError(`Duplicate tempId "${material.tempId}"`, 400);
-    }
-    seenTempIds.add(material.tempId);
-  }
-
-  const tempIdToId: Record<string, string> = {};
   const existingMaterialNames = new Set(
     revision.materials.map((material) => material.name),
   );
@@ -86,9 +71,6 @@ export async function batchCreateMaterialHandler(
     existingMaterialNames.add(material.name);
 
     const id = Bun.randomUUIDv7();
-    if (material.tempId) {
-      tempIdToId[material.tempId] = id;
-    }
 
     const snapshot: MaterialSnapshot = {
       id,
@@ -117,6 +99,5 @@ export async function batchCreateMaterialHandler(
 
   return {
     materials: materials.map((material) => toResponseMaterial(material)),
-    tempIdToId,
   };
 }

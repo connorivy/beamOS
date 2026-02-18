@@ -13,11 +13,8 @@ export const materialPropertiesSchema = z.object({
 }).meta({ id: "MaterialProperties" });
 
 // Create material request schema
-export const createMaterialRequestSchema = materialPropertiesSchema
-  .extend({
-    tempId: z.string().trim().min(1).optional(),
-  })
-  .meta({ id: "CreateMaterialRequest" });
+export const createMaterialRequestSchema =
+  materialPropertiesSchema.meta({ id: "CreateMaterialRequest" });
 
 // Put material request schema (replaces update)
 export const putMaterialRequestSchema = materialPropertiesSchema

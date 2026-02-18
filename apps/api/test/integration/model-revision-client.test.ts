@@ -166,7 +166,6 @@ describe("model revision integration", () => {
         body: {
           materials: [
             {
-              tempId: "mat-rev1",
               name: "Material Revision 1",
               modulusOfElasticity: 110000, // 1.1 Bars
               modulusOfRigidity: 75000, // 75 Kilopascals
@@ -185,7 +184,12 @@ describe("model revision integration", () => {
       throw new Error("Expected material batch response for revision 1");
     }
 
-    const materialRev1Id = materialRev1Response.data.tempIdToId["mat-rev1"];
+    const materialRev1Id = materialRev1Response.data.materials[0]?.id;
+    expect(materialRev1Id).toBeDefined();
+
+    if (!materialRev1Id) {
+      throw new Error("Expected material id for revision 1");
+    }
 
     const sectionProfileRev1Response = await client.POST(
       "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
@@ -273,7 +277,6 @@ describe("model revision integration", () => {
         body: {
           materials: [
             {
-              tempId: "mat-rev2",
               name: "Material Revision 2",
               modulusOfElasticity: 250000, // 2.5 Bars
               modulusOfRigidity: 120000, // 120 Kilopascals
@@ -292,7 +295,12 @@ describe("model revision integration", () => {
       throw new Error("Expected material batch response for revision 2");
     }
 
-    const materialRev2Id = materialRev2Response.data.tempIdToId["mat-rev2"];
+    const materialRev2Id = materialRev2Response.data.materials[0]?.id;
+    expect(materialRev2Id).toBeDefined();
+
+    if (!materialRev2Id) {
+      throw new Error("Expected material id for revision 2");
+    }
 
     const sectionProfileRev2Response = await client.POST(
       "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
