@@ -18,7 +18,7 @@ export const sectionPropertiesInputSchema = z.object({
   weakAxisPlasticSectionModulus: z.number().finite(),
   strongAxisElasticSectionModulus: z.number().finite(),
   weakAxisElasticSectionModulus: z.number().finite(),
-});
+}).meta({ id: "SectionPropertiesInput" });
 
 const sectionProfileBasePropertiesSchema = z.object({
   name: z.string().trim().min(1),
@@ -39,7 +39,7 @@ const withShearAreasSectionProfilePropertiesSchema =
 export const sectionProfilePropertiesSchema = z.discriminatedUnion("discriminator", [
   standardSectionProfilePropertiesSchema,
   withShearAreasSectionProfilePropertiesSchema,
-]);
+]).meta({ id: "SectionProfileProperties" });
 
 export const createSectionProfileRequestSchema = z.discriminatedUnion("discriminator", [
   standardSectionProfilePropertiesSchema.extend({
@@ -48,7 +48,7 @@ export const createSectionProfileRequestSchema = z.discriminatedUnion("discrimin
   withShearAreasSectionProfilePropertiesSchema.extend({
     tempId: z.string().trim().min(1).optional(),
   }),
-]);
+]).meta({ id: "CreateSectionProfileRequest" });
 
 export const putSectionProfileRequestSchema = z.discriminatedUnion("discriminator", [
   standardSectionProfilePropertiesSchema.extend({
@@ -57,9 +57,13 @@ export const putSectionProfileRequestSchema = z.discriminatedUnion("discriminato
   withShearAreasSectionProfilePropertiesSchema.extend({
     id: uuidV7Schema,
   }),
-]);
+]).meta({ id: "PutSectionProfileRequest" });
 
-export const deleteSectionProfileRequestSchema = z.string().trim().min(1);
+export const deleteSectionProfileRequestSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .meta({ id: "DeleteSectionProfileRequest" });
 
 export const sectionProfileResponseSchema = z.object({
   id: uuidV7Schema,
@@ -114,4 +118,4 @@ export const sectionProfileResponseSchema = z.object({
       unit: z.literal(AreaUnits.SquareMeters),
     })
     .optional(),
-});
+}).meta({ id: "SectionProfile" });

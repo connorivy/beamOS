@@ -13,20 +13,26 @@ import {
 import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 
-export const batchCreateMaterialReqSchema = z.object({
-  params: z.object({
-    modelId: uuidV7Schema,
-    branchName: z.string().trim().min(1),
-  }),
-  body: z.object({
-    materials: z.array(createMaterialRequestSchema).min(1),
-  }),
-});
+export const batchCreateMaterialReqSchema = z
+  .object({
+    params: z.object({
+      modelId: uuidV7Schema,
+      branchName: z.string().trim().min(1),
+    }),
+    body: z
+      .object({
+        materials: z.array(createMaterialRequestSchema).min(1),
+      })
+      .meta({ id: "BatchCreateMaterialRequest" }),
+  })
+  .meta({ id: "BatchCreateMaterialEndpointRequest" });
 
-export const batchCreateMaterialResSchema = z.object({
-  materials: z.array(materialResponseSchema),
-  tempIdToId: z.record(z.string(), uuidV7Schema),
-});
+export const batchCreateMaterialResSchema = z
+  .object({
+    materials: z.array(materialResponseSchema),
+    tempIdToId: z.record(z.string(), uuidV7Schema),
+  })
+  .meta({ id: "BatchCreateMaterialResponse" });
 
 const toResponseMaterial = (material: MaterialSnapshot) => ({
   id: material.id,

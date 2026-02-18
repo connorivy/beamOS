@@ -15,15 +15,19 @@ const uuidV7Schema = z
   .uuid()
   .refine((value) => isUuidV7(value), "Must be a valid UUIDv7");
 
-export const getSectionProfileReqSchema = z.object({
-  params: z.object({
-    sectionProfileId: uuidV7Schema,
-  }),
-});
+export const getSectionProfileReqSchema = z
+  .object({
+    params: z.object({
+      sectionProfileId: uuidV7Schema,
+    }),
+  })
+  .meta({ id: "GetSectionProfileRequest" });
 
-export const getSectionProfileResSchema = z.object({
-  sectionProfile: sectionProfileResponseSchema,
-});
+export const getSectionProfileResSchema = z
+  .object({
+    sectionProfile: sectionProfileResponseSchema,
+  })
+  .meta({ id: "GetSectionProfileResponse" });
 
 export const getSectionProfile = defineEndpoint({
   method: "GET",

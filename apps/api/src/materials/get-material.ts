@@ -10,15 +10,19 @@ const uuidV7Schema = z
   .uuid()
   .refine((value) => isUuidV7(value), "Must be a valid UUIDv7");
 
-export const getMaterialReqSchema = z.object({
-  params: z.object({
-    materialId: uuidV7Schema,
-  }),
-});
+export const getMaterialReqSchema = z
+  .object({
+    params: z.object({
+      materialId: uuidV7Schema,
+    }),
+  })
+  .meta({ id: "GetMaterialRequest" });
 
-export const getMaterialResSchema = z.object({
-  material: materialResponseSchema,
-});
+export const getMaterialResSchema = z
+  .object({
+    material: materialResponseSchema,
+  })
+  .meta({ id: "GetMaterialResponse" });
 
 export const getMaterial = defineEndpoint({
   method: "GET",

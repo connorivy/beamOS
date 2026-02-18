@@ -10,20 +10,26 @@ import { uuidV7Schema } from "src/common/uuid";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 
-export const batchCreateElement1dReqSchema = z.object({
-  params: z.object({
-    modelId: uuidV7Schema,
-    branchName: z.string().trim().min(1),
-  }),
-  body: z.object({
-    element1ds: z.array(createElement1dRequestSchema).min(1),
-  }),
-});
+export const batchCreateElement1dReqSchema = z
+  .object({
+    params: z.object({
+      modelId: uuidV7Schema,
+      branchName: z.string().trim().min(1),
+    }),
+    body: z
+      .object({
+        element1ds: z.array(createElement1dRequestSchema).min(1),
+      })
+      .meta({ id: "BatchCreateElement1dRequest" }),
+  })
+  .meta({ id: "BatchCreateElement1dEndpointRequest" });
 
-export const batchCreateElement1dResSchema = z.object({
-  element1ds: z.array(element1dResponseSchema),
-  tempIdToId: z.record(z.string(), uuidV7Schema),
-});
+export const batchCreateElement1dResSchema = z
+  .object({
+    element1ds: z.array(element1dResponseSchema),
+    tempIdToId: z.record(z.string(), uuidV7Schema),
+  })
+  .meta({ id: "BatchCreateElement1dResponse" });
 
 const toResponseElement1d = (element1d: Element1dSnapshot) => ({
   id: element1d.id,

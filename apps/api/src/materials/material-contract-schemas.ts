@@ -10,20 +10,28 @@ export const materialPropertiesSchema = z.object({
   units: z.object({
     pressure: z.enum(PressureUnits),
   }),
-});
+}).meta({ id: "MaterialProperties" });
 
 // Create material request schema
-export const createMaterialRequestSchema = materialPropertiesSchema.extend({
-  tempId: z.string().trim().min(1).optional(),
-});
+export const createMaterialRequestSchema = materialPropertiesSchema
+  .extend({
+    tempId: z.string().trim().min(1).optional(),
+  })
+  .meta({ id: "CreateMaterialRequest" });
 
 // Put material request schema (replaces update)
-export const putMaterialRequestSchema = materialPropertiesSchema.extend({
-  id: uuidV7Schema,
-});
+export const putMaterialRequestSchema = materialPropertiesSchema
+  .extend({
+    id: uuidV7Schema,
+  })
+  .meta({ id: "PutMaterialRequest" });
 
 // Delete material request schema
-export const deleteMaterialRequestSchema = z.string().trim().min(1);
+export const deleteMaterialRequestSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .meta({ id: "DeleteMaterialRequest" });
 
 // Material response schemas
 export const materialPropertiesResponseSchema = z.object({
@@ -33,9 +41,11 @@ export const materialPropertiesResponseSchema = z.object({
   units: z.object({
     pressure: z.literal(PressureUnits.Pascals),
   }),
-});
+}).meta({ id: "MaterialPropertiesResponse" });
 
-export const materialResponseSchema = materialPropertiesResponseSchema.extend({
-  id: uuidV7Schema,
-  revisionId: uuidV7Schema,
-});
+export const materialResponseSchema = materialPropertiesResponseSchema
+  .extend({
+    id: uuidV7Schema,
+    revisionId: uuidV7Schema,
+  })
+  .meta({ id: "Material" });

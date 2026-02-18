@@ -12,10 +12,12 @@ const modelVersionRefSchema = z.object({
   revisionId: uuidSchema.nullable(),
 });
 
-export const patchNodeResSchema = z.object({
-  node: nodeResponseSchema,
-  version: modelVersionRefSchema,
-});
+export const patchNodeResSchema = z
+  .object({
+    node: nodeResponseSchema,
+    version: modelVersionRefSchema,
+  })
+  .meta({ id: "PatchNodeResponse" });
 
 export const patchNode = defineEndpoint({
   method: "PATCH",

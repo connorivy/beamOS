@@ -46,10 +46,8 @@ export type ModelRepository = {
     model: ModelAggregate;
     authorId: string;
     message: string;
-  }) => Promise<{ model: ModelAggregate; revisionId: string }>;
-  update: (input: {
-    model: ModelAggregate;
   }) => Promise<ModelAggregate>;
+  update: (input: { model: ModelAggregate }) => Promise<ModelAggregate>;
 };
 
 export const drizzleModelRepository: ModelRepository = {
@@ -71,7 +69,10 @@ export const drizzleModelRepository: ModelRepository = {
         lastModified: latestRevisionByModel.lastModified,
       })
       .from(models)
-      .leftJoin(latestRevisionByModel, eq(models.id, latestRevisionByModel.modelId));
+      .leftJoin(
+        latestRevisionByModel,
+        eq(models.id, latestRevisionByModel.modelId),
+      );
 
     return modelRows.map((model) => ({
       id: model.id,
@@ -133,10 +134,7 @@ export const drizzleModelRepository: ModelRepository = {
     input.model.pullDomainEvents();
 
     const model = await getDb().transaction(async (tx) => {
-      const row = await tx
-        .insert(models)
-        .values(persistence)
-        .returning();
+      const row = await tx.insert(models).values(persistence).returning();
 
       await tx.insert(modelRevisions).values({
         id: initialRevisionId,
@@ -147,26 +145,26 @@ export const drizzleModelRepository: ModelRepository = {
         authorId: input.authorId,
         message: input.message,
       });
-      await tx.insert(modelBranchHeads).values({
-        modelId: input.model.id,
-        branchName: "main",
-        headRevisionId: initialRevisionId,
-      });
+      const insertedModelBranchHead = await tx
+        .insert(modelBranchHeads)
+        .values({
+          modelId: input.model.id,
+          branchName: "main",
+          headRevisionId: initialRevisionId,
+        })
+        .returning();
 
       return ModelAggregate.rehydrate({
         id: row[0].id,
         name: row[0].name,
         description: row[0].description,
-        modelBranchHeads: input.model.modelBranchHeads
-          ? [...input.model.modelBranchHeads]
-          : input.model.modelBranchHeads,
+        modelBranchHeads: [
+          modelBranchHeadMapper.toDomain(insertedModelBranchHead[0]),
+        ],
       });
     });
 
-    return {
-      model,
-      revisionId: initialRevisionId,
-    };
+    return model;
   },
 
   async update(input) {
@@ -260,7 +258,6 @@ const loadRevisionHistory = async (input: {
     return a.id.localeCompare(b.id);
   });
 };
-
 
 const extractModelName = (payload: unknown, fallback: string): string => {
   if (payload && typeof payload === "object") {

@@ -10,17 +10,21 @@ import {
 import type { ModelSettingsSnapshot } from "./model-settings-entity";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
 
-export const putModelSettingsReqSchema = z.object({
-  params: z.object({
-    modelId: uuidV7Schema,
-    branchName: z.string().trim().min(1),
-  }),
-  body: modelSettingsPropertiesSchema,
-});
+export const putModelSettingsReqSchema = z
+  .object({
+    params: z.object({
+      modelId: uuidV7Schema,
+      branchName: z.string().trim().min(1),
+    }),
+    body: modelSettingsPropertiesSchema,
+  })
+  .meta({ id: "PutModelSettingsRequest" });
 
-export const putModelSettingsResSchema = z.object({
-  modelSettings: modelSettingsResponseSchema,
-});
+export const putModelSettingsResSchema = z
+  .object({
+    modelSettings: modelSettingsResponseSchema,
+  })
+  .meta({ id: "PutModelSettingsResponse" });
 
 const toResponseModelSettings = (modelSettings: ModelSettingsSnapshot) => ({
   id: modelSettings.id,

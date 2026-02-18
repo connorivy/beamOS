@@ -13,19 +13,25 @@ import {
 } from "./material-contract-schemas";
 import { createNewRevisionHandler } from "src/model-revisions/create-model-revision";
 
-export const batchPutMaterialReqSchema = z.object({
-  params: z.object({
-    modelId: uuidV7Schema,
-    branchName: z.string().trim().min(1),
-  }),
-  body: z.object({
-    materials: z.array(putMaterialRequestSchema).min(1),
-  }),
-});
+export const batchPutMaterialReqSchema = z
+  .object({
+    params: z.object({
+      modelId: uuidV7Schema,
+      branchName: z.string().trim().min(1),
+    }),
+    body: z
+      .object({
+        materials: z.array(putMaterialRequestSchema).min(1),
+      })
+      .meta({ id: "BatchPutMaterialRequest" }),
+  })
+  .meta({ id: "BatchPutMaterialEndpointRequest" });
 
-export const batchPutMaterialResSchema = z.object({
-  materials: z.array(materialResponseSchema),
-});
+export const batchPutMaterialResSchema = z
+  .object({
+    materials: z.array(materialResponseSchema),
+  })
+  .meta({ id: "BatchPutMaterialResponse" });
 
 const toResponseMaterial = (material: MaterialEntity) => ({
   id: material.id,

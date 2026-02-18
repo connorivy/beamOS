@@ -20,30 +20,34 @@ const uuidV7Schema = z
   .uuid()
   .refine((value) => isUuidV7(value), "Must be a valid UUIDv7");
 
-export const getModelRevisionReqSchema = z.object({
-  params: z.object({
-    modelId: uuidV7Schema,
-    branchName: z.string().trim().min(1),
-  }),
-});
+export const getModelRevisionReqSchema = z
+  .object({
+    params: z.object({
+      modelId: uuidV7Schema,
+      branchName: z.string().trim().min(1),
+    }),
+  })
+  .meta({ id: "GetModelRevisionRequest" });
 
-export const getModelRevisionResSchema = z.object({
-  modelRevision: z.object({
-    id: uuidV7Schema,
-    modelId: uuidV7Schema,
-    name: z.string().min(1),
-    parentRevisionId: uuidV7Schema.nullable(),
-    secondParentRevisionId: uuidV7Schema.nullable(),
-    authorId: z.uuid(),
-    message: z.string().min(1),
-    createdAt: z.iso.datetime(),
-    nodes: z.array(revisionNodeResponseSchema),
-    materials: z.array(materialResponseSchema),
-    modelSettings: modelSettingsResponseSchema.nullable(),
-    sectionProfiles: z.array(sectionProfileResponseSchema),
-    element1ds: z.array(element1dResponseSchema),
-  }),
-});
+export const getModelRevisionResSchema = z
+  .object({
+    modelRevision: z.object({
+      id: uuidV7Schema,
+      modelId: uuidV7Schema,
+      name: z.string().min(1),
+      parentRevisionId: uuidV7Schema.nullable(),
+      secondParentRevisionId: uuidV7Schema.nullable(),
+      authorId: z.uuid(),
+      message: z.string().min(1),
+      createdAt: z.iso.datetime(),
+      nodes: z.array(revisionNodeResponseSchema),
+      materials: z.array(materialResponseSchema),
+      modelSettings: modelSettingsResponseSchema.nullable(),
+      sectionProfiles: z.array(sectionProfileResponseSchema),
+      element1ds: z.array(element1dResponseSchema),
+    }),
+  })
+  .meta({ id: "GetModelRevisionResponse" });
 
 export const getModelRevision = defineEndpoint({
   method: "GET",

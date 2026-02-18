@@ -35,15 +35,23 @@ export const nodePropertiesSchema = z.object({
   ]),
 });
 
-export const createNodeRequestSchema = nodePropertiesSchema.extend({
-  tempId: z.string().trim().min(1).optional(),
-});
+export const createNodeRequestSchema = nodePropertiesSchema
+  .extend({
+    tempId: z.string().trim().min(1).optional(),
+  })
+  .meta({ id: "CreateNodeRequest" });
 
-export const putNodeRequestSchema = nodePropertiesSchema.extend({
-  id: uuidV7Schema,
-});
+export const putNodeRequestSchema = nodePropertiesSchema
+  .extend({
+    id: uuidV7Schema,
+  })
+  .meta({ id: "PutNodeRequest" });
 
-export const deleteNodeRequestSchema = z.string().trim().min(1);
+export const deleteNodeRequestSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .meta({ id: "DeleteNodeRequest" });
 
 export const nodeResponseSchema = z
   .object({
@@ -52,8 +60,10 @@ export const nodeResponseSchema = z
   })
   .meta({ id: "Node" });
 
-export const revisionNodeResponseSchema = z.object({
-  id: uuidV7Schema,
-  modelId: uuidV7Schema,
-  nodeTypeDescriminator: z.enum(["external", "internal"]),
-});
+export const revisionNodeResponseSchema = z
+  .object({
+    id: uuidV7Schema,
+    modelId: uuidV7Schema,
+    nodeTypeDescriminator: z.enum(["external", "internal"]),
+  })
+  .meta({ id: "RevisionNode" });

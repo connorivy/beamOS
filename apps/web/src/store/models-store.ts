@@ -33,7 +33,7 @@ export const useModelsStore = create<ModelsState>((set) => ({
       const { data } = await apiClient.GET("/api/models");
       set({
         models:
-          data?.models.map((model) => ({
+          data?.map((model) => ({
             id: model.id,
             name: model.name,
             description: model.description,

@@ -30,21 +30,27 @@ const sectionProfileUnitsInputSchema = z.object({
   volume: z.enum(VolumeUnits),
 });
 
-export const batchCreateSectionProfileReqSchema = z.object({
-  params: z.object({
-    modelId: uuidV7Schema,
-    branchName: z.string().trim().min(1),
-  }),
-  body: z.object({
-    units: sectionProfileUnitsInputSchema,
-    sectionProfiles: z.array(createSectionProfileRequestSchema).min(1),
-  }),
-});
+export const batchCreateSectionProfileReqSchema = z
+  .object({
+    params: z.object({
+      modelId: uuidV7Schema,
+      branchName: z.string().trim().min(1),
+    }),
+    body: z
+      .object({
+        units: sectionProfileUnitsInputSchema,
+        sectionProfiles: z.array(createSectionProfileRequestSchema).min(1),
+      })
+      .meta({ id: "BatchCreateSectionProfileRequest" }),
+  })
+  .meta({ id: "BatchCreateSectionProfileEndpointRequest" });
 
-export const batchCreateSectionProfileResSchema = z.object({
-  sectionProfiles: z.array(sectionProfileResponseSchema),
-  tempIdToId: z.record(z.string(), uuidV7Schema),
-});
+export const batchCreateSectionProfileResSchema = z
+  .object({
+    sectionProfiles: z.array(sectionProfileResponseSchema),
+    tempIdToId: z.record(z.string(), uuidV7Schema),
+  })
+  .meta({ id: "BatchCreateSectionProfileResponse" });
 
 const toDomainProperties = (
   input: z.infer<typeof sectionPropertiesInputSchema>,

@@ -9,15 +9,19 @@ const uuidV7Schema = z
   .uuid()
   .refine((value) => isUuidV7(value), "Must be a valid UUIDv7");
 
-export const getElement1dReqSchema = z.object({
-  params: z.object({
-    element1dId: uuidV7Schema,
-  }),
-});
+export const getElement1dReqSchema = z
+  .object({
+    params: z.object({
+      element1dId: uuidV7Schema,
+    }),
+  })
+  .meta({ id: "GetElement1dRequest" });
 
-export const getElement1dResSchema = z.object({
-  element1d: element1dResponseSchema,
-});
+export const getElement1dResSchema = z
+  .object({
+    element1d: element1dResponseSchema,
+  })
+  .meta({ id: "GetElement1dResponse" });
 
 export const getElement1d = defineEndpoint({
   method: "GET",

@@ -14,14 +14,16 @@ export const modelSettingsUnitsSchema = z.object({
   areaMomentOfInertia: z.enum(AreaMomentOfInertiaUnits),
   warpingMomentOfInertia: z.enum(WarpingMomentOfInertiaUnits),
   volume: z.enum(VolumeUnits),
-});
+}).meta({ id: "ModelSettingsUnits" });
 
 export const modelSettingsPropertiesSchema = z.object({
   units: modelSettingsUnitsSchema,
   yAxisUp: z.boolean(),
-});
+}).meta({ id: "ModelSettingsProperties" });
 
-export const modelSettingsResponseSchema = modelSettingsPropertiesSchema.extend({
-  id: uuidV7Schema,
-  revisionId: uuidV7Schema,
-});
+export const modelSettingsResponseSchema = modelSettingsPropertiesSchema
+  .extend({
+    id: uuidV7Schema,
+    revisionId: uuidV7Schema,
+  })
+  .meta({ id: "ModelSettings" });

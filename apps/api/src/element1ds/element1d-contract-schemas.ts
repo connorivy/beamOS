@@ -8,15 +8,23 @@ export const element1dPropertiesSchema = z.object({
   sectionProfileId: uuidV7Schema,
 });
 
-export const createElement1dRequestSchema = element1dPropertiesSchema.extend({
-  tempId: z.string().trim().min(1).optional(),
-});
+export const createElement1dRequestSchema = element1dPropertiesSchema
+  .extend({
+    tempId: z.string().trim().min(1).optional(),
+  })
+  .meta({ id: "CreateElement1dRequest" });
 
-export const putElement1dRequestSchema = element1dPropertiesSchema.extend({
-  id: uuidV7Schema,
-});
+export const putElement1dRequestSchema = element1dPropertiesSchema
+  .extend({
+    id: uuidV7Schema,
+  })
+  .meta({ id: "PutElement1dRequest" });
 
-export const deleteElement1dRequestSchema = z.string().trim().min(1);
+export const deleteElement1dRequestSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .meta({ id: "DeleteElement1dRequest" });
 
 export const element1dResponseSchema = element1dPropertiesSchema
   .extend({

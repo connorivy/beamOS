@@ -11,20 +11,26 @@ import { Ratio } from "unitsnet-js";
 import type { NodeSnapshot } from "./node-entity";
 import type { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 
-export const batchCreateNodeReqSchema = z.object({
-  params: z.object({
-    modelId: uuidV7Schema,
-    branchName: z.string().trim().min(1),
-  }),
-  body: z.object({
-    nodes: z.array(createNodeRequestSchema).min(1),
-  }),
-});
+export const batchCreateNodeReqSchema = z
+  .object({
+    params: z.object({
+      modelId: uuidV7Schema,
+      branchName: z.string().trim().min(1),
+    }),
+    body: z
+      .object({
+        nodes: z.array(createNodeRequestSchema).min(1),
+      })
+      .meta({ id: "BatchCreateNodeRequest" }),
+  })
+  .meta({ id: "BatchCreateNodeEndpointRequest" });
 
-export const batchCreateNodeResSchema = z.object({
-  nodes: z.array(revisionNodeResponseSchema),
-  tempIdToId: z.record(z.string(), uuidV7Schema),
-});
+export const batchCreateNodeResSchema = z
+  .object({
+    nodes: z.array(revisionNodeResponseSchema),
+    tempIdToId: z.record(z.string(), uuidV7Schema),
+  })
+  .meta({ id: "BatchCreateNodeResponse" });
 
 const toResponseNode = (input: {
   id: string;
