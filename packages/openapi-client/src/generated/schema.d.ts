@@ -769,24 +769,8 @@ export interface components {
             weakAxisPlasticSectionModulus: number;
             strongAxisElasticSectionModulus: number;
             weakAxisElasticSectionModulus: number;
-            /** @constant */
-            discriminator: "STANDARD";
-            tempId?: string;
-        } | {
-            name: string;
-            area: number;
-            strongAxisMomentOfInertia: number;
-            weakAxisMomentOfInertia: number;
-            torsionalConstant: number;
-            warpingConstant: number;
-            strongAxisPlasticSectionModulus: number;
-            weakAxisPlasticSectionModulus: number;
-            strongAxisElasticSectionModulus: number;
-            weakAxisElasticSectionModulus: number;
-            /** @constant */
-            discriminator: "WITH_SHEAR_AREAS";
-            strongAxisShearArea: number;
-            weakAxisShearArea: number;
+            strongAxisShearArea?: number;
+            weakAxisShearArea?: number;
             tempId?: string;
         };
         BatchCreateSectionProfileRequest: {

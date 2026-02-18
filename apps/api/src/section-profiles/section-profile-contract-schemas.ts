@@ -41,14 +41,13 @@ export const sectionProfilePropertiesSchema = z.discriminatedUnion("discriminato
   withShearAreasSectionProfilePropertiesSchema,
 ]).meta({ id: "SectionProfileProperties" });
 
-export const createSectionProfileRequestSchema = z.discriminatedUnion("discriminator", [
-  standardSectionProfilePropertiesSchema.extend({
+export const createSectionProfileRequestSchema = sectionProfileBasePropertiesSchema
+  .extend({
+    strongAxisShearArea: z.number().finite().optional(),
+    weakAxisShearArea: z.number().finite().optional(),
     tempId: z.string().trim().min(1).optional(),
-  }),
-  withShearAreasSectionProfilePropertiesSchema.extend({
-    tempId: z.string().trim().min(1).optional(),
-  }),
-]).meta({ id: "CreateSectionProfileRequest" });
+  })
+  .meta({ id: "CreateSectionProfileRequest" });
 
 export const putSectionProfileRequestSchema = z.discriminatedUnion("discriminator", [
   standardSectionProfilePropertiesSchema.extend({

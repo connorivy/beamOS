@@ -167,49 +167,7 @@ export const batchCreateSectionProfile = defineEndpoint({
   },
 });
 async function batchCreateSectionProfileHandler(
-  req: {
-    params: { projectId: string; branchName: string };
-    body: {
-      units: {
-        area: AreaUnits;
-        areaMomentOfInertia: AreaMomentOfInertiaUnits;
-        warpingMomentOfInertia: WarpingMomentOfInertiaUnits;
-        volume: VolumeUnits;
-      };
-      sectionProfiles: (
-        | {
-            area: number;
-            strongAxisMomentOfInertia: number;
-            weakAxisMomentOfInertia: number;
-            torsionalConstant: number;
-            warpingConstant: number;
-            strongAxisPlasticSectionModulus: number;
-            weakAxisPlasticSectionModulus: number;
-            strongAxisElasticSectionModulus: number;
-            weakAxisElasticSectionModulus: number;
-            name: string;
-            discriminator: "STANDARD";
-            tempId?: string | undefined;
-          }
-        | {
-            area: number;
-            strongAxisMomentOfInertia: number;
-            weakAxisMomentOfInertia: number;
-            torsionalConstant: number;
-            warpingConstant: number;
-            strongAxisPlasticSectionModulus: number;
-            weakAxisPlasticSectionModulus: number;
-            strongAxisElasticSectionModulus: number;
-            weakAxisElasticSectionModulus: number;
-            name: string;
-            discriminator: "WITH_SHEAR_AREAS";
-            strongAxisShearArea: number;
-            weakAxisShearArea: number;
-            tempId?: string | undefined;
-          }
-      )[];
-    };
-  },
+  req: z.infer<typeof batchCreateSectionProfileReqSchema>,
   ctx: AppContext,
   revision: ModelRevisionAggregate,
 ) {
@@ -247,29 +205,38 @@ async function batchCreateSectionProfileHandler(
       tempIdToId[sectionProfile.tempId] = id;
     }
 
+    const hasStrongAxisShearArea = sectionProfile.strongAxisShearArea !== undefined;
+    const hasWeakAxisShearArea = sectionProfile.weakAxisShearArea !== undefined;
+    if (hasStrongAxisShearArea !== hasWeakAxisShearArea) {
+      throw httpError(
+        "strongAxisShearArea and weakAxisShearArea must both be provided or both be omitted",
+        400,
+      );
+    }
+
     const converted = toDomainProperties(sectionProfile, req.body.units);
-    const shearAreas =
-      sectionProfile.discriminator === "WITH_SHEAR_AREAS"
-        ? {
-            strongAxisShearArea: new Area(
-              sectionProfile.strongAxisShearArea,
-              req.body.units.area,
-            ),
-            weakAxisShearArea: new Area(
-              sectionProfile.weakAxisShearArea,
-              req.body.units.area,
-            ),
-          }
-        : {
-            strongAxisShearArea: undefined,
-            weakAxisShearArea: undefined,
-          };
+    const hasShearAreas = hasStrongAxisShearArea && hasWeakAxisShearArea;
+    const shearAreas = hasShearAreas
+      ? {
+          strongAxisShearArea: new Area(
+            sectionProfile.strongAxisShearArea!,
+            req.body.units.area,
+          ),
+          weakAxisShearArea: new Area(
+            sectionProfile.weakAxisShearArea!,
+            req.body.units.area,
+          ),
+        }
+      : {
+          strongAxisShearArea: undefined,
+          weakAxisShearArea: undefined,
+        };
 
     const snapshot: SectionProfileSnapshot = {
       id,
       revisionId: revision.id,
       name: sectionProfile.name,
-      discriminator: sectionProfile.discriminator,
+      discriminator: hasShearAreas ? "WITH_SHEAR_AREAS" : "STANDARD",
       area: converted.area,
       strongAxisMomentOfInertia: converted.strongAxisMomentOfInertia,
       weakAxisMomentOfInertia: converted.weakAxisMomentOfInertia,

@@ -511,6 +511,18 @@ const buildRevisionChanges = (input: {
 
   for (const createSectionProfile of input.req.body.sectionProfiles?.create ??
     []) {
+    const hasStrongAxisShearArea =
+      createSectionProfile.strongAxisShearArea !== undefined;
+    const hasWeakAxisShearArea =
+      createSectionProfile.weakAxisShearArea !== undefined;
+    if (hasStrongAxisShearArea !== hasWeakAxisShearArea) {
+      throw httpError(
+        "strongAxisShearArea and weakAxisShearArea must both be provided or both be omitted",
+        400,
+      );
+    }
+    const hasShearAreas = hasStrongAxisShearArea && hasWeakAxisShearArea;
+
     const id = Bun.randomUUIDv7();
     if (sectionProfileIdByName.has(createSectionProfile.name)) {
       throw httpError(
@@ -528,7 +540,7 @@ const buildRevisionChanges = (input: {
           id,
           revisionId: input.revisionId,
           name: createSectionProfile.name,
-          discriminator: createSectionProfile.discriminator,
+          discriminator: hasShearAreas ? "WITH_SHEAR_AREAS" : "STANDARD",
           area: {
             value: createSectionProfile.area,
             unit: "SquareMeters",
@@ -565,14 +577,14 @@ const buildRevisionChanges = (input: {
             value: createSectionProfile.weakAxisElasticSectionModulus,
             unit: "CubicMeters",
           },
-          ...(createSectionProfile.discriminator === "WITH_SHEAR_AREAS"
+          ...(hasShearAreas
             ? {
                 strongAxisShearArea: {
-                  value: createSectionProfile.strongAxisShearArea,
+                  value: createSectionProfile.strongAxisShearArea!,
                   unit: "SquareMeters",
                 },
                 weakAxisShearArea: {
-                  value: createSectionProfile.weakAxisShearArea,
+                  value: createSectionProfile.weakAxisShearArea!,
                   unit: "SquareMeters",
                 },
               }
