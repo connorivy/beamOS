@@ -2596,18 +2596,16 @@
             ],
             "additionalProperties": false
           },
-          "id": {
+          "newName": {
             "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "minLength": 1
           }
         },
         "required": [
           "name",
           "modulusOfElasticity",
           "modulusOfRigidity",
-          "units",
-          "id"
+          "units"
         ],
         "additionalProperties": false,
         "id": "PutMaterialRequest"
@@ -2638,134 +2636,63 @@
         "id": "CreateModelRevisionSectionProfileOperationsRequest"
       },
       "PutSectionProfileRequest": {
-        "oneOf": [
-          {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
-              "area": {
-                "type": "number"
-              },
-              "strongAxisMomentOfInertia": {
-                "type": "number"
-              },
-              "weakAxisMomentOfInertia": {
-                "type": "number"
-              },
-              "torsionalConstant": {
-                "type": "number"
-              },
-              "warpingConstant": {
-                "type": "number"
-              },
-              "strongAxisPlasticSectionModulus": {
-                "type": "number"
-              },
-              "weakAxisPlasticSectionModulus": {
-                "type": "number"
-              },
-              "strongAxisElasticSectionModulus": {
-                "type": "number"
-              },
-              "weakAxisElasticSectionModulus": {
-                "type": "number"
-              },
-              "discriminator": {
-                "type": "string",
-                "const": "STANDARD"
-              },
-              "sectionProfileName": {
-                "type": "string",
-                "minLength": 1
-              }
-            },
-            "required": [
-              "name",
-              "area",
-              "strongAxisMomentOfInertia",
-              "weakAxisMomentOfInertia",
-              "torsionalConstant",
-              "warpingConstant",
-              "strongAxisPlasticSectionModulus",
-              "weakAxisPlasticSectionModulus",
-              "strongAxisElasticSectionModulus",
-              "weakAxisElasticSectionModulus",
-              "discriminator",
-              "sectionProfileName"
-            ],
-            "additionalProperties": false
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
           },
-          {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
-              "area": {
-                "type": "number"
-              },
-              "strongAxisMomentOfInertia": {
-                "type": "number"
-              },
-              "weakAxisMomentOfInertia": {
-                "type": "number"
-              },
-              "torsionalConstant": {
-                "type": "number"
-              },
-              "warpingConstant": {
-                "type": "number"
-              },
-              "strongAxisPlasticSectionModulus": {
-                "type": "number"
-              },
-              "weakAxisPlasticSectionModulus": {
-                "type": "number"
-              },
-              "strongAxisElasticSectionModulus": {
-                "type": "number"
-              },
-              "weakAxisElasticSectionModulus": {
-                "type": "number"
-              },
-              "discriminator": {
-                "type": "string",
-                "const": "WITH_SHEAR_AREAS"
-              },
-              "strongAxisShearArea": {
-                "type": "number"
-              },
-              "weakAxisShearArea": {
-                "type": "number"
-              },
-              "sectionProfileName": {
-                "type": "string",
-                "minLength": 1
-              }
-            },
-            "required": [
-              "name",
-              "area",
-              "strongAxisMomentOfInertia",
-              "weakAxisMomentOfInertia",
-              "torsionalConstant",
-              "warpingConstant",
-              "strongAxisPlasticSectionModulus",
-              "weakAxisPlasticSectionModulus",
-              "strongAxisElasticSectionModulus",
-              "weakAxisElasticSectionModulus",
-              "discriminator",
-              "strongAxisShearArea",
-              "weakAxisShearArea",
-              "sectionProfileName"
-            ],
-            "additionalProperties": false
+          "area": {
+            "type": "number"
+          },
+          "strongAxisMomentOfInertia": {
+            "type": "number"
+          },
+          "weakAxisMomentOfInertia": {
+            "type": "number"
+          },
+          "torsionalConstant": {
+            "type": "number"
+          },
+          "warpingConstant": {
+            "type": "number"
+          },
+          "strongAxisPlasticSectionModulus": {
+            "type": "number"
+          },
+          "weakAxisPlasticSectionModulus": {
+            "type": "number"
+          },
+          "strongAxisElasticSectionModulus": {
+            "type": "number"
+          },
+          "weakAxisElasticSectionModulus": {
+            "type": "number"
+          },
+          "strongAxisShearArea": {
+            "type": "number"
+          },
+          "weakAxisShearArea": {
+            "type": "number"
+          },
+          "newName": {
+            "type": "string",
+            "minLength": 1
           }
+        },
+        "required": [
+          "name",
+          "area",
+          "strongAxisMomentOfInertia",
+          "weakAxisMomentOfInertia",
+          "torsionalConstant",
+          "warpingConstant",
+          "strongAxisPlasticSectionModulus",
+          "weakAxisPlasticSectionModulus",
+          "strongAxisElasticSectionModulus",
+          "weakAxisElasticSectionModulus"
         ],
+        "additionalProperties": false,
         "id": "PutSectionProfileRequest"
       },
       "DeleteSectionProfileRequest": {

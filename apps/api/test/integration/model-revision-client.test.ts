@@ -36,13 +36,93 @@ afterAll(async () => {
 }, 30_000);
 
 describe("model revision integration", () => {
+  it("updates materials by material name using case-insensitive matching", async () => {
+    const client = createApiClient(baseUrl);
+
+    const createModelResponse = await client.POST("/api/projects", {
+      body: {
+        name: "Material Name Reference Model",
+        description: "Uses material names for material update operations",
+      },
+    });
+
+    expect(createModelResponse.error).toBeUndefined();
+    expect(createModelResponse.response.status).toBe(200);
+    expect(createModelResponse.data).toBeDefined();
+
+    if (!createModelResponse.data) {
+      throw new Error("Expected model response");
+    }
+
+    const projectId = createModelResponse.data.id;
+    const branchName = "main";
+
+    const createRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { projectId, branchName },
+        },
+        body: {
+          materials: {
+            create: [
+              {
+                name: "A36 Steel",
+                modulusOfElasticity: 110000,
+                modulusOfRigidity: 75000,
+                units: { pressure: PressureUnits.Pascals },
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(createRevisionResponse.error).toBeUndefined();
+    expect(createRevisionResponse.response.status).toBe(200);
+    expect(createRevisionResponse.data?.materials).toHaveLength(1);
+
+    const updateRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { projectId, branchName },
+        },
+        body: {
+          materials: {
+            update: [
+              {
+                name: "a36 steel",
+                newName: "A36 Steel Updated",
+                modulusOfElasticity: 120000,
+                modulusOfRigidity: 80000,
+                units: { pressure: PressureUnits.Pascals },
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(updateRevisionResponse.error).toBeUndefined();
+    expect(updateRevisionResponse.response.status).toBe(200);
+    expect(updateRevisionResponse.data?.materials).toHaveLength(1);
+    expect(updateRevisionResponse.data?.materials[0]?.name).toBe(
+      "A36 Steel Updated",
+    );
+    expect(updateRevisionResponse.data?.materials[0]?.modulusOfElasticity).toBe(
+      120000,
+    );
+  });
+
   it("updates and deletes section profiles by section profile name", async () => {
     const client = createApiClient(baseUrl);
 
     const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Section Profile Name Reference Model",
-        description: "Uses section profile names for section profile operations",
+        description:
+          "Uses section profile names for section profile operations",
       },
     });
 
@@ -85,9 +165,8 @@ describe("model revision integration", () => {
           sectionProfiles: {
             update: [
               {
-                sectionProfileName: "W12x26",
-                name: "W12x30",
-                discriminator: "STANDARD",
+                name: "W12x26",
+                newName: "W12x26-Renamed",
                 area: 8.75,
                 strongAxisMomentOfInertia: 220,
                 weakAxisMomentOfInertia: 18.5,
@@ -107,7 +186,12 @@ describe("model revision integration", () => {
     expect(updateRevisionResponse.error).toBeUndefined();
     expect(updateRevisionResponse.response.status).toBe(200);
     expect(updateRevisionResponse.data?.sectionProfiles).toHaveLength(1);
-    expect(updateRevisionResponse.data?.sectionProfiles[0]?.name).toBe("W12x30");
+    expect(updateRevisionResponse.data?.sectionProfiles[0]?.name).toBe(
+      "W12x26-Renamed",
+    );
+    expect(updateRevisionResponse.data?.sectionProfiles[0]?.area.value).toBe(
+      8.75,
+    );
 
     const deleteRevisionResponse = await client.POST(
       "/api/projects/{projectId}/branches/{branchName}/revisions",
@@ -117,7 +201,7 @@ describe("model revision integration", () => {
         },
         body: {
           sectionProfiles: {
-            delete: ["W12x30"],
+            delete: ["W12x26-Renamed"],
           },
         },
       },

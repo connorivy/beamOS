@@ -948,8 +948,7 @@ export interface components {
                 /** @enum {string} */
                 pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
             };
-            /** Format: uuid */
-            id: string;
+            newName?: string;
         };
         CreateModelRevisionSectionProfileOperationsRequest: {
             create?: components["schemas"]["CreateSectionProfileRequest"][];
@@ -967,25 +966,9 @@ export interface components {
             weakAxisPlasticSectionModulus: number;
             strongAxisElasticSectionModulus: number;
             weakAxisElasticSectionModulus: number;
-            /** @constant */
-            discriminator: "STANDARD";
-            sectionProfileName: string;
-        } | {
-            name: string;
-            area: number;
-            strongAxisMomentOfInertia: number;
-            weakAxisMomentOfInertia: number;
-            torsionalConstant: number;
-            warpingConstant: number;
-            strongAxisPlasticSectionModulus: number;
-            weakAxisPlasticSectionModulus: number;
-            strongAxisElasticSectionModulus: number;
-            weakAxisElasticSectionModulus: number;
-            /** @constant */
-            discriminator: "WITH_SHEAR_AREAS";
-            strongAxisShearArea: number;
-            weakAxisShearArea: number;
-            sectionProfileName: string;
+            strongAxisShearArea?: number;
+            weakAxisShearArea?: number;
+            newName?: string;
         };
         DeleteSectionProfileRequest: string;
         CreateModelRevisionLoadCaseOperationsRequest: {

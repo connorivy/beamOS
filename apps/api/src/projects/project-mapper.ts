@@ -1,10 +1,10 @@
-import { projects, type Model as ProjectRow } from "../db/schema";
+import { projects } from "../db/schema";
 import { ProjectEntity } from "./project-aggregate";
 import { projectResponseSchema } from "./create-project";
 import z from "zod";
 
 export const projectMapper = {
-  toDomain(row: ProjectRow): ProjectEntity {
+  toDomain(row: typeof projects.$inferSelect): ProjectEntity {
     return ProjectEntity.rehydrate({
       id: row.id,
       name: row.name,

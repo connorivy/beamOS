@@ -19,7 +19,7 @@ export const createMaterialRequestSchema =
 // Put material request schema (replaces update)
 export const putMaterialRequestSchema = materialPropertiesSchema
   .extend({
-    id: uuidV7Schema,
+    newName: z.string().trim().min(1).optional(),
   })
   .meta({ id: "PutMaterialRequest" });
 

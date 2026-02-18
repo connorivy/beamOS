@@ -248,37 +248,6 @@ const removeByName = <T extends { name: string }>(
   return filtered.length > 0 ? filtered : undefined;
 };
 
-const upsertSectionProfileUpdateByReferenceName = <
-  T extends { sectionProfileName: string },
->(
-  items: T[] | null | undefined,
-  nextItem: T,
-): T[] => {
-  const base = items ?? [];
-  const index = base.findIndex(
-    (item) => item.sectionProfileName === nextItem.sectionProfileName,
-  );
-  if (index === -1) {
-    return [...base, nextItem];
-  }
-
-  const next = base.slice();
-  next[index] = nextItem;
-  return next;
-};
-
-const removeSectionProfileUpdateByReferenceName = <
-  T extends { sectionProfileName: string },
->(
-  items: T[] | null | undefined,
-  sectionProfileName: string,
-): T[] | undefined => {
-  const filtered = (items ?? []).filter(
-    (item) => item.sectionProfileName !== sectionProfileName,
-  );
-  return filtered.length > 0 ? filtered : undefined;
-};
-
 const addUniqueDelete = (
   items: string[] | null | undefined,
   id: string,
@@ -718,7 +687,7 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
       const sectionProfiles = builder.ensureSectionProfiles();
       const createdNotSaved = Boolean(
         (sectionProfiles.create ?? []).find(
-          (candidate) => candidate.name === sectionProfile.sectionProfileName,
+          (candidate) => candidate.name === sectionProfile.name,
         ),
       );
 
@@ -738,7 +707,8 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
             sectionProfile.strongAxisElasticSectionModulus,
           weakAxisElasticSectionModulus:
             sectionProfile.weakAxisElasticSectionModulus,
-          ...(sectionProfile.discriminator === "WITH_SHEAR_AREAS"
+          ...(sectionProfile.strongAxisShearArea !== undefined &&
+          sectionProfile.weakAxisShearArea !== undefined
             ? {
                 strongAxisShearArea: sectionProfile.strongAxisShearArea,
                 weakAxisShearArea: sectionProfile.weakAxisShearArea,
@@ -748,14 +718,14 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
 
         sectionProfiles.create = removeByName(
           sectionProfiles.create,
-          sectionProfile.sectionProfileName,
+          sectionProfile.name,
         );
         sectionProfiles.create = upsertByName(
           sectionProfiles.create,
           createFromUpdate,
         );
       } else {
-        sectionProfiles.update = upsertSectionProfileUpdateByReferenceName(
+        sectionProfiles.update = upsertByName(
           sectionProfiles.update ?? [],
           sectionProfile,
         );
@@ -785,7 +755,7 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
         sectionProfiles.create,
         sectionProfileName,
       );
-      sectionProfiles.update = removeSectionProfileUpdateByReferenceName(
+      sectionProfiles.update = removeByName(
         sectionProfiles.update,
         sectionProfileName,
       );

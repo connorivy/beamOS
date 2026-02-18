@@ -268,12 +268,19 @@ const buildRevisionChanges = (input: {
   currentPointLoadsById: Map<string, PointLoadSnapshot>;
 }): RevisionChangeEntity[] => {
   const changes: RevisionChangeEntity[] = [];
+  const normalizeName = (name: string) => name.trim().toLowerCase();
   const materialIdByName = new Map<string, string>();
+  const currentMaterialIdByNormalizedName = new Map<string, string>();
   for (const material of input.currentMaterialsById.values()) {
     if (materialIdByName.has(material.name)) {
       throw httpError(`Duplicate material name "${material.name}"`, 400);
     }
     materialIdByName.set(material.name, material.id);
+    const normalizedName = normalizeName(material.name);
+    if (currentMaterialIdByNormalizedName.has(normalizedName)) {
+      throw httpError(`Duplicate material name "${material.name}"`, 400);
+    }
+    currentMaterialIdByNormalizedName.set(normalizedName, material.id);
   }
   const sectionProfileIdByName = new Map<string, string>();
   for (const sectionProfile of input.currentSectionProfilesById.values()) {
@@ -388,13 +395,19 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  const materialUpdateIds = new Set(
-    (input.req.body.materials?.update ?? []).map((material) => material.id),
+  const materialUpdateNames = new Set(
+    (input.req.body.materials?.update ?? []).map((material) =>
+      normalizeName(material.name),
+    ),
   );
-  for (const materialId of materialUpdateIds) {
+  for (const materialName of materialUpdateNames) {
+    const materialId = currentMaterialIdByNormalizedName.get(materialName);
+    if (!materialId) {
+      throw httpError(`Material "${materialName}" not found`, 400);
+    }
     const existing = input.currentMaterialsById.get(materialId);
     if (!existing) {
-      throw httpError(`Material ${materialId} not found`, 400);
+      throw httpError(`Material "${materialName}" not found`, 400);
     }
     materialIdByName.delete(existing.name);
   }
@@ -441,24 +454,31 @@ const buildRevisionChanges = (input: {
   }
 
   for (const putMaterial of input.req.body.materials?.update ?? []) {
-    const existing = input.currentMaterialsById.get(putMaterial.id);
+    const putMaterialId = currentMaterialIdByNormalizedName.get(
+      normalizeName(putMaterial.name),
+    );
+    if (!putMaterialId) {
+      throw httpError(`Material "${putMaterial.name}" not found`, 400);
+    }
+    const existing = input.currentMaterialsById.get(putMaterialId);
     if (!existing) {
-      throw httpError(`Material ${putMaterial.id} not found`, 400);
+      throw httpError(`Material "${putMaterial.name}" not found`, 400);
     }
-    if (materialIdByName.has(putMaterial.name)) {
-      throw httpError(`Duplicate material name "${putMaterial.name}"`, 400);
+    const targetMaterialName = putMaterial.newName ?? putMaterial.name;
+    if (materialIdByName.has(targetMaterialName)) {
+      throw httpError(`Duplicate material name "${targetMaterialName}"`, 400);
     }
-    materialIdByName.set(putMaterial.name, putMaterial.id);
+    materialIdByName.set(targetMaterialName, putMaterialId);
 
     changes.push(
       toEntity({
         entityType: "material",
-        entityId: putMaterial.id,
+        entityId: putMaterialId,
         op: "update",
         payload: {
-          id: putMaterial.id,
+          id: putMaterialId,
           revisionId: input.revisionId,
-          name: putMaterial.name,
+          name: targetMaterialName,
           pressureE: {
             value: new Pressure(
               putMaterial.modulusOfElasticity,
@@ -491,7 +511,7 @@ const buildRevisionChanges = (input: {
 
   const sectionProfileUpdateNames = new Set(
     (input.req.body.sectionProfiles?.update ?? []).map(
-      (sectionProfile) => sectionProfile.sectionProfileName,
+      (sectionProfile) => sectionProfile.name,
     ),
   );
   for (const sectionProfileName of sectionProfileUpdateNames) {
@@ -607,29 +627,36 @@ const buildRevisionChanges = (input: {
 
   for (const putSectionProfile of input.req.body.sectionProfiles?.update ??
     []) {
+    const targetSectionProfileName =
+      putSectionProfile.newName ?? putSectionProfile.name;
     const sectionProfileId = currentSectionProfileIdByName.get(
-      putSectionProfile.sectionProfileName,
+      putSectionProfile.name,
     );
     if (!sectionProfileId) {
-      throw httpError(
-        `Section profile "${putSectionProfile.sectionProfileName}" not found`,
-        400,
-      );
+      throw httpError(`Section profile "${putSectionProfile.name}" not found`, 400);
     }
     const existing = input.currentSectionProfilesById.get(sectionProfileId);
     if (!existing) {
+      throw httpError(`Section profile "${putSectionProfile.name}" not found`, 400);
+    }
+    if (sectionProfileIdByName.has(targetSectionProfileName)) {
       throw httpError(
-        `Section profile "${putSectionProfile.sectionProfileName}" not found`,
+        `Duplicate section profile name "${targetSectionProfileName}"`,
         400,
       );
     }
-    if (sectionProfileIdByName.has(putSectionProfile.name)) {
+    const hasStrongAxisShearArea =
+      putSectionProfile.strongAxisShearArea !== undefined;
+    const hasWeakAxisShearArea =
+      putSectionProfile.weakAxisShearArea !== undefined;
+    if (hasStrongAxisShearArea !== hasWeakAxisShearArea) {
       throw httpError(
-        `Duplicate section profile name "${putSectionProfile.name}"`,
+        "strongAxisShearArea and weakAxisShearArea must both be provided or both be omitted",
         400,
       );
     }
-    sectionProfileIdByName.set(putSectionProfile.name, sectionProfileId);
+    const hasShearAreas = hasStrongAxisShearArea && hasWeakAxisShearArea;
+    sectionProfileIdByName.set(targetSectionProfileName, sectionProfileId);
 
     changes.push(
       toEntity({
@@ -639,8 +666,8 @@ const buildRevisionChanges = (input: {
         payload: {
           id: sectionProfileId,
           revisionId: input.revisionId,
-          name: putSectionProfile.name,
-          discriminator: putSectionProfile.discriminator,
+          name: targetSectionProfileName,
+          discriminator: hasShearAreas ? "WITH_SHEAR_AREAS" : "STANDARD",
           area: {
             value: putSectionProfile.area,
             unit: "SquareMeters",
@@ -677,14 +704,14 @@ const buildRevisionChanges = (input: {
             value: putSectionProfile.weakAxisElasticSectionModulus,
             unit: "CubicMeters",
           },
-          ...(putSectionProfile.discriminator === "WITH_SHEAR_AREAS"
+          ...(hasShearAreas
             ? {
                 strongAxisShearArea: {
-                  value: putSectionProfile.strongAxisShearArea,
+                  value: putSectionProfile.strongAxisShearArea!,
                   unit: "SquareMeters",
                 },
                 weakAxisShearArea: {
-                  value: putSectionProfile.weakAxisShearArea,
+                  value: putSectionProfile.weakAxisShearArea!,
                   unit: "SquareMeters",
                 },
               }
