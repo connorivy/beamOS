@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
@@ -20,8 +19,7 @@ describe("model settings integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Model Settings Model",
-        authorId: randomUUID(),
-        message: "Create model for settings test",
+        description: "Create model for settings test",
       },
     });
 
@@ -33,8 +31,8 @@ describe("model settings integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
 
     const putSettings = async (body: {
       units: Record<string, string>;

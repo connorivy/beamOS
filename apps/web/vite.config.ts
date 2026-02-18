@@ -12,13 +12,8 @@ export default defineConfig(({ mode }) => {
 
   const additionalWebPluginsModule =
     env.BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE ??
-    process.env.BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE;
-
-  if (!additionalWebPluginsModule) {
-    throw new Error(
-      "Missing BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE (or VITE_BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE) in environment",
-    );
-  }
+    process.env.BEAMOS_WEB_ADDITIONAL_PLUGINS_MODULE ??
+    "./src/plugins/additional-plugins.ts";
   const resolvedAdditionalWebPluginsModule =
     additionalWebPluginsModule.startsWith(".") ||
     additionalWebPluginsModule.startsWith("/")

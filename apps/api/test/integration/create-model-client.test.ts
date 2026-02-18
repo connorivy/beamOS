@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import {
   setupIntegrationApp,
@@ -22,8 +21,7 @@ describe("typed openapi client integration", () => {
 
     const requestBody = {
       name: "Integration Test Model",
-      authorId: randomUUID(),
-      message: "Create a model through typed OpenAPI client",
+      description: "Create a model through typed OpenAPI client",
     };
 
     const { data, error, response } = await client.POST("/api/models", {
@@ -38,16 +36,16 @@ describe("typed openapi client integration", () => {
       throw new Error("Expected response body from create model API");
     }
 
-    expect(data.model.name).toBe(requestBody.name);
-    expect(data.model.id).toMatch(/^[0-9a-f-]{36}$/i);
-    expect(data.model.description).toBe("");
+    expect(data.name).toBe(requestBody.name);
+    expect(data.id).toMatch(/^[0-9a-f-]{36}$/i);
+    expect(data.description).toBe(requestBody.description);
 
     const mainBranchRevisionResponse = await client.GET(
       "/api/models/{modelId}/branches/{branchName}/revision",
       {
         params: {
           path: {
-            modelId: data.model.id,
+            modelId: data.id,
             branchName: "main",
           },
         },
@@ -62,11 +60,11 @@ describe("typed openapi client integration", () => {
       throw new Error("Expected response body from get model revision API");
     }
 
-    expect(mainBranchRevisionResponse.data.modelRevision.id).toBe(
-      data.version.revisionId,
+    expect(mainBranchRevisionResponse.data.modelRevision.id).toMatch(
+      /^[0-9a-f-]{36}$/i,
     );
     expect(mainBranchRevisionResponse.data.modelRevision.modelId).toBe(
-      data.model.id,
+      data.id,
     );
     expect(mainBranchRevisionResponse.data.modelRevision.name).toBe(
       requestBody.name,
@@ -82,7 +80,7 @@ describe("typed openapi client integration", () => {
       {
         params: {
           path: {
-            modelId: data.model.id,
+            modelId: data.id,
             branchName: "missing",
           },
         },
@@ -97,8 +95,7 @@ describe("typed openapi client integration", () => {
     const client = createApiClient(baseUrl);
     const requestBody = {
       name: "List Models Integration Test",
-      authorId: randomUUID(),
-      message: "Create a model for list endpoint",
+      description: "Create a model for list endpoint",
     };
 
     const createResponse = await client.POST("/api/models", {
@@ -118,7 +115,7 @@ describe("typed openapi client integration", () => {
       {
         params: {
           path: {
-            modelId: createResponse.data.model.id,
+            modelId: createResponse.data.id,
             branchName: "main",
           },
         },
@@ -133,22 +130,14 @@ describe("typed openapi client integration", () => {
       throw new Error("Expected response body from get model revision API");
     }
 
-    const listResponse = await fetch(`${baseUrl}/api/models`);
+    const listResponse = await client.GET("/api/models");
 
-    expect(listResponse.status).toBe(200);
+    expect(listResponse.error).toBeUndefined();
+    expect(listResponse.response.status).toBe(200);
+    expect(listResponse.data).toBeDefined();
 
-    const body = (await listResponse.json()) as {
-      models: Array<{
-        id: string;
-        name: string;
-        description: string;
-        lastModified: string | null;
-        role: "Owner" | "Contributor" | "Reviewer";
-      }>;
-    };
-
-    const listedModel = body.models.find(
-      (model) => model.id === createResponse.data?.model.id,
+    const listedModel = listResponse.data?.find(
+      (model) => model.id === createResponse.data?.id,
     );
 
     expect(listedModel).toBeDefined();
@@ -158,7 +147,7 @@ describe("typed openapi client integration", () => {
     }
 
     expect(listedModel.name).toBe(requestBody.name);
-    expect(listedModel.description).toBe("");
+    expect(listedModel.description).toBe(requestBody.description);
     expect(listedModel.lastModified).toBe(
       revisionResponse.data.modelRevision.createdAt,
     );

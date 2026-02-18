@@ -2,29 +2,25 @@ import { defineEndpoint } from "../contracts/endpoint";
 import { ModelAggregate } from "../models/model-aggregate";
 import type { AppContext } from "../common/types";
 import { z } from "zod";
+import { modelMapper } from "./model-mapper";
+import { uuidV7Schema } from "src/common/uuid";
 
-const uuidSchema = z.uuid();
-const createModelRequestBodySchema = z
-  .object({
-    name: z.string().min(1),
-    authorId: uuidSchema,
-    description: z.string().min(1),
-  })
-  .meta({ id: "CreateModelRequest" });
-
-export const createModelReqSchema = z
-  .object({
-    body: createModelRequestBodySchema,
-  })
-  .meta({ id: "CreateModelEndpointRequest" });
+const createModelReqSchema = z.object({
+  body: z
+    .object({
+      name: z.string().min(1),
+      description: z.string().min(1),
+    })
+    .meta({ id: "CreateModelRequest" }),
+});
 
 export const modelResponseSchema = z
   .object({
-    id: uuidSchema,
+    id: uuidV7Schema,
     name: z.string(),
     description: z.string(),
-    lastModified: z.date(),
-    role: z.string(),
+    lastModified: z.string().datetime(),
+    role: z.enum(["Owner", "Contributor", "Reviewer"]),
   })
   .meta({ id: "Model" });
 
@@ -40,17 +36,8 @@ export const createModel = defineEndpoint({
     });
     const createdModel = await ctx.services.modelRepository.create({
       model,
-      authorId: req.body.authorId,
       message: req.body.description,
     });
-    return {
-      id: createdModel.id,
-      name: createdModel.name,
-      description: createdModel.description,
-      lastModified: createdModel.modelBranchHeads
-        ? createdModel.modelBranchHeads[0].updatedAt
-        : new Date(),
-      role: "Owner" as const,
-    };
+    return modelMapper.toResponse(createdModel);
   },
 });

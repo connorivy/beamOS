@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import {
   AreaMomentOfInertiaUnits,
@@ -42,8 +41,7 @@ describe("model revision integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Create Revision Operations Model",
-        authorId: randomUUID(),
-        message: "Create base model",
+        description: "Create base model",
       },
     });
 
@@ -55,8 +53,8 @@ describe("model revision integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
 
     const createRevisionResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/revisions",
@@ -178,8 +176,7 @@ describe("model revision integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Stacked Revision Model",
-        authorId: randomUUID(),
-        message: "Create base model",
+        description: "Create base model",
       },
     });
 
@@ -191,8 +188,8 @@ describe("model revision integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
 
     const materialRev1Response = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/materials/batch",

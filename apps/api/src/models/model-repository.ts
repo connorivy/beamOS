@@ -1,5 +1,9 @@
-import { eq, inArray, max } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
+import {
+  DEFAULT_MODEL_REVISION_BRANCH_NAME,
+  ModelRevisionAggregate,
+} from "../model-revisions/model-revision-aggregate";
 import {
   modelBranchHeads,
   modelRevisions,
@@ -28,15 +32,7 @@ const applyModelChanges = (input: {
 };
 
 export type ModelRepository = {
-  getUserModels: () => Promise<
-    {
-      id: string;
-      name: string;
-      description: string;
-      lastModified: Date | null;
-      role: "Owner" | "Contributor" | "Reviewer";
-    }[]
-  >;
+  getUserModels: () => Promise<ModelAggregate[]>;
   getById: (input: {
     modelId: string;
     revisionId?: string;
@@ -44,7 +40,6 @@ export type ModelRepository = {
   }) => Promise<ModelAggregate | undefined>;
   create: (input: {
     model: ModelAggregate;
-    authorId: string;
     message: string;
   }) => Promise<ModelAggregate>;
   update: (input: { model: ModelAggregate }) => Promise<ModelAggregate>;
@@ -52,35 +47,35 @@ export type ModelRepository = {
 
 export const drizzleModelRepository: ModelRepository = {
   async getUserModels() {
-    const latestRevisionByModel = getDb()
-      .select({
-        modelId: modelRevisions.modelId,
-        lastModified: max(modelRevisions.createdAt).as("lastModified"),
-      })
+    const modelRows = await getDb().select().from(models);
+
+    if (modelRows.length === 0) {
+      return [];
+    }
+
+    const modelIds = modelRows.map((row) => row.id);
+    const revisionRows = await getDb()
+      .selectDistinctOn([modelRevisions.modelId])
       .from(modelRevisions)
-      .groupBy(modelRevisions.modelId)
-      .as("latest_revision_by_model");
-
-    const modelRows = await getDb()
-      .select({
-        id: models.id,
-        name: models.name,
-        description: models.description,
-        lastModified: latestRevisionByModel.lastModified,
-      })
-      .from(models)
-      .leftJoin(
-        latestRevisionByModel,
-        eq(models.id, latestRevisionByModel.modelId),
+      .where(inArray(modelRevisions.modelId, modelIds))
+      .orderBy(
+        modelRevisions.modelId,
+        desc(modelRevisions.createdAt),
+        desc(modelRevisions.id),
       );
+    const latestRevisionByModelId = new Map(
+      revisionRows.map((row) => [row.modelId, row]),
+    );
 
-    return modelRows.map((model) => ({
-      id: model.id,
-      name: model.name,
-      description: model.description,
-      lastModified: model.lastModified,
-      role: "Owner" as const,
-    }));
+    return modelRows.map((row) => {
+      const latestRevision = latestRevisionByModelId.get(row.id);
+      return ModelAggregate.rehydrate({
+        ...modelMapper.toDomain(row).toSnapshot(),
+        modelRevisions: latestRevision
+          ? [toLightweightModelRevisionAggregate(latestRevision)]
+          : null,
+      });
+    });
   },
 
   async getById(input) {
@@ -136,15 +131,18 @@ export const drizzleModelRepository: ModelRepository = {
     const model = await getDb().transaction(async (tx) => {
       const row = await tx.insert(models).values(persistence).returning();
 
-      await tx.insert(modelRevisions).values({
-        id: initialRevisionId,
-        modelId: input.model.id,
-        modelName: input.model.name,
-        parentRevisionId: null,
-        secondParentRevisionId: null,
-        authorId: input.authorId,
-        message: input.message,
-      });
+      const insertedRevisions = await tx
+        .insert(modelRevisions)
+        .values({
+          id: initialRevisionId,
+          modelId: input.model.id,
+          modelName: input.model.name,
+          parentRevisionId: null,
+          secondParentRevisionId: null,
+          authorId: Bun.randomUUIDv7(),
+          message: input.message,
+        })
+        .returning();
       const insertedModelBranchHead = await tx
         .insert(modelBranchHeads)
         .values({
@@ -158,6 +156,7 @@ export const drizzleModelRepository: ModelRepository = {
         id: row[0].id,
         name: row[0].name,
         description: row[0].description,
+        modelRevisions: [toLightweightModelRevisionAggregate(insertedRevisions[0])],
         modelBranchHeads: [
           modelBranchHeadMapper.toDomain(insertedModelBranchHead[0]),
         ],
@@ -204,6 +203,27 @@ const listModelBranchHeads = async (modelId: string) => {
     .from(modelBranchHeads)
     .where(eq(modelBranchHeads.modelId, modelId));
   return rows.map((row) => modelBranchHeadMapper.toDomain(row));
+};
+
+const toLightweightModelRevisionAggregate = (
+  row: typeof modelRevisions.$inferSelect,
+): ModelRevisionAggregate => {
+  return ModelRevisionAggregate.rehydrate({
+    id: row.id,
+    modelId: row.modelId,
+    branchName: DEFAULT_MODEL_REVISION_BRANCH_NAME,
+    name: row.modelName,
+    parentRevisionId: row.parentRevisionId,
+    secondParentRevisionId: row.secondParentRevisionId,
+    authorId: row.authorId,
+    message: row.message,
+    createdAt: row.createdAt,
+    nodes: [],
+    materials: [],
+    modelSettings: null,
+    sectionProfiles: [],
+    element1ds: [],
+  });
 };
 
 const loadRevisionHistory = async (input: {

@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
@@ -21,8 +20,7 @@ describe("typed node api client integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Node Integration Model",
-        authorId: randomUUID(),
-        message: "Create model for nodes test",
+        description: "Create model for nodes test",
       },
     });
 
@@ -34,8 +32,8 @@ describe("typed node api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
 
     const batchCreateResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/nodes/batch",
@@ -163,8 +161,7 @@ describe("typed node api client integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Duplicate Node TempId Model",
-        authorId: randomUUID(),
-        message: "Create model for duplicate node tempId test",
+        description: "Create model for duplicate node tempId test",
       },
     });
 
@@ -175,8 +172,8 @@ describe("typed node api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
     const batchCreateResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/nodes/batch",
       {

@@ -2,6 +2,7 @@ import { defineEndpoint } from "../contracts/endpoint";
 import type { AppContext } from "../common/types";
 import { z } from "zod";
 import { modelResponseSchema } from "./create-model";
+import { modelMapper } from "./model-mapper";
 
 const getModelsReqSchema = z.object({});
 
@@ -16,12 +17,6 @@ export const getModels = defineEndpoint({
   res: getModelsResSchema,
   async handler(_req, ctx: AppContext) {
     const models = await ctx.services.modelRepository.getUserModels();
-    return models.map((model) => ({
-      id: model.id,
-      name: model.name,
-      description: model.description,
-      lastModified: model.lastModified?.toISOString() ?? null,
-      role: model.role,
-    }));
+    return models.map((model) => modelMapper.toResponse(model));
   },
 });

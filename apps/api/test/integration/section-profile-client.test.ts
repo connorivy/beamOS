@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import {
   AreaMomentOfInertiaUnits,
@@ -28,8 +27,7 @@ describe("typed section profile api client integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Section Profile Integration Model",
-        authorId: randomUUID(),
-        message: "Create model for section profile test",
+        description: "Create model for section profile test",
       },
     });
 
@@ -41,8 +39,8 @@ describe("typed section profile api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
 
     const imperialBatchCreateResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",
@@ -187,7 +185,9 @@ describe("typed section profile api client integration", () => {
       expect(getResponse.data).toBeDefined();
 
       if (!getResponse.data) {
-        throw new Error(`Expected section profile response for ${sectionProfileId}`);
+        throw new Error(
+          `Expected section profile response for ${sectionProfileId}`,
+        );
       }
 
       expect({
@@ -204,8 +204,7 @@ describe("typed section profile api client integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Duplicate Section Profile TempId Model",
-        authorId: randomUUID(),
-        message: "Create model for duplicate section profile tempId test",
+        description: "Create model for duplicate section profile tempId test",
       },
     });
 
@@ -216,8 +215,8 @@ describe("typed section profile api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
 
     const batchCreateResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",

@@ -581,12 +581,14 @@ export interface components {
             id: string;
             name: string;
             description: string;
+            /** Format: date-time */
+            lastModified: string;
+            /** @enum {string} */
+            role: "Owner" | "Contributor" | "Reviewer";
         };
         CreateModelRequest: {
             name: string;
-            /** Format: uuid */
-            authorId: string;
-            message: string;
+            description: string;
         };
         ModelsArray: components["schemas"]["Model"][];
         Node: {

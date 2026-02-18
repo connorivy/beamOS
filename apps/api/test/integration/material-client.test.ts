@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { randomUUID } from "node:crypto";
 import { createApiClient } from "@beamos/openapi-client";
 import { PressureUnits } from "unitsnet-js";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
@@ -22,8 +21,7 @@ describe("typed material api client integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Material Integration Model",
-        authorId: randomUUID(),
-        message: "Create model for materials test",
+        description: "Create model for materials test",
       },
     });
 
@@ -35,8 +33,8 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
     const batchCreateResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/materials/batch",
       {
@@ -140,8 +138,7 @@ describe("typed material api client integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Duplicate TempId Model",
-        authorId: randomUUID(),
-        message: "Create model for duplicate tempId test",
+        description: "Create model for duplicate tempId test",
       },
     });
 
@@ -152,8 +149,8 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
     const batchCreateResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/materials/batch",
       {
@@ -194,8 +191,7 @@ describe("typed material api client integration", () => {
     const createModelResponse = await client.POST("/api/models", {
       body: {
         name: "Material Batch Put Model",
-        authorId: randomUUID(),
-        message: "Create model for batch put test",
+        description: "Create model for batch put test",
       },
     });
 
@@ -206,8 +202,8 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.model.id;
-    const branchName = createModelResponse.data.version.branchName;
+    const modelId = createModelResponse.data.id;
+    const branchName = "main";
 
     const batchCreateResponse = await client.POST(
       "/api/models/{modelId}/branches/{branchName}/materials/batch",
