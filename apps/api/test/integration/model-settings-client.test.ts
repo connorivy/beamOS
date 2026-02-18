@@ -16,7 +16,7 @@ describe("model settings integration", () => {
   it("stores latest model settings in model revision aggregate", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Model Settings Model",
         description: "Create model for settings test",
@@ -31,7 +31,7 @@ describe("model settings integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const putSettings = async (body: {
@@ -39,7 +39,7 @@ describe("model settings integration", () => {
       yAxisUp: boolean;
     }) =>
       fetch(
-        `${baseUrl}/api/models/${modelId}/branches/${branchName}/model-settings`,
+        `${baseUrl}/api/projects/${projectId}/branches/${branchName}/model-settings`,
         {
           method: "PUT",
           headers: {
@@ -76,10 +76,10 @@ describe("model settings integration", () => {
     expect(secondResponse.status).toBe(200);
 
     const getRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
       },
     );

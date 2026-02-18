@@ -38,7 +38,7 @@ describe("model revision integration", () => {
   it("creates a model revision from batched entity operations", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Create Revision Operations Model",
         description: "Create base model",
@@ -53,14 +53,14 @@ describe("model revision integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const createRevisionResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/revisions",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           nodes: {
@@ -110,12 +110,13 @@ describe("model revision integration", () => {
       throw new Error("Expected create model revision response");
     }
 
-    expect(createRevisionResponse.data.modelRevision.modelId).toBe(modelId);
+    expect(createRevisionResponse.data.modelRevision.projectId).toBe(projectId);
     expect(createRevisionResponse.data.modelRevision.nodes).toHaveLength(1);
-    expect(createRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(
-      1,
-    );
-    const createdNodeId = createRevisionResponse.data.modelRevision.nodes[0]?.id;
+    expect(
+      createRevisionResponse.data.modelRevision.sectionProfiles,
+    ).toHaveLength(1);
+    const createdNodeId =
+      createRevisionResponse.data.modelRevision.nodes[0]?.id;
     expect(createdNodeId).toBeDefined();
 
     if (!createdNodeId) {
@@ -123,10 +124,10 @@ describe("model revision integration", () => {
     }
 
     const deleteRevisionResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/revisions",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           nodes: {
@@ -170,7 +171,7 @@ describe("model revision integration", () => {
   it("gets a branch model revision built by stacking revisions", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Stacked Revision Model",
         description: "Create base model",
@@ -185,14 +186,14 @@ describe("model revision integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const materialRev1Response = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           materials: [
@@ -219,10 +220,10 @@ describe("model revision integration", () => {
     const materialRev1Id = materialRev1Response.data.tempIdToId["mat-rev1"];
 
     const sectionProfileRev1Response = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",
+      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           units: {
@@ -264,10 +265,10 @@ describe("model revision integration", () => {
       sectionProfileRev1Response.data.tempIdToId["sp-rev1"];
 
     const elementRev1Response = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/element1ds/batch",
+      "/api/projects/{projectId}/branches/{branchName}/element1ds/batch",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           element1ds: [
@@ -291,14 +292,15 @@ describe("model revision integration", () => {
       throw new Error("Expected element1d batch response for revision 1");
     }
 
-    const elementRev1RevisionId = elementRev1Response.data.element1ds[0]?.revisionId;
+    const elementRev1RevisionId =
+      elementRev1Response.data.element1ds[0]?.revisionId;
     expect(elementRev1RevisionId).toBeDefined();
 
     const materialRev2Response = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           materials: [
@@ -325,10 +327,10 @@ describe("model revision integration", () => {
     const materialRev2Id = materialRev2Response.data.tempIdToId["mat-rev2"];
 
     const sectionProfileRev2Response = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",
+      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           units: {
@@ -373,10 +375,10 @@ describe("model revision integration", () => {
       sectionProfileRev2Response.data.tempIdToId["sp-rev2"];
 
     const elementRev2Response = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/element1ds/batch",
+      "/api/projects/{projectId}/branches/{branchName}/element1ds/batch",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
         body: {
           element1ds: [
@@ -400,15 +402,16 @@ describe("model revision integration", () => {
       throw new Error("Expected element1d batch response for revision 2");
     }
 
-    const elementRev2RevisionId = elementRev2Response.data.element1ds[0]?.revisionId;
+    const elementRev2RevisionId =
+      elementRev2Response.data.element1ds[0]?.revisionId;
     expect(elementRev2RevisionId).toBeDefined();
 
     const getModelRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },

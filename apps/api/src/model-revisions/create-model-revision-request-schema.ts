@@ -52,7 +52,7 @@ const sectionProfileOperationsRequestSchema = z
 export const createModelRevisionReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidV7Schema,
+      projectId: uuidV7Schema,
       branchName: z.string().trim().min(1),
     }),
     body: z

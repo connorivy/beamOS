@@ -4,18 +4,18 @@ exports[`typed node api client integration batch creates nodes and verifies pers
 [
   {
     "id": "<db-id>",
-    "modelId": "<model-id>",
     "nodeTypeDescriminator": "external",
+    "projectId": "<project-id>",
   },
   {
     "id": "<db-id>",
-    "modelId": "<model-id>",
     "nodeTypeDescriminator": "external",
+    "projectId": "<project-id>",
   },
   {
     "id": "<db-id>",
-    "modelId": "<model-id>",
     "nodeTypeDescriminator": "external",
+    "projectId": "<project-id>",
   },
 ]
 `;

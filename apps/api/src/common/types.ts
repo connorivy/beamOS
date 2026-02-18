@@ -2,7 +2,7 @@ import type { User } from "../contracts/user";
 import type { ModelBranchHeadAggregate } from "../model-branch-heads/model-branch-head-aggregate";
 import type { ModelRevisionAggregate } from "../model-revisions/model-revision-aggregate";
 import type { NodeSnapshot } from "../nodes/node-entity";
-import { ModelRepository } from "src/models/model-repository";
+import { ProjectRepository } from "src/projects/project-repository";
 import type { MaterialRepository } from "../materials/material-repository";
 import type { SectionProfileRepository } from "../section-profiles/section-profile-repository";
 import type { Element1dRepository } from "../element1ds/element1d-repository";
@@ -45,9 +45,8 @@ export type UserRepository = {
 
 export type ModelRevisionCommitInput = {
   id: string;
-  modelId: string;
+  projectId: string;
   branchName?: string;
-  name: string;
   parentRevisionId?: string | null;
   secondParentRevisionId?: string | null;
   authorId: string;
@@ -66,12 +65,12 @@ export type ModelRevisionRepository = {
     tx?: DbTransaction;
   }) => Promise<ModelRevisionAggregate>;
   getBranchHead: (
-    modelId: string,
+    projectId: string,
     branchName: string,
   ) => Promise<ModelBranchHeadAggregate | undefined>;
-  listBranchHeads: (modelId: string) => Promise<ModelBranchHeadAggregate[]>;
+  listBranchHeads: (projectId: string) => Promise<ModelBranchHeadAggregate[]>;
   createBranch: (input: {
-    modelId: string;
+    projectId: string;
     branchName: string;
     headRevisionId: string;
   }) => Promise<void>;
@@ -79,7 +78,7 @@ export type ModelRevisionRepository = {
 
 export type AppServices = {
   userRepository: UserRepository;
-  modelRepository: ModelRepository;
+  modelRepository: ProjectRepository;
   modelRevisionRepository: ModelRevisionRepository;
   materialRepository: MaterialRepository;
   sectionProfileRepository: SectionProfileRepository;

@@ -1,14 +1,9 @@
 import { and, eq } from "drizzle-orm";
 import { getDb } from "./client";
-import {
-  modelBranchHeads,
-  modelRevisions,
-  models,
-  users,
-} from "./schema";
+import { modelBranchHeads, modelRevisions, projects, users } from "./schema";
 
 const USER_ID = "00000000-0000-4000-8000-000000000001";
-const MODEL_ID = "10000000-0000-4000-8000-000000000001";
+const PROJECT_ID = "10000000-0000-4000-8000-000000000001";
 const INITIAL_REVISION_ID = "30000000-0000-4000-8000-000000000001";
 const SYSTEM_AUTHOR_ID = "40000000-0000-4000-8000-000000000001";
 
@@ -24,25 +19,24 @@ export const ensureSeedData = async () => {
 
   const existingModel = await getDb()
     .select()
-    .from(models)
-    .where(eq(models.id, MODEL_ID))
+    .from(projects)
+    .where(eq(projects.id, PROJECT_ID))
     .limit(1);
 
   if (existingModel.length === 0) {
-    await getDb().insert(models).values({
-      id: MODEL_ID,
+    await getDb().insert(projects).values({
+      id: PROJECT_ID,
       name: "Default Model",
       description: "",
     });
   }
-
 
   const mainHead = await getDb()
     .select()
     .from(modelBranchHeads)
     .where(
       and(
-        eq(modelBranchHeads.modelId, MODEL_ID),
+        eq(modelBranchHeads.projectId, PROJECT_ID),
         eq(modelBranchHeads.branchName, "main"),
       ),
     )
@@ -52,29 +46,27 @@ export const ensureSeedData = async () => {
     return;
   }
 
-  const [modelRow] = await getDb()
+  const [projectRow] = await getDb()
     .select()
-    .from(models)
-    .where(eq(models.id, MODEL_ID))
+    .from(projects)
+    .where(eq(projects.id, PROJECT_ID))
     .limit(1);
 
-  if (!modelRow) {
+  if (!projectRow) {
     return;
   }
 
   await getDb().insert(modelRevisions).values({
     id: INITIAL_REVISION_ID,
-    modelId: modelRow.id,
-    modelName: modelRow.name,
+    projectId: projectRow.id,
     parentRevisionId: null,
     secondParentRevisionId: null,
     authorId: SYSTEM_AUTHOR_ID,
     message: "Initialize main branch",
   });
 
-
   await getDb().insert(modelBranchHeads).values({
-    modelId: modelRow.id,
+    projectId: projectRow.id,
     branchName: "main",
     headRevisionId: INITIAL_REVISION_ID,
   });

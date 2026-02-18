@@ -1,6 +1,6 @@
-import { createModel } from "src/models/create-model";
-import { getModels } from "src/models/get-models";
-import { patchModel } from "../models/patch-model";
+import { createProject } from "src/projects/create-project";
+import { getProjects } from "src/projects/get-project";
+import { patchModel } from "../projects/patch-project";
 import { defineApiPlugin } from "./types";
 import { patchNode } from "src/nodes/patch-node";
 import { batchCreateNode } from "src/nodes/batch-create-node";
@@ -18,8 +18,8 @@ import { createModelRevision } from "src/model-revisions/create-model-revision";
 export const coreApiPlugin = defineApiPlugin({
   id: "core.users",
   endpoints: [
-    createModel,
-    getModels,
+    createProject,
+    getProjects,
     patchNode,
     batchCreateNode,
     patchModel,

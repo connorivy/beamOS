@@ -1,20 +1,20 @@
 import { defineEndpoint } from "../contracts/endpoint";
-import { ModelAggregate } from "../models/model-aggregate";
+import { ProjectEntity } from "./project-aggregate";
 import type { AppContext } from "../common/types";
 import { z } from "zod";
-import { modelMapper } from "./model-mapper";
+import { projectMapper as projectMapper } from "./project-mapper";
 import { uuidV7Schema } from "src/common/uuid";
 
-const createModelReqSchema = z.object({
+const createProjectReqSchema = z.object({
   body: z
     .object({
       name: z.string().min(1),
       description: z.string().min(1),
     })
-    .meta({ id: "CreateModelRequest" }),
+    .meta({ id: "CreateProjectRequest" }),
 });
 
-export const modelResponseSchema = z
+export const projectResponseSchema = z
   .object({
     id: uuidV7Schema,
     name: z.string(),
@@ -22,22 +22,22 @@ export const modelResponseSchema = z
     lastModified: z.string().datetime(),
     role: z.enum(["Owner", "Contributor", "Reviewer"]),
   })
-  .meta({ id: "Model" });
+  .meta({ id: "Project" });
 
-export const createModel = defineEndpoint({
+export const createProject = defineEndpoint({
   method: "POST",
-  path: "/api/models",
-  req: createModelReqSchema,
-  res: modelResponseSchema,
+  path: "/api/projects",
+  req: createProjectReqSchema,
+  res: projectResponseSchema,
   async handler(req, ctx: AppContext) {
-    const model = ModelAggregate.create({
+    const project = ProjectEntity.create({
       name: req.body.name,
       description: req.body.description,
     });
-    const createdModel = await ctx.services.modelRepository.create({
-      model,
+    const createdProject = await ctx.services.modelRepository.create({
+      model: project,
       message: req.body.description,
     });
-    return modelMapper.toResponse(createdModel);
+    return projectMapper.toResponse(createdProject);
   },
 });

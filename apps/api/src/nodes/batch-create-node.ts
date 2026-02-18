@@ -14,7 +14,7 @@ import type { ModelRevisionAggregate } from "src/model-revisions/model-revision-
 export const batchCreateNodeReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidV7Schema,
+      projectId: uuidV7Schema,
       branchName: z.string().trim().min(1),
     }),
     body: z
@@ -34,17 +34,17 @@ export const batchCreateNodeResSchema = z
 
 const toResponseNode = (input: {
   id: string;
-  modelId: string;
+  projectId: string;
   nodeTypeDescriminator: "external" | "internal";
 }) => ({
   id: input.id,
-  modelId: input.modelId,
+  projectId: input.projectId,
   nodeTypeDescriminator: input.nodeTypeDescriminator,
 });
 
 export const batchCreateNode = defineEndpoint({
   method: "POST",
-  path: "/api/models/:modelId/branches/:branchName/nodes/batch",
+  path: "/api/projects/:projectId/branches/:branchName/nodes/batch",
   req: batchCreateNodeReqSchema,
   res: batchCreateNodeResSchema,
   async handler(req, ctx: AppContext) {
@@ -122,7 +122,7 @@ export async function batchCreateNodeHandler(
     nodes: nodes.map((node) =>
       toResponseNode({
         id: node.id,
-        modelId: req.params.modelId,
+        projectId: req.params.projectId,
         nodeTypeDescriminator: node.nodeTypeDescriminator!,
       }),
     ),

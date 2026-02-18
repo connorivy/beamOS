@@ -16,7 +16,7 @@ import { createNewRevisionHandler } from "src/model-revisions/create-model-revis
 export const batchPutMaterialReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidV7Schema,
+      projectId: uuidV7Schema,
       branchName: z.string().trim().min(1),
     }),
     body: z
@@ -46,7 +46,7 @@ const toResponseMaterial = (material: MaterialEntity) => ({
 
 export const batchPutMaterial = defineEndpoint({
   method: "PUT",
-  path: "/api/models/:modelId/branches/:branchName/materials/batch",
+  path: "/api/projects/:projectId/branches/:branchName/materials/batch",
   req: batchPutMaterialReqSchema,
   res: batchPutMaterialResSchema,
   async handler(req, ctx: AppContext) {

@@ -33,7 +33,7 @@ const sectionProfileUnitsInputSchema = z.object({
 export const batchCreateSectionProfileReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidV7Schema,
+      projectId: uuidV7Schema,
       branchName: z.string().trim().min(1),
     }),
     body: z
@@ -154,7 +154,7 @@ const toResponseSectionProfile = (sectionProfile: SectionProfileSnapshot) => ({
 
 export const batchCreateSectionProfile = defineEndpoint({
   method: "POST",
-  path: "/api/models/:modelId/branches/:branchName/section-profiles/batch",
+  path: "/api/projects/:projectId/branches/:branchName/section-profiles/batch",
   req: batchCreateSectionProfileReqSchema,
   res: batchCreateSectionProfileResSchema,
   async handler(req, ctx: AppContext) {
@@ -168,7 +168,7 @@ export const batchCreateSectionProfile = defineEndpoint({
 });
 async function batchCreateSectionProfileHandler(
   req: {
-    params: { modelId: string; branchName: string };
+    params: { projectId: string; branchName: string };
     body: {
       units: {
         area: AreaUnits;

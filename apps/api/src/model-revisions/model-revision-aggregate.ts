@@ -14,8 +14,7 @@ import {
 
 export type ModelRevisionSnapshot = {
   id: string;
-  modelId: string;
-  name: string;
+  projectId: string;
   parentRevisionId: string | null;
   secondParentRevisionId: string | null;
   authorId: string;
@@ -34,7 +33,6 @@ export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id" | "mo
 };
 
 export class ModelRevisionAggregate {
-  private _name: string;
   private _parentRevisionId: string | null;
   private _secondParentRevisionId: string | null;
   private _authorId: string;
@@ -50,8 +48,7 @@ export class ModelRevisionAggregate {
   private constructor(snapshot: ModelRevisionSnapshot | ModelRevisionCreateSnapshot) {
     const revisionId = snapshot.id ?? Bun.randomUUIDv7();
     assertUuidV7(revisionId, "id");
-    assertUuid(snapshot.modelId, "modelId");
-    this.assertRequired(snapshot.name, "name");
+    assertUuid(snapshot.projectId, "projectId");
     assertUuid(snapshot.authorId, "authorId");
     this.assertRequired(snapshot.message, "message");
     this.assertOptionalUuid(snapshot.parentRevisionId, "parentRevisionId");
@@ -61,8 +58,7 @@ export class ModelRevisionAggregate {
     );
 
     this.id = revisionId;
-    this.modelId = snapshot.modelId;
-    this._name = snapshot.name.trim();
+    this.projectId = snapshot.projectId;
     this._parentRevisionId = snapshot.parentRevisionId;
     this._secondParentRevisionId = snapshot.secondParentRevisionId;
     this._authorId = snapshot.authorId;
@@ -85,7 +81,7 @@ export class ModelRevisionAggregate {
   }
 
   readonly id: string;
-  readonly modelId: string;
+  readonly projectId: string;
 
   static create(snapshot: ModelRevisionCreateSnapshot): ModelRevisionAggregate {
     return new ModelRevisionAggregate(snapshot);
@@ -93,10 +89,6 @@ export class ModelRevisionAggregate {
 
   static rehydrate(snapshot: ModelRevisionSnapshot): ModelRevisionAggregate {
     return new ModelRevisionAggregate(snapshot);
-  }
-
-  get name(): string {
-    return this._name;
   }
 
   get parentRevisionId(): string | null {
@@ -192,8 +184,7 @@ export class ModelRevisionAggregate {
   toSnapshot(): ModelRevisionSnapshot {
     return {
       id: this.id,
-      modelId: this.modelId,
-      name: this._name,
+      projectId: this.projectId,
       parentRevisionId: this._parentRevisionId,
       secondParentRevisionId: this._secondParentRevisionId,
       authorId: this._authorId,

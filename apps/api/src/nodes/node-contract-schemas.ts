@@ -56,14 +56,14 @@ export const deleteNodeRequestSchema = z
 export const nodeResponseSchema = z
   .object({
     id: uuidV7Schema,
-    modelId: uuidV7Schema,
+    projectId: uuidV7Schema,
   })
   .meta({ id: "Node" });
 
 export const revisionNodeResponseSchema = z
   .object({
     id: uuidV7Schema,
-    modelId: uuidV7Schema,
+    projectId: uuidV7Schema,
     nodeTypeDescriminator: z.enum(["external", "internal"]),
   })
   .meta({ id: "RevisionNode" });

@@ -18,7 +18,7 @@ describe("typed material api client integration", () => {
     const client = createApiClient(baseUrl);
     const tempIds = ["mat-01", "mat-02", "mat-03"];
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Material Integration Model",
         description: "Create model for materials test",
@@ -33,14 +33,14 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -83,10 +83,10 @@ describe("typed material api client integration", () => {
     }
 
     const getRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
       },
     );
@@ -95,7 +95,9 @@ describe("typed material api client integration", () => {
     expect(getRevisionResponse.response.status).toBe(200);
     expect(getRevisionResponse.data).toBeDefined();
     expect(
-      getRevisionResponse.data?.modelRevision.materials.map((material) => material.id),
+      getRevisionResponse.data?.modelRevision.materials.map(
+        (material) => material.id,
+      ),
     ).toEqual(
       expect.arrayContaining(
         Object.values(batchCreateResponse.data.tempIdToId),
@@ -135,7 +137,7 @@ describe("typed material api client integration", () => {
   it("rejects duplicate temp ids in batch create", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Duplicate TempId Model",
         description: "Create model for duplicate tempId test",
@@ -149,14 +151,14 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -188,7 +190,7 @@ describe("typed material api client integration", () => {
   it("batch puts materials and updates values", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Material Batch Put Model",
         description: "Create model for batch put test",
@@ -202,15 +204,15 @@ describe("typed material api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -241,11 +243,11 @@ describe("typed material api client integration", () => {
     }
 
     const batchPutResponse = await client.PUT(
-      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -282,8 +284,16 @@ describe("typed material api client integration", () => {
       throw new Error(`Expected material response for ${materialId}`);
     }
 
-    expect(getResponse.data.material.modulusOfElasticity).toBeCloseTo(250000, 6);
-    expect(getResponse.data.material.modulusOfRigidity).toBeCloseTo(206842.7185, 6);
-    expect(getResponse.data.material.units.pressure).toBe(PressureUnits.Pascals);
+    expect(getResponse.data.material.modulusOfElasticity).toBeCloseTo(
+      250000,
+      6,
+    );
+    expect(getResponse.data.material.modulusOfRigidity).toBeCloseTo(
+      206842.7185,
+      6,
+    );
+    expect(getResponse.data.material.units.pressure).toBe(
+      PressureUnits.Pascals,
+    );
   });
 });

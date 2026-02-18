@@ -3,13 +3,13 @@ import { z } from "zod";
 const uuidSchema = z.string().uuid();
 
 const modelVersionRefSchema = z.object({
-  modelId: uuidSchema,
+  projectId: uuidSchema,
   revisionId: uuidSchema.nullable(),
 });
 
 const createModelRequestBodySchema = z
   .object({
-    modelId: uuidSchema,
+    projectId: uuidSchema,
     name: z.string().min(1),
     authorId: uuidSchema,
     message: z.string().min(1),
@@ -35,7 +35,7 @@ const createNodeRequestBodySchema = z
 export const createNodeReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidSchema,
+      projectId: uuidSchema,
     }),
     body: createNodeRequestBodySchema,
   })
@@ -45,7 +45,7 @@ export const createNodeResSchema = z
   .object({
     node: z.object({
       id: uuidSchema,
-      modelId: uuidSchema,
+      projectId: uuidSchema,
       name: z.string(),
     }),
     version: modelVersionRefSchema,
@@ -62,7 +62,7 @@ const patchNodeRequestBodySchema = z
 export const patchNodeReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidSchema,
+      projectId: uuidSchema,
       nodeId: uuidSchema,
     }),
     body: patchNodeRequestBodySchema,
@@ -73,7 +73,7 @@ export const patchNodeResSchema = z
   .object({
     node: z.object({
       id: uuidSchema,
-      modelId: uuidSchema,
+      projectId: uuidSchema,
       name: z.string(),
     }),
     version: modelVersionRefSchema,
@@ -90,7 +90,7 @@ const patchModelRequestBodySchema = z
 export const patchModelReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidSchema,
+      projectId: uuidSchema,
     }),
     body: patchModelRequestBodySchema,
   })

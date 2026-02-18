@@ -24,7 +24,7 @@ describe("typed element1d api client integration", () => {
     const client = createApiClient(baseUrl);
     const tempIds = ["el-01", "el-02"];
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Element1d Integration Model",
         description: "Create model for element1d test",
@@ -39,15 +39,15 @@ describe("typed element1d api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const materialBatchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/materials/batch",
+      "/api/projects/{projectId}/branches/{branchName}/materials/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -77,11 +77,11 @@ describe("typed element1d api client integration", () => {
       materialBatchCreateResponse.data.tempIdToId["mat-for-element"];
 
     const sectionProfileBatchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",
+      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -127,11 +127,11 @@ describe("typed element1d api client integration", () => {
       sectionProfileBatchCreateResponse.data.tempIdToId["sp-for-element"];
 
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/element1ds/batch",
+      "/api/projects/{projectId}/branches/{branchName}/element1ds/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -167,10 +167,10 @@ describe("typed element1d api client integration", () => {
     }
 
     const getRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
       },
     );
@@ -179,7 +179,9 @@ describe("typed element1d api client integration", () => {
     expect(getRevisionResponse.response.status).toBe(200);
     expect(getRevisionResponse.data).toBeDefined();
     expect(
-      getRevisionResponse.data?.modelRevision.element1ds.map((element1d) => element1d.id),
+      getRevisionResponse.data?.modelRevision.element1ds.map(
+        (element1d) => element1d.id,
+      ),
     ).toEqual(
       expect.arrayContaining(
         Object.values(batchCreateResponse.data.tempIdToId),
@@ -223,7 +225,7 @@ describe("typed element1d api client integration", () => {
   it("rejects duplicate temp ids in batch create", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Duplicate Element1d TempId Model",
         description: "Create model for duplicate element1d tempId test",
@@ -237,15 +239,15 @@ describe("typed element1d api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/element1ds/batch",
+      "/api/projects/{projectId}/branches/{branchName}/element1ds/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },

@@ -13,7 +13,7 @@ import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggre
 export const batchCreateElement1dReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidV7Schema,
+      projectId: uuidV7Schema,
       branchName: z.string().trim().min(1),
     }),
     body: z
@@ -42,7 +42,7 @@ const toResponseElement1d = (element1d: Element1dSnapshot) => ({
 
 export const batchCreateElement1d = defineEndpoint({
   method: "POST",
-  path: "/api/models/:modelId/branches/:branchName/element1ds/batch",
+  path: "/api/projects/:projectId/branches/:branchName/element1ds/batch",
   req: batchCreateElement1dReqSchema,
   res: batchCreateElement1dResSchema,
   async handler(req, ctx: AppContext) {

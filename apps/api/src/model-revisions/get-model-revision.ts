@@ -23,7 +23,7 @@ const uuidV7Schema = z
 export const getModelRevisionReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidV7Schema,
+      projectId: uuidV7Schema,
       branchName: z.string().trim().min(1),
     }),
   })
@@ -33,8 +33,7 @@ export const getModelRevisionResSchema = z
   .object({
     modelRevision: z.object({
       id: uuidV7Schema,
-      modelId: uuidV7Schema,
-      name: z.string().min(1),
+      projectId: uuidV7Schema,
       parentRevisionId: uuidV7Schema.nullable(),
       secondParentRevisionId: uuidV7Schema.nullable(),
       authorId: z.uuid(),
@@ -51,12 +50,12 @@ export const getModelRevisionResSchema = z
 
 export const getModelRevision = defineEndpoint({
   method: "GET",
-  path: "/api/models/:modelId/branches/:branchName/revision",
+  path: "/api/projects/:projectId/branches/:branchName/revisions",
   req: getModelRevisionReqSchema,
   res: getModelRevisionResSchema,
   async handler(req, ctx: AppContext) {
     const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-      req.params.modelId,
+      req.params.projectId,
       req.params.branchName,
     );
 
@@ -76,8 +75,7 @@ export const getModelRevision = defineEndpoint({
     return {
       modelRevision: {
         id: modelRevision.id,
-        modelId: modelRevision.modelId,
-        name: modelRevision.name,
+        projectId: modelRevision.projectId,
         parentRevisionId: modelRevision.parentRevisionId,
         secondParentRevisionId: modelRevision.secondParentRevisionId,
         authorId: modelRevision.authorId,
@@ -85,7 +83,7 @@ export const getModelRevision = defineEndpoint({
         createdAt: modelRevision.createdAt.toISOString(),
         nodes: modelRevision.nodes.map((node) => ({
           id: node.id,
-          modelId: modelRevision.modelId,
+          projectId: modelRevision.projectId,
           nodeTypeDescriminator:
             node.toSnapshot().nodeTypeDescriminator ??
             (node.nodeType === "internalNode" ? "internal" : "external"),

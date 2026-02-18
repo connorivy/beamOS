@@ -9,13 +9,12 @@ import type { AppContext } from "../common/types";
 
 export const patchModel = defineEndpoint({
   method: "PATCH",
-  path: "/api/models/:modelId",
+  path: "/api/projects/:projectId",
   req: patchModelReqSchema,
   res: patchModelResSchema,
   async handler(req, ctx: AppContext) {
     const model = await ctx.services.modelRepository.getById({
-      modelId: req.params.modelId,
-      revisionId: req.body.revisionId,
+      projectId: req.params.projectId,
     });
     if (!model) {
       throw httpError("Model or target revision not found", 404);
@@ -33,7 +32,7 @@ export const patchModel = defineEndpoint({
         description: savedModel.description,
       },
       version: {
-        modelId: req.params.modelId,
+        projectId: req.params.projectId,
         ...toVersionRef({ revisionId: req.body.revisionId }),
       },
     };

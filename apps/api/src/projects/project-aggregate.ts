@@ -1,20 +1,20 @@
 import { assertUuid } from "../common/uuid";
 import type { ModelBranchHeadAggregate } from "../model-branch-heads/model-branch-head-aggregate";
 import type { ModelRevisionAggregate } from "../model-revisions/model-revision-aggregate";
-import type { ModelDomainEvent } from "./model-events";
+import type { ProjectDomainEvent } from "./project-events";
 
-export type ModelSnapshot = {
+export type ProjectSnapshot = {
   id: string;
   name: string;
   description: string;
 };
 
-export class ModelAggregate {
+export class ProjectEntity {
   private _name: string;
   private _description: string;
   private _modelBranchHeads: ModelBranchHeadAggregate[] | null;
   private _modelRevisions: ModelRevisionAggregate[] | null;
-  private _domainEvents: ModelDomainEvent[];
+  private _domainEvents: ProjectDomainEvent[];
 
   private constructor(snapshot: {
     id: string;
@@ -41,8 +41,8 @@ export class ModelAggregate {
     description?: string;
     modelBranchHeads?: ModelBranchHeadAggregate[] | null;
     modelRevisions?: ModelRevisionAggregate[] | null;
-  }): ModelAggregate {
-    const model = new ModelAggregate({
+  }): ProjectEntity {
+    const model = new ProjectEntity({
       id: Bun.randomUUIDv7(),
       name: snapshot.name,
       description: snapshot.description ?? "",
@@ -50,7 +50,7 @@ export class ModelAggregate {
       modelRevisions: snapshot.modelRevisions ?? null,
     });
     model._domainEvents.push({
-      type: "model_created",
+      type: "project_created",
       payload: model.toSnapshot(),
     });
     return model;
@@ -62,8 +62,8 @@ export class ModelAggregate {
     description?: string;
     modelBranchHeads?: ModelBranchHeadAggregate[] | null;
     modelRevisions?: ModelRevisionAggregate[] | null;
-  }): ModelAggregate {
-    return new ModelAggregate({
+  }): ProjectEntity {
+    return new ProjectEntity({
       id: snapshot.id,
       name: snapshot.name,
       description: snapshot.description ?? "",
@@ -97,12 +97,12 @@ export class ModelAggregate {
 
     this._name = next;
     this._domainEvents.push({
-      type: "model_renamed",
+      type: "project_renamed",
       payload: this.toSnapshot(),
     });
   }
 
-  toSnapshot(): ModelSnapshot {
+  toSnapshot(): ProjectSnapshot {
     return {
       id: this.id,
       name: this._name,
@@ -110,7 +110,7 @@ export class ModelAggregate {
     };
   }
 
-  pullDomainEvents(): ModelDomainEvent[] {
+  pullDomainEvents(): ProjectDomainEvent[] {
     const events = [...this._domainEvents];
     this._domainEvents = [];
     return events;
@@ -118,8 +118,7 @@ export class ModelAggregate {
 
   private assertName(name: string): void {
     if (name.trim().length === 0) {
-      throw new Error("Model name is required");
+      throw new Error("Project name is required");
     }
   }
-
 }

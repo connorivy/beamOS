@@ -24,7 +24,7 @@ describe("typed section profile api client integration", () => {
     const imperialTempId = "sp-01";
     const metricTempId = "sp-02";
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Section Profile Integration Model",
         description: "Create model for section profile test",
@@ -39,15 +39,15 @@ describe("typed section profile api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const imperialBatchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",
+      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -80,11 +80,11 @@ describe("typed section profile api client integration", () => {
     );
 
     const metricBatchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",
+      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -136,10 +136,10 @@ describe("typed section profile api client integration", () => {
     }
 
     const getRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
       },
     );
@@ -201,7 +201,7 @@ describe("typed section profile api client integration", () => {
   it("rejects duplicate temp ids in batch create", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Duplicate Section Profile TempId Model",
         description: "Create model for duplicate section profile tempId test",
@@ -215,15 +215,15 @@ describe("typed section profile api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/section-profiles/batch",
+      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },

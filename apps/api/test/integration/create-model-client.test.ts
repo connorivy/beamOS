@@ -1,9 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
-import {
-  setupIntegrationApp,
-  teardownIntegrationApp,
-} from "./shared-test-app";
+import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
@@ -24,7 +21,7 @@ describe("typed openapi client integration", () => {
       description: "Create a model through typed OpenAPI client",
     };
 
-    const { data, error, response } = await client.POST("/api/models", {
+    const { data, error, response } = await client.POST("/api/projects", {
       body: requestBody,
     });
 
@@ -41,11 +38,11 @@ describe("typed openapi client integration", () => {
     expect(data.description).toBe(requestBody.description);
 
     const mainBranchRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
           path: {
-            modelId: data.id,
+            projectId: data.id,
             branchName: "main",
           },
         },
@@ -63,24 +60,32 @@ describe("typed openapi client integration", () => {
     expect(mainBranchRevisionResponse.data.modelRevision.id).toMatch(
       /^[0-9a-f-]{36}$/i,
     );
-    expect(mainBranchRevisionResponse.data.modelRevision.modelId).toBe(
+    expect(mainBranchRevisionResponse.data.modelRevision.projectId).toBe(
       data.id,
     );
     expect(mainBranchRevisionResponse.data.modelRevision.name).toBe(
       requestBody.name,
     );
-    expect(mainBranchRevisionResponse.data.modelRevision.parentRevisionId).toBeNull();
+    expect(
+      mainBranchRevisionResponse.data.modelRevision.parentRevisionId,
+    ).toBeNull();
     expect(mainBranchRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
-    expect(mainBranchRevisionResponse.data.modelRevision.materials).toHaveLength(0);
-    expect(mainBranchRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(0);
-    expect(mainBranchRevisionResponse.data.modelRevision.element1ds).toHaveLength(0);
+    expect(
+      mainBranchRevisionResponse.data.modelRevision.materials,
+    ).toHaveLength(0);
+    expect(
+      mainBranchRevisionResponse.data.modelRevision.sectionProfiles,
+    ).toHaveLength(0);
+    expect(
+      mainBranchRevisionResponse.data.modelRevision.element1ds,
+    ).toHaveLength(0);
 
     const missingBranchRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
           path: {
-            modelId: data.id,
+            projectId: data.id,
             branchName: "missing",
           },
         },
@@ -98,7 +103,7 @@ describe("typed openapi client integration", () => {
       description: "Create a model for list endpoint",
     };
 
-    const createResponse = await client.POST("/api/models", {
+    const createResponse = await client.POST("/api/projects", {
       body: requestBody,
     });
 
@@ -111,11 +116,11 @@ describe("typed openapi client integration", () => {
     }
 
     const revisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
           path: {
-            modelId: createResponse.data.id,
+            projectId: createResponse.data.id,
             branchName: "main",
           },
         },
@@ -130,27 +135,29 @@ describe("typed openapi client integration", () => {
       throw new Error("Expected response body from get model revision API");
     }
 
-    const listResponse = await client.GET("/api/models");
+    const listResponse = await client.GET("/api/projects");
 
     expect(listResponse.error).toBeUndefined();
     expect(listResponse.response.status).toBe(200);
     expect(listResponse.data).toBeDefined();
 
-    const listedModel = listResponse.data?.find(
+    const listedProjects = listResponse.data?.find(
       (model) => model.id === createResponse.data?.id,
     );
 
-    expect(listedModel).toBeDefined();
+    expect(listedProjects).toBeDefined();
 
-    if (!listedModel) {
-      throw new Error("Expected created model to be returned by get models API");
+    if (!listedProjects) {
+      throw new Error(
+        "Expected created model to be returned by get models API",
+      );
     }
 
-    expect(listedModel.name).toBe(requestBody.name);
-    expect(listedModel.description).toBe(requestBody.description);
-    expect(listedModel.lastModified).toBe(
+    expect(listedProjects.name).toBe(requestBody.name);
+    expect(listedProjects.description).toBe(requestBody.description);
+    expect(listedProjects.lastModified).toBe(
       revisionResponse.data.modelRevision.createdAt,
     );
-    expect(listedModel.role).toBe("Owner");
+    expect(listedProjects.role).toBe("Owner");
   });
 });

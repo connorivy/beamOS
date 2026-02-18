@@ -7,7 +7,6 @@ import {
   jsonb,
   integer,
 } from "drizzle-orm/pg-core";
-import type { InferSelectModel } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -15,7 +14,7 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
 });
 
-export const models = pgTable("models", {
+export const projects = pgTable("projects", {
   id: uuid("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull().default(""),
@@ -23,10 +22,9 @@ export const models = pgTable("models", {
 
 export const modelRevisions = pgTable("model_revisions", {
   id: uuid("id").primaryKey(),
-  modelId: uuid("model_id")
+  projectId: uuid("project_id")
     .notNull()
-    .references(() => models.id),
-  modelName: text("model_name").notNull(),
+    .references(() => projects.id),
   parentRevisionId: uuid("parent_revision_id").references(
     (): AnyPgColumn => modelRevisions.id,
   ),
@@ -62,9 +60,9 @@ export const revisionChanges = pgTable("revision_changes", {
 export const modelBranchHeads = pgTable(
   "model_branch_heads",
   {
-    modelId: uuid("model_id")
+    projectId: uuid("project_id")
       .notNull()
-      .references(() => models.id),
+      .references(() => projects.id),
     branchName: text("branch_name").notNull(),
     headRevisionId: uuid("head_revision_id")
       .notNull()
@@ -77,8 +75,6 @@ export const modelBranchHeads = pgTable(
       .defaultNow(),
   },
   (table) => ({
-    pk: primaryKey({ columns: [table.modelId, table.branchName] }),
+    pk: primaryKey({ columns: [table.projectId, table.branchName] }),
   }),
 );
-
-export type Model = InferSelectModel<typeof models>;

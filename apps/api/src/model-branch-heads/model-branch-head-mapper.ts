@@ -9,7 +9,7 @@ export const modelBranchHeadMapper = {
     row: typeof modelBranchHeads.$inferSelect,
   ): ModelBranchHeadAggregate {
     return ModelBranchHeadAggregate.rehydrate({
-      modelId: row.modelId,
+      projectId: row.projectId,
       branchName: row.branchName,
       headRevisionId: row.headRevisionId,
       updatedAt: row.updatedAt,
@@ -21,7 +21,7 @@ export const modelBranchHeadMapper = {
   ): typeof modelBranchHeads.$inferInsert {
     const snapshot = aggregate.toSnapshot();
     return {
-      modelId: snapshot.modelId,
+      projectId: snapshot.projectId,
       branchName: snapshot.branchName,
       headRevisionId: snapshot.headRevisionId,
       updatedAt: snapshot.updatedAt,
@@ -29,12 +29,12 @@ export const modelBranchHeadMapper = {
   },
 
   fromInput(input: {
-    modelId: string;
+    projectId: string;
     branchName: string;
     headRevisionId: string;
   }): ModelBranchHeadAggregate {
     const snapshot: ModelBranchHeadSnapshot = {
-      modelId: input.modelId,
+      projectId: input.projectId,
       branchName: input.branchName,
       headRevisionId: input.headRevisionId,
       updatedAt: new Date(),

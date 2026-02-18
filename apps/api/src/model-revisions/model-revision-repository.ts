@@ -33,7 +33,7 @@ import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeSnapshot } from "../nodes/node-entity";
 import { parseRestraint } from "../nodes/node-entity";
 
-export const drizzleModelVersionRepository: ModelRevisionRepository = {
+export const drizzleModelRevisionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
     const revisionRows = await getDb()
       .select()
@@ -67,8 +67,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
 
     return ModelRevisionAggregate.rehydrate({
       id: revision.id,
-      modelId: revision.modelId,
-      name: revision.modelName,
+      projectId: revision.projectId,
       parentRevisionId: revision.parentRevisionId,
       secondParentRevisionId: revision.secondParentRevisionId,
       authorId: revision.authorId,
@@ -94,7 +93,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .returning();
 
       const changeRows = buildRevisionChangeRowsFromEvents({
-        modelId: snapshot.modelId,
+        projectId: snapshot.projectId,
         revisionId: snapshot.id,
         events,
       });
@@ -105,7 +104,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
 
       if (branchName) {
         const branchHead = modelBranchHeadMapper.fromInput({
-          modelId: snapshot.modelId,
+          projectId: snapshot.projectId,
           branchName,
           headRevisionId: snapshot.id,
         });
@@ -115,12 +114,12 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         await tx
           .insert(modelBranchHeads)
           .values({
-            modelId: branchPersistence.modelId,
+            projectId: branchPersistence.projectId,
             branchName: branchPersistence.branchName,
             headRevisionId: branchPersistence.headRevisionId,
           })
           .onConflictDoUpdate({
-            target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
+            target: [modelBranchHeads.projectId, modelBranchHeads.branchName],
             set: {
               headRevisionId: branchPersistence.headRevisionId,
               updatedAt: new Date(),
@@ -139,13 +138,13 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     return existingTx ? persist(existingTx) : getDb().transaction(persist);
   },
 
-  async getBranchHead(modelId, branchName) {
+  async getBranchHead(projectId, branchName) {
     const rows = await getDb()
       .select()
       .from(modelBranchHeads)
       .where(
         and(
-          eq(modelBranchHeads.modelId, modelId),
+          eq(modelBranchHeads.projectId, projectId),
           eq(modelBranchHeads.branchName, branchName),
         ),
       )
@@ -158,11 +157,11 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     return modelBranchHeadMapper.toDomain(rows[0]);
   },
 
-  async listBranchHeads(modelId) {
+  async listBranchHeads(projectId) {
     const rows = await getDb()
       .select()
       .from(modelBranchHeads)
-      .where(eq(modelBranchHeads.modelId, modelId));
+      .where(eq(modelBranchHeads.projectId, projectId));
 
     return rows.map((row) => modelBranchHeadMapper.toDomain(row));
   },
@@ -174,12 +173,12 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     await getDb()
       .insert(modelBranchHeads)
       .values({
-        modelId: persistence.modelId,
+        projectId: persistence.projectId,
         branchName: persistence.branchName,
         headRevisionId: persistence.headRevisionId,
       })
       .onConflictDoUpdate({
-        target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
+        target: [modelBranchHeads.projectId, modelBranchHeads.branchName],
         set: {
           headRevisionId: persistence.headRevisionId,
           updatedAt: new Date(),
@@ -189,7 +188,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
 };
 
 const buildRevisionChangeRowsFromNodeOps = (input: {
-  modelId: string;
+  projectId: string;
   revisionId: string | null;
   nodes: {
     nodeId: string;
@@ -210,7 +209,7 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
       op: node.op,
       payload: {
         id: node.nodeId,
-        modelId: input.modelId,
+        projectId: input.projectId,
         name: node.name ?? "",
         nodeTypeDescriminator: node.nodeTypeDescriminator ?? "internal",
       },
@@ -222,7 +221,7 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
 };
 
 const buildRevisionChangeRowsFromEvents = (input: {
-  modelId: string;
+  projectId: string;
   revisionId: string | null;
   events: DomainEvent[];
 }): RevisionChangeInsertRow[] => {
@@ -262,7 +261,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
     });
 
   const nodeDeleteChanges = buildRevisionChangeRowsFromNodeOps({
-    modelId: input.modelId,
+    projectId: input.projectId,
     revisionId: input.revisionId,
     nodes: input.events
       .filter(

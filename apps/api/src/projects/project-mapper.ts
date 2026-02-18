@@ -1,31 +1,25 @@
-import { models, type Model as ModelRow } from "../db/schema";
-import { ModelAggregate } from "./model-aggregate";
+import { projects, type Model as ProjectRow } from "../db/schema";
+import { ProjectEntity } from "./project-aggregate";
+import { projectResponseSchema } from "./create-project";
+import z from "zod";
 
-export type ModelResponse = {
-  id: string;
-  name: string;
-  description: string;
-  lastModified: string;
-  role: "Owner" | "Contributor" | "Reviewer";
-};
-
-export const modelMapper = {
-  toDomain(row: ModelRow): ModelAggregate {
-    return ModelAggregate.rehydrate({
+export const projectMapper = {
+  toDomain(row: ProjectRow): ProjectEntity {
+    return ProjectEntity.rehydrate({
       id: row.id,
       name: row.name,
       description: row.description,
       modelBranchHeads: null,
     });
   },
-  toPersistence(aggregate: ModelAggregate): typeof models.$inferInsert {
+  toPersistence(aggregate: ProjectEntity): typeof projects.$inferInsert {
     return {
       id: aggregate.id,
       name: aggregate.name,
       description: aggregate.description,
     };
   },
-  toResponse(aggregate: ModelAggregate): ModelResponse {
+  toResponse(aggregate: ProjectEntity): z.infer<typeof projectResponseSchema> {
     const revisionLastModified = aggregate.modelRevisions?.reduce(
       (latest, revision) =>
         revision.createdAt > latest ? revision.createdAt : latest,
@@ -33,7 +27,7 @@ export const modelMapper = {
     );
     if (!revisionLastModified) {
       throw new Error(
-        "ModelAggregate must have at least one revision to determine lastModified",
+        "ProjectEntity must have at least one revision to determine lastModified",
       );
     }
 

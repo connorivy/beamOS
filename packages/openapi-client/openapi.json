@@ -5,7 +5,7 @@
     "version": "0.0.1"
   },
   "paths": {
-    "/api/models": {
+    "/api/projects": {
       "post": {
         "tags": [
           "core.users"
@@ -16,7 +16,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Model"
+                  "$ref": "#/components/schemas/Project"
                 }
               }
             }
@@ -27,7 +27,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateModelRequest"
+                "$ref": "#/components/schemas/CreateProjectRequest"
               }
             }
           }
@@ -43,7 +43,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ModelsArray"
+                  "$ref": "#/components/schemas/ProjectsArray"
                 }
               }
             }
@@ -51,7 +51,7 @@
         }
       }
     },
-    "/api/models/{modelId}/nodes/{nodeId}": {
+    "/api/projects/{projectId}/nodes/{nodeId}": {
       "patch": {
         "tags": [
           "core.users"
@@ -70,7 +70,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -102,7 +102,7 @@
         }
       }
     },
-    "/api/models/{modelId}/branches/{branchName}/nodes/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/nodes/batch": {
       "post": {
         "tags": [
           "core.users"
@@ -121,7 +121,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -152,7 +152,7 @@
         }
       }
     },
-    "/api/models/{modelId}": {
+    "/api/projects/{projectId}": {
       "patch": {
         "tags": [
           "core.users"
@@ -171,7 +171,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -193,7 +193,7 @@
         }
       }
     },
-    "/api/models/{modelId}/branches/{branchName}/materials/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/materials/batch": {
       "post": {
         "tags": [
           "core.users"
@@ -212,7 +212,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -260,7 +260,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -291,7 +291,7 @@
         }
       }
     },
-    "/api/models/{modelId}/branches/{branchName}/model-settings": {
+    "/api/projects/{projectId}/branches/{branchName}/model-settings": {
       "put": {
         "tags": [
           "core.users"
@@ -310,7 +310,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -372,7 +372,7 @@
         ]
       }
     },
-    "/api/models/{modelId}/branches/{branchName}/section-profiles/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch": {
       "post": {
         "tags": [
           "core.users"
@@ -391,7 +391,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -453,7 +453,7 @@
         ]
       }
     },
-    "/api/models/{modelId}/branches/{branchName}/element1ds/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/element1ds/batch": {
       "post": {
         "tags": [
           "core.users"
@@ -472,7 +472,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -534,7 +534,7 @@
         ]
       }
     },
-    "/api/models/{modelId}/branches/{branchName}/revision": {
+    "/api/projects/{projectId}/branches/{branchName}/revisions": {
       "get": {
         "tags": [
           "core.users"
@@ -553,7 +553,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -572,9 +572,7 @@
             }
           }
         ]
-      }
-    },
-    "/api/models/{modelId}/branches/{branchName}/revisions": {
+      },
       "post": {
         "tags": [
           "core.users"
@@ -593,7 +591,7 @@
         },
         "parameters": [
           {
-            "name": "modelId",
+            "name": "projectId",
             "in": "path",
             "required": true,
             "schema": {
@@ -627,7 +625,7 @@
   },
   "components": {
     "schemas": {
-      "Model": {
+      "Project": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
@@ -664,9 +662,9 @@
           "role"
         ],
         "additionalProperties": false,
-        "id": "Model"
+        "id": "Project"
       },
-      "CreateModelRequest": {
+      "CreateProjectRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
@@ -684,15 +682,15 @@
           "description"
         ],
         "additionalProperties": false,
-        "id": "CreateModelRequest"
+        "id": "CreateProjectRequest"
       },
-      "ModelsArray": {
+      "ProjectsArray": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/Model"
+          "$ref": "#/components/schemas/Project"
         },
-        "id": "ModelsArray"
+        "id": "ProjectsArray"
       },
       "Node": {
         "type": "object",
@@ -702,7 +700,7 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "modelId": {
+          "projectId": {
             "type": "string",
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
@@ -710,7 +708,7 @@
         },
         "required": [
           "id",
-          "modelId"
+          "projectId"
         ],
         "additionalProperties": false,
         "id": "Node"
@@ -725,7 +723,7 @@
           "version": {
             "type": "object",
             "properties": {
-              "modelId": {
+              "projectId": {
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
@@ -744,7 +742,7 @@
               }
             },
             "required": [
-              "modelId",
+              "projectId",
               "revisionId"
             ],
             "additionalProperties": false
@@ -786,7 +784,7 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "modelId": {
+          "projectId": {
             "type": "string",
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
@@ -801,7 +799,7 @@
         },
         "required": [
           "id",
-          "modelId",
+          "projectId",
           "nodeTypeDescriminator"
         ],
         "additionalProperties": false,
@@ -992,7 +990,7 @@
           "version": {
             "type": "object",
             "properties": {
-              "modelId": {
+              "projectId": {
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
@@ -1011,7 +1009,7 @@
               }
             },
             "required": [
-              "modelId",
+              "projectId",
               "revisionId"
             ],
             "additionalProperties": false
@@ -2287,14 +2285,10 @@
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
-              "modelId": {
+              "projectId": {
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "name": {
-                "type": "string",
-                "minLength": 1
               },
               "parentRevisionId": {
                 "anyOf": [
@@ -2371,8 +2365,7 @@
             },
             "required": [
               "id",
-              "modelId",
-              "name",
+              "projectId",
               "parentRevisionId",
               "secondParentRevisionId",
               "authorId",
@@ -2408,7 +2401,7 @@
               "version": {
                 "type": "object",
                 "properties": {
-                  "modelId": {
+                  "projectId": {
                     "type": "string",
                     "format": "uuid",
                     "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
@@ -2429,21 +2422,17 @@
                   }
                 },
                 "required": [
-                  "modelId",
+                  "projectId",
                   "revisionId",
                   "revisionsAhead",
                   "revisionsBehind"
                 ],
                 "additionalProperties": false
               },
-              "modelId": {
+              "projectId": {
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "name": {
-                "type": "string",
-                "minLength": 1
               },
               "parentRevisionId": {
                 "anyOf": [
@@ -2521,8 +2510,7 @@
             "required": [
               "id",
               "version",
-              "modelId",
-              "name",
+              "projectId",
               "parentRevisionId",
               "secondParentRevisionId",
               "authorId",

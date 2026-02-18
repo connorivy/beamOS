@@ -12,8 +12,7 @@ export const modelRevisionMapper = {
   ): ModelRevisionAggregate {
     return ModelRevisionAggregate.rehydrate({
       id: row.id,
-      modelId: row.modelId,
-      name: row.modelName,
+      projectId: row.projectId,
       parentRevisionId: row.parentRevisionId,
       secondParentRevisionId: row.secondParentRevisionId,
       authorId: row.authorId,
@@ -41,8 +40,7 @@ export const modelRevisionMapper = {
     const snapshot = aggregate.toSnapshot();
     return {
       id: snapshot.id,
-      modelId: snapshot.modelId,
-      modelName: snapshot.name,
+      projectId: snapshot.projectId,
       parentRevisionId: snapshot.parentRevisionId,
       secondParentRevisionId: snapshot.secondParentRevisionId,
       authorId: snapshot.authorId,
@@ -53,8 +51,7 @@ export const modelRevisionMapper = {
 
   fromCommitInput(input: {
     id: string;
-    modelId: string;
-    name: string;
+    projectId: string;
     parentRevisionId: string | null;
     secondParentRevisionId: string | null;
     authorId: string;
@@ -63,8 +60,7 @@ export const modelRevisionMapper = {
   }): ModelRevisionAggregate {
     const snapshot: ModelRevisionSnapshot = {
       id: input.id,
-      modelId: input.modelId,
-      name: input.name,
+      projectId: input.projectId,
       parentRevisionId: input.parentRevisionId,
       secondParentRevisionId: input.secondParentRevisionId,
       authorId: input.authorId,

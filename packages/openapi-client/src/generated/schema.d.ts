@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/models": {
+    "/api/projects": {
         parameters: {
             query?: never;
             header?: never;
@@ -26,7 +26,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ModelsArray"];
+                        "application/json": components["schemas"]["ProjectsArray"];
                     };
                 };
             };
@@ -41,7 +41,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["CreateModelRequest"];
+                    "application/json": components["schemas"]["CreateProjectRequest"];
                 };
             };
             responses: {
@@ -51,7 +51,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Model"];
+                        "application/json": components["schemas"]["Project"];
                     };
                 };
             };
@@ -62,7 +62,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/models/{modelId}/nodes/{nodeId}": {
+    "/api/projects/{projectId}/nodes/{nodeId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -80,7 +80,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     nodeId: string;
                 };
                 cookie?: never;
@@ -104,7 +104,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/api/models/{modelId}/branches/{branchName}/nodes/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/nodes/batch": {
         parameters: {
             query?: never;
             header?: never;
@@ -118,7 +118,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -146,7 +146,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/models/{modelId}": {
+    "/api/projects/{projectId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -164,7 +164,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                 };
                 cookie?: never;
             };
@@ -187,7 +187,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/api/models/{modelId}/branches/{branchName}/materials/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/materials/batch": {
         parameters: {
             query?: never;
             header?: never;
@@ -200,7 +200,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -227,7 +227,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -255,7 +255,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/models/{modelId}/branches/{branchName}/model-settings": {
+    "/api/projects/{projectId}/branches/{branchName}/model-settings": {
         parameters: {
             query?: never;
             header?: never;
@@ -268,7 +268,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -334,7 +334,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/models/{modelId}/branches/{branchName}/section-profiles/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch": {
         parameters: {
             query?: never;
             header?: never;
@@ -348,7 +348,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -413,7 +413,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/models/{modelId}/branches/{branchName}/element1ds/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/element1ds/batch": {
         parameters: {
             query?: never;
             header?: never;
@@ -427,7 +427,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -492,7 +492,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/models/{modelId}/branches/{branchName}/revision": {
+    "/api/projects/{projectId}/branches/{branchName}/revisions": {
         parameters: {
             query?: never;
             header?: never;
@@ -504,7 +504,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -523,28 +523,12 @@ export interface paths {
             };
         };
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/models/{modelId}/branches/{branchName}/revisions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
         post: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    modelId: string;
+                    projectId: string;
                     branchName: string;
                 };
                 cookie?: never;
@@ -576,7 +560,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        Model: {
+        Project: {
             /** Format: uuid */
             id: string;
             name: string;
@@ -586,22 +570,22 @@ export interface components {
             /** @enum {string} */
             role: "Owner" | "Contributor" | "Reviewer";
         };
-        CreateModelRequest: {
+        CreateProjectRequest: {
             name: string;
             description: string;
         };
-        ModelsArray: components["schemas"]["Model"][];
+        ProjectsArray: components["schemas"]["Project"][];
         Node: {
             /** Format: uuid */
             id: string;
             /** Format: uuid */
-            modelId: string;
+            projectId: string;
         };
         PatchNodeResponse: {
             node: components["schemas"]["Node"];
             version: {
                 /** Format: uuid */
-                modelId: string;
+                projectId: string;
                 revisionId: string | null;
             };
         };
@@ -614,7 +598,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** Format: uuid */
-            modelId: string;
+            projectId: string;
             /** @enum {string} */
             nodeTypeDescriminator: "external" | "internal";
         };
@@ -662,7 +646,7 @@ export interface components {
             };
             version: {
                 /** Format: uuid */
-                modelId: string;
+                projectId: string;
                 revisionId: string | null;
             };
         };
@@ -909,8 +893,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** Format: uuid */
-                modelId: string;
-                name: string;
+                projectId: string;
                 parentRevisionId: string | null;
                 secondParentRevisionId: string | null;
                 /** Format: uuid */
@@ -931,7 +914,7 @@ export interface components {
                 id: string;
                 version: {
                     /** Format: uuid */
-                    modelId: string;
+                    projectId: string;
                     /** Format: uuid */
                     revisionId: string;
                     /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
@@ -939,8 +922,7 @@ export interface components {
                     revisionsBehind: number;
                 };
                 /** Format: uuid */
-                modelId: string;
-                name: string;
+                projectId: string;
                 parentRevisionId: string | null;
                 secondParentRevisionId: string | null;
                 /** Format: uuid */
@@ -1060,9 +1042,9 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type Model = components['schemas']['Model'];
-export type CreateModelRequest = components['schemas']['CreateModelRequest'];
-export type ModelsArray = components['schemas']['ModelsArray'];
+export type Project = components['schemas']['Project'];
+export type CreateProjectRequest = components['schemas']['CreateProjectRequest'];
+export type ProjectsArray = components['schemas']['ProjectsArray'];
 export type Node = components['schemas']['Node'];
 export type PatchNodeResponse = components['schemas']['PatchNodeResponse'];
 export type PatchNodeRequest = components['schemas']['PatchNodeRequest'];

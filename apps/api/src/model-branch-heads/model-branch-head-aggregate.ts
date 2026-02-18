@@ -2,7 +2,7 @@ import { assertUuid } from "../common/uuid";
 import type { ModelRevisionAggregate } from "../model-revisions/model-revision-aggregate";
 
 export type ModelBranchHeadSnapshot = {
-  modelId: string;
+  projectId: string;
   branchName: string;
   headRevisionId: string;
   updatedAt: Date;
@@ -15,18 +15,18 @@ export class ModelBranchHeadAggregate {
   private _headRevision: ModelRevisionAggregate | null;
 
   private constructor(snapshot: ModelBranchHeadSnapshot) {
-    assertUuid(snapshot.modelId, "modelId");
+    assertUuid(snapshot.projectId, "projectId");
     this.assertRequired(snapshot.branchName, "branchName");
     assertUuid(snapshot.headRevisionId, "headRevisionId");
 
-    this.modelId = snapshot.modelId;
+    this.projectId = snapshot.projectId;
     this.branchName = snapshot.branchName;
     this._headRevisionId = snapshot.headRevisionId;
     this._updatedAt = snapshot.updatedAt;
     this._headRevision = snapshot.headRevision ?? null;
   }
 
-  readonly modelId: string;
+  readonly projectId: string;
   readonly branchName: string;
 
   static create(snapshot: ModelBranchHeadSnapshot): ModelBranchHeadAggregate {
@@ -60,7 +60,7 @@ export class ModelBranchHeadAggregate {
 
   toSnapshot(): ModelBranchHeadSnapshot {
     return {
-      modelId: this.modelId,
+      projectId: this.projectId,
       branchName: this.branchName,
       headRevisionId: this._headRevisionId,
       updatedAt: this._updatedAt,

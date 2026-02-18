@@ -30,7 +30,7 @@ export const useModelsStore = create<ModelsState>((set) => ({
   loadModels: async () => {
     try {
       set({ isLoading: true, error: null });
-      const { data } = await apiClient.GET("/api/models");
+      const { data } = await apiClient.GET("/api/projects");
       set({
         models:
           data?.map((model) => ({

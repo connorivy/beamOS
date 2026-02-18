@@ -11,7 +11,7 @@ export const modelRevisionResponseSchema = z
     modelRevision: z.object({
       id: uuidV7Schema,
       version: z.object({
-        modelId: uuidV7Schema,
+        projectId: uuidV7Schema,
         revisionId: uuidV7Schema,
         revisionsAhead: z.number().min(0).meta({
           description:
@@ -19,8 +19,7 @@ export const modelRevisionResponseSchema = z
         }),
         revisionsBehind: z.number().min(0),
       }),
-      modelId: uuidV7Schema,
-      name: z.string().min(1),
+      projectId: uuidV7Schema,
       parentRevisionId: uuidV7Schema.nullable(),
       secondParentRevisionId: uuidV7Schema.nullable(),
       authorId: z.uuid(),

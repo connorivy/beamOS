@@ -13,7 +13,7 @@ import { createNewRevisionAggregateHandler } from "src/model-revisions/create-mo
 export const putModelSettingsReqSchema = z
   .object({
     params: z.object({
-      modelId: uuidV7Schema,
+      projectId: uuidV7Schema,
       branchName: z.string().trim().min(1),
     }),
     body: modelSettingsPropertiesSchema,
@@ -35,7 +35,7 @@ const toResponseModelSettings = (modelSettings: ModelSettingsSnapshot) => ({
 
 export const putModelSettings = defineEndpoint({
   method: "PUT",
-  path: "/api/models/:modelId/branches/:branchName/model-settings",
+  path: "/api/projects/:projectId/branches/:branchName/model-settings",
   req: putModelSettingsReqSchema,
   res: putModelSettingsResSchema,
   async handler(req, ctx: AppContext) {

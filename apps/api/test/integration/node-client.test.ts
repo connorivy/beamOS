@@ -17,7 +17,7 @@ describe("typed node api client integration", () => {
     const client = createApiClient(baseUrl);
     const tempIds = ["node-01", "node-02", "node-03"];
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Node Integration Model",
         description: "Create model for nodes test",
@@ -32,15 +32,15 @@ describe("typed node api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
 
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/nodes/batch",
+      "/api/projects/{projectId}/branches/{branchName}/nodes/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },
@@ -107,10 +107,10 @@ describe("typed node api client integration", () => {
     }
 
     const getRevisionResponse = await client.GET(
-      "/api/models/{modelId}/branches/{branchName}/revision",
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
       {
         params: {
-          path: { modelId, branchName },
+          path: { projectId, branchName },
         },
       },
     );
@@ -140,7 +140,7 @@ describe("typed node api client integration", () => {
       );
       expect(nodeInRevision).toBeDefined();
       expect(nodeInRevision?.id).toBe(nodeId);
-      expect(nodeInRevision?.modelId).toBe(modelId);
+      expect(nodeInRevision?.projectId).toBe(projectId);
       expect(nodeInRevision?.nodeTypeDescriminator).toBe("external");
     }
 
@@ -149,7 +149,7 @@ describe("typed node api client integration", () => {
       (node) => ({
         ...node,
         id: "<db-id>",
-        modelId: "<model-id>",
+        projectId: "<project-id>",
       }),
     );
     expect(nodesSnapshot).toMatchSnapshot();
@@ -158,7 +158,7 @@ describe("typed node api client integration", () => {
   it("rejects duplicate temp ids in batch create", async () => {
     const client = createApiClient(baseUrl);
 
-    const createModelResponse = await client.POST("/api/models", {
+    const createModelResponse = await client.POST("/api/projects", {
       body: {
         name: "Duplicate Node TempId Model",
         description: "Create model for duplicate node tempId test",
@@ -172,14 +172,14 @@ describe("typed node api client integration", () => {
       throw new Error("Expected model response");
     }
 
-    const modelId = createModelResponse.data.id;
+    const projectId = createModelResponse.data.id;
     const branchName = "main";
     const batchCreateResponse = await client.POST(
-      "/api/models/{modelId}/branches/{branchName}/nodes/batch",
+      "/api/projects/{projectId}/branches/{branchName}/nodes/batch",
       {
         params: {
           path: {
-            modelId,
+            projectId,
             branchName,
           },
         },

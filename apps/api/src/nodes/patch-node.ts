@@ -8,7 +8,7 @@ import { patchNodeReqSchema } from "src/contracts/model-version-editing";
 
 const uuidSchema = z.uuid();
 const modelVersionRefSchema = z.object({
-  modelId: uuidSchema,
+  projectId: uuidSchema,
   revisionId: uuidSchema.nullable(),
 });
 
@@ -21,13 +21,12 @@ export const patchNodeResSchema = z
 
 export const patchNode = defineEndpoint({
   method: "PATCH",
-  path: "/api/models/:modelId/nodes/:nodeId",
+  path: "/api/projects/:projectId/nodes/:nodeId",
   req: patchNodeReqSchema,
   res: patchNodeResSchema,
   async handler(req, ctx: AppContext) {
     const model = await ctx.services.modelRepository.getById({
-      modelId: req.params.modelId,
-      revisionId: req.body.revisionId,
+      projectId: req.params.projectId,
     });
     if (!model) {
       throw httpError("Model or target revision not found", 404);
@@ -38,7 +37,7 @@ export const patchNode = defineEndpoint({
     if (!revision) {
       throw httpError("Revision not found", 400);
     }
-    if (revision.modelId !== req.params.modelId) {
+    if (revision.projectId !== req.params.projectId) {
       throw httpError("Revision does not belong to this model", 400);
     }
     if (!revision.nodes.some((node) => node.id === req.params.nodeId)) {
@@ -55,10 +54,10 @@ export const patchNode = defineEndpoint({
     return {
       node: {
         id: req.params.nodeId,
-        modelId: req.params.modelId,
+        projectId: req.params.projectId,
       },
       version: {
-        modelId: req.params.modelId,
+        projectId: req.params.projectId,
         ...toVersionRef({ revisionId: req.body.revisionId }),
       },
     };

@@ -23,24 +23,25 @@ import { z } from "zod";
 
 export const createModelRevision = defineEndpoint({
   method: "POST",
-  path: "/api/models/:modelId/branches/:branchName/revisions",
+  path: "/api/projects/:projectId/branches/:branchName/revisions",
   req: createModelRevisionReqSchema,
   res: modelRevisionResponseSchema,
   async handler(req, ctx: AppContext) {
     const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-      req.params.modelId,
+      req.params.projectId,
       req.params.branchName,
     );
     if (!branch) {
       throw httpError(
-        `Could not find branch ${req.params.branchName} on model with ID ${req.params.modelId}`,
+        `Could not find branch ${req.params.branchName} on model with ID ${req.params.projectId}`,
         404,
       );
     }
 
-    const parentRevision = await ctx.services.modelRevisionRepository.getRevisionById(
-      branch.headRevisionId,
-    );
+    const parentRevision =
+      await ctx.services.modelRevisionRepository.getRevisionById(
+        branch.headRevisionId,
+      );
     if (!parentRevision) {
       throw httpError(
         `Could not find parent revision ${branch.headRevisionId} for branch ${req.params.branchName}`,
@@ -52,13 +53,20 @@ export const createModelRevision = defineEndpoint({
       parentRevision.nodes.map((node) => [node.id, node.toSnapshot()] as const),
     );
     const currentMaterialsById = new Map(
-      parentRevision.materials.map((material) => [material.id, material.toSnapshot()] as const),
+      parentRevision.materials.map(
+        (material) => [material.id, material.toSnapshot()] as const,
+      ),
     );
     const currentSectionProfilesById = new Map(
-      parentRevision.sectionProfiles.map((sectionProfile) => [sectionProfile.id, sectionProfile.toSnapshot()] as const),
+      parentRevision.sectionProfiles.map(
+        (sectionProfile) =>
+          [sectionProfile.id, sectionProfile.toSnapshot()] as const,
+      ),
     );
     const currentElement1dsById = new Map(
-      parentRevision.element1ds.map((element1d) => [element1d.id, element1d.toSnapshot()] as const),
+      parentRevision.element1ds.map(
+        (element1d) => [element1d.id, element1d.toSnapshot()] as const,
+      ),
     );
 
     const revisionId = await getDb().transaction(async (tx) => {
@@ -79,9 +87,8 @@ export const createModelRevision = defineEndpoint({
       return revisionId;
     });
 
-    const modelRevision = await ctx.services.modelRevisionRepository.getRevisionById(
-      revisionId,
-    );
+    const modelRevision =
+      await ctx.services.modelRevisionRepository.getRevisionById(revisionId);
     if (!modelRevision) {
       throw httpError("Failed to load created model revision", 500);
     }
@@ -90,13 +97,12 @@ export const createModelRevision = defineEndpoint({
       modelRevision: {
         id: modelRevision.id,
         version: {
-          modelId: modelRevision.modelId,
+          projectId: modelRevision.projectId,
           revisionId: modelRevision.id,
           revisionsAhead: 0,
           revisionsBehind: 0,
         },
-        modelId: modelRevision.modelId,
-        name: modelRevision.name,
+        projectId: modelRevision.projectId,
         parentRevisionId: modelRevision.parentRevisionId,
         secondParentRevisionId: modelRevision.secondParentRevisionId,
         authorId: modelRevision.authorId,
@@ -104,7 +110,7 @@ export const createModelRevision = defineEndpoint({
         createdAt: modelRevision.createdAt.toISOString(),
         nodes: modelRevision.nodes.map((node) => ({
           id: node.id,
-          modelId: modelRevision.modelId,
+          projectId: modelRevision.projectId,
           nodeTypeDescriminator:
             node.toSnapshot().nodeTypeDescriminator ??
             (node.nodeType === "internalNode" ? "internal" : "external"),
@@ -127,64 +133,66 @@ export const createModelRevision = defineEndpoint({
               yAxisUp: modelRevision.modelSettings.yAxisUp,
             }
           : null,
-        sectionProfiles: modelRevision.sectionProfiles.map((sectionProfile) => ({
-          id: sectionProfile.id,
-          revisionId: sectionProfile.revisionId,
-          name: sectionProfile.name,
-          discriminator: sectionProfile.discriminator,
-          area: {
-            value: sectionProfile.area.SquareMeters,
-            unit: AreaUnits.SquareMeters as const,
-          },
-          strongAxisMomentOfInertia: {
-            value: sectionProfile.strongAxisMomentOfInertia.MetersToTheFourth,
-            unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
-          },
-          weakAxisMomentOfInertia: {
-            value: sectionProfile.weakAxisMomentOfInertia.MetersToTheFourth,
-            unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
-          },
-          torsionalConstant: {
-            value: sectionProfile.torsionalConstant.MetersToTheFourth,
-            unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
-          },
-          warpingConstant: {
-            value: sectionProfile.warpingConstant.MetersToTheSixth,
-            unit: WarpingMomentOfInertiaUnits.MetersToTheSixth as const,
-          },
-          strongAxisPlasticSectionModulus: {
-            value: sectionProfile.strongAxisPlasticSectionModulus.CubicMeters,
-            unit: VolumeUnits.CubicMeters as const,
-          },
-          weakAxisPlasticSectionModulus: {
-            value: sectionProfile.weakAxisPlasticSectionModulus.CubicMeters,
-            unit: VolumeUnits.CubicMeters as const,
-          },
-          strongAxisElasticSectionModulus: {
-            value: sectionProfile.strongAxisElasticSectionModulus.CubicMeters,
-            unit: VolumeUnits.CubicMeters as const,
-          },
-          weakAxisElasticSectionModulus: {
-            value: sectionProfile.weakAxisElasticSectionModulus.CubicMeters,
-            unit: VolumeUnits.CubicMeters as const,
-          },
-          ...(sectionProfile.strongAxisShearArea
-            ? {
-                strongAxisShearArea: {
-                  value: sectionProfile.strongAxisShearArea.SquareMeters,
-                  unit: AreaUnits.SquareMeters as const,
-                },
-              }
-            : {}),
-          ...(sectionProfile.weakAxisShearArea
-            ? {
-                weakAxisShearArea: {
-                  value: sectionProfile.weakAxisShearArea.SquareMeters,
-                  unit: AreaUnits.SquareMeters as const,
-                },
-              }
-            : {}),
-        })),
+        sectionProfiles: modelRevision.sectionProfiles.map(
+          (sectionProfile) => ({
+            id: sectionProfile.id,
+            revisionId: sectionProfile.revisionId,
+            name: sectionProfile.name,
+            discriminator: sectionProfile.discriminator,
+            area: {
+              value: sectionProfile.area.SquareMeters,
+              unit: AreaUnits.SquareMeters as const,
+            },
+            strongAxisMomentOfInertia: {
+              value: sectionProfile.strongAxisMomentOfInertia.MetersToTheFourth,
+              unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+            },
+            weakAxisMomentOfInertia: {
+              value: sectionProfile.weakAxisMomentOfInertia.MetersToTheFourth,
+              unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+            },
+            torsionalConstant: {
+              value: sectionProfile.torsionalConstant.MetersToTheFourth,
+              unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+            },
+            warpingConstant: {
+              value: sectionProfile.warpingConstant.MetersToTheSixth,
+              unit: WarpingMomentOfInertiaUnits.MetersToTheSixth as const,
+            },
+            strongAxisPlasticSectionModulus: {
+              value: sectionProfile.strongAxisPlasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters as const,
+            },
+            weakAxisPlasticSectionModulus: {
+              value: sectionProfile.weakAxisPlasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters as const,
+            },
+            strongAxisElasticSectionModulus: {
+              value: sectionProfile.strongAxisElasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters as const,
+            },
+            weakAxisElasticSectionModulus: {
+              value: sectionProfile.weakAxisElasticSectionModulus.CubicMeters,
+              unit: VolumeUnits.CubicMeters as const,
+            },
+            ...(sectionProfile.strongAxisShearArea
+              ? {
+                  strongAxisShearArea: {
+                    value: sectionProfile.strongAxisShearArea.SquareMeters,
+                    unit: AreaUnits.SquareMeters as const,
+                  },
+                }
+              : {}),
+            ...(sectionProfile.weakAxisShearArea
+              ? {
+                  weakAxisShearArea: {
+                    value: sectionProfile.weakAxisShearArea.SquareMeters,
+                    unit: AreaUnits.SquareMeters as const,
+                  },
+                }
+              : {}),
+          }),
+        ),
         element1ds: modelRevision.element1ds.map((element1d) => ({
           id: element1d.id,
           revisionId: element1d.revisionId,
@@ -581,19 +589,19 @@ const buildRevisionChanges = (input: {
 
 export async function createNewRevisionHandler(
   req: {
-    params: { modelId: string; branchName: string };
+    params: { projectId: string; branchName: string };
   },
   ctx: AppContext,
   tx: DbTransaction,
 ) {
-  const { modelId, branchName } = req.params;
+  const { projectId, branchName } = req.params;
   const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-    modelId,
+    projectId,
     branchName,
   );
   if (!branch) {
     throw httpError(
-      `Could not find branch ${branchName} on model with ID ${modelId}`,
+      `Could not find branch ${branchName} on model with ID ${projectId}`,
       404,
     );
   }
@@ -613,8 +621,7 @@ export async function createNewRevisionHandler(
   const now = new Date();
   await tx.insert(modelRevisions).values({
     id: revisionId,
-    modelId,
-    modelName: parentRevision.name,
+    projectId,
     parentRevisionId: parentRevision.id,
     secondParentRevisionId: null,
     authorId: parentRevision.authorId,
@@ -625,13 +632,13 @@ export async function createNewRevisionHandler(
   await tx
     .insert(modelBranchHeads)
     .values({
-      modelId,
+      projectId,
       branchName,
       headRevisionId: revisionId,
       updatedAt: now,
     })
     .onConflictDoUpdate({
-      target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
+      target: [modelBranchHeads.projectId, modelBranchHeads.branchName],
       set: {
         headRevisionId: revisionId,
         updatedAt: now,
@@ -642,19 +649,19 @@ export async function createNewRevisionHandler(
 
 export async function createNewRevisionAggregateHandler(
   req: {
-    params: { modelId: string; branchName: string };
+    params: { projectId: string; branchName: string };
   },
   ctx: AppContext,
   message = "Batch create materials",
 ) {
-  const { modelId, branchName } = req.params;
+  const { projectId, branchName } = req.params;
   const branch = await ctx.services.modelRevisionRepository.getBranchHead(
-    modelId,
+    projectId,
     branchName,
   );
   if (!branch) {
     throw httpError(
-      `Could not find branch ${branchName} on model with ID ${modelId}`,
+      `Could not find branch ${branchName} on model with ID ${projectId}`,
       404,
     );
   }
@@ -671,15 +678,16 @@ export async function createNewRevisionAggregateHandler(
   }
 
   return ModelRevisionAggregate.create({
-    modelId,
-    name: parentRevision.name,
+    projectId,
     parentRevisionId: parentRevision.id,
     secondParentRevisionId: null,
     authorId: parentRevision.authorId,
     message,
     createdAt: new Date(),
     nodes: parentRevision.nodes.map((node) => node.toSnapshot()),
-    materials: parentRevision.materials.map((material) => material.toSnapshot()),
+    materials: parentRevision.materials.map((material) =>
+      material.toSnapshot(),
+    ),
     modelSettings: parentRevision.modelSettings?.toSnapshot() ?? null,
     sectionProfiles: parentRevision.sectionProfiles.map((sectionProfile) =>
       sectionProfile.toSnapshot(),

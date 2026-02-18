@@ -1,5 +1,5 @@
-import { drizzleModelRepository } from "./models/model-repository";
-import { drizzleModelVersionRepository } from "./model-revisions/model-revision-repository";
+import { drizzleProjectRepository } from "./projects/project-repository";
+import { drizzleModelRevisionRepository } from "./model-revisions/model-revision-repository";
 import { drizzleMaterialRepository } from "./materials/material-repository";
 import { drizzleSectionProfileRepository } from "./section-profiles/section-profile-repository";
 import { drizzleElement1dRepository } from "./element1ds/element1d-repository";
@@ -12,8 +12,8 @@ export const createDefaultServices = (): AppServices => ({
       return undefined;
     },
   },
-  modelRepository: drizzleModelRepository,
-  modelRevisionRepository: drizzleModelVersionRepository,
+  modelRepository: drizzleProjectRepository,
+  modelRevisionRepository: drizzleModelRevisionRepository,
   materialRepository: drizzleMaterialRepository,
   sectionProfileRepository: drizzleSectionProfileRepository,
   element1dRepository: drizzleElement1dRepository,
