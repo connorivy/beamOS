@@ -292,7 +292,7 @@ const buildRevisionChanges = (input: {
       createdAt: input.createdAt,
     });
 
-  for (const createNode of input.req.body.nodes.create ?? []) {
+  for (const createNode of input.req.body.nodes?.create ?? []) {
     const id = Bun.randomUUIDv7();
     const payload =
       createNode.location.type === "internal"
@@ -324,7 +324,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putNode of input.req.body.nodes.update ?? []) {
+  for (const putNode of input.req.body.nodes?.update ?? []) {
     const existing = input.currentNodesById.get(putNode.id);
     if (!existing) {
       throw httpError(`Node ${putNode.id} not found`, 400);
@@ -359,7 +359,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteNodeId of input.req.body.nodes.delete ?? []) {
+  for (const deleteNodeId of input.req.body.nodes?.delete ?? []) {
     changes.push(
       toEntity({
         entityType: "node",
@@ -370,7 +370,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const createMaterial of input.req.body.materials.create ?? []) {
+  for (const createMaterial of input.req.body.materials?.create ?? []) {
     const id = Bun.randomUUIDv7();
     changes.push(
       toEntity({
@@ -400,7 +400,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putMaterial of input.req.body.materials.update ?? []) {
+  for (const putMaterial of input.req.body.materials?.update ?? []) {
     const existing = input.currentMaterialsById.get(putMaterial.id);
     if (!existing) {
       throw httpError(`Material ${putMaterial.id} not found`, 400);
@@ -434,7 +434,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteMaterialId of input.req.body.materials.delete ?? []) {
+  for (const deleteMaterialId of input.req.body.materials?.delete ?? []) {
     changes.push(
       toEntity({
         entityType: "material",
@@ -445,7 +445,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const createSectionProfile of input.req.body.sectionProfiles.create ??
+  for (const createSectionProfile of input.req.body.sectionProfiles?.create ??
     []) {
     const id = Bun.randomUUIDv7();
     changes.push(
@@ -511,7 +511,8 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putSectionProfile of input.req.body.sectionProfiles.update ?? []) {
+  for (const putSectionProfile of input.req.body.sectionProfiles?.update ??
+    []) {
     const existing = input.currentSectionProfilesById.get(putSectionProfile.id);
     if (!existing) {
       throw httpError(`Section profile ${putSectionProfile.id} not found`, 400);
@@ -580,7 +581,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteSectionProfileId of input.req.body.sectionProfiles.delete ??
+  for (const deleteSectionProfileId of input.req.body.sectionProfiles?.delete ??
     []) {
     changes.push(
       toEntity({
@@ -592,7 +593,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const createElement1d of input.req.body.element1ds.create ?? []) {
+  for (const createElement1d of input.req.body.element1ds?.create ?? []) {
     const id = Bun.randomUUIDv7();
     changes.push(
       toEntity({
@@ -611,7 +612,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putElement1d of input.req.body.element1ds.update ?? []) {
+  for (const putElement1d of input.req.body.element1ds?.update ?? []) {
     const existing = input.currentElement1dsById.get(putElement1d.id);
     if (!existing) {
       throw httpError(`Element1d ${putElement1d.id} not found`, 400);
@@ -634,7 +635,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteElement1dId of input.req.body.element1ds.delete ?? []) {
+  for (const deleteElement1dId of input.req.body.element1ds?.delete ?? []) {
     changes.push(
       toEntity({
         entityType: "element1d",
@@ -711,9 +712,14 @@ const buildRevisionChanges = (input: {
 
   for (const putLoadCombination of input.req.body.loadCombinations?.update ??
     []) {
-    const existing = input.currentLoadCombinationsById.get(putLoadCombination.id);
+    const existing = input.currentLoadCombinationsById.get(
+      putLoadCombination.id,
+    );
     if (!existing) {
-      throw httpError(`Load combination ${putLoadCombination.id} not found`, 400);
+      throw httpError(
+        `Load combination ${putLoadCombination.id} not found`,
+        400,
+      );
     }
 
     changes.push(
@@ -992,7 +998,9 @@ export async function createNewRevisionAggregateHandler(
     element1ds: parentRevision.element1ds.map((element1d) =>
       element1d.toSnapshot(),
     ),
-    loadCases: parentRevision.loadCases.map((loadCase) => loadCase.toSnapshot()),
+    loadCases: parentRevision.loadCases.map((loadCase) =>
+      loadCase.toSnapshot(),
+    ),
     loadCombinations: parentRevision.loadCombinations.map((loadCombination) =>
       loadCombination.toSnapshot(),
     ),

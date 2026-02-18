@@ -518,17 +518,11 @@ describe("model revision integration", () => {
       {
         params: { path: { projectId, branchName } },
         body: {
-          nodes: { create: [], update: [], delete: [] },
-          materials: { create: [], update: [], delete: [] },
-          sectionProfiles: { create: [], update: [], delete: [] },
-          element1ds: { create: [], update: [], delete: [] },
           loadCases: {
             create: [{ name: "LC1" }],
             update: [],
             delete: [],
           },
-          loadCombinations: { create: [], update: [], delete: [] },
-          pointLoads: { create: [], update: [], delete: [] },
         },
       },
     );
@@ -548,15 +542,8 @@ describe("model revision integration", () => {
       {
         params: { path: { projectId, branchName } },
         body: {
-          nodes: { create: [], update: [], delete: [] },
-          materials: { create: [], update: [], delete: [] },
-          sectionProfiles: { create: [], update: [], delete: [] },
-          element1ds: { create: [], update: [], delete: [] },
-          loadCases: { create: [], update: [], delete: [] },
           loadCombinations: {
             create: [{ loadCaseFactors: { [loadCaseId]: 1.5 } }],
-            update: [],
-            delete: [],
           },
           pointLoads: {
             create: [
@@ -578,8 +565,6 @@ describe("model revision integration", () => {
                 },
               },
             ],
-            update: [],
-            delete: [],
           },
         },
       },

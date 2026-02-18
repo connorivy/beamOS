@@ -101,10 +101,10 @@ export const createModelRevisionReqSchema = z
     }),
     body: z
       .object({
-        element1ds: element1dOperationsRequestSchema,
-        nodes: nodeOperationsRequestSchema,
-        materials: materialOperationsRequestSchema,
-        sectionProfiles: sectionProfileOperationsRequestSchema,
+        element1ds: element1dOperationsRequestSchema.optional(),
+        nodes: nodeOperationsRequestSchema.optional(),
+        materials: materialOperationsRequestSchema.optional(),
+        sectionProfiles: sectionProfileOperationsRequestSchema.optional(),
         loadCases: loadCaseOperationsRequestSchema.optional(),
         loadCombinations: loadCombinationOperationsRequestSchema.optional(),
         pointLoads: pointLoadOperationsRequestSchema.optional(),

@@ -3,6 +3,10 @@ import type {
   CreateElement1dRequest,
   CreateMaterialRequest,
   CreateModelRevisionRequest,
+  CreateModelRevisionElement1dOperationsRequest,
+  CreateModelRevisionMaterialOperationsRequest,
+  CreateModelRevisionNodeOperationsRequest,
+  CreateModelRevisionSectionProfileOperationsRequest,
   CreateNodeRequest,
   CreateSectionProfileRequest,
   ModelRevision,
@@ -17,6 +21,14 @@ type BranchKey = `${string}:${string}`;
 type SyncStatus = "idle" | "loading" | "saving" | "error";
 
 type ModelRevisionSnapshot = ModelRevision;
+
+type PendingRevisionBuilder = {
+  request: CreateModelRevisionRequest;
+  ensureNodes: () => CreateModelRevisionNodeOperationsRequest;
+  ensureMaterials: () => CreateModelRevisionMaterialOperationsRequest;
+  ensureSectionProfiles: () => CreateModelRevisionSectionProfileOperationsRequest;
+  ensureElement1ds: () => CreateModelRevisionElement1dOperationsRequest;
+};
 
 type BranchRevisionCacheEntry = {
   projectId: string;
@@ -85,15 +97,67 @@ const parseBranchKey = (
   };
 };
 
-const emptyPendingRevision = (): CreateModelRevisionRequest => ({
-  nodes: {},
-  materials: {},
-  sectionProfiles: {},
-  element1ds: {},
-  loadCases: {},
-  loadCombinations: {},
-  pointLoads: {},
-});
+const emptyPendingRevision = (): CreateModelRevisionRequest => ({});
+
+const createPendingRevisionBuilder = (
+  pendingRevision: CreateModelRevisionRequest,
+): PendingRevisionBuilder => {
+  const request: CreateModelRevisionRequest = { ...pendingRevision };
+
+  const ensureNodes = (): CreateModelRevisionNodeOperationsRequest => {
+    const current = request.nodes as
+      | CreateModelRevisionNodeOperationsRequest
+      | null
+      | undefined;
+    if (!current) {
+      request.nodes = {};
+    }
+    return request.nodes as CreateModelRevisionNodeOperationsRequest;
+  };
+
+  const ensureMaterials = (): CreateModelRevisionMaterialOperationsRequest => {
+    const current = request.materials as
+      | CreateModelRevisionMaterialOperationsRequest
+      | null
+      | undefined;
+    if (!current) {
+      request.materials = {};
+    }
+    return request.materials as CreateModelRevisionMaterialOperationsRequest;
+  };
+
+  const ensureSectionProfiles =
+    (): CreateModelRevisionSectionProfileOperationsRequest => {
+      const current = request.sectionProfiles as
+        | CreateModelRevisionSectionProfileOperationsRequest
+        | null
+        | undefined;
+      if (!current) {
+        request.sectionProfiles = {};
+      }
+      return request.sectionProfiles as CreateModelRevisionSectionProfileOperationsRequest;
+    };
+
+  const ensureElement1ds =
+    (): CreateModelRevisionElement1dOperationsRequest => {
+      const current = request.element1ds as
+        | CreateModelRevisionElement1dOperationsRequest
+        | null
+        | undefined;
+      if (!current) {
+        request.element1ds = {};
+      }
+      return request.element1ds as CreateModelRevisionElement1dOperationsRequest;
+    };
+
+  return {
+    request,
+    ensureNodes,
+    ensureMaterials,
+    ensureSectionProfiles,
+    ensureElement1ds,
+  };
+};
 
 const normalizeModelRevision = (
   modelRevision: ModelRevision & Partial<{ version: unknown }>,
@@ -121,7 +185,7 @@ const upsertById = <T extends { id: string }>(items: T[], nextItem: T): T[] => {
 };
 
 const upsertCreateByTempId = <T extends { tempId?: string }>(
-  items: T[] | undefined,
+  items: T[] | null | undefined,
   nextItem: T,
 ): T[] => {
   const tempId = nextItem.tempId;
@@ -141,7 +205,7 @@ const upsertCreateByTempId = <T extends { tempId?: string }>(
 };
 
 const removeCreateByTempId = <T extends { tempId?: string }>(
-  items: T[] | undefined,
+  items: T[] | null | undefined,
   tempId: string,
 ): T[] | undefined => {
   const filtered = (items ?? []).filter((item) => item.tempId !== tempId);
@@ -149,19 +213,22 @@ const removeCreateByTempId = <T extends { tempId?: string }>(
 };
 
 const isCreatedInPending = <T extends { tempId?: string }>(
-  createItems: T[] | undefined,
+  createItems: T[] | null | undefined,
   id: string,
 ): boolean => Boolean((createItems ?? []).find((item) => item.tempId === id));
 
 const removeById = <T extends { id: string }>(
-  items: T[] | undefined,
+  items: T[] | null | undefined,
   id: string,
 ): T[] | undefined => {
   const filtered = (items ?? []).filter((item) => item.id !== id);
   return filtered.length > 0 ? filtered : undefined;
 };
 
-const addUniqueDelete = (items: string[] | undefined, id: string): string[] =>
+const addUniqueDelete = (
+  items: string[] | null | undefined,
+  id: string,
+): string[] =>
   Array.from(new Set([...(items ?? []), id]));
 
 const pruneCachedBranches = (
@@ -190,18 +257,18 @@ const pruneCachedBranches = (
 };
 
 const hasPendingChanges = (pending: CreateModelRevisionRequest): boolean =>
-  (pending.nodes.create?.length ?? 0) > 0 ||
-  (pending.nodes.update?.length ?? 0) > 0 ||
-  (pending.nodes.delete?.length ?? 0) > 0 ||
-  (pending.materials.create?.length ?? 0) > 0 ||
-  (pending.materials.update?.length ?? 0) > 0 ||
-  (pending.materials.delete?.length ?? 0) > 0 ||
-  (pending.sectionProfiles.create?.length ?? 0) > 0 ||
-  (pending.sectionProfiles.update?.length ?? 0) > 0 ||
-  (pending.sectionProfiles.delete?.length ?? 0) > 0 ||
-  (pending.element1ds.create?.length ?? 0) > 0 ||
-  (pending.element1ds.update?.length ?? 0) > 0 ||
-  (pending.element1ds.delete?.length ?? 0) > 0 ||
+  (pending.nodes?.create?.length ?? 0) > 0 ||
+  (pending.nodes?.update?.length ?? 0) > 0 ||
+  (pending.nodes?.delete?.length ?? 0) > 0 ||
+  (pending.materials?.create?.length ?? 0) > 0 ||
+  (pending.materials?.update?.length ?? 0) > 0 ||
+  (pending.materials?.delete?.length ?? 0) > 0 ||
+  (pending.sectionProfiles?.create?.length ?? 0) > 0 ||
+  (pending.sectionProfiles?.update?.length ?? 0) > 0 ||
+  (pending.sectionProfiles?.delete?.length ?? 0) > 0 ||
+  (pending.element1ds?.create?.length ?? 0) > 0 ||
+  (pending.element1ds?.update?.length ?? 0) > 0 ||
+  (pending.element1ds?.delete?.length ?? 0) > 0 ||
   (pending.loadCases?.create?.length ?? 0) > 0 ||
   (pending.loadCases?.update?.length ?? 0) > 0 ||
   (pending.loadCases?.delete?.length ?? 0) > 0 ||
@@ -444,60 +511,44 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     const nextNode = { ...node };
     const tempId = ensureTempId(nextNode);
 
-    withActiveEntry(set, get, (entry) => ({
-      ...entry,
-      pendingRevision: {
-        ...entry.pendingRevision,
-        nodes: {
-          ...entry.pendingRevision.nodes,
-          create: upsertCreateByTempId(
-            entry.pendingRevision.nodes.create,
-            nextNode,
-          ),
-          delete: (entry.pendingRevision.nodes.delete ?? []).filter(
-            (id) => id !== tempId,
-          ),
-        },
-      },
-      syncStatus: "idle",
-      error: null,
-      lastAccessedAt: Date.now(),
-    }));
+    withActiveEntry(set, get, (entry) => {
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const nodes = builder.ensureNodes();
+
+      nodes.create = upsertCreateByTempId(nodes.create, nextNode);
+      nodes.delete = (nodes.delete ?? []).filter((id) => id !== tempId);
+
+      return {
+        ...entry,
+        pendingRevision: builder.request,
+        syncStatus: "idle",
+        error: null,
+        lastAccessedAt: Date.now(),
+      };
+    });
 
     return tempId;
   },
 
   queueNodeUpdate: (node) => {
     withActiveEntry(set, get, (entry) => {
-      const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.nodes.create,
-        node.id,
-      );
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const nodes = builder.ensureNodes();
+      const createdNotSaved = isCreatedInPending(nodes.create, node.id);
+
+      if (createdNotSaved) {
+        nodes.create = upsertCreateByTempId(nodes.create, {
+          location: node.location,
+          restraint: node.restraint,
+          tempId: node.id,
+        });
+      } else {
+        nodes.update = upsertById(nodes.update ?? [], node);
+      }
 
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          nodes: createdNotSaved
-            ? {
-                ...entry.pendingRevision.nodes,
-                create: upsertCreateByTempId(
-                  entry.pendingRevision.nodes.create,
-                  {
-                    location: node.location,
-                    restraint: node.restraint,
-                    tempId: node.id,
-                  },
-                ),
-              }
-            : {
-                ...entry.pendingRevision.nodes,
-                update: upsertById(
-                  entry.pendingRevision.nodes.update ?? [],
-                  node,
-                ),
-              },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),
@@ -507,27 +558,19 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
 
   queueNodeDelete: (nodeId) => {
     withActiveEntry(set, get, (entry) => {
-      const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.nodes.create,
-        nodeId,
-      );
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const nodes = builder.ensureNodes();
+      const createdNotSaved = isCreatedInPending(nodes.create, nodeId);
+
+      nodes.create = removeCreateByTempId(nodes.create, nodeId);
+      nodes.update = removeById(nodes.update, nodeId);
+      nodes.delete = createdNotSaved
+        ? nodes.delete ?? undefined
+        : addUniqueDelete(nodes.delete, nodeId);
 
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          nodes: {
-            ...entry.pendingRevision.nodes,
-            create: removeCreateByTempId(
-              entry.pendingRevision.nodes.create,
-              nodeId,
-            ),
-            update: removeById(entry.pendingRevision.nodes.update, nodeId),
-            delete: createdNotSaved
-              ? entry.pendingRevision.nodes.delete
-              : addUniqueDelete(entry.pendingRevision.nodes.delete, nodeId),
-          },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),
@@ -539,62 +582,46 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     const nextMaterial = { ...material };
     const tempId = ensureTempId(nextMaterial);
 
-    withActiveEntry(set, get, (entry) => ({
-      ...entry,
-      pendingRevision: {
-        ...entry.pendingRevision,
-        materials: {
-          ...entry.pendingRevision.materials,
-          create: upsertCreateByTempId(
-            entry.pendingRevision.materials.create,
-            nextMaterial,
-          ),
-          delete: (entry.pendingRevision.materials.delete ?? []).filter(
-            (id) => id !== tempId,
-          ),
-        },
-      },
-      syncStatus: "idle",
-      error: null,
-      lastAccessedAt: Date.now(),
-    }));
+    withActiveEntry(set, get, (entry) => {
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const materials = builder.ensureMaterials();
+
+      materials.create = upsertCreateByTempId(materials.create, nextMaterial);
+      materials.delete = (materials.delete ?? []).filter((id) => id !== tempId);
+
+      return {
+        ...entry,
+        pendingRevision: builder.request,
+        syncStatus: "idle",
+        error: null,
+        lastAccessedAt: Date.now(),
+      };
+    });
 
     return tempId;
   },
 
   queueMaterialUpdate: (material) => {
     withActiveEntry(set, get, (entry) => {
-      const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.materials.create,
-        material.id,
-      );
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const materials = builder.ensureMaterials();
+      const createdNotSaved = isCreatedInPending(materials.create, material.id);
+
+      if (createdNotSaved) {
+        materials.create = upsertCreateByTempId(materials.create, {
+          name: material.name,
+          modulusOfElasticity: material.modulusOfElasticity,
+          modulusOfRigidity: material.modulusOfRigidity,
+          units: material.units,
+          tempId: material.id,
+        });
+      } else {
+        materials.update = upsertById(materials.update ?? [], material);
+      }
 
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          materials: createdNotSaved
-            ? {
-                ...entry.pendingRevision.materials,
-                create: upsertCreateByTempId(
-                  entry.pendingRevision.materials.create,
-                  {
-                    name: material.name,
-                    modulusOfElasticity: material.modulusOfElasticity,
-                    modulusOfRigidity: material.modulusOfRigidity,
-                    units: material.units,
-                    tempId: material.id,
-                  },
-                ),
-              }
-            : {
-                ...entry.pendingRevision.materials,
-                update: upsertById(
-                  entry.pendingRevision.materials.update ?? [],
-                  material,
-                ),
-              },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),
@@ -604,33 +631,19 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
 
   queueMaterialDelete: (materialId) => {
     withActiveEntry(set, get, (entry) => {
-      const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.materials.create,
-        materialId,
-      );
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const materials = builder.ensureMaterials();
+      const createdNotSaved = isCreatedInPending(materials.create, materialId);
+
+      materials.create = removeCreateByTempId(materials.create, materialId);
+      materials.update = removeById(materials.update, materialId);
+      materials.delete = createdNotSaved
+        ? materials.delete ?? undefined
+        : addUniqueDelete(materials.delete, materialId);
 
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          materials: {
-            ...entry.pendingRevision.materials,
-            create: removeCreateByTempId(
-              entry.pendingRevision.materials.create,
-              materialId,
-            ),
-            update: removeById(
-              entry.pendingRevision.materials.update,
-              materialId,
-            ),
-            delete: createdNotSaved
-              ? entry.pendingRevision.materials.delete
-              : addUniqueDelete(
-                  entry.pendingRevision.materials.delete,
-                  materialId,
-                ),
-          },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),
@@ -642,59 +655,54 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     const nextSectionProfile = { ...sectionProfile };
     const tempId = ensureTempId(nextSectionProfile);
 
-    withActiveEntry(set, get, (entry) => ({
-      ...entry,
-      pendingRevision: {
-        ...entry.pendingRevision,
-        sectionProfiles: {
-          ...entry.pendingRevision.sectionProfiles,
-          create: upsertCreateByTempId(
-            entry.pendingRevision.sectionProfiles.create,
-            nextSectionProfile,
-          ),
-          delete: (entry.pendingRevision.sectionProfiles.delete ?? []).filter(
-            (id) => id !== tempId,
-          ),
-        },
-      },
-      syncStatus: "idle",
-      error: null,
-      lastAccessedAt: Date.now(),
-    }));
+    withActiveEntry(set, get, (entry) => {
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const sectionProfiles = builder.ensureSectionProfiles();
+
+      sectionProfiles.create = upsertCreateByTempId(
+        sectionProfiles.create,
+        nextSectionProfile,
+      );
+      sectionProfiles.delete = (sectionProfiles.delete ?? []).filter(
+        (id) => id !== tempId,
+      );
+
+      return {
+        ...entry,
+        pendingRevision: builder.request,
+        syncStatus: "idle",
+        error: null,
+        lastAccessedAt: Date.now(),
+      };
+    });
 
     return tempId;
   },
 
   queueSectionProfileUpdate: (sectionProfile) => {
     withActiveEntry(set, get, (entry) => {
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const sectionProfiles = builder.ensureSectionProfiles();
       const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.sectionProfiles.create,
+        sectionProfiles.create,
         sectionProfile.id,
       );
 
+      if (createdNotSaved) {
+        sectionProfiles.create = upsertCreateByTempId(sectionProfiles.create, {
+          ...sectionProfile,
+          tempId: sectionProfile.id,
+        });
+      } else {
+        sectionProfiles.update = upsertById(
+          sectionProfiles.update ?? [],
+          sectionProfile,
+        );
+      }
+
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          sectionProfiles: createdNotSaved
-            ? {
-                ...entry.pendingRevision.sectionProfiles,
-                create: upsertCreateByTempId(
-                  entry.pendingRevision.sectionProfiles.create,
-                  {
-                    ...sectionProfile,
-                    tempId: sectionProfile.id,
-                  },
-                ),
-              }
-            : {
-                ...entry.pendingRevision.sectionProfiles,
-                update: upsertById(
-                  entry.pendingRevision.sectionProfiles.update ?? [],
-                  sectionProfile,
-                ),
-              },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),
@@ -704,33 +712,28 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
 
   queueSectionProfileDelete: (sectionProfileId) => {
     withActiveEntry(set, get, (entry) => {
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const sectionProfiles = builder.ensureSectionProfiles();
       const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.sectionProfiles.create,
+        sectionProfiles.create,
         sectionProfileId,
       );
 
+      sectionProfiles.create = removeCreateByTempId(
+        sectionProfiles.create,
+        sectionProfileId,
+      );
+      sectionProfiles.update = removeById(
+        sectionProfiles.update,
+        sectionProfileId,
+      );
+      sectionProfiles.delete = createdNotSaved
+        ? sectionProfiles.delete ?? undefined
+        : addUniqueDelete(sectionProfiles.delete, sectionProfileId);
+
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          sectionProfiles: {
-            ...entry.pendingRevision.sectionProfiles,
-            create: removeCreateByTempId(
-              entry.pendingRevision.sectionProfiles.create,
-              sectionProfileId,
-            ),
-            update: removeById(
-              entry.pendingRevision.sectionProfiles.update,
-              sectionProfileId,
-            ),
-            delete: createdNotSaved
-              ? entry.pendingRevision.sectionProfiles.delete
-              : addUniqueDelete(
-                  entry.pendingRevision.sectionProfiles.delete,
-                  sectionProfileId,
-                ),
-          },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),
@@ -742,62 +745,46 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     const nextElement1d = { ...element1d };
     const tempId = ensureTempId(nextElement1d);
 
-    withActiveEntry(set, get, (entry) => ({
-      ...entry,
-      pendingRevision: {
-        ...entry.pendingRevision,
-        element1ds: {
-          ...entry.pendingRevision.element1ds,
-          create: upsertCreateByTempId(
-            entry.pendingRevision.element1ds.create,
-            nextElement1d,
-          ),
-          delete: (entry.pendingRevision.element1ds.delete ?? []).filter(
-            (id) => id !== tempId,
-          ),
-        },
-      },
-      syncStatus: "idle",
-      error: null,
-      lastAccessedAt: Date.now(),
-    }));
+    withActiveEntry(set, get, (entry) => {
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const element1ds = builder.ensureElement1ds();
+
+      element1ds.create = upsertCreateByTempId(element1ds.create, nextElement1d);
+      element1ds.delete = (element1ds.delete ?? []).filter((id) => id !== tempId);
+
+      return {
+        ...entry,
+        pendingRevision: builder.request,
+        syncStatus: "idle",
+        error: null,
+        lastAccessedAt: Date.now(),
+      };
+    });
 
     return tempId;
   },
 
   queueElement1dUpdate: (element1d) => {
     withActiveEntry(set, get, (entry) => {
-      const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.element1ds.create,
-        element1d.id,
-      );
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const element1ds = builder.ensureElement1ds();
+      const createdNotSaved = isCreatedInPending(element1ds.create, element1d.id);
+
+      if (createdNotSaved) {
+        element1ds.create = upsertCreateByTempId(element1ds.create, {
+          startNodeId: element1d.startNodeId,
+          endNodeId: element1d.endNodeId,
+          materialId: element1d.materialId,
+          sectionProfileId: element1d.sectionProfileId,
+          tempId: element1d.id,
+        });
+      } else {
+        element1ds.update = upsertById(element1ds.update ?? [], element1d);
+      }
 
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          element1ds: createdNotSaved
-            ? {
-                ...entry.pendingRevision.element1ds,
-                create: upsertCreateByTempId(
-                  entry.pendingRevision.element1ds.create,
-                  {
-                    startNodeId: element1d.startNodeId,
-                    endNodeId: element1d.endNodeId,
-                    materialId: element1d.materialId,
-                    sectionProfileId: element1d.sectionProfileId,
-                    tempId: element1d.id,
-                  },
-                ),
-              }
-            : {
-                ...entry.pendingRevision.element1ds,
-                update: upsertById(
-                  entry.pendingRevision.element1ds.update ?? [],
-                  element1d,
-                ),
-              },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),
@@ -807,33 +794,19 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
 
   queueElement1dDelete: (element1dId) => {
     withActiveEntry(set, get, (entry) => {
-      const createdNotSaved = isCreatedInPending(
-        entry.pendingRevision.element1ds.create,
-        element1dId,
-      );
+      const builder = createPendingRevisionBuilder(entry.pendingRevision);
+      const element1ds = builder.ensureElement1ds();
+      const createdNotSaved = isCreatedInPending(element1ds.create, element1dId);
+
+      element1ds.create = removeCreateByTempId(element1ds.create, element1dId);
+      element1ds.update = removeById(element1ds.update, element1dId);
+      element1ds.delete = createdNotSaved
+        ? element1ds.delete ?? undefined
+        : addUniqueDelete(element1ds.delete, element1dId);
 
       return {
         ...entry,
-        pendingRevision: {
-          ...entry.pendingRevision,
-          element1ds: {
-            ...entry.pendingRevision.element1ds,
-            create: removeCreateByTempId(
-              entry.pendingRevision.element1ds.create,
-              element1dId,
-            ),
-            update: removeById(
-              entry.pendingRevision.element1ds.update,
-              element1dId,
-            ),
-            delete: createdNotSaved
-              ? entry.pendingRevision.element1ds.delete
-              : addUniqueDelete(
-                  entry.pendingRevision.element1ds.delete,
-                  element1dId,
-                ),
-          },
-        },
+        pendingRevision: builder.request,
         syncStatus: "idle",
         error: null,
         lastAccessedAt: Date.now(),

@@ -140,7 +140,9 @@ export const ModelRevisionEditorPage = () => {
     );
 
     const pendingNodeUpdatesById = new Map(
-      (activePendingRevision?.nodes.update ?? []).map((node) => [node.id, node] as const),
+      (activePendingRevision?.nodes?.update ?? []).map(
+        (node) => [node.id, node] as const,
+      ),
     );
 
     const projectedNodes = externalNodes.map((node, index) => {
@@ -279,7 +281,7 @@ export const ModelRevisionEditorPage = () => {
           </Typography>
           <Typography variant="body2">Sync: {activeEntry?.syncStatus ?? "idle"}</Typography>
           <Typography variant="body2">
-            Pending node updates: {activePendingRevision?.nodes.update?.length ?? 0}
+            Pending node updates: {activePendingRevision?.nodes?.update?.length ?? 0}
           </Typography>
         </Stack>
       </Paper>

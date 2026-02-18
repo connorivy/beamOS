@@ -3433,12 +3433,6 @@
             "$ref": "#/components/schemas/CreateModelRevisionPointLoadOperationsRequest"
           }
         },
-        "required": [
-          "element1ds",
-          "nodes",
-          "materials",
-          "sectionProfiles"
-        ],
         "additionalProperties": false,
         "id": "CreateModelRevisionRequest"
       }

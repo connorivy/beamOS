@@ -1137,10 +1137,10 @@ export interface components {
             id: string;
         };
         CreateModelRevisionRequest: {
-            element1ds: components["schemas"]["CreateModelRevisionElement1dOperationsRequest"];
-            nodes: components["schemas"]["CreateModelRevisionNodeOperationsRequest"];
-            materials: components["schemas"]["CreateModelRevisionMaterialOperationsRequest"];
-            sectionProfiles: components["schemas"]["CreateModelRevisionSectionProfileOperationsRequest"];
+            element1ds?: components["schemas"]["CreateModelRevisionElement1dOperationsRequest"];
+            nodes?: components["schemas"]["CreateModelRevisionNodeOperationsRequest"];
+            materials?: components["schemas"]["CreateModelRevisionMaterialOperationsRequest"];
+            sectionProfiles?: components["schemas"]["CreateModelRevisionSectionProfileOperationsRequest"];
             loadCases?: components["schemas"]["CreateModelRevisionLoadCaseOperationsRequest"];
             loadCombinations?: components["schemas"]["CreateModelRevisionLoadCombinationOperationsRequest"];
             pointLoads?: components["schemas"]["CreateModelRevisionPointLoadOperationsRequest"];
