@@ -285,6 +285,7 @@ const buildRevisionChanges = (input: {
     }
     sectionProfileIdByName.set(sectionProfile.name, sectionProfile.id);
   }
+  const currentSectionProfileIdByName = new Map(sectionProfileIdByName);
   const toEntity = (change: {
     entityType:
       | "node"
@@ -488,21 +489,31 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  const sectionProfileUpdateIds = new Set(
+  const sectionProfileUpdateNames = new Set(
     (input.req.body.sectionProfiles?.update ?? []).map(
-      (sectionProfile) => sectionProfile.id,
+      (sectionProfile) => sectionProfile.sectionProfileName,
     ),
   );
-  for (const sectionProfileId of sectionProfileUpdateIds) {
+  for (const sectionProfileName of sectionProfileUpdateNames) {
+    const sectionProfileId = currentSectionProfileIdByName.get(sectionProfileName);
+    if (!sectionProfileId) {
+      throw httpError(`Section profile "${sectionProfileName}" not found`, 400);
+    }
     const existing = input.currentSectionProfilesById.get(sectionProfileId);
     if (!existing) {
-      throw httpError(`Section profile ${sectionProfileId} not found`, 400);
+      throw httpError(`Section profile "${sectionProfileName}" not found`, 400);
     }
     sectionProfileIdByName.delete(existing.name);
   }
 
-  for (const deleteSectionProfileId of input.req.body.sectionProfiles?.delete ??
+  for (const deleteSectionProfileName of input.req.body.sectionProfiles?.delete ??
     []) {
+    const deleteSectionProfileId = currentSectionProfileIdByName.get(
+      deleteSectionProfileName,
+    );
+    if (!deleteSectionProfileId) {
+      continue;
+    }
     const existing = input.currentSectionProfilesById.get(deleteSectionProfileId);
     if (existing) {
       sectionProfileIdByName.delete(existing.name);
@@ -596,9 +607,21 @@ const buildRevisionChanges = (input: {
 
   for (const putSectionProfile of input.req.body.sectionProfiles?.update ??
     []) {
-    const existing = input.currentSectionProfilesById.get(putSectionProfile.id);
+    const sectionProfileId = currentSectionProfileIdByName.get(
+      putSectionProfile.sectionProfileName,
+    );
+    if (!sectionProfileId) {
+      throw httpError(
+        `Section profile "${putSectionProfile.sectionProfileName}" not found`,
+        400,
+      );
+    }
+    const existing = input.currentSectionProfilesById.get(sectionProfileId);
     if (!existing) {
-      throw httpError(`Section profile ${putSectionProfile.id} not found`, 400);
+      throw httpError(
+        `Section profile "${putSectionProfile.sectionProfileName}" not found`,
+        400,
+      );
     }
     if (sectionProfileIdByName.has(putSectionProfile.name)) {
       throw httpError(
@@ -606,15 +629,15 @@ const buildRevisionChanges = (input: {
         400,
       );
     }
-    sectionProfileIdByName.set(putSectionProfile.name, putSectionProfile.id);
+    sectionProfileIdByName.set(putSectionProfile.name, sectionProfileId);
 
     changes.push(
       toEntity({
         entityType: "sectionprofile",
-        entityId: putSectionProfile.id,
+        entityId: sectionProfileId,
         op: "update",
         payload: {
-          id: putSectionProfile.id,
+          id: sectionProfileId,
           revisionId: input.revisionId,
           name: putSectionProfile.name,
           discriminator: putSectionProfile.discriminator,
@@ -671,8 +694,14 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteSectionProfileId of input.req.body.sectionProfiles?.delete ??
+  for (const deleteSectionProfileName of input.req.body.sectionProfiles?.delete ??
     []) {
+    const deleteSectionProfileId = currentSectionProfileIdByName.get(
+      deleteSectionProfileName,
+    );
+    if (!deleteSectionProfileId) {
+      continue;
+    }
     changes.push(
       toEntity({
         entityType: "sectionprofile",

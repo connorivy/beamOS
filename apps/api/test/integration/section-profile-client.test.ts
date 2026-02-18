@@ -21,8 +21,6 @@ afterAll(async () => {
 describe("typed section profile api client integration", () => {
   it("batch creates section profiles and snapshots get responses", async () => {
     const client = createApiClient(baseUrl);
-    const imperialTempId = "sp-01";
-    const metricTempId = "sp-02";
 
     const createModelResponse = await client.POST("/api/projects", {
       body: {
@@ -61,7 +59,6 @@ describe("typed section profile api client integration", () => {
           },
           sectionProfiles: [
             {
-              tempId: imperialTempId,
               name: "W12x26",
               discriminator: "STANDARD",
               area: 7.65,
@@ -99,7 +96,6 @@ describe("typed section profile api client integration", () => {
           },
           sectionProfiles: [
             {
-              tempId: metricTempId,
               name: "IPE 200",
               discriminator: "WITH_SHEAR_AREAS",
               area: 33.4,
@@ -123,13 +119,11 @@ describe("typed section profile api client integration", () => {
     expect(imperialBatchCreateResponse.response.status).toBe(200);
     expect(imperialBatchCreateResponse.data).toBeDefined();
     expect(imperialBatchCreateResponse.data?.sectionProfiles).toHaveLength(1);
-    expect(imperialBatchCreateResponse.data?.tempIdToId).toBeDefined();
 
     expect(metricBatchCreateResponse.error).toBeUndefined();
     expect(metricBatchCreateResponse.response.status).toBe(200);
     expect(metricBatchCreateResponse.data).toBeDefined();
     expect(metricBatchCreateResponse.data?.sectionProfiles).toHaveLength(1);
-    expect(metricBatchCreateResponse.data?.tempIdToId).toBeDefined();
 
     if (!imperialBatchCreateResponse.data || !metricBatchCreateResponse.data) {
       throw new Error("Expected batch create responses");
@@ -147,28 +141,24 @@ describe("typed section profile api client integration", () => {
     expect(getRevisionResponse.error).toBeUndefined();
     expect(getRevisionResponse.response.status).toBe(200);
     expect(getRevisionResponse.data).toBeDefined();
+
+    const createdIds = [
+      imperialBatchCreateResponse.data.sectionProfiles[0]?.id,
+      metricBatchCreateResponse.data.sectionProfiles[0]?.id,
+    ];
+
+    expect(createdIds[0]).toBeDefined();
+    expect(createdIds[1]).toBeDefined();
+
     expect(
       getRevisionResponse.data?.sectionProfiles.map(
         (sectionProfile) => sectionProfile.id,
       ),
-    ).toEqual(
-      expect.arrayContaining([
-        ...Object.values(imperialBatchCreateResponse.data.tempIdToId),
-        ...Object.values(metricBatchCreateResponse.data.tempIdToId),
-      ]),
-    );
+    ).toEqual(expect.arrayContaining(createdIds as string[]));
 
-    const tempIdToId = {
-      ...imperialBatchCreateResponse.data.tempIdToId,
-      ...metricBatchCreateResponse.data.tempIdToId,
-    };
-
-    for (const tempId of [imperialTempId, metricTempId]) {
-      const sectionProfileId = tempIdToId[tempId];
-      expect(sectionProfileId).toBeDefined();
-
+    for (const sectionProfileId of createdIds) {
       if (!sectionProfileId) {
-        throw new Error(`Expected section profile ID for tempId ${tempId}`);
+        throw new Error("Expected section profile id");
       }
 
       const getResponse = await client.GET(
@@ -196,81 +186,6 @@ describe("typed section profile api client integration", () => {
         revisionId: "<revision-id>",
       }).toMatchSnapshot();
     }
-  });
-
-  it("rejects duplicate temp ids in batch create", async () => {
-    const client = createApiClient(baseUrl);
-
-    const createModelResponse = await client.POST("/api/projects", {
-      body: {
-        name: "Duplicate Section Profile TempId Model",
-        description: "Create model for duplicate section profile tempId test",
-      },
-    });
-
-    expect(createModelResponse.response.status).toBe(200);
-    expect(createModelResponse.data).toBeDefined();
-
-    if (!createModelResponse.data) {
-      throw new Error("Expected model response");
-    }
-
-    const projectId = createModelResponse.data.id;
-    const branchName = "main";
-
-    const batchCreateResponse = await client.POST(
-      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
-      {
-        params: {
-          path: {
-            projectId,
-            branchName,
-          },
-        },
-        body: {
-          units: {
-            area: AreaUnits.SquareInches,
-            areaMomentOfInertia: AreaMomentOfInertiaUnits.InchesToTheFourth,
-            warpingMomentOfInertia:
-              WarpingMomentOfInertiaUnits.InchesToTheSixth,
-            volume: VolumeUnits.CubicInches,
-          },
-          sectionProfiles: [
-            {
-              tempId: "dup-1",
-              name: "HSS dup 1",
-              discriminator: "STANDARD",
-              area: 5,
-              strongAxisMomentOfInertia: 10,
-              weakAxisMomentOfInertia: 4,
-              torsionalConstant: 1,
-              warpingConstant: 20,
-              strongAxisPlasticSectionModulus: 3.5,
-              weakAxisPlasticSectionModulus: 2.1,
-              strongAxisElasticSectionModulus: 3,
-              weakAxisElasticSectionModulus: 2,
-            },
-            {
-              tempId: "dup-1",
-              name: "HSS dup 2",
-              discriminator: "STANDARD",
-              area: 6,
-              strongAxisMomentOfInertia: 11,
-              weakAxisMomentOfInertia: 5,
-              torsionalConstant: 1.2,
-              warpingConstant: 22,
-              strongAxisPlasticSectionModulus: 4.5,
-              weakAxisPlasticSectionModulus: 3.1,
-              strongAxisElasticSectionModulus: 4,
-              weakAxisElasticSectionModulus: 3,
-            },
-          ],
-        },
-      },
-    );
-
-    expect(batchCreateResponse.data).toBeUndefined();
-    expect(batchCreateResponse.response.status).toBe(400);
   });
 
   it("rejects duplicate section profile names in batch create", async () => {
@@ -312,7 +227,6 @@ describe("typed section profile api client integration", () => {
           },
           sectionProfiles: [
             {
-              tempId: "dup-name-1",
               name: "Duplicate Section",
               discriminator: "STANDARD",
               area: 5,
@@ -326,7 +240,6 @@ describe("typed section profile api client integration", () => {
               weakAxisElasticSectionModulus: 2,
             },
             {
-              tempId: "dup-name-2",
               name: "Duplicate Section",
               discriminator: "STANDARD",
               area: 6,

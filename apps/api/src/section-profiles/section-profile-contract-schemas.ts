@@ -45,16 +45,15 @@ export const createSectionProfileRequestSchema = sectionProfileBasePropertiesSch
   .extend({
     strongAxisShearArea: z.number().finite().optional(),
     weakAxisShearArea: z.number().finite().optional(),
-    tempId: z.string().trim().min(1).optional(),
   })
   .meta({ id: "CreateSectionProfileRequest" });
 
 export const putSectionProfileRequestSchema = z.discriminatedUnion("discriminator", [
   standardSectionProfilePropertiesSchema.extend({
-    id: uuidV7Schema,
+    sectionProfileName: z.string().trim().min(1),
   }),
   withShearAreasSectionProfilePropertiesSchema.extend({
-    id: uuidV7Schema,
+    sectionProfileName: z.string().trim().min(1),
   }),
 ]).meta({ id: "PutSectionProfileRequest" });
 

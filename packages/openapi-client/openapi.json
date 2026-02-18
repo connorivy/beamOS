@@ -1649,22 +1649,10 @@
             "items": {
               "$ref": "#/components/schemas/SectionProfile"
             }
-          },
-          "tempIdToId": {
-            "type": "object",
-            "propertyNames": {
-              "type": "string"
-            },
-            "additionalProperties": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
           }
         },
         "required": [
-          "sectionProfiles",
-          "tempIdToId"
+          "sectionProfiles"
         ],
         "additionalProperties": false,
         "id": "BatchCreateSectionProfileResponse"
@@ -1708,10 +1696,6 @@
           },
           "weakAxisShearArea": {
             "type": "number"
-          },
-          "tempId": {
-            "type": "string",
-            "minLength": 1
           }
         },
         "required": [
@@ -2646,9 +2630,7 @@
           "delete": {
             "type": "array",
             "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              "$ref": "#/components/schemas/DeleteSectionProfileRequest"
             }
           }
         },
@@ -2695,10 +2677,9 @@
                 "type": "string",
                 "const": "STANDARD"
               },
-              "id": {
+              "sectionProfileName": {
                 "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                "minLength": 1
               }
             },
             "required": [
@@ -2713,7 +2694,7 @@
               "strongAxisElasticSectionModulus",
               "weakAxisElasticSectionModulus",
               "discriminator",
-              "id"
+              "sectionProfileName"
             ],
             "additionalProperties": false
           },
@@ -2761,10 +2742,9 @@
               "weakAxisShearArea": {
                 "type": "number"
               },
-              "id": {
+              "sectionProfileName": {
                 "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                "minLength": 1
               }
             },
             "required": [
@@ -2781,12 +2761,17 @@
               "discriminator",
               "strongAxisShearArea",
               "weakAxisShearArea",
-              "id"
+              "sectionProfileName"
             ],
             "additionalProperties": false
           }
         ],
         "id": "PutSectionProfileRequest"
+      },
+      "DeleteSectionProfileRequest": {
+        "type": "string",
+        "minLength": 1,
+        "id": "DeleteSectionProfileRequest"
       },
       "CreateModelRevisionLoadCaseOperationsRequest": {
         "type": "object",

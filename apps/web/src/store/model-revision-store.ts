@@ -73,7 +73,7 @@ type ModelRevisionState = {
     sectionProfile: CreateSectionProfileRequest,
   ) => string;
   queueSectionProfileUpdate: (sectionProfile: PutSectionProfileRequest) => void;
-  queueSectionProfileDelete: (sectionProfileId: string) => void;
+  queueSectionProfileDelete: (sectionProfileName: string) => void;
 
   queueElement1dCreate: (element1d: CreateElement1dRequest) => string;
   queueElement1dUpdate: (element1d: PutElement1dRequest) => void;
@@ -222,6 +222,60 @@ const removeById = <T extends { id: string }>(
   id: string,
 ): T[] | undefined => {
   const filtered = (items ?? []).filter((item) => item.id !== id);
+  return filtered.length > 0 ? filtered : undefined;
+};
+
+const upsertByName = <T extends { name: string }>(
+  items: T[] | null | undefined,
+  nextItem: T,
+): T[] => {
+  const base = items ?? [];
+  const index = base.findIndex((item) => item.name === nextItem.name);
+  if (index === -1) {
+    return [...base, nextItem];
+  }
+
+  const next = base.slice();
+  next[index] = nextItem;
+  return next;
+};
+
+const removeByName = <T extends { name: string }>(
+  items: T[] | null | undefined,
+  name: string,
+): T[] | undefined => {
+  const filtered = (items ?? []).filter((item) => item.name !== name);
+  return filtered.length > 0 ? filtered : undefined;
+};
+
+const upsertSectionProfileUpdateByReferenceName = <
+  T extends { sectionProfileName: string },
+>(
+  items: T[] | null | undefined,
+  nextItem: T,
+): T[] => {
+  const base = items ?? [];
+  const index = base.findIndex(
+    (item) => item.sectionProfileName === nextItem.sectionProfileName,
+  );
+  if (index === -1) {
+    return [...base, nextItem];
+  }
+
+  const next = base.slice();
+  next[index] = nextItem;
+  return next;
+};
+
+const removeSectionProfileUpdateByReferenceName = <
+  T extends { sectionProfileName: string },
+>(
+  items: T[] | null | undefined,
+  sectionProfileName: string,
+): T[] | undefined => {
+  const filtered = (items ?? []).filter(
+    (item) => item.sectionProfileName !== sectionProfileName,
+  );
   return filtered.length > 0 ? filtered : undefined;
 };
 
@@ -580,14 +634,12 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
 
   queueMaterialCreate: (material) => {
     const nextMaterial = { ...material };
-    const tempId = ensureTempId(nextMaterial);
 
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const materials = builder.ensureMaterials();
 
-      materials.create = upsertCreateByTempId(materials.create, nextMaterial);
-      materials.delete = (materials.delete ?? []).filter((id) => id !== tempId);
+      materials.create = upsertByName(materials.create, nextMaterial);
 
       return {
         ...entry,
@@ -598,26 +650,15 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
       };
     });
 
-    return tempId;
+    return nextMaterial.name;
   },
 
   queueMaterialUpdate: (material) => {
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const materials = builder.ensureMaterials();
-      const createdNotSaved = isCreatedInPending(materials.create, material.id);
 
-      if (createdNotSaved) {
-        materials.create = upsertCreateByTempId(materials.create, {
-          name: material.name,
-          modulusOfElasticity: material.modulusOfElasticity,
-          modulusOfRigidity: material.modulusOfRigidity,
-          units: material.units,
-          tempId: material.id,
-        });
-      } else {
-        materials.update = upsertById(materials.update ?? [], material);
-      }
+      materials.update = upsertById(materials.update ?? [], material);
 
       return {
         ...entry,
@@ -633,13 +674,9 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const materials = builder.ensureMaterials();
-      const createdNotSaved = isCreatedInPending(materials.create, materialId);
 
-      materials.create = removeCreateByTempId(materials.create, materialId);
       materials.update = removeById(materials.update, materialId);
-      materials.delete = createdNotSaved
-        ? materials.delete ?? undefined
-        : addUniqueDelete(materials.delete, materialId);
+      materials.delete = addUniqueDelete(materials.delete, materialId);
 
       return {
         ...entry,
@@ -653,18 +690,14 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
 
   queueSectionProfileCreate: (sectionProfile) => {
     const nextSectionProfile = { ...sectionProfile };
-    const tempId = ensureTempId(nextSectionProfile);
 
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const sectionProfiles = builder.ensureSectionProfiles();
 
-      sectionProfiles.create = upsertCreateByTempId(
-        sectionProfiles.create,
-        nextSectionProfile,
-      );
+      sectionProfiles.create = upsertByName(sectionProfiles.create, nextSectionProfile);
       sectionProfiles.delete = (sectionProfiles.delete ?? []).filter(
-        (id) => id !== tempId,
+        (name) => name !== nextSectionProfile.name,
       );
 
       return {
@@ -676,25 +709,53 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
       };
     });
 
-    return tempId;
+    return nextSectionProfile.name;
   },
 
   queueSectionProfileUpdate: (sectionProfile) => {
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const sectionProfiles = builder.ensureSectionProfiles();
-      const createdNotSaved = isCreatedInPending(
-        sectionProfiles.create,
-        sectionProfile.id,
+      const createdNotSaved = Boolean(
+        (sectionProfiles.create ?? []).find(
+          (candidate) => candidate.name === sectionProfile.sectionProfileName,
+        ),
       );
 
       if (createdNotSaved) {
-        sectionProfiles.create = upsertCreateByTempId(sectionProfiles.create, {
-          ...sectionProfile,
-          tempId: sectionProfile.id,
-        });
+        const createFromUpdate: CreateSectionProfileRequest = {
+          name: sectionProfile.name,
+          area: sectionProfile.area,
+          strongAxisMomentOfInertia: sectionProfile.strongAxisMomentOfInertia,
+          weakAxisMomentOfInertia: sectionProfile.weakAxisMomentOfInertia,
+          torsionalConstant: sectionProfile.torsionalConstant,
+          warpingConstant: sectionProfile.warpingConstant,
+          strongAxisPlasticSectionModulus:
+            sectionProfile.strongAxisPlasticSectionModulus,
+          weakAxisPlasticSectionModulus:
+            sectionProfile.weakAxisPlasticSectionModulus,
+          strongAxisElasticSectionModulus:
+            sectionProfile.strongAxisElasticSectionModulus,
+          weakAxisElasticSectionModulus:
+            sectionProfile.weakAxisElasticSectionModulus,
+          ...(sectionProfile.discriminator === "WITH_SHEAR_AREAS"
+            ? {
+                strongAxisShearArea: sectionProfile.strongAxisShearArea,
+                weakAxisShearArea: sectionProfile.weakAxisShearArea,
+              }
+            : {}),
+        };
+
+        sectionProfiles.create = removeByName(
+          sectionProfiles.create,
+          sectionProfile.sectionProfileName,
+        );
+        sectionProfiles.create = upsertByName(
+          sectionProfiles.create,
+          createFromUpdate,
+        );
       } else {
-        sectionProfiles.update = upsertById(
+        sectionProfiles.update = upsertSectionProfileUpdateByReferenceName(
           sectionProfiles.update ?? [],
           sectionProfile,
         );
@@ -710,26 +771,27 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     });
   },
 
-  queueSectionProfileDelete: (sectionProfileId) => {
+  queueSectionProfileDelete: (sectionProfileName) => {
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const sectionProfiles = builder.ensureSectionProfiles();
-      const createdNotSaved = isCreatedInPending(
-        sectionProfiles.create,
-        sectionProfileId,
+      const createdNotSaved = Boolean(
+        (sectionProfiles.create ?? []).find(
+          (candidate) => candidate.name === sectionProfileName,
+        ),
       );
 
-      sectionProfiles.create = removeCreateByTempId(
+      sectionProfiles.create = removeByName(
         sectionProfiles.create,
-        sectionProfileId,
+        sectionProfileName,
       );
-      sectionProfiles.update = removeById(
+      sectionProfiles.update = removeSectionProfileUpdateByReferenceName(
         sectionProfiles.update,
-        sectionProfileId,
+        sectionProfileName,
       );
       sectionProfiles.delete = createdNotSaved
         ? sectionProfiles.delete ?? undefined
-        : addUniqueDelete(sectionProfiles.delete, sectionProfileId);
+        : addUniqueDelete(sectionProfiles.delete, sectionProfileName);
 
       return {
         ...entry,
@@ -768,19 +830,7 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const element1ds = builder.ensureElement1ds();
-      const createdNotSaved = isCreatedInPending(element1ds.create, element1d.id);
-
-      if (createdNotSaved) {
-        element1ds.create = upsertCreateByTempId(element1ds.create, {
-          startNodeId: element1d.startNodeId,
-          endNodeId: element1d.endNodeId,
-          materialId: element1d.materialId,
-          sectionProfileId: element1d.sectionProfileId,
-          tempId: element1d.id,
-        });
-      } else {
-        element1ds.update = upsertById(element1ds.update ?? [], element1d);
-      }
+      element1ds.update = upsertById(element1ds.update ?? [], element1d);
 
       return {
         ...entry,

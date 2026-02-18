@@ -32,6 +32,7 @@ import {
 } from "../nodes/node-contract-schemas";
 import {
   createSectionProfileRequestSchema,
+  deleteSectionProfileRequestSchema,
   sectionProfileResponseSchema,
   putSectionProfileRequestSchema as updateSectionProfileRequestSchema,
 } from "../section-profiles/section-profile-contract-schemas";
@@ -65,7 +66,7 @@ const sectionProfileOperationsRequestSchema = z
   .object({
     create: z.array(createSectionProfileRequestSchema).optional(),
     update: z.array(updateSectionProfileRequestSchema).optional(),
-    delete: z.array(uuidV7Schema).optional(),
+    delete: z.array(deleteSectionProfileRequestSchema).optional(),
   })
   .meta({ id: "CreateModelRevisionSectionProfileOperationsRequest" });
 

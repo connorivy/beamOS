@@ -13,8 +13,7 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
-const createSectionProfileInput = (tempId?: string) => ({
-  ...(tempId ? { tempId } : {}),
+const createSectionProfileInput = () => ({
   name: "W12x26",
   discriminator: "STANDARD" as const,
   area: 7.65,
@@ -37,6 +36,98 @@ afterAll(async () => {
 }, 30_000);
 
 describe("model revision integration", () => {
+  it("updates and deletes section profiles by section profile name", async () => {
+    const client = createApiClient(baseUrl);
+
+    const createModelResponse = await client.POST("/api/projects", {
+      body: {
+        name: "Section Profile Name Reference Model",
+        description: "Uses section profile names for section profile operations",
+      },
+    });
+
+    expect(createModelResponse.error).toBeUndefined();
+    expect(createModelResponse.response.status).toBe(200);
+    expect(createModelResponse.data).toBeDefined();
+
+    if (!createModelResponse.data) {
+      throw new Error("Expected model response");
+    }
+
+    const projectId = createModelResponse.data.id;
+    const branchName = "main";
+
+    const createRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { projectId, branchName },
+        },
+        body: {
+          sectionProfiles: {
+            create: [createSectionProfileInput()],
+          },
+        },
+      },
+    );
+
+    expect(createRevisionResponse.error).toBeUndefined();
+    expect(createRevisionResponse.response.status).toBe(200);
+    expect(createRevisionResponse.data?.sectionProfiles).toHaveLength(1);
+
+    const updateRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { projectId, branchName },
+        },
+        body: {
+          sectionProfiles: {
+            update: [
+              {
+                sectionProfileName: "W12x26",
+                name: "W12x30",
+                discriminator: "STANDARD",
+                area: 8.75,
+                strongAxisMomentOfInertia: 220,
+                weakAxisMomentOfInertia: 18.5,
+                torsionalConstant: 0.41,
+                warpingConstant: 360,
+                strongAxisPlasticSectionModulus: 41.2,
+                weakAxisPlasticSectionModulus: 9.8,
+                strongAxisElasticSectionModulus: 36.1,
+                weakAxisElasticSectionModulus: 6.12,
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(updateRevisionResponse.error).toBeUndefined();
+    expect(updateRevisionResponse.response.status).toBe(200);
+    expect(updateRevisionResponse.data?.sectionProfiles).toHaveLength(1);
+    expect(updateRevisionResponse.data?.sectionProfiles[0]?.name).toBe("W12x30");
+
+    const deleteRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: {
+          path: { projectId, branchName },
+        },
+        body: {
+          sectionProfiles: {
+            delete: ["W12x30"],
+          },
+        },
+      },
+    );
+
+    expect(deleteRevisionResponse.error).toBeUndefined();
+    expect(deleteRevisionResponse.response.status).toBe(200);
+    expect(deleteRevisionResponse.data?.sectionProfiles).toHaveLength(0);
+  });
+
   it("creates a model revision from batched entity operations", async () => {
     const client = createApiClient(baseUrl);
 
@@ -84,7 +175,7 @@ describe("model revision integration", () => {
             ],
           },
           sectionProfiles: {
-            create: [createSectionProfileInput("sp-rev-create")],
+            create: [createSectionProfileInput()],
           },
         },
       },
@@ -207,7 +298,6 @@ describe("model revision integration", () => {
           },
           sectionProfiles: [
             {
-              tempId: "sp-rev1",
               name: "W12x26",
               discriminator: "STANDARD",
               area: 7.65,
@@ -234,7 +324,12 @@ describe("model revision integration", () => {
     }
 
     const sectionProfileRev1Id =
-      sectionProfileRev1Response.data.tempIdToId["sp-rev1"];
+      sectionProfileRev1Response.data.sectionProfiles[0]?.id;
+    expect(sectionProfileRev1Id).toBeDefined();
+
+    if (!sectionProfileRev1Id) {
+      throw new Error("Expected section profile id for revision 1");
+    }
 
     const elementRev1Response = await client.POST(
       "/api/projects/{projectId}/branches/{branchName}/element1ds/batch",
@@ -319,7 +414,6 @@ describe("model revision integration", () => {
           },
           sectionProfiles: [
             {
-              tempId: "sp-rev2",
               name: "IPE 200",
               discriminator: "WITH_SHEAR_AREAS",
               area: 33.4,
@@ -348,7 +442,12 @@ describe("model revision integration", () => {
     }
 
     const sectionProfileRev2Id =
-      sectionProfileRev2Response.data.tempIdToId["sp-rev2"];
+      sectionProfileRev2Response.data.sectionProfiles[0]?.id;
+    expect(sectionProfileRev2Id).toBeDefined();
+
+    if (!sectionProfileRev2Id) {
+      throw new Error("Expected section profile id for revision 2");
+    }
 
     const elementRev2Response = await client.POST(
       "/api/projects/{projectId}/branches/{branchName}/element1ds/batch",

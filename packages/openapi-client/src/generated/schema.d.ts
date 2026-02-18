@@ -754,9 +754,6 @@ export interface components {
         };
         BatchCreateSectionProfileResponse: {
             sectionProfiles: components["schemas"]["SectionProfile"][];
-            tempIdToId: {
-                [key: string]: string;
-            };
         };
         CreateSectionProfileRequest: {
             name: string;
@@ -771,7 +768,6 @@ export interface components {
             weakAxisElasticSectionModulus: number;
             strongAxisShearArea?: number;
             weakAxisShearArea?: number;
-            tempId?: string;
         };
         BatchCreateSectionProfileRequest: {
             units: {
@@ -958,7 +954,7 @@ export interface components {
         CreateModelRevisionSectionProfileOperationsRequest: {
             create?: components["schemas"]["CreateSectionProfileRequest"][];
             update?: components["schemas"]["PutSectionProfileRequest"][];
-            delete?: string[];
+            delete?: components["schemas"]["DeleteSectionProfileRequest"][];
         };
         PutSectionProfileRequest: {
             name: string;
@@ -973,8 +969,7 @@ export interface components {
             weakAxisElasticSectionModulus: number;
             /** @constant */
             discriminator: "STANDARD";
-            /** Format: uuid */
-            id: string;
+            sectionProfileName: string;
         } | {
             name: string;
             area: number;
@@ -990,9 +985,9 @@ export interface components {
             discriminator: "WITH_SHEAR_AREAS";
             strongAxisShearArea: number;
             weakAxisShearArea: number;
-            /** Format: uuid */
-            id: string;
+            sectionProfileName: string;
         };
+        DeleteSectionProfileRequest: string;
         CreateModelRevisionLoadCaseOperationsRequest: {
             create?: components["schemas"]["CreateLoadCaseRequest"][];
             update?: components["schemas"]["PutLoadCaseRequest"][];
@@ -1143,6 +1138,7 @@ export type CreateModelRevisionMaterialOperationsRequest = components['schemas']
 export type PutMaterialRequest = components['schemas']['PutMaterialRequest'];
 export type CreateModelRevisionSectionProfileOperationsRequest = components['schemas']['CreateModelRevisionSectionProfileOperationsRequest'];
 export type PutSectionProfileRequest = components['schemas']['PutSectionProfileRequest'];
+export type DeleteSectionProfileRequest = components['schemas']['DeleteSectionProfileRequest'];
 export type CreateModelRevisionLoadCaseOperationsRequest = components['schemas']['CreateModelRevisionLoadCaseOperationsRequest'];
 export type CreateLoadCaseRequest = components['schemas']['CreateLoadCaseRequest'];
 export type PutLoadCaseRequest = components['schemas']['PutLoadCaseRequest'];

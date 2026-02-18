@@ -48,7 +48,6 @@ export const batchCreateSectionProfileReqSchema = z
 export const batchCreateSectionProfileResSchema = z
   .object({
     sectionProfiles: z.array(sectionProfileResponseSchema),
-    tempIdToId: z.record(z.string(), uuidV7Schema),
   })
   .meta({ id: "BatchCreateSectionProfileResponse" });
 
@@ -171,21 +170,6 @@ async function batchCreateSectionProfileHandler(
   ctx: AppContext,
   revision: ModelRevisionAggregate,
 ) {
-  const seenTempIds = new Set<string>();
-
-  for (const sectionProfile of req.body.sectionProfiles) {
-    if (!sectionProfile.tempId) {
-      continue;
-    }
-
-    if (seenTempIds.has(sectionProfile.tempId)) {
-      throw httpError(`Duplicate tempId "${sectionProfile.tempId}"`, 400);
-    }
-
-    seenTempIds.add(sectionProfile.tempId);
-  }
-
-  const tempIdToId: Record<string, string> = {};
   const existingSectionProfileNames = new Set(
     revision.sectionProfiles.map((sectionProfile) => sectionProfile.name),
   );
@@ -200,10 +184,6 @@ async function batchCreateSectionProfileHandler(
     existingSectionProfileNames.add(sectionProfile.name);
 
     const id = Bun.randomUUIDv7();
-
-    if (sectionProfile.tempId) {
-      tempIdToId[sectionProfile.tempId] = id;
-    }
 
     const hasStrongAxisShearArea = sectionProfile.strongAxisShearArea !== undefined;
     const hasWeakAxisShearArea = sectionProfile.weakAxisShearArea !== undefined;
@@ -267,6 +247,5 @@ async function batchCreateSectionProfileHandler(
     sectionProfiles: sectionProfiles.map((sectionProfile) =>
       toResponseSectionProfile(sectionProfile),
     ),
-    tempIdToId,
   };
 }
