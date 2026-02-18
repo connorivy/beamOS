@@ -18,17 +18,11 @@ export const getMaterialReqSchema = z
   })
   .meta({ id: "GetMaterialRequest" });
 
-export const getMaterialResSchema = z
-  .object({
-    material: materialResponseSchema,
-  })
-  .meta({ id: "GetMaterialResponse" });
-
 export const getMaterial = defineEndpoint({
   method: "GET",
   path: "/api/materials/:materialId",
   req: getMaterialReqSchema,
-  res: getMaterialResSchema,
+  res: materialResponseSchema,
   async handler(req, ctx: AppContext) {
     const material = await ctx.services.materialRepository.getById(
       req.params.materialId,
@@ -39,15 +33,13 @@ export const getMaterial = defineEndpoint({
     }
 
     return {
-      material: {
-        id: material.id,
-        revisionId: material.revisionId,
-        name: material.name,
-        modulusOfElasticity: material.pressureE.Pascals,
-        modulusOfRigidity: material.pressureG.Pascals,
-        units: {
-          pressure: PressureUnits.Pascals as const,
-        },
+      id: material.id,
+      revisionId: material.revisionId,
+      name: material.name,
+      modulusOfElasticity: material.pressureE.Pascals,
+      modulusOfRigidity: material.pressureG.Pascals,
+      units: {
+        pressure: PressureUnits.Pascals as const,
       },
     };
   },

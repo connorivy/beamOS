@@ -67,7 +67,7 @@ describe("typed element1d api client integration", () => {
 
     expect(materialBatchCreateResponse.error).toBeUndefined();
     expect(materialBatchCreateResponse.response.status).toBe(200);
-    expect(materialBatchCreateResponse.data?.materials).toHaveLength(1);
+    expect(materialBatchCreateResponse.data).toHaveLength(1);
 
     if (!materialBatchCreateResponse.data) {
       throw new Error("Expected material batch response");

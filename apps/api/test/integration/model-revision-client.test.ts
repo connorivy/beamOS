@@ -359,7 +359,7 @@ describe("model revision integration", () => {
       throw new Error("Expected material batch response for revision 1");
     }
 
-    const materialRev1Id = materialRev1Response.data.materials[0]?.id;
+    const materialRev1Id = materialRev1Response.data[0]?.id;
     expect(materialRev1Id).toBeDefined();
 
     if (!materialRev1Id) {
@@ -474,7 +474,7 @@ describe("model revision integration", () => {
       throw new Error("Expected material batch response for revision 2");
     }
 
-    const materialRev2Id = materialRev2Response.data.materials[0]?.id;
+    const materialRev2Id = materialRev2Response.data[0]?.id;
     expect(materialRev2Id).toBeDefined();
 
     if (!materialRev2Id) {

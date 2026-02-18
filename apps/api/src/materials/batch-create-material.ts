@@ -7,8 +7,8 @@ import { getDb } from "../db/client";
 import type { MaterialSnapshot } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
 import {
-  materialResponseSchema,
   createMaterialRequestSchema,
+  materialResponseArraySchema,
 } from "./material-contract-schemas";
 import { ModelRevisionAggregate } from "src/model-revisions/model-revision-aggregate";
 import { createNewRevisionAggregateHandler } from "src/model-revisions/create-model-revision";
@@ -27,12 +27,6 @@ export const batchCreateMaterialReqSchema = z
   })
   .meta({ id: "BatchCreateMaterialEndpointRequest" });
 
-export const batchCreateMaterialResSchema = z
-  .object({
-    materials: z.array(materialResponseSchema),
-  })
-  .meta({ id: "BatchCreateMaterialResponse" });
-
 const toResponseMaterial = (material: MaterialSnapshot) => ({
   id: material.id,
   revisionId: material.revisionId,
@@ -48,7 +42,7 @@ export const batchCreateMaterial = defineEndpoint({
   method: "POST",
   path: "/api/projects/:projectId/branches/:branchName/materials/batch",
   req: batchCreateMaterialReqSchema,
-  res: batchCreateMaterialResSchema,
+  res: materialResponseArraySchema,
   async handler(req, ctx: AppContext) {
     const revision = await createNewRevisionAggregateHandler(req, ctx);
     return await batchCreateMaterialHandler(req, ctx, revision);
@@ -97,7 +91,5 @@ export async function batchCreateMaterialHandler(
     });
   });
 
-  return {
-    materials: materials.map((material) => toResponseMaterial(material)),
-  };
+  return materials.map((material) => toResponseMaterial(material));
 }

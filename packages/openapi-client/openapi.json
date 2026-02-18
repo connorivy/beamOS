@@ -204,7 +204,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BatchCreateMaterialResponse"
+                  "$ref": "#/components/schemas/MaterialArray"
                 }
               }
             }
@@ -304,7 +304,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetMaterialResponse"
+                  "$ref": "#/components/schemas/Material"
                 }
               }
             }
@@ -996,6 +996,7 @@
         "id": "PatchModelRequest"
       },
       "Material": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "name": {
@@ -1043,22 +1044,13 @@
         "additionalProperties": false,
         "id": "Material"
       },
-      "BatchCreateMaterialResponse": {
+      "MaterialArray": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "materials": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Material"
-            }
-          }
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Material"
         },
-        "required": [
-          "materials"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateMaterialResponse"
+        "id": "MaterialArray"
       },
       "CreateMaterialRequest": {
         "id": "CreateMaterialRequest",
@@ -1395,20 +1387,6 @@
         ],
         "additionalProperties": false,
         "id": "ModelSettingsProperties"
-      },
-      "GetMaterialResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "material": {
-            "$ref": "#/components/schemas/Material"
-          }
-        },
-        "required": [
-          "material"
-        ],
-        "additionalProperties": false,
-        "id": "GetMaterialResponse"
       },
       "SectionProfile": {
         "type": "object",

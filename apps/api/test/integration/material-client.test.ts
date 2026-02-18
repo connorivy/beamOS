@@ -72,14 +72,16 @@ describe("typed material api client integration", () => {
     expect(batchCreateResponse.error).toBeUndefined();
     expect(batchCreateResponse.response.status).toBe(200);
     expect(batchCreateResponse.data).toBeDefined();
-    expect(batchCreateResponse.data?.materials).toHaveLength(materialNames.length);
+    expect(batchCreateResponse.data).toHaveLength(materialNames.length);
 
     if (!batchCreateResponse.data) {
       throw new Error("Expected batch create response");
     }
 
     const materialIdByName = new Map(
-      batchCreateResponse.data.materials.map((material) => [material.name, material.id] as const),
+      batchCreateResponse.data.map(
+        (material) => [material.name, material.id] as const,
+      ),
     );
 
     const getRevisionResponse = await client.GET(
@@ -103,7 +105,9 @@ describe("typed material api client integration", () => {
       expect(materialId).toBeDefined();
 
       if (!materialId) {
-        throw new Error(`Expected material ID for material name ${materialName}`);
+        throw new Error(
+          `Expected material ID for material name ${materialName}`,
+        );
       }
 
       const getResponse = await client.GET("/api/materials/{materialId}", {
@@ -121,7 +125,7 @@ describe("typed material api client integration", () => {
       }
 
       expect({
-        ...getResponse.data.material,
+        ...getResponse.data,
         id: "<db-id>",
         revisionId: "<revision-id>",
       }).toMatchSnapshot();

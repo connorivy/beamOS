@@ -67,7 +67,7 @@ type ModelRevisionState = {
 
   queueMaterialCreate: (material: CreateMaterialRequest) => string;
   queueMaterialUpdate: (material: PutMaterialRequest) => void;
-  queueMaterialDelete: (materialId: string) => void;
+  queueMaterialDelete: (materialName: string) => void;
 
   queueSectionProfileCreate: (
     sectionProfile: CreateSectionProfileRequest,
@@ -626,8 +626,17 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const materials = builder.ensureMaterials();
+      const createdNotSaved = Boolean(
+        (materials.create ?? []).find(
+          (candidate) => candidate.name === material.name,
+        ),
+      );
 
-      materials.update = upsertById(materials.update ?? [], material);
+      if (createdNotSaved) {
+        materials.create = upsertByName(materials.create, material);
+      } else {
+        materials.update = upsertByName(materials.update, material);
+      }
 
       return {
         ...entry,
@@ -639,13 +648,19 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     });
   },
 
-  queueMaterialDelete: (materialId) => {
+  queueMaterialDelete: (materialName) => {
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const materials = builder.ensureMaterials();
+      const createdNotSaved = Boolean(
+        (materials.create ?? []).find((candidate) => candidate.name === materialName),
+      );
 
-      materials.update = removeById(materials.update, materialId);
-      materials.delete = addUniqueDelete(materials.delete, materialId);
+      materials.create = removeByName(materials.create, materialName);
+      materials.update = removeByName(materials.update, materialName);
+      materials.delete = createdNotSaved
+        ? (materials.delete ?? []).filter((name) => name !== materialName)
+        : addUniqueDelete(materials.delete, materialName);
 
       return {
         ...entry,

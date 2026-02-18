@@ -3,18 +3,21 @@ import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
 
 // Base material properties schema
-export const materialPropertiesSchema = z.object({
-  name: z.string().trim().min(1),
-  modulusOfElasticity: z.number().finite(),
-  modulusOfRigidity: z.number().finite(),
-  units: z.object({
-    pressure: z.enum(PressureUnits),
-  }),
-}).meta({ id: "MaterialProperties" });
+export const materialPropertiesSchema = z
+  .object({
+    name: z.string().trim().min(1),
+    modulusOfElasticity: z.number().finite(),
+    modulusOfRigidity: z.number().finite(),
+    units: z.object({
+      pressure: z.enum(PressureUnits),
+    }),
+  })
+  .meta({ id: "MaterialProperties" });
 
 // Create material request schema
-export const createMaterialRequestSchema =
-  materialPropertiesSchema.meta({ id: "CreateMaterialRequest" });
+export const createMaterialRequestSchema = materialPropertiesSchema.meta({
+  id: "CreateMaterialRequest",
+});
 
 // Put material request schema (replaces update)
 export const putMaterialRequestSchema = materialPropertiesSchema
@@ -31,14 +34,16 @@ export const deleteMaterialRequestSchema = z
   .meta({ id: "DeleteMaterialRequest" });
 
 // Material response schemas
-export const materialPropertiesResponseSchema = z.object({
-  name: z.string().min(1),
-  modulusOfElasticity: z.number().finite(),
-  modulusOfRigidity: z.number().finite(),
-  units: z.object({
-    pressure: z.literal(PressureUnits.Pascals),
-  }),
-}).meta({ id: "MaterialPropertiesResponse" });
+export const materialPropertiesResponseSchema = z
+  .object({
+    name: z.string().min(1),
+    modulusOfElasticity: z.number().finite(),
+    modulusOfRigidity: z.number().finite(),
+    units: z.object({
+      pressure: z.literal(PressureUnits.Pascals),
+    }),
+  })
+  .meta({ id: "MaterialPropertiesResponse" });
 
 export const materialResponseSchema = materialPropertiesResponseSchema
   .extend({
@@ -46,3 +51,7 @@ export const materialResponseSchema = materialPropertiesResponseSchema
     revisionId: uuidV7Schema,
   })
   .meta({ id: "Material" });
+
+export const materialResponseArraySchema = z
+  .array(materialResponseSchema)
+  .meta({ id: "MaterialArray" });

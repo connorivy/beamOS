@@ -218,7 +218,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BatchCreateMaterialResponse"];
+                        "application/json": components["schemas"]["MaterialArray"];
                     };
                 };
             };
@@ -295,7 +295,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["GetMaterialResponse"];
+                        "application/json": components["schemas"]["Material"];
                     };
                 };
             };
@@ -642,9 +642,7 @@ export interface components {
             /** Format: uuid */
             revisionId: string;
         };
-        BatchCreateMaterialResponse: {
-            materials: components["schemas"]["Material"][];
-        };
+        MaterialArray: components["schemas"]["Material"][];
         CreateMaterialRequest: components["schemas"]["MaterialProperties"];
         MaterialProperties: {
             name: string;
@@ -684,9 +682,6 @@ export interface components {
         ModelSettingsProperties: {
             units: components["schemas"]["ModelSettingsUnits"];
             yAxisUp: boolean;
-        };
-        GetMaterialResponse: {
-            material: components["schemas"]["Material"];
         };
         SectionProfile: {
             /** Format: uuid */
@@ -1090,7 +1085,7 @@ export type BatchCreateNodeRequest = components['schemas']['BatchCreateNodeReque
 export type PatchModelResponse = components['schemas']['PatchModelResponse'];
 export type PatchModelRequest = components['schemas']['PatchModelRequest'];
 export type Material = components['schemas']['Material'];
-export type BatchCreateMaterialResponse = components['schemas']['BatchCreateMaterialResponse'];
+export type MaterialArray = components['schemas']['MaterialArray'];
 export type CreateMaterialRequest = components['schemas']['CreateMaterialRequest'];
 export type MaterialProperties = components['schemas']['MaterialProperties'];
 export type BatchCreateMaterialRequest = components['schemas']['BatchCreateMaterialRequest'];
@@ -1098,7 +1093,6 @@ export type ModelSettings = components['schemas']['ModelSettings'];
 export type ModelSettingsUnits = components['schemas']['ModelSettingsUnits'];
 export type PutModelSettingsResponse = components['schemas']['PutModelSettingsResponse'];
 export type ModelSettingsProperties = components['schemas']['ModelSettingsProperties'];
-export type GetMaterialResponse = components['schemas']['GetMaterialResponse'];
 export type SectionProfile = components['schemas']['SectionProfile'];
 export type BatchCreateSectionProfileResponse = components['schemas']['BatchCreateSectionProfileResponse'];
 export type CreateSectionProfileRequest = components['schemas']['CreateSectionProfileRequest'];
