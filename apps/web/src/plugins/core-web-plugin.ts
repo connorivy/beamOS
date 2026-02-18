@@ -1,4 +1,5 @@
 import { HomePage } from "../pages/HomePage";
+import { ModelRevisionEditorPage } from "../pages/ModelRevisionEditorPage";
 import { ModelsPage } from "../pages/ModelsPage";
 import { defineWebPlugin } from "./types";
 
@@ -12,6 +13,10 @@ export const coreWebPlugin = defineWebPlugin({
     {
       path: "/models",
       Component: ModelsPage,
+    },
+    {
+      path: "/editor/:projectId/:branchName",
+      Component: ModelRevisionEditorPage,
     },
   ],
 });

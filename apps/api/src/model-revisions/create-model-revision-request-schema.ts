@@ -2,20 +2,25 @@ import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
 import {
   createElement1dRequestSchema,
+  element1dResponseSchema,
   putElement1dRequestSchema as updateElement1dRequestSchema,
 } from "../element1ds/element1d-contract-schemas";
 import {
   createMaterialRequestSchema,
+  materialResponseSchema,
   putMaterialRequestSchema as updateMaterialRequestSchema,
 } from "../materials/material-contract-schemas";
 import {
   createNodeRequestSchema,
+  revisionNodeResponseSchema,
   putNodeRequestSchema as updateNodeRequestSchema,
 } from "../nodes/node-contract-schemas";
 import {
   createSectionProfileRequestSchema,
+  sectionProfileResponseSchema,
   putSectionProfileRequestSchema as updateSectionProfileRequestSchema,
 } from "../section-profiles/section-profile-contract-schemas";
+import { modelSettingsResponseSchema } from "src/model-settings/model-settings-contract-schemas";
 
 const element1dOperationsRequestSchema = z
   .object({
@@ -65,3 +70,20 @@ export const createModelRevisionReqSchema = z
       .meta({ id: "CreateModelRevisionRequest" }),
   })
   .meta({ id: "CreateModelRevisionEndpointRequest" });
+
+export const modelRevisionResSchema = z
+  .object({
+    id: uuidV7Schema,
+    projectId: uuidV7Schema,
+    parentRevisionId: uuidV7Schema.nullable(),
+    secondParentRevisionId: uuidV7Schema.nullable(),
+    authorId: z.uuid(),
+    message: z.string().min(1),
+    createdAt: z.iso.datetime(),
+    nodes: z.array(revisionNodeResponseSchema),
+    materials: z.array(materialResponseSchema),
+    modelSettings: modelSettingsResponseSchema.nullable(),
+    sectionProfiles: z.array(sectionProfileResponseSchema),
+    element1ds: z.array(element1dResponseSchema),
+  })
+  .meta({ id: "ModelRevision" });

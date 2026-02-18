@@ -1,6 +1,8 @@
 import { defineEndpoint } from "../contracts/endpoint";
-import { modelRevisionResponseSchema } from "./model-revision-response-schema";
-import { createModelRevisionReqSchema } from "./create-model-revision-request-schema";
+import {
+  createModelRevisionReqSchema,
+  modelRevisionResSchema,
+} from "./create-model-revision-request-schema";
 import { AppContext } from "src/common/types";
 import { httpError } from "src/common/http-utils";
 import { DbTransaction, getDb } from "src/db/client";
@@ -25,7 +27,7 @@ export const createModelRevision = defineEndpoint({
   method: "POST",
   path: "/api/projects/:projectId/branches/:branchName/revisions",
   req: createModelRevisionReqSchema,
-  res: modelRevisionResponseSchema,
+  res: modelRevisionResSchema,
   async handler(req, ctx: AppContext) {
     const branch = await ctx.services.modelRevisionRepository.getBranchHead(
       req.params.projectId,
@@ -94,114 +96,104 @@ export const createModelRevision = defineEndpoint({
     }
 
     return {
-      modelRevision: {
-        id: modelRevision.id,
-        version: {
-          projectId: modelRevision.projectId,
-          revisionId: modelRevision.id,
-          revisionsAhead: 0,
-          revisionsBehind: 0,
-        },
+      id: modelRevision.id,
+      projectId: modelRevision.projectId,
+      parentRevisionId: modelRevision.parentRevisionId,
+      secondParentRevisionId: modelRevision.secondParentRevisionId,
+      authorId: modelRevision.authorId,
+      message: modelRevision.message,
+      createdAt: modelRevision.createdAt.toISOString(),
+      nodes: modelRevision.nodes.map((node) => ({
+        id: node.id,
         projectId: modelRevision.projectId,
-        parentRevisionId: modelRevision.parentRevisionId,
-        secondParentRevisionId: modelRevision.secondParentRevisionId,
-        authorId: modelRevision.authorId,
-        message: modelRevision.message,
-        createdAt: modelRevision.createdAt.toISOString(),
-        nodes: modelRevision.nodes.map((node) => ({
-          id: node.id,
-          projectId: modelRevision.projectId,
-          nodeTypeDescriminator:
-            node.toSnapshot().nodeTypeDescriminator ??
-            (node.nodeType === "internalNode" ? "internal" : "external"),
-        })),
-        materials: modelRevision.materials.map((material) => ({
-          id: material.id,
-          revisionId: material.revisionId,
-          name: material.name,
-          modulusOfElasticity: material.pressureE.Pascals,
-          modulusOfRigidity: material.pressureG.Pascals,
-          units: {
-            pressure: PressureUnits.Pascals as const,
-          },
-        })),
-        modelSettings: modelRevision.modelSettings
+        nodeTypeDescriminator:
+          node.toSnapshot().nodeTypeDescriminator ??
+          (node.nodeType === "internalNode" ? "internal" : "external"),
+      })),
+      materials: modelRevision.materials.map((material) => ({
+        id: material.id,
+        revisionId: material.revisionId,
+        name: material.name,
+        modulusOfElasticity: material.pressureE.Pascals,
+        modulusOfRigidity: material.pressureG.Pascals,
+        units: {
+          pressure: PressureUnits.Pascals as const,
+        },
+      })),
+      modelSettings: modelRevision.modelSettings
+        ? {
+            id: modelRevision.modelSettings.id,
+            revisionId: modelRevision.modelSettings.revisionId,
+            units: modelRevision.modelSettings.units,
+            yAxisUp: modelRevision.modelSettings.yAxisUp,
+          }
+        : null,
+      sectionProfiles: modelRevision.sectionProfiles.map((sectionProfile) => ({
+        id: sectionProfile.id,
+        revisionId: sectionProfile.revisionId,
+        name: sectionProfile.name,
+        discriminator: sectionProfile.discriminator,
+        area: {
+          value: sectionProfile.area.SquareMeters,
+          unit: AreaUnits.SquareMeters as const,
+        },
+        strongAxisMomentOfInertia: {
+          value: sectionProfile.strongAxisMomentOfInertia.MetersToTheFourth,
+          unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+        },
+        weakAxisMomentOfInertia: {
+          value: sectionProfile.weakAxisMomentOfInertia.MetersToTheFourth,
+          unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+        },
+        torsionalConstant: {
+          value: sectionProfile.torsionalConstant.MetersToTheFourth,
+          unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+        },
+        warpingConstant: {
+          value: sectionProfile.warpingConstant.MetersToTheSixth,
+          unit: WarpingMomentOfInertiaUnits.MetersToTheSixth as const,
+        },
+        strongAxisPlasticSectionModulus: {
+          value: sectionProfile.strongAxisPlasticSectionModulus.CubicMeters,
+          unit: VolumeUnits.CubicMeters as const,
+        },
+        weakAxisPlasticSectionModulus: {
+          value: sectionProfile.weakAxisPlasticSectionModulus.CubicMeters,
+          unit: VolumeUnits.CubicMeters as const,
+        },
+        strongAxisElasticSectionModulus: {
+          value: sectionProfile.strongAxisElasticSectionModulus.CubicMeters,
+          unit: VolumeUnits.CubicMeters as const,
+        },
+        weakAxisElasticSectionModulus: {
+          value: sectionProfile.weakAxisElasticSectionModulus.CubicMeters,
+          unit: VolumeUnits.CubicMeters as const,
+        },
+        ...(sectionProfile.strongAxisShearArea
           ? {
-              id: modelRevision.modelSettings.id,
-              revisionId: modelRevision.modelSettings.revisionId,
-              units: modelRevision.modelSettings.units,
-              yAxisUp: modelRevision.modelSettings.yAxisUp,
+              strongAxisShearArea: {
+                value: sectionProfile.strongAxisShearArea.SquareMeters,
+                unit: AreaUnits.SquareMeters as const,
+              },
             }
-          : null,
-        sectionProfiles: modelRevision.sectionProfiles.map(
-          (sectionProfile) => ({
-            id: sectionProfile.id,
-            revisionId: sectionProfile.revisionId,
-            name: sectionProfile.name,
-            discriminator: sectionProfile.discriminator,
-            area: {
-              value: sectionProfile.area.SquareMeters,
-              unit: AreaUnits.SquareMeters as const,
-            },
-            strongAxisMomentOfInertia: {
-              value: sectionProfile.strongAxisMomentOfInertia.MetersToTheFourth,
-              unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
-            },
-            weakAxisMomentOfInertia: {
-              value: sectionProfile.weakAxisMomentOfInertia.MetersToTheFourth,
-              unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
-            },
-            torsionalConstant: {
-              value: sectionProfile.torsionalConstant.MetersToTheFourth,
-              unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
-            },
-            warpingConstant: {
-              value: sectionProfile.warpingConstant.MetersToTheSixth,
-              unit: WarpingMomentOfInertiaUnits.MetersToTheSixth as const,
-            },
-            strongAxisPlasticSectionModulus: {
-              value: sectionProfile.strongAxisPlasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters as const,
-            },
-            weakAxisPlasticSectionModulus: {
-              value: sectionProfile.weakAxisPlasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters as const,
-            },
-            strongAxisElasticSectionModulus: {
-              value: sectionProfile.strongAxisElasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters as const,
-            },
-            weakAxisElasticSectionModulus: {
-              value: sectionProfile.weakAxisElasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters as const,
-            },
-            ...(sectionProfile.strongAxisShearArea
-              ? {
-                  strongAxisShearArea: {
-                    value: sectionProfile.strongAxisShearArea.SquareMeters,
-                    unit: AreaUnits.SquareMeters as const,
-                  },
-                }
-              : {}),
-            ...(sectionProfile.weakAxisShearArea
-              ? {
-                  weakAxisShearArea: {
-                    value: sectionProfile.weakAxisShearArea.SquareMeters,
-                    unit: AreaUnits.SquareMeters as const,
-                  },
-                }
-              : {}),
-          }),
-        ),
-        element1ds: modelRevision.element1ds.map((element1d) => ({
-          id: element1d.id,
-          revisionId: element1d.revisionId,
-          startNodeId: element1d.startNodeId,
-          endNodeId: element1d.endNodeId,
-          materialId: element1d.materialId,
-          sectionProfileId: element1d.sectionProfileId,
-        })),
-      },
+          : {}),
+        ...(sectionProfile.weakAxisShearArea
+          ? {
+              weakAxisShearArea: {
+                value: sectionProfile.weakAxisShearArea.SquareMeters,
+                unit: AreaUnits.SquareMeters as const,
+              },
+            }
+          : {}),
+      })),
+      element1ds: modelRevision.element1ds.map((element1d) => ({
+        id: element1d.id,
+        revisionId: element1d.revisionId,
+        startNodeId: element1d.startNodeId,
+        endNodeId: element1d.endNodeId,
+        materialId: element1d.materialId,
+        sectionProfileId: element1d.sectionProfileId,
+      })),
     };
   },
 });
@@ -233,7 +225,7 @@ const buildRevisionChanges = (input: {
       createdAt: input.createdAt,
     });
 
-  for (const createNode of input.req.body.nodes.create) {
+  for (const createNode of input.req.body.nodes.create ?? []) {
     const id = Bun.randomUUIDv7();
     const payload =
       createNode.location.type === "internal"
@@ -265,7 +257,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putNode of input.req.body.nodes.update) {
+  for (const putNode of input.req.body.nodes.update ?? []) {
     const existing = input.currentNodesById.get(putNode.id);
     if (!existing) {
       throw httpError(`Node ${putNode.id} not found`, 400);
@@ -300,7 +292,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteNodeId of input.req.body.nodes.delete) {
+  for (const deleteNodeId of input.req.body.nodes.delete ?? []) {
     changes.push(
       toEntity({
         entityType: "node",
@@ -311,7 +303,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const createMaterial of input.req.body.materials.create) {
+  for (const createMaterial of input.req.body.materials.create ?? []) {
     const id = Bun.randomUUIDv7();
     changes.push(
       toEntity({
@@ -341,7 +333,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putMaterial of input.req.body.materials.update) {
+  for (const putMaterial of input.req.body.materials.update ?? []) {
     const existing = input.currentMaterialsById.get(putMaterial.id);
     if (!existing) {
       throw httpError(`Material ${putMaterial.id} not found`, 400);
@@ -375,7 +367,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteMaterialId of input.req.body.materials.delete) {
+  for (const deleteMaterialId of input.req.body.materials.delete ?? []) {
     changes.push(
       toEntity({
         entityType: "material",
@@ -386,7 +378,8 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const createSectionProfile of input.req.body.sectionProfiles.create) {
+  for (const createSectionProfile of input.req.body.sectionProfiles.create ??
+    []) {
     const id = Bun.randomUUIDv7();
     changes.push(
       toEntity({
@@ -451,7 +444,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putSectionProfile of input.req.body.sectionProfiles.update) {
+  for (const putSectionProfile of input.req.body.sectionProfiles.update ?? []) {
     const existing = input.currentSectionProfilesById.get(putSectionProfile.id);
     if (!existing) {
       throw httpError(`Section profile ${putSectionProfile.id} not found`, 400);
@@ -520,7 +513,8 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteSectionProfileId of input.req.body.sectionProfiles.delete) {
+  for (const deleteSectionProfileId of input.req.body.sectionProfiles.delete ??
+    []) {
     changes.push(
       toEntity({
         entityType: "sectionprofile",
@@ -531,7 +525,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const createElement1d of input.req.body.element1ds.create) {
+  for (const createElement1d of input.req.body.element1ds.create ?? []) {
     const id = Bun.randomUUIDv7();
     changes.push(
       toEntity({
@@ -550,7 +544,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const putElement1d of input.req.body.element1ds.update) {
+  for (const putElement1d of input.req.body.element1ds.update ?? []) {
     const existing = input.currentElement1dsById.get(putElement1d.id);
     if (!existing) {
       throw httpError(`Element1d ${putElement1d.id} not found`, 400);
@@ -573,7 +567,7 @@ const buildRevisionChanges = (input: {
     );
   }
 
-  for (const deleteElement1dId of input.req.body.element1ds.delete) {
+  for (const deleteElement1dId of input.req.body.element1ds.delete ?? []) {
     changes.push(
       toEntity({
         entityType: "element1d",

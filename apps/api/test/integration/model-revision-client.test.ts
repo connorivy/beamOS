@@ -110,13 +110,10 @@ describe("model revision integration", () => {
       throw new Error("Expected create model revision response");
     }
 
-    expect(createRevisionResponse.data.modelRevision.projectId).toBe(projectId);
-    expect(createRevisionResponse.data.modelRevision.nodes).toHaveLength(1);
-    expect(
-      createRevisionResponse.data.modelRevision.sectionProfiles,
-    ).toHaveLength(1);
-    const createdNodeId =
-      createRevisionResponse.data.modelRevision.nodes[0]?.id;
+    expect(createRevisionResponse.data.projectId).toBe(projectId);
+    expect(createRevisionResponse.data.nodes).toHaveLength(1);
+    expect(createRevisionResponse.data.sectionProfiles).toHaveLength(1);
+    const createdNodeId = createRevisionResponse.data.nodes[0]?.id;
     expect(createdNodeId).toBeDefined();
 
     if (!createdNodeId) {
@@ -162,9 +159,9 @@ describe("model revision integration", () => {
       throw new Error("Expected delete model revision response");
     }
 
-    expect(deleteRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
-    expect(deleteRevisionResponse.data.modelRevision.parentRevisionId).toBe(
-      createRevisionResponse.data.modelRevision.id,
+    expect(deleteRevisionResponse.data.nodes).toHaveLength(0);
+    expect(deleteRevisionResponse.data.parentRevisionId).toBe(
+      createRevisionResponse.data.id,
     );
   });
 
@@ -426,38 +423,28 @@ describe("model revision integration", () => {
       throw new Error("Expected get model revision response");
     }
 
-    expect(getModelRevisionResponse.data.modelRevision.id).toBe(
-      elementRev2RevisionId,
-    );
-    expect(getModelRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
+    expect(getModelRevisionResponse.data.id).toBe(elementRev2RevisionId);
+    expect(getModelRevisionResponse.data.nodes).toHaveLength(0);
     expect(
-      getModelRevisionResponse.data.modelRevision.materials.map(
-        (material) => material.id,
-      ),
+      getModelRevisionResponse.data.materials.map((material) => material.id),
     ).toEqual(expect.arrayContaining([materialRev1Id, materialRev2Id]));
     expect(
-      getModelRevisionResponse.data.modelRevision.sectionProfiles.map(
+      getModelRevisionResponse.data.sectionProfiles.map(
         (sectionProfile) => sectionProfile.id,
       ),
     ).toEqual(
       expect.arrayContaining([sectionProfileRev1Id, sectionProfileRev2Id]),
     );
     expect(
-      getModelRevisionResponse.data.modelRevision.element1ds.map(
+      getModelRevisionResponse.data.element1ds.map(
         (element1d) => element1d.revisionId,
       ),
     ).toEqual(
       expect.arrayContaining([elementRev1RevisionId, elementRev2RevisionId]),
     );
 
-    expect(getModelRevisionResponse.data.modelRevision.materials).toHaveLength(
-      2,
-    );
-    expect(
-      getModelRevisionResponse.data.modelRevision.sectionProfiles,
-    ).toHaveLength(2);
-    expect(getModelRevisionResponse.data.modelRevision.element1ds).toHaveLength(
-      2,
-    );
+    expect(getModelRevisionResponse.data.materials).toHaveLength(2);
+    expect(getModelRevisionResponse.data.sectionProfiles).toHaveLength(2);
+    expect(getModelRevisionResponse.data.element1ds).toHaveLength(2);
   });
 });

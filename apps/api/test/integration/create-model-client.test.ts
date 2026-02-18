@@ -57,28 +57,13 @@ describe("typed openapi client integration", () => {
       throw new Error("Expected response body from get model revision API");
     }
 
-    expect(mainBranchRevisionResponse.data.modelRevision.id).toMatch(
-      /^[0-9a-f-]{36}$/i,
-    );
-    expect(mainBranchRevisionResponse.data.modelRevision.projectId).toBe(
-      data.id,
-    );
-    expect(mainBranchRevisionResponse.data.modelRevision.name).toBe(
-      requestBody.name,
-    );
-    expect(
-      mainBranchRevisionResponse.data.modelRevision.parentRevisionId,
-    ).toBeNull();
-    expect(mainBranchRevisionResponse.data.modelRevision.nodes).toHaveLength(0);
-    expect(
-      mainBranchRevisionResponse.data.modelRevision.materials,
-    ).toHaveLength(0);
-    expect(
-      mainBranchRevisionResponse.data.modelRevision.sectionProfiles,
-    ).toHaveLength(0);
-    expect(
-      mainBranchRevisionResponse.data.modelRevision.element1ds,
-    ).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.id).toMatch(/^[0-9a-f-]{36}$/i);
+    expect(mainBranchRevisionResponse.data.projectId).toBe(data.id);
+    expect(mainBranchRevisionResponse.data.parentRevisionId).toBeNull();
+    expect(mainBranchRevisionResponse.data.nodes).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.materials).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.sectionProfiles).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.element1ds).toHaveLength(0);
 
     const missingBranchRevisionResponse = await client.GET(
       "/api/projects/{projectId}/branches/{branchName}/revisions",
@@ -155,9 +140,7 @@ describe("typed openapi client integration", () => {
 
     expect(listedProjects.name).toBe(requestBody.name);
     expect(listedProjects.description).toBe(requestBody.description);
-    expect(listedProjects.lastModified).toBe(
-      revisionResponse.data.modelRevision.createdAt,
-    );
+    expect(listedProjects.lastModified).toBe(revisionResponse.data.createdAt);
     expect(listedProjects.role).toBe("Owner");
   });
 });

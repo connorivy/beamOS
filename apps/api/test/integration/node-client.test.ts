@@ -118,9 +118,7 @@ describe("typed node api client integration", () => {
     expect(getRevisionResponse.error).toBeUndefined();
     expect(getRevisionResponse.response.status).toBe(200);
     expect(getRevisionResponse.data).toBeDefined();
-    expect(
-      getRevisionResponse.data?.modelRevision.nodes.map((node) => node.id),
-    ).toEqual(
+    expect(getRevisionResponse.data?.nodes.map((node) => node.id)).toEqual(
       expect.arrayContaining(
         Object.values(batchCreateResponse.data.tempIdToId),
       ),
@@ -135,7 +133,7 @@ describe("typed node api client integration", () => {
         throw new Error(`Expected node ID for tempId ${tempId}`);
       }
 
-      const nodeInRevision = getRevisionResponse.data?.modelRevision.nodes.find(
+      const nodeInRevision = getRevisionResponse.data?.nodes.find(
         (n) => n.id === nodeId,
       );
       expect(nodeInRevision).toBeDefined();
@@ -145,13 +143,11 @@ describe("typed node api client integration", () => {
     }
 
     // Snapshot the nodes data structure
-    const nodesSnapshot = getRevisionResponse.data?.modelRevision.nodes.map(
-      (node) => ({
-        ...node,
-        id: "<db-id>",
-        projectId: "<project-id>",
-      }),
-    );
+    const nodesSnapshot = getRevisionResponse.data?.nodes.map((node) => ({
+      ...node,
+      id: "<db-id>",
+      projectId: "<project-id>",
+    }));
     expect(nodesSnapshot).toMatchSnapshot();
   });
 

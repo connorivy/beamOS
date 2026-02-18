@@ -7,12 +7,13 @@
 
 import { collectPluginRoutes } from "./plugins/types";
 import { webPlugins } from "./plugins/registry";
+import { matchPath } from "react-router-dom";
 
 const routes = collectPluginRoutes(webPlugins);
 
 export const App = () => {
   const currentPath = window.location.pathname;
-  const route = routes.find((entry) => entry.path === currentPath);
+  const route = routes.find((entry) => matchPath({ path: entry.path, end: true }, currentPath));
 
   if (!route) {
     return (

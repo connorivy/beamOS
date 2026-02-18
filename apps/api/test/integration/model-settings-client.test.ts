@@ -92,7 +92,7 @@ describe("model settings integration", () => {
       throw new Error("Expected model revision response");
     }
 
-    const modelRevision = getRevisionResponse.data.modelRevision;
+    const modelRevision = getRevisionResponse.data;
 
     expect(modelRevision.modelSettings).toEqual({
       id: expect.any(String),

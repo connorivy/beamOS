@@ -545,7 +545,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetModelRevisionResponse"
+                  "$ref": "#/components/schemas/ModelRevision"
                 }
               }
             }
@@ -583,7 +583,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ModelRevisionResponse"
+                  "$ref": "#/components/schemas/ModelRevision"
                 }
               }
             }
@@ -2273,263 +2273,109 @@
         "additionalProperties": false,
         "id": "GetElement1dResponse"
       },
-      "GetModelRevisionResponse": {
+      "ModelRevision": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
-          "modelRevision": {
-            "type": "object",
-            "properties": {
-              "id": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "parentRevisionId": {
+            "anyOf": [
+              {
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
-              "projectId": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "parentRevisionId": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "secondParentRevisionId": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "authorId": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "message": {
-                "type": "string",
-                "minLength": 1
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-              },
-              "nodes": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/RevisionNode"
-                }
-              },
-              "materials": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Material"
-                }
-              },
-              "modelSettings": {
-                "anyOf": [
-                  {
-                    "$ref": "#/components/schemas/ModelSettings"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "sectionProfiles": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/SectionProfile"
-                }
-              },
-              "element1ds": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Element1d"
-                }
+              {
+                "type": "null"
               }
-            },
-            "required": [
-              "id",
-              "projectId",
-              "parentRevisionId",
-              "secondParentRevisionId",
-              "authorId",
-              "message",
-              "createdAt",
-              "nodes",
-              "materials",
-              "modelSettings",
-              "sectionProfiles",
-              "element1ds"
-            ],
-            "additionalProperties": false
+            ]
+          },
+          "secondParentRevisionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authorId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevisionNode"
+            }
+          },
+          "materials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Material"
+            }
+          },
+          "modelSettings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ModelSettings"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sectionProfiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SectionProfile"
+            }
+          },
+          "element1ds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Element1d"
+            }
           }
         },
         "required": [
-          "modelRevision"
+          "id",
+          "projectId",
+          "parentRevisionId",
+          "secondParentRevisionId",
+          "authorId",
+          "message",
+          "createdAt",
+          "nodes",
+          "materials",
+          "modelSettings",
+          "sectionProfiles",
+          "element1ds"
         ],
         "additionalProperties": false,
-        "id": "GetModelRevisionResponse"
-      },
-      "ModelRevisionResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "modelRevision": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "version": {
-                "type": "object",
-                "properties": {
-                  "projectId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  "revisionId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  "revisionsAhead": {
-                    "type": "number",
-                    "minimum": 0,
-                    "description": "Number of revisions ahead of the parent branch. In progress revisions are not included in the number"
-                  },
-                  "revisionsBehind": {
-                    "type": "number",
-                    "minimum": 0
-                  }
-                },
-                "required": [
-                  "projectId",
-                  "revisionId",
-                  "revisionsAhead",
-                  "revisionsBehind"
-                ],
-                "additionalProperties": false
-              },
-              "projectId": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "parentRevisionId": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "secondParentRevisionId": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "authorId": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "message": {
-                "type": "string",
-                "minLength": 1
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-              },
-              "nodes": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/RevisionNode"
-                }
-              },
-              "materials": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Material"
-                }
-              },
-              "modelSettings": {
-                "anyOf": [
-                  {
-                    "$ref": "#/components/schemas/ModelSettings"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "sectionProfiles": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/SectionProfile"
-                }
-              },
-              "element1ds": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Element1d"
-                }
-              }
-            },
-            "required": [
-              "id",
-              "version",
-              "projectId",
-              "parentRevisionId",
-              "secondParentRevisionId",
-              "authorId",
-              "message",
-              "createdAt",
-              "nodes",
-              "materials",
-              "modelSettings",
-              "sectionProfiles",
-              "element1ds"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "modelRevision"
-        ],
-        "additionalProperties": false,
-        "id": "ModelRevisionResponse"
+        "id": "ModelRevision"
       },
       "CreateModelRevisionElement1dOperationsRequest": {
         "type": "object",

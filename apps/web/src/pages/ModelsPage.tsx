@@ -148,7 +148,7 @@ export const ModelsPage = () => {
   const models = useModelsStore((state) => state.models);
   const isLoading = useModelsStore((state) => state.isLoading);
   const error = useModelsStore((state) => state.error);
-  const loadModels = useModelsStore((state) => state.loadModels);
+  const loadModels = useModelsStore((state) => state.loadProjects);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const userModelCards: ModelCardItem[] = models.map((model) => ({
     id: model.id,

@@ -14,7 +14,7 @@ type ModelsState = {
   models: UserModel[];
   isLoading: boolean;
   error: string | null;
-  loadModels: () => Promise<void>;
+  loadProjects: () => Promise<void>;
 };
 
 const roleMap: Record<"Owner" | "Contributor" | "Reviewer", ModelRole> = {
@@ -27,7 +27,7 @@ export const useModelsStore = create<ModelsState>((set) => ({
   models: [],
   isLoading: false,
   error: null,
-  loadModels: async () => {
+  loadProjects: async () => {
     try {
       set({ isLoading: true, error: null });
       const { data } = await apiClient.GET("/api/projects");
@@ -42,7 +42,7 @@ export const useModelsStore = create<ModelsState>((set) => ({
       });
     } catch (error) {
       console.error(error);
-      set({ error: "Failed to load models. Please try again." });
+      set({ error: "Failed to load projects. Please try again." });
     } finally {
       set({ isLoading: false });
     }

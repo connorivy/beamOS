@@ -148,7 +148,7 @@ describe("typed section profile api client integration", () => {
     expect(getRevisionResponse.response.status).toBe(200);
     expect(getRevisionResponse.data).toBeDefined();
     expect(
-      getRevisionResponse.data?.modelRevision.sectionProfiles.map(
+      getRevisionResponse.data?.sectionProfiles.map(
         (sectionProfile) => sectionProfile.id,
       ),
     ).toEqual(

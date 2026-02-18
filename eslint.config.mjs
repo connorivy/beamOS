@@ -38,6 +38,7 @@ export default [
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
+      "no-undef": "off",
       "@typescript-eslint/no-explicit-any": "error",
     },
   },

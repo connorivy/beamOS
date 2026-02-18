@@ -517,7 +517,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["GetModelRevisionResponse"];
+                        "application/json": components["schemas"]["ModelRevision"];
                     };
                 };
             };
@@ -545,7 +545,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ModelRevisionResponse"];
+                        "application/json": components["schemas"]["ModelRevision"];
                     };
                 };
             };
@@ -888,54 +888,23 @@ export interface components {
         GetElement1dResponse: {
             element1d: components["schemas"]["Element1d"];
         };
-        GetModelRevisionResponse: {
-            modelRevision: {
-                /** Format: uuid */
-                id: string;
-                /** Format: uuid */
-                projectId: string;
-                parentRevisionId: string | null;
-                secondParentRevisionId: string | null;
-                /** Format: uuid */
-                authorId: string;
-                message: string;
-                /** Format: date-time */
-                createdAt: string;
-                nodes: components["schemas"]["RevisionNode"][];
-                materials: components["schemas"]["Material"][];
-                modelSettings: components["schemas"]["ModelSettings"] | null;
-                sectionProfiles: components["schemas"]["SectionProfile"][];
-                element1ds: components["schemas"]["Element1d"][];
-            };
-        };
-        ModelRevisionResponse: {
-            modelRevision: {
-                /** Format: uuid */
-                id: string;
-                version: {
-                    /** Format: uuid */
-                    projectId: string;
-                    /** Format: uuid */
-                    revisionId: string;
-                    /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */
-                    revisionsAhead: number;
-                    revisionsBehind: number;
-                };
-                /** Format: uuid */
-                projectId: string;
-                parentRevisionId: string | null;
-                secondParentRevisionId: string | null;
-                /** Format: uuid */
-                authorId: string;
-                message: string;
-                /** Format: date-time */
-                createdAt: string;
-                nodes: components["schemas"]["RevisionNode"][];
-                materials: components["schemas"]["Material"][];
-                modelSettings: components["schemas"]["ModelSettings"] | null;
-                sectionProfiles: components["schemas"]["SectionProfile"][];
-                element1ds: components["schemas"]["Element1d"][];
-            };
+        ModelRevision: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            projectId: string;
+            parentRevisionId: string | null;
+            secondParentRevisionId: string | null;
+            /** Format: uuid */
+            authorId: string;
+            message: string;
+            /** Format: date-time */
+            createdAt: string;
+            nodes: components["schemas"]["RevisionNode"][];
+            materials: components["schemas"]["Material"][];
+            modelSettings: components["schemas"]["ModelSettings"] | null;
+            sectionProfiles: components["schemas"]["SectionProfile"][];
+            element1ds: components["schemas"]["Element1d"][];
         };
         CreateModelRevisionElement1dOperationsRequest: {
             create?: components["schemas"]["CreateElement1dRequest"][];
@@ -1076,8 +1045,7 @@ export type BatchCreateElement1dResponse = components['schemas']['BatchCreateEle
 export type CreateElement1dRequest = components['schemas']['CreateElement1dRequest'];
 export type BatchCreateElement1dRequest = components['schemas']['BatchCreateElement1dRequest'];
 export type GetElement1dResponse = components['schemas']['GetElement1dResponse'];
-export type GetModelRevisionResponse = components['schemas']['GetModelRevisionResponse'];
-export type ModelRevisionResponse = components['schemas']['ModelRevisionResponse'];
+export type ModelRevision = components['schemas']['ModelRevision'];
 export type CreateModelRevisionElement1dOperationsRequest = components['schemas']['CreateModelRevisionElement1dOperationsRequest'];
 export type PutElement1dRequest = components['schemas']['PutElement1dRequest'];
 export type CreateModelRevisionNodeOperationsRequest = components['schemas']['CreateModelRevisionNodeOperationsRequest'];

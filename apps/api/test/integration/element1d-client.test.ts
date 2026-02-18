@@ -179,9 +179,7 @@ describe("typed element1d api client integration", () => {
     expect(getRevisionResponse.response.status).toBe(200);
     expect(getRevisionResponse.data).toBeDefined();
     expect(
-      getRevisionResponse.data?.modelRevision.element1ds.map(
-        (element1d) => element1d.id,
-      ),
+      getRevisionResponse.data?.element1ds.map((element1d) => element1d.id),
     ).toEqual(
       expect.arrayContaining(
         Object.values(batchCreateResponse.data.tempIdToId),

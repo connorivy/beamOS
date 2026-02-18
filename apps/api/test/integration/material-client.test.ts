@@ -95,9 +95,7 @@ describe("typed material api client integration", () => {
     expect(getRevisionResponse.response.status).toBe(200);
     expect(getRevisionResponse.data).toBeDefined();
     expect(
-      getRevisionResponse.data?.modelRevision.materials.map(
-        (material) => material.id,
-      ),
+      getRevisionResponse.data?.materials.map((material) => material.id),
     ).toEqual(
       expect.arrayContaining(
         Object.values(batchCreateResponse.data.tempIdToId),
