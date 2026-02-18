@@ -82,23 +82,9 @@ describe("model revision integration", () => {
                 },
               },
             ],
-            update: [],
-            delete: [],
-          },
-          materials: {
-            create: [],
-            update: [],
-            delete: [],
           },
           sectionProfiles: {
             create: [createSectionProfileInput("sp-rev-create")],
-            update: [],
-            delete: [],
-          },
-          element1ds: {
-            create: [],
-            update: [],
-            delete: [],
           },
         },
       },
@@ -130,24 +116,7 @@ describe("model revision integration", () => {
         },
         body: {
           nodes: {
-            create: [],
-            update: [],
             delete: [createdNodeId],
-          },
-          materials: {
-            create: [],
-            update: [],
-            delete: [],
-          },
-          sectionProfiles: {
-            create: [],
-            update: [],
-            delete: [],
-          },
-          element1ds: {
-            create: [],
-            update: [],
-            delete: [],
           },
         },
       },
@@ -490,15 +459,7 @@ describe("model revision integration", () => {
                 },
               },
             ],
-            update: [],
-            delete: [],
           },
-          materials: { create: [], update: [], delete: [] },
-          sectionProfiles: { create: [], update: [], delete: [] },
-          element1ds: { create: [], update: [], delete: [] },
-          loadCases: { create: [], update: [], delete: [] },
-          loadCombinations: { create: [], update: [], delete: [] },
-          pointLoads: { create: [], update: [], delete: [] },
         },
       },
     );
@@ -520,8 +481,6 @@ describe("model revision integration", () => {
         body: {
           loadCases: {
             create: [{ name: "LC1" }],
-            update: [],
-            delete: [],
           },
         },
       },
