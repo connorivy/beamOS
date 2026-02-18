@@ -171,5 +171,8 @@ const toLightweightModelRevisionAggregate = (
     modelSettings: null,
     sectionProfiles: [],
     element1ds: [],
+    loadCases: [],
+    loadCombinations: [],
+    pointLoads: [],
   });
 };

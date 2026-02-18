@@ -2,7 +2,9 @@ import { defineEndpoint } from "../contracts/endpoint";
 import {
   AreaMomentOfInertiaUnits,
   AreaUnits,
+  ForceUnits,
   PressureUnits,
+  TorqueUnits,
   VolumeUnits,
   WarpingMomentOfInertiaUnits,
 } from "unitsnet-js";
@@ -147,6 +149,35 @@ export const getModelRevision = defineEndpoint({
         endNodeId: element1d.endNodeId,
         materialId: element1d.materialId,
         sectionProfileId: element1d.sectionProfileId,
+      })),
+      loadCases: modelRevision.loadCases.map((loadCase) => ({
+        id: loadCase.id,
+        revisionId: loadCase.revisionId,
+        name: loadCase.name,
+      })),
+      loadCombinations: modelRevision.loadCombinations.map((loadCombination) => ({
+        id: loadCombination.id,
+        revisionId: loadCombination.revisionId,
+        loadCaseFactors: { ...loadCombination.loadCaseFactors },
+      })),
+      pointLoads: modelRevision.pointLoads.map((pointLoad) => ({
+        id: pointLoad.id,
+        revisionId: pointLoad.revisionId,
+        nodeId: pointLoad.nodeId,
+        loadCaseId: pointLoad.loadCaseId,
+        force: {
+          forceAlongX: pointLoad.force.forceAlongX.Newtons,
+          forceAlongY: pointLoad.force.forceAlongY.Newtons,
+          forceAlongZ: pointLoad.force.forceAlongZ.Newtons,
+          momentAboutX: pointLoad.force.momentAboutX.NewtonMeters,
+          momentAboutY: pointLoad.force.momentAboutY.NewtonMeters,
+          momentAboutZ: pointLoad.force.momentAboutZ.NewtonMeters,
+        },
+        direction: pointLoad.direction,
+        units: {
+          force: ForceUnits.Newtons as const,
+          torque: TorqueUnits.NewtonMeters as const,
+        },
       })),
     };
   },

@@ -12,6 +12,9 @@ import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
+import type { LoadCaseSnapshot } from "../load-cases/load-case-entity";
+import type { LoadCombinationSnapshot } from "../load-combinations/load-combination-entity";
+import type { PointLoadSnapshot } from "../point-loads/point-load-entity";
 
 export type DomainEvent =
   | {
@@ -37,6 +40,18 @@ export type DomainEvent =
   | {
       type: "model_settings_created";
       payload: ModelSettingsSnapshot;
+    }
+  | {
+      type: "load_case_created";
+      payload: LoadCaseSnapshot;
+    }
+  | {
+      type: "load_combination_created";
+      payload: LoadCombinationSnapshot;
+    }
+  | {
+      type: "point_load_created";
+      payload: PointLoadSnapshot;
     };
 
 export type UserRepository = {

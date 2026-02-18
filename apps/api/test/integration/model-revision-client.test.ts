@@ -3,7 +3,9 @@ import { createApiClient } from "@beamos/openapi-client";
 import {
   AreaMomentOfInertiaUnits,
   AreaUnits,
+  ForceUnits,
   PressureUnits,
+  TorqueUnits,
   VolumeUnits,
   WarpingMomentOfInertiaUnits,
 } from "unitsnet-js";
@@ -446,5 +448,157 @@ describe("model revision integration", () => {
     expect(getModelRevisionResponse.data.materials).toHaveLength(2);
     expect(getModelRevisionResponse.data.sectionProfiles).toHaveLength(2);
     expect(getModelRevisionResponse.data.element1ds).toHaveLength(2);
+  });
+
+  it("creates and returns load entities in model revisions", async () => {
+    const client = createApiClient(baseUrl);
+
+    const createModelResponse = await client.POST("/api/projects", {
+      body: {
+        name: "Load Entities Model",
+        description: "Create base model",
+      },
+    });
+
+    expect(createModelResponse.error).toBeUndefined();
+    expect(createModelResponse.response.status).toBe(200);
+    expect(createModelResponse.data).toBeDefined();
+
+    if (!createModelResponse.data) {
+      throw new Error("Expected model response");
+    }
+
+    const projectId = createModelResponse.data.id;
+    const branchName = "main";
+
+    const createNodeRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: { path: { projectId, branchName } },
+        body: {
+          nodes: {
+            create: [
+              {
+                location: { type: "spatial", point: { x: 0, y: 0, z: 0 } },
+                restraint: {
+                  canTranslateAlongX: true,
+                  canTranslateAlongY: true,
+                  canTranslateAlongZ: true,
+                  canRotateAboutX: true,
+                  canRotateAboutY: true,
+                  canRotateAboutZ: true,
+                },
+              },
+            ],
+            update: [],
+            delete: [],
+          },
+          materials: { create: [], update: [], delete: [] },
+          sectionProfiles: { create: [], update: [], delete: [] },
+          element1ds: { create: [], update: [], delete: [] },
+          loadCases: { create: [], update: [], delete: [] },
+          loadCombinations: { create: [], update: [], delete: [] },
+          pointLoads: { create: [], update: [], delete: [] },
+        },
+      },
+    );
+
+    expect(createNodeRevisionResponse.error).toBeUndefined();
+    expect(createNodeRevisionResponse.response.status).toBe(200);
+    expect(createNodeRevisionResponse.data?.nodes).toHaveLength(1);
+    const nodeId = createNodeRevisionResponse.data?.nodes[0]?.id;
+    expect(nodeId).toBeDefined();
+
+    if (!nodeId) {
+      throw new Error("Expected node id");
+    }
+
+    const createLoadCaseRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: { path: { projectId, branchName } },
+        body: {
+          nodes: { create: [], update: [], delete: [] },
+          materials: { create: [], update: [], delete: [] },
+          sectionProfiles: { create: [], update: [], delete: [] },
+          element1ds: { create: [], update: [], delete: [] },
+          loadCases: {
+            create: [{ name: "LC1" }],
+            update: [],
+            delete: [],
+          },
+          loadCombinations: { create: [], update: [], delete: [] },
+          pointLoads: { create: [], update: [], delete: [] },
+        },
+      },
+    );
+
+    expect(createLoadCaseRevisionResponse.error).toBeUndefined();
+    expect(createLoadCaseRevisionResponse.response.status).toBe(200);
+    expect(createLoadCaseRevisionResponse.data?.loadCases).toHaveLength(1);
+    const loadCaseId = createLoadCaseRevisionResponse.data?.loadCases[0]?.id;
+    expect(loadCaseId).toBeDefined();
+
+    if (!loadCaseId) {
+      throw new Error("Expected load case id");
+    }
+
+    const createLoadsRevisionResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      {
+        params: { path: { projectId, branchName } },
+        body: {
+          nodes: { create: [], update: [], delete: [] },
+          materials: { create: [], update: [], delete: [] },
+          sectionProfiles: { create: [], update: [], delete: [] },
+          element1ds: { create: [], update: [], delete: [] },
+          loadCases: { create: [], update: [], delete: [] },
+          loadCombinations: {
+            create: [{ loadCaseFactors: { [loadCaseId]: 1.5 } }],
+            update: [],
+            delete: [],
+          },
+          pointLoads: {
+            create: [
+              {
+                nodeId,
+                loadCaseId,
+                force: {
+                  forceAlongX: 10,
+                  forceAlongY: 20,
+                  forceAlongZ: 30,
+                  momentAboutX: 1,
+                  momentAboutY: 2,
+                  momentAboutZ: 3,
+                },
+                direction: { x: 0, y: 0, z: -1 },
+                units: {
+                  force: ForceUnits.Newtons,
+                  torque: TorqueUnits.NewtonMeters,
+                },
+              },
+            ],
+            update: [],
+            delete: [],
+          },
+        },
+      },
+    );
+
+    expect(createLoadsRevisionResponse.error).toBeUndefined();
+    expect(createLoadsRevisionResponse.response.status).toBe(200);
+    expect(createLoadsRevisionResponse.data?.loadCombinations).toHaveLength(1);
+    expect(createLoadsRevisionResponse.data?.pointLoads).toHaveLength(1);
+    expect(
+      createLoadsRevisionResponse.data?.loadCombinations[0]?.loadCaseFactors[
+        loadCaseId
+      ],
+    ).toBe(1.5);
+    expect(
+      createLoadsRevisionResponse.data?.pointLoads[0]?.force.forceAlongX,
+    ).toBe(10);
+    expect(createLoadsRevisionResponse.data?.pointLoads[0]?.units.force).toBe(
+      ForceUnits.Newtons,
+    );
   });
 });

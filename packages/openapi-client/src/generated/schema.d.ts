@@ -888,6 +888,51 @@ export interface components {
         GetElement1dResponse: {
             element1d: components["schemas"]["Element1d"];
         };
+        LoadCase: {
+            name: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        LoadCombination: {
+            loadCaseFactors: {
+                [key: string]: number;
+            };
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            revisionId: string;
+        };
+        PointLoad: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            revisionId: string;
+            /** Format: uuid */
+            nodeId: string;
+            /** Format: uuid */
+            loadCaseId: string;
+            force: {
+                forceAlongX: number;
+                forceAlongY: number;
+                forceAlongZ: number;
+                momentAboutX: number;
+                momentAboutY: number;
+                momentAboutZ: number;
+            };
+            direction: {
+                x: number;
+                y: number;
+                z: number;
+            };
+            units: {
+                /** @constant */
+                force: "Newton";
+                /** @constant */
+                torque: "NewtonMeter";
+            };
+        };
         ModelRevision: {
             /** Format: uuid */
             id: string;
@@ -905,6 +950,9 @@ export interface components {
             modelSettings: components["schemas"]["ModelSettings"] | null;
             sectionProfiles: components["schemas"]["SectionProfile"][];
             element1ds: components["schemas"]["Element1d"][];
+            loadCases: components["schemas"]["LoadCase"][];
+            loadCombinations: components["schemas"]["LoadCombination"][];
+            pointLoads: components["schemas"]["PointLoad"][];
         };
         CreateModelRevisionElement1dOperationsRequest: {
             create?: components["schemas"]["CreateElement1dRequest"][];
@@ -998,11 +1046,104 @@ export interface components {
             /** Format: uuid */
             id: string;
         };
+        CreateModelRevisionLoadCaseOperationsRequest: {
+            create?: components["schemas"]["CreateLoadCaseRequest"][];
+            update?: components["schemas"]["PutLoadCaseRequest"][];
+            delete?: string[];
+        };
+        CreateLoadCaseRequest: {
+            name: string;
+            tempId?: string;
+        };
+        PutLoadCaseRequest: {
+            name: string;
+            /** Format: uuid */
+            id: string;
+        };
+        CreateModelRevisionLoadCombinationOperationsRequest: {
+            create?: components["schemas"]["CreateLoadCombinationRequest"][];
+            update?: components["schemas"]["PutLoadCombinationRequest"][];
+            delete?: string[];
+        };
+        CreateLoadCombinationRequest: {
+            loadCaseFactors: {
+                [key: string]: number;
+            };
+            tempId?: string;
+        };
+        PutLoadCombinationRequest: {
+            loadCaseFactors: {
+                [key: string]: number;
+            };
+            /** Format: uuid */
+            id: string;
+        };
+        CreateModelRevisionPointLoadOperationsRequest: {
+            create?: components["schemas"]["CreatePointLoadRequest"][];
+            update?: components["schemas"]["PutPointLoadRequest"][];
+            delete?: string[];
+        };
+        CreatePointLoadRequest: {
+            /** Format: uuid */
+            nodeId: string;
+            /** Format: uuid */
+            loadCaseId: string;
+            force: {
+                forceAlongX: number;
+                forceAlongY: number;
+                forceAlongZ: number;
+                momentAboutX: number;
+                momentAboutY: number;
+                momentAboutZ: number;
+            };
+            direction: {
+                x: number;
+                y: number;
+                z: number;
+            };
+            units: {
+                /** @enum {string} */
+                force: "Dyn" | "KilogramForce" | "TonneForce" | "Newton" | "Kilopond" | "Poundal" | "PoundForce" | "OunceForce" | "ShortTonForce" | "Micronewton" | "Millinewton" | "Decanewton" | "Kilonewton" | "Meganewton" | "KilopoundForce";
+                /** @enum {string} */
+                torque: "NewtonMillimeter" | "NewtonCentimeter" | "NewtonMeter" | "PoundalFoot" | "PoundForceInch" | "PoundForceFoot" | "GramForceMillimeter" | "GramForceCentimeter" | "GramForceMeter" | "KilogramForceMillimeter" | "KilogramForceCentimeter" | "KilogramForceMeter" | "TonneForceMillimeter" | "TonneForceCentimeter" | "TonneForceMeter" | "KilonewtonMillimeter" | "MeganewtonMillimeter" | "KilonewtonCentimeter" | "MeganewtonCentimeter" | "KilonewtonMeter" | "MeganewtonMeter" | "KilopoundForceInch" | "MegapoundForceInch" | "KilopoundForceFoot" | "MegapoundForceFoot";
+            };
+            tempId?: string;
+        };
+        PutPointLoadRequest: {
+            /** Format: uuid */
+            nodeId: string;
+            /** Format: uuid */
+            loadCaseId: string;
+            force: {
+                forceAlongX: number;
+                forceAlongY: number;
+                forceAlongZ: number;
+                momentAboutX: number;
+                momentAboutY: number;
+                momentAboutZ: number;
+            };
+            direction: {
+                x: number;
+                y: number;
+                z: number;
+            };
+            units: {
+                /** @enum {string} */
+                force: "Dyn" | "KilogramForce" | "TonneForce" | "Newton" | "Kilopond" | "Poundal" | "PoundForce" | "OunceForce" | "ShortTonForce" | "Micronewton" | "Millinewton" | "Decanewton" | "Kilonewton" | "Meganewton" | "KilopoundForce";
+                /** @enum {string} */
+                torque: "NewtonMillimeter" | "NewtonCentimeter" | "NewtonMeter" | "PoundalFoot" | "PoundForceInch" | "PoundForceFoot" | "GramForceMillimeter" | "GramForceCentimeter" | "GramForceMeter" | "KilogramForceMillimeter" | "KilogramForceCentimeter" | "KilogramForceMeter" | "TonneForceMillimeter" | "TonneForceCentimeter" | "TonneForceMeter" | "KilonewtonMillimeter" | "MeganewtonMillimeter" | "KilonewtonCentimeter" | "MeganewtonCentimeter" | "KilonewtonMeter" | "MeganewtonMeter" | "KilopoundForceInch" | "MegapoundForceInch" | "KilopoundForceFoot" | "MegapoundForceFoot";
+            };
+            /** Format: uuid */
+            id: string;
+        };
         CreateModelRevisionRequest: {
             element1ds: components["schemas"]["CreateModelRevisionElement1dOperationsRequest"];
             nodes: components["schemas"]["CreateModelRevisionNodeOperationsRequest"];
             materials: components["schemas"]["CreateModelRevisionMaterialOperationsRequest"];
             sectionProfiles: components["schemas"]["CreateModelRevisionSectionProfileOperationsRequest"];
+            loadCases?: components["schemas"]["CreateModelRevisionLoadCaseOperationsRequest"];
+            loadCombinations?: components["schemas"]["CreateModelRevisionLoadCombinationOperationsRequest"];
+            pointLoads?: components["schemas"]["CreateModelRevisionPointLoadOperationsRequest"];
         };
     };
     responses: never;
@@ -1045,6 +1186,9 @@ export type BatchCreateElement1dResponse = components['schemas']['BatchCreateEle
 export type CreateElement1dRequest = components['schemas']['CreateElement1dRequest'];
 export type BatchCreateElement1dRequest = components['schemas']['BatchCreateElement1dRequest'];
 export type GetElement1dResponse = components['schemas']['GetElement1dResponse'];
+export type LoadCase = components['schemas']['LoadCase'];
+export type LoadCombination = components['schemas']['LoadCombination'];
+export type PointLoad = components['schemas']['PointLoad'];
 export type ModelRevision = components['schemas']['ModelRevision'];
 export type CreateModelRevisionElement1dOperationsRequest = components['schemas']['CreateModelRevisionElement1dOperationsRequest'];
 export type PutElement1dRequest = components['schemas']['PutElement1dRequest'];
@@ -1053,6 +1197,15 @@ export type PutNodeRequest = components['schemas']['PutNodeRequest'];
 export type CreateModelRevisionMaterialOperationsRequest = components['schemas']['CreateModelRevisionMaterialOperationsRequest'];
 export type CreateModelRevisionSectionProfileOperationsRequest = components['schemas']['CreateModelRevisionSectionProfileOperationsRequest'];
 export type PutSectionProfileRequest = components['schemas']['PutSectionProfileRequest'];
+export type CreateModelRevisionLoadCaseOperationsRequest = components['schemas']['CreateModelRevisionLoadCaseOperationsRequest'];
+export type CreateLoadCaseRequest = components['schemas']['CreateLoadCaseRequest'];
+export type PutLoadCaseRequest = components['schemas']['PutLoadCaseRequest'];
+export type CreateModelRevisionLoadCombinationOperationsRequest = components['schemas']['CreateModelRevisionLoadCombinationOperationsRequest'];
+export type CreateLoadCombinationRequest = components['schemas']['CreateLoadCombinationRequest'];
+export type PutLoadCombinationRequest = components['schemas']['PutLoadCombinationRequest'];
+export type CreateModelRevisionPointLoadOperationsRequest = components['schemas']['CreateModelRevisionPointLoadOperationsRequest'];
+export type CreatePointLoadRequest = components['schemas']['CreatePointLoadRequest'];
+export type PutPointLoadRequest = components['schemas']['PutPointLoadRequest'];
 export type CreateModelRevisionRequest = components['schemas']['CreateModelRevisionRequest'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

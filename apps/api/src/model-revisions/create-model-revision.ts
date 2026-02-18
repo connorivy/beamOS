@@ -12,14 +12,21 @@ import { ModelRevisionAggregate } from "./model-revision-aggregate";
 import {
   AreaMomentOfInertiaUnits,
   AreaUnits,
+  Force,
+  ForceUnits,
   Pressure,
   PressureUnits,
+  Torque,
+  TorqueUnits,
   VolumeUnits,
   WarpingMomentOfInertiaUnits,
 } from "unitsnet-js";
 import type { Element1dSnapshot } from "src/element1ds/element1d-entity";
+import type { LoadCaseSnapshot } from "src/load-cases/load-case-entity";
+import type { LoadCombinationSnapshot } from "src/load-combinations/load-combination-entity";
 import type { MaterialSnapshot } from "src/materials/material-entity";
 import type { NodeSnapshot } from "src/nodes/node-entity";
+import type { PointLoadSnapshot } from "src/point-loads/point-load-entity";
 import type { SectionProfileSnapshot } from "src/section-profiles/section-profile-entity";
 import { z } from "zod";
 
@@ -70,6 +77,22 @@ export const createModelRevision = defineEndpoint({
         (element1d) => [element1d.id, element1d.toSnapshot()] as const,
       ),
     );
+    const currentLoadCasesById = new Map(
+      parentRevision.loadCases.map(
+        (loadCase) => [loadCase.id, loadCase.toSnapshot()] as const,
+      ),
+    );
+    const currentLoadCombinationsById = new Map(
+      parentRevision.loadCombinations.map(
+        (loadCombination) =>
+          [loadCombination.id, loadCombination.toSnapshot()] as const,
+      ),
+    );
+    const currentPointLoadsById = new Map(
+      parentRevision.pointLoads.map(
+        (pointLoad) => [pointLoad.id, pointLoad.toSnapshot()] as const,
+      ),
+    );
 
     const revisionId = await getDb().transaction(async (tx) => {
       const revisionId = await createNewRevisionHandler(req, ctx, tx);
@@ -83,6 +106,9 @@ export const createModelRevision = defineEndpoint({
         currentMaterialsById,
         currentSectionProfilesById,
         currentElement1dsById,
+        currentLoadCasesById,
+        currentLoadCombinationsById,
+        currentPointLoadsById,
       });
 
       await ctx.services.revisionChangeRepository.batchCreate(tx, changes);
@@ -194,6 +220,37 @@ export const createModelRevision = defineEndpoint({
         materialId: element1d.materialId,
         sectionProfileId: element1d.sectionProfileId,
       })),
+      loadCases: modelRevision.loadCases.map((loadCase) => ({
+        id: loadCase.id,
+        revisionId: loadCase.revisionId,
+        name: loadCase.name,
+      })),
+      loadCombinations: modelRevision.loadCombinations.map(
+        (loadCombination) => ({
+          id: loadCombination.id,
+          revisionId: loadCombination.revisionId,
+          loadCaseFactors: { ...loadCombination.loadCaseFactors },
+        }),
+      ),
+      pointLoads: modelRevision.pointLoads.map((pointLoad) => ({
+        id: pointLoad.id,
+        revisionId: pointLoad.revisionId,
+        nodeId: pointLoad.nodeId,
+        loadCaseId: pointLoad.loadCaseId,
+        force: {
+          forceAlongX: pointLoad.force.forceAlongX.Newtons,
+          forceAlongY: pointLoad.force.forceAlongY.Newtons,
+          forceAlongZ: pointLoad.force.forceAlongZ.Newtons,
+          momentAboutX: pointLoad.force.momentAboutX.NewtonMeters,
+          momentAboutY: pointLoad.force.momentAboutY.NewtonMeters,
+          momentAboutZ: pointLoad.force.momentAboutZ.NewtonMeters,
+        },
+        direction: pointLoad.direction,
+        units: {
+          force: ForceUnits.Newtons as const,
+          torque: TorqueUnits.NewtonMeters as const,
+        },
+      })),
     };
   },
 });
@@ -206,10 +263,20 @@ const buildRevisionChanges = (input: {
   currentMaterialsById: Map<string, MaterialSnapshot>;
   currentSectionProfilesById: Map<string, SectionProfileSnapshot>;
   currentElement1dsById: Map<string, Element1dSnapshot>;
+  currentLoadCasesById: Map<string, LoadCaseSnapshot>;
+  currentLoadCombinationsById: Map<string, LoadCombinationSnapshot>;
+  currentPointLoadsById: Map<string, PointLoadSnapshot>;
 }): RevisionChangeEntity[] => {
   const changes: RevisionChangeEntity[] = [];
   const toEntity = (change: {
-    entityType: "node" | "material" | "sectionprofile" | "element1d";
+    entityType:
+      | "node"
+      | "material"
+      | "sectionprofile"
+      | "element1d"
+      | "loadcase"
+      | "loadcombination"
+      | "pointload";
     entityId: string;
     op: "insert" | "update" | "delete";
     payload: Record<string, unknown>;
@@ -578,6 +645,242 @@ const buildRevisionChanges = (input: {
     );
   }
 
+  for (const createLoadCase of input.req.body.loadCases?.create ?? []) {
+    const id = Bun.randomUUIDv7();
+    changes.push(
+      toEntity({
+        entityType: "loadcase",
+        entityId: id,
+        op: "insert",
+        payload: {
+          id,
+          revisionId: input.revisionId,
+          name: createLoadCase.name,
+        },
+      }),
+    );
+  }
+
+  for (const putLoadCase of input.req.body.loadCases?.update ?? []) {
+    const existing = input.currentLoadCasesById.get(putLoadCase.id);
+    if (!existing) {
+      throw httpError(`Load case ${putLoadCase.id} not found`, 400);
+    }
+
+    changes.push(
+      toEntity({
+        entityType: "loadcase",
+        entityId: putLoadCase.id,
+        op: "update",
+        payload: {
+          id: putLoadCase.id,
+          revisionId: input.revisionId,
+          name: putLoadCase.name,
+        },
+      }),
+    );
+  }
+
+  for (const deleteLoadCaseId of input.req.body.loadCases?.delete ?? []) {
+    changes.push(
+      toEntity({
+        entityType: "loadcase",
+        entityId: deleteLoadCaseId,
+        op: "delete",
+        payload: { id: deleteLoadCaseId },
+      }),
+    );
+  }
+
+  for (const createLoadCombination of input.req.body.loadCombinations?.create ??
+    []) {
+    const id = Bun.randomUUIDv7();
+    changes.push(
+      toEntity({
+        entityType: "loadcombination",
+        entityId: id,
+        op: "insert",
+        payload: {
+          id,
+          revisionId: input.revisionId,
+          loadCaseFactors: { ...createLoadCombination.loadCaseFactors },
+        },
+      }),
+    );
+  }
+
+  for (const putLoadCombination of input.req.body.loadCombinations?.update ??
+    []) {
+    const existing = input.currentLoadCombinationsById.get(putLoadCombination.id);
+    if (!existing) {
+      throw httpError(`Load combination ${putLoadCombination.id} not found`, 400);
+    }
+
+    changes.push(
+      toEntity({
+        entityType: "loadcombination",
+        entityId: putLoadCombination.id,
+        op: "update",
+        payload: {
+          id: putLoadCombination.id,
+          revisionId: input.revisionId,
+          loadCaseFactors: { ...putLoadCombination.loadCaseFactors },
+        },
+      }),
+    );
+  }
+
+  for (const deleteLoadCombinationId of input.req.body.loadCombinations
+    ?.delete ?? []) {
+    changes.push(
+      toEntity({
+        entityType: "loadcombination",
+        entityId: deleteLoadCombinationId,
+        op: "delete",
+        payload: { id: deleteLoadCombinationId },
+      }),
+    );
+  }
+
+  for (const createPointLoad of input.req.body.pointLoads?.create ?? []) {
+    const id = Bun.randomUUIDv7();
+    changes.push(
+      toEntity({
+        entityType: "pointload",
+        entityId: id,
+        op: "insert",
+        payload: {
+          id,
+          revisionId: input.revisionId,
+          nodeId: createPointLoad.nodeId,
+          loadCaseId: createPointLoad.loadCaseId,
+          force: {
+            forceAlongX: {
+              value: new Force(
+                createPointLoad.force.forceAlongX,
+                createPointLoad.units.force,
+              ).Newtons,
+              unit: ForceUnits.Newtons,
+            },
+            forceAlongY: {
+              value: new Force(
+                createPointLoad.force.forceAlongY,
+                createPointLoad.units.force,
+              ).Newtons,
+              unit: ForceUnits.Newtons,
+            },
+            forceAlongZ: {
+              value: new Force(
+                createPointLoad.force.forceAlongZ,
+                createPointLoad.units.force,
+              ).Newtons,
+              unit: ForceUnits.Newtons,
+            },
+            momentAboutX: {
+              value: new Torque(
+                createPointLoad.force.momentAboutX,
+                createPointLoad.units.torque,
+              ).NewtonMeters,
+              unit: TorqueUnits.NewtonMeters,
+            },
+            momentAboutY: {
+              value: new Torque(
+                createPointLoad.force.momentAboutY,
+                createPointLoad.units.torque,
+              ).NewtonMeters,
+              unit: TorqueUnits.NewtonMeters,
+            },
+            momentAboutZ: {
+              value: new Torque(
+                createPointLoad.force.momentAboutZ,
+                createPointLoad.units.torque,
+              ).NewtonMeters,
+              unit: TorqueUnits.NewtonMeters,
+            },
+          },
+          direction: createPointLoad.direction,
+        },
+      }),
+    );
+  }
+
+  for (const putPointLoad of input.req.body.pointLoads?.update ?? []) {
+    const existing = input.currentPointLoadsById.get(putPointLoad.id);
+    if (!existing) {
+      throw httpError(`Point load ${putPointLoad.id} not found`, 400);
+    }
+
+    changes.push(
+      toEntity({
+        entityType: "pointload",
+        entityId: putPointLoad.id,
+        op: "update",
+        payload: {
+          id: putPointLoad.id,
+          revisionId: input.revisionId,
+          nodeId: putPointLoad.nodeId,
+          loadCaseId: putPointLoad.loadCaseId,
+          force: {
+            forceAlongX: {
+              value: new Force(
+                putPointLoad.force.forceAlongX,
+                putPointLoad.units.force,
+              ).Newtons,
+              unit: ForceUnits.Newtons,
+            },
+            forceAlongY: {
+              value: new Force(
+                putPointLoad.force.forceAlongY,
+                putPointLoad.units.force,
+              ).Newtons,
+              unit: ForceUnits.Newtons,
+            },
+            forceAlongZ: {
+              value: new Force(
+                putPointLoad.force.forceAlongZ,
+                putPointLoad.units.force,
+              ).Newtons,
+              unit: ForceUnits.Newtons,
+            },
+            momentAboutX: {
+              value: new Torque(
+                putPointLoad.force.momentAboutX,
+                putPointLoad.units.torque,
+              ).NewtonMeters,
+              unit: TorqueUnits.NewtonMeters,
+            },
+            momentAboutY: {
+              value: new Torque(
+                putPointLoad.force.momentAboutY,
+                putPointLoad.units.torque,
+              ).NewtonMeters,
+              unit: TorqueUnits.NewtonMeters,
+            },
+            momentAboutZ: {
+              value: new Torque(
+                putPointLoad.force.momentAboutZ,
+                putPointLoad.units.torque,
+              ).NewtonMeters,
+              unit: TorqueUnits.NewtonMeters,
+            },
+          },
+          direction: putPointLoad.direction,
+        },
+      }),
+    );
+  }
+
+  for (const deletePointLoadId of input.req.body.pointLoads?.delete ?? []) {
+    changes.push(
+      toEntity({
+        entityType: "pointload",
+        entityId: deletePointLoadId,
+        op: "delete",
+        payload: { id: deletePointLoadId },
+      }),
+    );
+  }
+
   return changes;
 };
 
@@ -688,6 +991,13 @@ export async function createNewRevisionAggregateHandler(
     ),
     element1ds: parentRevision.element1ds.map((element1d) =>
       element1d.toSnapshot(),
+    ),
+    loadCases: parentRevision.loadCases.map((loadCase) => loadCase.toSnapshot()),
+    loadCombinations: parentRevision.loadCombinations.map((loadCombination) =>
+      loadCombination.toSnapshot(),
+    ),
+    pointLoads: parentRevision.pointLoads.map((pointLoad) =>
+      pointLoad.toSnapshot(),
     ),
   });
 }

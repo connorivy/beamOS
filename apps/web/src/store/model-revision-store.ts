@@ -90,6 +90,9 @@ const emptyPendingRevision = (): CreateModelRevisionRequest => ({
   materials: {},
   sectionProfiles: {},
   element1ds: {},
+  loadCases: {},
+  loadCombinations: {},
+  pointLoads: {},
 });
 
 const normalizeModelRevision = (
@@ -198,7 +201,16 @@ const hasPendingChanges = (pending: CreateModelRevisionRequest): boolean =>
   (pending.sectionProfiles.delete?.length ?? 0) > 0 ||
   (pending.element1ds.create?.length ?? 0) > 0 ||
   (pending.element1ds.update?.length ?? 0) > 0 ||
-  (pending.element1ds.delete?.length ?? 0) > 0;
+  (pending.element1ds.delete?.length ?? 0) > 0 ||
+  (pending.loadCases?.create?.length ?? 0) > 0 ||
+  (pending.loadCases?.update?.length ?? 0) > 0 ||
+  (pending.loadCases?.delete?.length ?? 0) > 0 ||
+  (pending.loadCombinations?.create?.length ?? 0) > 0 ||
+  (pending.loadCombinations?.update?.length ?? 0) > 0 ||
+  (pending.loadCombinations?.delete?.length ?? 0) > 0 ||
+  (pending.pointLoads?.create?.length ?? 0) > 0 ||
+  (pending.pointLoads?.update?.length ?? 0) > 0 ||
+  (pending.pointLoads?.delete?.length ?? 0) > 0;
 
 const withActiveEntry = (
   set: (partial: Partial<ModelRevisionState>) => void,

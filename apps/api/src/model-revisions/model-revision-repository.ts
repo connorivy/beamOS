@@ -5,9 +5,13 @@ import {
   AreaMomentOfInertia,
   AreaMomentOfInertiaUnits,
   AreaUnits,
+  Force,
+  ForceUnits,
   Pressure,
   PressureUnits,
   Ratio,
+  Torque,
+  TorqueUnits,
   Volume,
   VolumeUnits,
   WarpingMomentOfInertia,
@@ -32,6 +36,9 @@ import type { SectionProfileSnapshot } from "../section-profiles/section-profile
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { NodeSnapshot } from "../nodes/node-entity";
 import { parseRestraint } from "../nodes/node-entity";
+import type { LoadCaseSnapshot } from "../load-cases/load-case-entity";
+import type { LoadCombinationSnapshot } from "../load-combinations/load-combination-entity";
+import type { PointLoadSnapshot } from "../point-loads/point-load-entity";
 
 export const drizzleModelRevisionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -55,6 +62,9 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
       modelSettings,
       sectionProfilesById,
       element1dsById,
+      loadCasesById,
+      loadCombinationsById,
+      pointLoadsById,
     ] = await Promise.all([
       buildNodesFromRevisions({
         revisions,
@@ -63,6 +73,9 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
       buildModelSettingsFromRevisions({ revisions }),
       buildSectionProfilesFromRevisions({ revisions }),
       buildElement1dsFromRevisions({ revisions }),
+      buildLoadCasesFromRevisions({ revisions }),
+      buildLoadCombinationsFromRevisions({ revisions }),
+      buildPointLoadsFromRevisions({ revisions }),
     ]);
 
     return ModelRevisionAggregate.rehydrate({
@@ -78,6 +91,9 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
       modelSettings,
       sectionProfiles: Array.from(sectionProfilesById.values()),
       element1ds: Array.from(element1dsById.values()),
+      loadCases: Array.from(loadCasesById.values()),
+      loadCombinations: Array.from(loadCombinationsById.values()),
+      pointLoads: Array.from(pointLoadsById.values()),
     });
   },
 
@@ -441,6 +457,108 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
+  const loadCaseChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "load_case_created" }> =>
+        event.type === "load_case_created",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          entityType: "loadcase",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            name: event.payload.name,
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
+  const loadCombinationChanges = input.events
+    .filter(
+      (
+        event,
+      ): event is Extract<DomainEvent, { type: "load_combination_created" }> =>
+        event.type === "load_combination_created",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          entityType: "loadcombination",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            loadCaseFactors: { ...event.payload.loadCaseFactors },
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
+  const pointLoadChanges = input.events
+    .filter(
+      (event): event is Extract<DomainEvent, { type: "point_load_created" }> =>
+        event.type === "point_load_created",
+    )
+    .map((event) =>
+      revisionChangeMapper.toPersistence(
+        RevisionChangeEntity.create({
+          id: crypto.randomUUID(),
+          revisionId: input.revisionId,
+          entityType: "pointload",
+          entityId: event.payload.id,
+          schemaVersion: 1,
+          op: "insert",
+          payload: {
+            id: event.payload.id,
+            revisionId: event.payload.revisionId,
+            nodeId: event.payload.nodeId,
+            loadCaseId: event.payload.loadCaseId,
+            force: {
+              forceAlongX: {
+                value: event.payload.force.forceAlongX.Newtons,
+                unit: ForceUnits.Newtons,
+              },
+              forceAlongY: {
+                value: event.payload.force.forceAlongY.Newtons,
+                unit: ForceUnits.Newtons,
+              },
+              forceAlongZ: {
+                value: event.payload.force.forceAlongZ.Newtons,
+                unit: ForceUnits.Newtons,
+              },
+              momentAboutX: {
+                value: event.payload.force.momentAboutX.NewtonMeters,
+                unit: TorqueUnits.NewtonMeters,
+              },
+              momentAboutY: {
+                value: event.payload.force.momentAboutY.NewtonMeters,
+                unit: TorqueUnits.NewtonMeters,
+              },
+              momentAboutZ: {
+                value: event.payload.force.momentAboutZ.NewtonMeters,
+                unit: TorqueUnits.NewtonMeters,
+              },
+            },
+            direction: event.payload.direction,
+          },
+          createdAt: now,
+        }),
+      ),
+    );
+
   return [
     ...nodeChanges,
     ...nodeDeleteChanges,
@@ -448,6 +566,9 @@ const buildRevisionChangeRowsFromEvents = (input: {
     ...modelSettingsChanges,
     ...sectionProfileChanges,
     ...element1dChanges,
+    ...loadCaseChanges,
+    ...loadCombinationChanges,
+    ...pointLoadChanges,
   ];
 };
 
@@ -906,6 +1027,159 @@ const buildElement1dsFromRevisions = async (input: {
   }
 
   return element1dsById;
+};
+
+const buildLoadCasesFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<Map<string, LoadCaseSnapshot>> => {
+  if (input.revisions.length === 0) {
+    return new Map();
+  }
+
+  const rows = await loadOrderedRevisionChanges(input.revisions);
+  const loadCasesById = new Map<string, LoadCaseSnapshot>();
+  for (const row of rows) {
+    if (row.entityType !== "loadcase" && row.entityType !== "load_case") {
+      continue;
+    }
+    if (row.op === "delete") {
+      loadCasesById.delete(row.entityId);
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    if (typeof payload.name !== "string" || payload.name.trim().length === 0) {
+      continue;
+    }
+
+    loadCasesById.set(row.entityId, {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      name: payload.name,
+    });
+  }
+
+  return loadCasesById;
+};
+
+const buildLoadCombinationsFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<Map<string, LoadCombinationSnapshot>> => {
+  if (input.revisions.length === 0) {
+    return new Map();
+  }
+
+  const rows = await loadOrderedRevisionChanges(input.revisions);
+  const loadCombinationsById = new Map<string, LoadCombinationSnapshot>();
+  for (const row of rows) {
+    if (
+      row.entityType !== "loadcombination" &&
+      row.entityType !== "load_combination"
+    ) {
+      continue;
+    }
+    if (row.op === "delete") {
+      loadCombinationsById.delete(row.entityId);
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    const loadCaseFactorsPayload = toObject(payload.loadCaseFactors);
+    const loadCaseFactors: Record<string, number> = {};
+    for (const [loadCaseId, factor] of Object.entries(loadCaseFactorsPayload)) {
+      if (typeof factor === "number" && Number.isFinite(factor)) {
+        loadCaseFactors[loadCaseId] = factor;
+      }
+    }
+
+    loadCombinationsById.set(row.entityId, {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      loadCaseFactors,
+    });
+  }
+
+  return loadCombinationsById;
+};
+
+const buildPointLoadsFromRevisions = async (input: {
+  revisions: (typeof modelRevisions.$inferSelect)[];
+}): Promise<Map<string, PointLoadSnapshot>> => {
+  if (input.revisions.length === 0) {
+    return new Map();
+  }
+
+  const rows = await loadOrderedRevisionChanges(input.revisions);
+  const pointLoadsById = new Map<string, PointLoadSnapshot>();
+  for (const row of rows) {
+    if (row.entityType !== "pointload" && row.entityType !== "point_load") {
+      continue;
+    }
+    if (row.op === "delete") {
+      pointLoadsById.delete(row.entityId);
+      continue;
+    }
+
+    const payload = toObject(row.payload);
+    const forcePayload = toObject(payload.force);
+    const directionPayload = toObject(payload.direction);
+    const forceAlongX = toFiniteNumber(toObject(forcePayload.forceAlongX).value);
+    const forceAlongY = toFiniteNumber(toObject(forcePayload.forceAlongY).value);
+    const forceAlongZ = toFiniteNumber(toObject(forcePayload.forceAlongZ).value);
+    const momentAboutX = toFiniteNumber(toObject(forcePayload.momentAboutX).value);
+    const momentAboutY = toFiniteNumber(toObject(forcePayload.momentAboutY).value);
+    const momentAboutZ = toFiniteNumber(toObject(forcePayload.momentAboutZ).value);
+    const directionX = toFiniteNumber(directionPayload.x);
+    const directionY = toFiniteNumber(directionPayload.y);
+    const directionZ = toFiniteNumber(directionPayload.z);
+
+    if (
+      typeof payload.nodeId !== "string" ||
+      typeof payload.loadCaseId !== "string" ||
+      forceAlongX === undefined ||
+      forceAlongY === undefined ||
+      forceAlongZ === undefined ||
+      momentAboutX === undefined ||
+      momentAboutY === undefined ||
+      momentAboutZ === undefined ||
+      directionX === undefined ||
+      directionY === undefined ||
+      directionZ === undefined
+    ) {
+      continue;
+    }
+
+    pointLoadsById.set(row.entityId, {
+      id: row.entityId,
+      revisionId:
+        typeof payload.revisionId === "string"
+          ? payload.revisionId
+          : (row.revisionId ?? ""),
+      nodeId: payload.nodeId,
+      loadCaseId: payload.loadCaseId,
+      force: {
+        forceAlongX: Force.FromNewtons(forceAlongX),
+        forceAlongY: Force.FromNewtons(forceAlongY),
+        forceAlongZ: Force.FromNewtons(forceAlongZ),
+        momentAboutX: Torque.FromNewtonMeters(momentAboutX),
+        momentAboutY: Torque.FromNewtonMeters(momentAboutY),
+        momentAboutZ: Torque.FromNewtonMeters(momentAboutZ),
+      },
+      direction: {
+        x: directionX,
+        y: directionY,
+        z: directionZ,
+      },
+    });
+  }
+
+  return pointLoadsById;
 };
 
 const extractNodeName = (payload: unknown): string => {

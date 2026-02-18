@@ -11,6 +11,21 @@ import {
   putMaterialRequestSchema as updateMaterialRequestSchema,
 } from "../materials/material-contract-schemas";
 import {
+  createLoadCaseRequestSchema,
+  loadCaseResponseSchema,
+  putLoadCaseRequestSchema as updateLoadCaseRequestSchema,
+} from "../load-cases/load-case-contract-schemas";
+import {
+  createLoadCombinationRequestSchema,
+  loadCombinationResponseSchema,
+  putLoadCombinationRequestSchema as updateLoadCombinationRequestSchema,
+} from "../load-combinations/load-combination-contract-schemas";
+import {
+  createPointLoadRequestSchema,
+  pointLoadResponseSchema,
+  putPointLoadRequestSchema as updatePointLoadRequestSchema,
+} from "../point-loads/point-load-contract-schemas";
+import {
   createNodeRequestSchema,
   revisionNodeResponseSchema,
   putNodeRequestSchema as updateNodeRequestSchema,
@@ -54,6 +69,30 @@ const sectionProfileOperationsRequestSchema = z
   })
   .meta({ id: "CreateModelRevisionSectionProfileOperationsRequest" });
 
+const loadCaseOperationsRequestSchema = z
+  .object({
+    create: z.array(createLoadCaseRequestSchema).optional(),
+    update: z.array(updateLoadCaseRequestSchema).optional(),
+    delete: z.array(uuidV7Schema).optional(),
+  })
+  .meta({ id: "CreateModelRevisionLoadCaseOperationsRequest" });
+
+const loadCombinationOperationsRequestSchema = z
+  .object({
+    create: z.array(createLoadCombinationRequestSchema).optional(),
+    update: z.array(updateLoadCombinationRequestSchema).optional(),
+    delete: z.array(uuidV7Schema).optional(),
+  })
+  .meta({ id: "CreateModelRevisionLoadCombinationOperationsRequest" });
+
+const pointLoadOperationsRequestSchema = z
+  .object({
+    create: z.array(createPointLoadRequestSchema).optional(),
+    update: z.array(updatePointLoadRequestSchema).optional(),
+    delete: z.array(uuidV7Schema).optional(),
+  })
+  .meta({ id: "CreateModelRevisionPointLoadOperationsRequest" });
+
 export const createModelRevisionReqSchema = z
   .object({
     params: z.object({
@@ -66,6 +105,9 @@ export const createModelRevisionReqSchema = z
         nodes: nodeOperationsRequestSchema,
         materials: materialOperationsRequestSchema,
         sectionProfiles: sectionProfileOperationsRequestSchema,
+        loadCases: loadCaseOperationsRequestSchema.optional(),
+        loadCombinations: loadCombinationOperationsRequestSchema.optional(),
+        pointLoads: pointLoadOperationsRequestSchema.optional(),
       })
       .meta({ id: "CreateModelRevisionRequest" }),
   })
@@ -85,5 +127,8 @@ export const modelRevisionResSchema = z
     modelSettings: modelSettingsResponseSchema.nullable(),
     sectionProfiles: z.array(sectionProfileResponseSchema),
     element1ds: z.array(element1dResponseSchema),
+    loadCases: z.array(loadCaseResponseSchema),
+    loadCombinations: z.array(loadCombinationResponseSchema),
+    pointLoads: z.array(pointLoadResponseSchema),
   })
   .meta({ id: "ModelRevision" });

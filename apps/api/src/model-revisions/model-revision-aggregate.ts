@@ -2,6 +2,12 @@ import { DomainEvent } from "src/common/types";
 import { assertUuid, assertUuidV7 } from "../common/uuid";
 import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
 import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
+import { LoadCaseEntity, type LoadCaseSnapshot } from "../load-cases/load-case-entity";
+import {
+  LoadCombinationEntity,
+  type LoadCombinationSnapshot,
+} from "../load-combinations/load-combination-entity";
+import { PointLoadEntity, type PointLoadSnapshot } from "../point-loads/point-load-entity";
 import {
   ModelSettingsEntity,
   type ModelSettingsSnapshot,
@@ -25,6 +31,9 @@ export type ModelRevisionSnapshot = {
   modelSettings: ModelSettingsSnapshot | null;
   sectionProfiles: SectionProfileSnapshot[];
   element1ds: Element1dSnapshot[];
+  loadCases: LoadCaseSnapshot[];
+  loadCombinations: LoadCombinationSnapshot[];
+  pointLoads: PointLoadSnapshot[];
 };
 
 export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id" | "modelSettings"> & {
@@ -43,6 +52,9 @@ export class ModelRevisionAggregate {
   private _modelSettings: ModelSettingsEntity | null;
   private _sectionProfiles: SectionProfileEntity[];
   private _element1ds: Element1dEntity[];
+  private _loadCases: LoadCaseEntity[];
+  private _loadCombinations: LoadCombinationEntity[];
+  private _pointLoads: PointLoadEntity[];
   private _domainEvents: DomainEvent[];
 
   private constructor(snapshot: ModelRevisionSnapshot | ModelRevisionCreateSnapshot) {
@@ -76,6 +88,15 @@ export class ModelRevisionAggregate {
     );
     this._element1ds = snapshot.element1ds.map((element1d) =>
       Element1dEntity.rehydrate(element1d),
+    );
+    this._loadCases = snapshot.loadCases.map((loadCase) =>
+      LoadCaseEntity.rehydrate(loadCase),
+    );
+    this._loadCombinations = snapshot.loadCombinations.map((loadCombination) =>
+      LoadCombinationEntity.rehydrate(loadCombination),
+    );
+    this._pointLoads = snapshot.pointLoads.map((pointLoad) =>
+      PointLoadEntity.rehydrate(pointLoad),
     );
     this._domainEvents = [];
   }
@@ -131,6 +152,18 @@ export class ModelRevisionAggregate {
     return this._element1ds;
   }
 
+  get loadCases(): readonly LoadCaseEntity[] {
+    return this._loadCases;
+  }
+
+  get loadCombinations(): readonly LoadCombinationEntity[] {
+    return this._loadCombinations;
+  }
+
+  get pointLoads(): readonly PointLoadEntity[] {
+    return this._pointLoads;
+  }
+
   addNode(node: NodeSnapshot): void {
     assertUuid(node.id, "nodeId");
     if (this._nodes.some((existing) => existing.id === node.id)) {
@@ -168,6 +201,32 @@ export class ModelRevisionAggregate {
     this._element1ds.push(Element1dEntity.create(element1d));
   }
 
+  addLoadCase(loadCase: LoadCaseSnapshot): void {
+    assertUuid(loadCase.id, "loadCaseId");
+    if (this._loadCases.some((existing) => existing.id === loadCase.id)) {
+      throw new Error("Load case already exists");
+    }
+    this._loadCases.push(LoadCaseEntity.create(loadCase));
+  }
+
+  addLoadCombination(loadCombination: LoadCombinationSnapshot): void {
+    assertUuid(loadCombination.id, "loadCombinationId");
+    if (
+      this._loadCombinations.some((existing) => existing.id === loadCombination.id)
+    ) {
+      throw new Error("Load combination already exists");
+    }
+    this._loadCombinations.push(LoadCombinationEntity.create(loadCombination));
+  }
+
+  addPointLoad(pointLoad: PointLoadSnapshot): void {
+    assertUuid(pointLoad.id, "pointLoadId");
+    if (this._pointLoads.some((existing) => existing.id === pointLoad.id)) {
+      throw new Error("Point load already exists");
+    }
+    this._pointLoads.push(PointLoadEntity.create(pointLoad));
+  }
+
   deleteNode(nodeId: string): void {
     assertUuid(nodeId, "nodeId");
     const index = this._nodes.findIndex((node) => node.id === nodeId);
@@ -197,6 +256,11 @@ export class ModelRevisionAggregate {
         sectionProfile.toSnapshot(),
       ),
       element1ds: this._element1ds.map((element1d) => element1d.toSnapshot()),
+      loadCases: this._loadCases.map((loadCase) => loadCase.toSnapshot()),
+      loadCombinations: this._loadCombinations.map((loadCombination) =>
+        loadCombination.toSnapshot(),
+      ),
+      pointLoads: this._pointLoads.map((pointLoad) => pointLoad.toSnapshot()),
     };
   }
 
@@ -216,7 +280,26 @@ export class ModelRevisionAggregate {
     const element1dEvents = this._element1ds.flatMap((element1d) =>
       element1d.pullDomainEvents(),
     );
-    const events = [...this._domainEvents, ...nodeEvents, ...materialEvents, ...modelSettingsEvents, ...sectionProfileEvents, ...element1dEvents];
+    const loadCaseEvents = this._loadCases.flatMap((loadCase) =>
+      loadCase.pullDomainEvents(),
+    );
+    const loadCombinationEvents = this._loadCombinations.flatMap(
+      (loadCombination) => loadCombination.pullDomainEvents(),
+    );
+    const pointLoadEvents = this._pointLoads.flatMap((pointLoad) =>
+      pointLoad.pullDomainEvents(),
+    );
+    const events = [
+      ...this._domainEvents,
+      ...nodeEvents,
+      ...materialEvents,
+      ...modelSettingsEvents,
+      ...sectionProfileEvents,
+      ...element1dEvents,
+      ...loadCaseEvents,
+      ...loadCombinationEvents,
+      ...pointLoadEvents,
+    ];
     this._domainEvents = [];
     return events;
   }

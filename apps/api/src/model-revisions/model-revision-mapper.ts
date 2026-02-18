@@ -31,6 +31,9 @@ export const modelRevisionMapper = {
       modelSettings: null,
       sectionProfiles: [],
       element1ds: [],
+      loadCases: [],
+      loadCombinations: [],
+      pointLoads: [],
     });
   },
 
@@ -76,6 +79,9 @@ export const modelRevisionMapper = {
       modelSettings: null,
       sectionProfiles: [],
       element1ds: [],
+      loadCases: [],
+      loadCombinations: [],
+      pointLoads: [],
     };
 
     return ModelRevisionAggregate.create(snapshot);
