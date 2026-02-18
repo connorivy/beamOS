@@ -50,12 +50,58 @@ export const batchPutMaterial = defineEndpoint({
   req: batchPutMaterialReqSchema,
   res: batchPutMaterialResSchema,
   async handler(req, ctx: AppContext) {
+    const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+      req.params.projectId,
+      req.params.branchName,
+    );
+    if (!branch) {
+      throw httpError(
+        `Could not find branch ${req.params.branchName} on model with ID ${req.params.projectId}`,
+        404,
+      );
+    }
+    const parentRevision =
+      await ctx.services.modelRevisionRepository.getRevisionById(
+        branch.headRevisionId,
+      );
+    if (!parentRevision) {
+      throw httpError(
+        `Could not find parent revision ${branch.headRevisionId} for branch ${req.params.branchName}`,
+        404,
+      );
+    }
+    assertMaterialNamesAreUnique(req.body.materials, parentRevision.materials);
+
     return await getDb().transaction(async (tx) => {
       const revisionId = await createNewRevisionHandler(req, ctx, tx);
       return await batchPutMaterialHandler(req, ctx, tx, revisionId);
     });
   },
 });
+
+function assertMaterialNamesAreUnique(
+  updates: z.infer<typeof putMaterialRequestSchema>[],
+  existingMaterials: readonly MaterialEntity[],
+) {
+  const nameById = new Map(
+    existingMaterials.map((material) => [material.id, material.name]),
+  );
+  const remainingNames = new Set(nameById.values());
+
+  for (const update of updates) {
+    const currentName = nameById.get(update.id);
+    if (currentName) {
+      remainingNames.delete(currentName);
+    }
+  }
+
+  for (const update of updates) {
+    if (remainingNames.has(update.name)) {
+      throw httpError(`Duplicate material name "${update.name}"`, 400);
+    }
+    remainingNames.add(update.name);
+  }
+}
 
 export async function batchPutMaterialHandler(
   req: z.infer<typeof batchPutMaterialReqSchema>,

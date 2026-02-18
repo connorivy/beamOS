@@ -8,7 +8,7 @@ export type Vector3d = {
   z: number;
 };
 
-export type PointLoadForce = {
+export type Force3d = {
   forceAlongX: Force;
   forceAlongY: Force;
   forceAlongZ: Force;
@@ -22,7 +22,7 @@ export type PointLoadSnapshot = {
   revisionId: string;
   nodeId: string;
   loadCaseId: string;
-  force: PointLoadForce;
+  force: Force3d;
   direction: Vector3d;
 };
 
@@ -55,7 +55,7 @@ export class PointLoadEntity {
   readonly revisionId: string;
   readonly nodeId: string;
   readonly loadCaseId: string;
-  readonly force: PointLoadForce;
+  readonly force: Force3d;
   readonly direction: Vector3d;
 
   static create(snapshot: PointLoadSnapshot): PointLoadEntity {

@@ -70,11 +70,41 @@ export async function batchCreateElement1dHandler(
   }
 
   const tempIdToId: Record<string, string> = {};
+  const materialIdByName = new Map<string, string>();
+  for (const material of revision.materials) {
+    if (materialIdByName.has(material.name)) {
+      throw httpError(`Duplicate material name "${material.name}"`, 400);
+    }
+    materialIdByName.set(material.name, material.id);
+  }
+  const sectionProfileIdByName = new Map<string, string>();
+  for (const sectionProfile of revision.sectionProfiles) {
+    if (sectionProfileIdByName.has(sectionProfile.name)) {
+      throw httpError(
+        `Duplicate section profile name "${sectionProfile.name}"`,
+        400,
+      );
+    }
+    sectionProfileIdByName.set(sectionProfile.name, sectionProfile.id);
+  }
 
   const element1ds = req.body.element1ds.map((element1d) => {
     const id = Bun.randomUUIDv7();
     if (element1d.tempId) {
       tempIdToId[element1d.tempId] = id;
+    }
+    const materialId = materialIdByName.get(element1d.materialName);
+    if (!materialId) {
+      throw httpError(`Material "${element1d.materialName}" not found`, 400);
+    }
+    const sectionProfileId = sectionProfileIdByName.get(
+      element1d.sectionProfileName,
+    );
+    if (!sectionProfileId) {
+      throw httpError(
+        `Section profile "${element1d.sectionProfileName}" not found`,
+        400,
+      );
     }
 
     const snapshot: Element1dSnapshot = {
@@ -82,8 +112,8 @@ export async function batchCreateElement1dHandler(
       revisionId: revision.id,
       startNodeId: element1d.startNodeId,
       endNodeId: element1d.endNodeId,
-      materialId: element1d.materialId,
-      sectionProfileId: element1d.sectionProfileId,
+      materialId,
+      sectionProfileId,
     };
     revision.addElement1d(snapshot);
     return snapshot;

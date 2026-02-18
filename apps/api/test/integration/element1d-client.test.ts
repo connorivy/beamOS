@@ -73,8 +73,7 @@ describe("typed element1d api client integration", () => {
       throw new Error("Expected material batch response");
     }
 
-    const materialId =
-      materialBatchCreateResponse.data.tempIdToId["mat-for-element"];
+    const materialName = "Material for Element1d";
 
     const sectionProfileBatchCreateResponse = await client.POST(
       "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
@@ -123,8 +122,7 @@ describe("typed element1d api client integration", () => {
       throw new Error("Expected section profile batch response");
     }
 
-    const sectionProfileId =
-      sectionProfileBatchCreateResponse.data.tempIdToId["sp-for-element"];
+    const sectionProfileName = "W12x26";
 
     const batchCreateResponse = await client.POST(
       "/api/projects/{projectId}/branches/{branchName}/element1ds/batch",
@@ -141,15 +139,15 @@ describe("typed element1d api client integration", () => {
               tempId: tempIds[0],
               startNodeId: Bun.randomUUIDv7(),
               endNodeId: Bun.randomUUIDv7(),
-              materialId,
-              sectionProfileId,
+              materialName,
+              sectionProfileName,
             },
             {
               tempId: tempIds[1],
               startNodeId: Bun.randomUUIDv7(),
               endNodeId: Bun.randomUUIDv7(),
-              materialId,
-              sectionProfileId,
+              materialName,
+              sectionProfileName,
             },
           ],
         },
@@ -255,15 +253,15 @@ describe("typed element1d api client integration", () => {
               tempId: "dup-1",
               startNodeId: Bun.randomUUIDv7(),
               endNodeId: Bun.randomUUIDv7(),
-              materialId: Bun.randomUUIDv7(),
-              sectionProfileId: Bun.randomUUIDv7(),
+              materialName: "Material A",
+              sectionProfileName: "Section A",
             },
             {
               tempId: "dup-1",
               startNodeId: Bun.randomUUIDv7(),
               endNodeId: Bun.randomUUIDv7(),
-              materialId: Bun.randomUUIDv7(),
-              sectionProfileId: Bun.randomUUIDv7(),
+              materialName: "Material B",
+              sectionProfileName: "Section B",
             },
           ],
         },

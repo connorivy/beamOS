@@ -268,6 +268,23 @@ const buildRevisionChanges = (input: {
   currentPointLoadsById: Map<string, PointLoadSnapshot>;
 }): RevisionChangeEntity[] => {
   const changes: RevisionChangeEntity[] = [];
+  const materialIdByName = new Map<string, string>();
+  for (const material of input.currentMaterialsById.values()) {
+    if (materialIdByName.has(material.name)) {
+      throw httpError(`Duplicate material name "${material.name}"`, 400);
+    }
+    materialIdByName.set(material.name, material.id);
+  }
+  const sectionProfileIdByName = new Map<string, string>();
+  for (const sectionProfile of input.currentSectionProfilesById.values()) {
+    if (sectionProfileIdByName.has(sectionProfile.name)) {
+      throw httpError(
+        `Duplicate section profile name "${sectionProfile.name}"`,
+        400,
+      );
+    }
+    sectionProfileIdByName.set(sectionProfile.name, sectionProfile.id);
+  }
   const toEntity = (change: {
     entityType:
       | "node"
@@ -370,8 +387,30 @@ const buildRevisionChanges = (input: {
     );
   }
 
+  const materialUpdateIds = new Set(
+    (input.req.body.materials?.update ?? []).map((material) => material.id),
+  );
+  for (const materialId of materialUpdateIds) {
+    const existing = input.currentMaterialsById.get(materialId);
+    if (!existing) {
+      throw httpError(`Material ${materialId} not found`, 400);
+    }
+    materialIdByName.delete(existing.name);
+  }
+
+  for (const deleteMaterialId of input.req.body.materials?.delete ?? []) {
+    const existing = input.currentMaterialsById.get(deleteMaterialId);
+    if (existing) {
+      materialIdByName.delete(existing.name);
+    }
+  }
+
   for (const createMaterial of input.req.body.materials?.create ?? []) {
     const id = Bun.randomUUIDv7();
+    if (materialIdByName.has(createMaterial.name)) {
+      throw httpError(`Duplicate material name "${createMaterial.name}"`, 400);
+    }
+    materialIdByName.set(createMaterial.name, id);
     changes.push(
       toEntity({
         entityType: "material",
@@ -405,6 +444,10 @@ const buildRevisionChanges = (input: {
     if (!existing) {
       throw httpError(`Material ${putMaterial.id} not found`, 400);
     }
+    if (materialIdByName.has(putMaterial.name)) {
+      throw httpError(`Duplicate material name "${putMaterial.name}"`, 400);
+    }
+    materialIdByName.set(putMaterial.name, putMaterial.id);
 
     changes.push(
       toEntity({
@@ -445,9 +488,37 @@ const buildRevisionChanges = (input: {
     );
   }
 
+  const sectionProfileUpdateIds = new Set(
+    (input.req.body.sectionProfiles?.update ?? []).map(
+      (sectionProfile) => sectionProfile.id,
+    ),
+  );
+  for (const sectionProfileId of sectionProfileUpdateIds) {
+    const existing = input.currentSectionProfilesById.get(sectionProfileId);
+    if (!existing) {
+      throw httpError(`Section profile ${sectionProfileId} not found`, 400);
+    }
+    sectionProfileIdByName.delete(existing.name);
+  }
+
+  for (const deleteSectionProfileId of input.req.body.sectionProfiles?.delete ??
+    []) {
+    const existing = input.currentSectionProfilesById.get(deleteSectionProfileId);
+    if (existing) {
+      sectionProfileIdByName.delete(existing.name);
+    }
+  }
+
   for (const createSectionProfile of input.req.body.sectionProfiles?.create ??
     []) {
     const id = Bun.randomUUIDv7();
+    if (sectionProfileIdByName.has(createSectionProfile.name)) {
+      throw httpError(
+        `Duplicate section profile name "${createSectionProfile.name}"`,
+        400,
+      );
+    }
+    sectionProfileIdByName.set(createSectionProfile.name, id);
     changes.push(
       toEntity({
         entityType: "sectionprofile",
@@ -517,6 +588,13 @@ const buildRevisionChanges = (input: {
     if (!existing) {
       throw httpError(`Section profile ${putSectionProfile.id} not found`, 400);
     }
+    if (sectionProfileIdByName.has(putSectionProfile.name)) {
+      throw httpError(
+        `Duplicate section profile name "${putSectionProfile.name}"`,
+        400,
+      );
+    }
+    sectionProfileIdByName.set(putSectionProfile.name, putSectionProfile.id);
 
     changes.push(
       toEntity({
@@ -595,6 +673,19 @@ const buildRevisionChanges = (input: {
 
   for (const createElement1d of input.req.body.element1ds?.create ?? []) {
     const id = Bun.randomUUIDv7();
+    const materialId = materialIdByName.get(createElement1d.materialName);
+    if (!materialId) {
+      throw httpError(`Material "${createElement1d.materialName}" not found`, 400);
+    }
+    const sectionProfileId = sectionProfileIdByName.get(
+      createElement1d.sectionProfileName,
+    );
+    if (!sectionProfileId) {
+      throw httpError(
+        `Section profile "${createElement1d.sectionProfileName}" not found`,
+        400,
+      );
+    }
     changes.push(
       toEntity({
         entityType: "element1d",
@@ -605,8 +696,8 @@ const buildRevisionChanges = (input: {
           revisionId: input.revisionId,
           startNodeId: createElement1d.startNodeId,
           endNodeId: createElement1d.endNodeId,
-          materialId: createElement1d.materialId,
-          sectionProfileId: createElement1d.sectionProfileId,
+          materialId,
+          sectionProfileId,
         },
       }),
     );

@@ -1,13 +1,25 @@
 import { DomainEvent } from "src/common/types";
 import { assertUuid, assertUuidV7 } from "../common/uuid";
-import { Element1dEntity, type Element1dSnapshot } from "../element1ds/element1d-entity";
-import { MaterialEntity, type MaterialSnapshot } from "../materials/material-entity";
-import { LoadCaseEntity, type LoadCaseSnapshot } from "../load-cases/load-case-entity";
+import {
+  Element1dEntity,
+  type Element1dSnapshot,
+} from "../element1ds/element1d-entity";
+import {
+  MaterialEntity,
+  type MaterialSnapshot,
+} from "../materials/material-entity";
+import {
+  LoadCaseEntity,
+  type LoadCaseSnapshot,
+} from "../load-cases/load-case-entity";
 import {
   LoadCombinationEntity,
   type LoadCombinationSnapshot,
 } from "../load-combinations/load-combination-entity";
-import { PointLoadEntity, type PointLoadSnapshot } from "../point-loads/point-load-entity";
+import {
+  PointLoadEntity,
+  type PointLoadSnapshot,
+} from "../point-loads/point-load-entity";
 import {
   ModelSettingsEntity,
   type ModelSettingsSnapshot,
@@ -36,7 +48,10 @@ export type ModelRevisionSnapshot = {
   pointLoads: PointLoadSnapshot[];
 };
 
-export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id" | "modelSettings"> & {
+export type ModelRevisionCreateSnapshot = Omit<
+  ModelRevisionSnapshot,
+  "id" | "modelSettings"
+> & {
   id?: string;
   modelSettings?: ModelSettingsSnapshot | null;
 };
@@ -57,7 +72,9 @@ export class ModelRevisionAggregate {
   private _pointLoads: PointLoadEntity[];
   private _domainEvents: DomainEvent[];
 
-  private constructor(snapshot: ModelRevisionSnapshot | ModelRevisionCreateSnapshot) {
+  private constructor(
+    snapshot: ModelRevisionSnapshot | ModelRevisionCreateSnapshot,
+  ) {
     const revisionId = snapshot.id ?? Bun.randomUUIDv7();
     assertUuidV7(revisionId, "id");
     assertUuid(snapshot.projectId, "projectId");
@@ -177,6 +194,9 @@ export class ModelRevisionAggregate {
     if (this._materials.some((existing) => existing.id === material.id)) {
       throw new Error("Material already exists");
     }
+    if (this._materials.some((existing) => existing.name === material.name)) {
+      throw new Error(`Material name "${material.name}" already exists`);
+    }
     this._materials.push(MaterialEntity.create(material));
   }
 
@@ -187,8 +207,21 @@ export class ModelRevisionAggregate {
 
   addSectionProfile(sectionProfile: SectionProfileSnapshot): void {
     assertUuid(sectionProfile.id, "sectionProfileId");
-    if (this._sectionProfiles.some((existing) => existing.id === sectionProfile.id)) {
+    if (
+      this._sectionProfiles.some(
+        (existing) => existing.id === sectionProfile.id,
+      )
+    ) {
       throw new Error("Section profile already exists");
+    }
+    if (
+      this._sectionProfiles.some(
+        (existing) => existing.name === sectionProfile.name,
+      )
+    ) {
+      throw new Error(
+        `Section profile name "${sectionProfile.name}" already exists`,
+      );
     }
     this._sectionProfiles.push(SectionProfileEntity.create(sectionProfile));
   }
@@ -212,7 +245,9 @@ export class ModelRevisionAggregate {
   addLoadCombination(loadCombination: LoadCombinationSnapshot): void {
     assertUuid(loadCombination.id, "loadCombinationId");
     if (
-      this._loadCombinations.some((existing) => existing.id === loadCombination.id)
+      this._loadCombinations.some(
+        (existing) => existing.id === loadCombination.id,
+      )
     ) {
       throw new Error("Load combination already exists");
     }

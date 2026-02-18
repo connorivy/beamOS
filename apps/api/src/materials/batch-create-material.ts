@@ -75,8 +75,16 @@ export async function batchCreateMaterialHandler(
   }
 
   const tempIdToId: Record<string, string> = {};
+  const existingMaterialNames = new Set(
+    revision.materials.map((material) => material.name),
+  );
 
   const materials = req.body.materials.map((material) => {
+    if (existingMaterialNames.has(material.name)) {
+      throw httpError(`Duplicate material name "${material.name}"`, 400);
+    }
+    existingMaterialNames.add(material.name);
+
     const id = Bun.randomUUIDv7();
     if (material.tempId) {
       tempIdToId[material.tempId] = id;

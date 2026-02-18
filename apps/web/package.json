@@ -6,6 +6,7 @@
     "dev": "vite",
     "dev:test": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "build": "tsc -p tsconfig.json && vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "preview": "vite preview",
     "test:unit": "bun test"
   },

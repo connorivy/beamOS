@@ -876,10 +876,8 @@ export interface components {
             startNodeId: string;
             /** Format: uuid */
             endNodeId: string;
-            /** Format: uuid */
-            materialId: string;
-            /** Format: uuid */
-            sectionProfileId: string;
+            materialName: string;
+            sectionProfileName: string;
             tempId?: string;
         };
         BatchCreateElement1dRequest: {

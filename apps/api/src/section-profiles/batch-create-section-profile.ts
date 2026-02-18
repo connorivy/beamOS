@@ -228,8 +228,19 @@ async function batchCreateSectionProfileHandler(
   }
 
   const tempIdToId: Record<string, string> = {};
+  const existingSectionProfileNames = new Set(
+    revision.sectionProfiles.map((sectionProfile) => sectionProfile.name),
+  );
 
   const sectionProfiles = req.body.sectionProfiles.map((sectionProfile) => {
+    if (existingSectionProfileNames.has(sectionProfile.name)) {
+      throw httpError(
+        `Duplicate section profile name "${sectionProfile.name}"`,
+        400,
+      );
+    }
+    existingSectionProfileNames.add(sectionProfile.name);
+
     const id = Bun.randomUUIDv7();
 
     if (sectionProfile.tempId) {

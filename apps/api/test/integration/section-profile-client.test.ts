@@ -272,4 +272,79 @@ describe("typed section profile api client integration", () => {
     expect(batchCreateResponse.data).toBeUndefined();
     expect(batchCreateResponse.response.status).toBe(400);
   });
+
+  it("rejects duplicate section profile names in batch create", async () => {
+    const client = createApiClient(baseUrl);
+
+    const createModelResponse = await client.POST("/api/projects", {
+      body: {
+        name: "Duplicate Section Profile Name Model",
+        description: "Create model for duplicate section profile name test",
+      },
+    });
+
+    expect(createModelResponse.response.status).toBe(200);
+    expect(createModelResponse.data).toBeDefined();
+
+    if (!createModelResponse.data) {
+      throw new Error("Expected model response");
+    }
+
+    const projectId = createModelResponse.data.id;
+    const branchName = "main";
+
+    const batchCreateResponse = await client.POST(
+      "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch",
+      {
+        params: {
+          path: {
+            projectId,
+            branchName,
+          },
+        },
+        body: {
+          units: {
+            area: AreaUnits.SquareInches,
+            areaMomentOfInertia: AreaMomentOfInertiaUnits.InchesToTheFourth,
+            warpingMomentOfInertia:
+              WarpingMomentOfInertiaUnits.InchesToTheSixth,
+            volume: VolumeUnits.CubicInches,
+          },
+          sectionProfiles: [
+            {
+              tempId: "dup-name-1",
+              name: "Duplicate Section",
+              discriminator: "STANDARD",
+              area: 5,
+              strongAxisMomentOfInertia: 10,
+              weakAxisMomentOfInertia: 4,
+              torsionalConstant: 1,
+              warpingConstant: 20,
+              strongAxisPlasticSectionModulus: 3.5,
+              weakAxisPlasticSectionModulus: 2.1,
+              strongAxisElasticSectionModulus: 3,
+              weakAxisElasticSectionModulus: 2,
+            },
+            {
+              tempId: "dup-name-2",
+              name: "Duplicate Section",
+              discriminator: "STANDARD",
+              area: 6,
+              strongAxisMomentOfInertia: 11,
+              weakAxisMomentOfInertia: 5,
+              torsionalConstant: 1.2,
+              warpingConstant: 22,
+              strongAxisPlasticSectionModulus: 4.5,
+              weakAxisPlasticSectionModulus: 3.1,
+              strongAxisElasticSectionModulus: 4,
+              weakAxisElasticSectionModulus: 3,
+            },
+          ],
+        },
+      },
+    );
+
+    expect(batchCreateResponse.data).toBeUndefined();
+    expect(batchCreateResponse.response.status).toBe(400);
+  });
 });

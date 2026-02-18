@@ -8,8 +8,12 @@ export const element1dPropertiesSchema = z.object({
   sectionProfileId: uuidV7Schema,
 });
 
-export const createElement1dRequestSchema = element1dPropertiesSchema
-  .extend({
+export const createElement1dRequestSchema = z
+  .object({
+    startNodeId: uuidV7Schema,
+    endNodeId: uuidV7Schema,
+    materialName: z.string().trim().min(1),
+    sectionProfileName: z.string().trim().min(1),
     tempId: z.string().trim().min(1).optional(),
   })
   .meta({ id: "CreateElement1dRequest" });
