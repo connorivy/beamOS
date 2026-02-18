@@ -91,7 +91,6 @@ export const createModelRevision = defineEndpoint({
         id: modelRevision.id,
         version: {
           modelId: modelRevision.modelId,
-          branchName: req.params.branchName,
           revisionId: modelRevision.id,
           revisionsAhead: 0,
           revisionsBehind: 0,
@@ -673,7 +672,6 @@ export async function createNewRevisionAggregateHandler(
 
   return ModelRevisionAggregate.create({
     modelId,
-    branchName,
     name: parentRevision.name,
     parentRevisionId: parentRevision.id,
     secondParentRevisionId: null,

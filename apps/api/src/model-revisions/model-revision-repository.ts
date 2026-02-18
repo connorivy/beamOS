@@ -20,10 +20,7 @@ import {
   revisionChanges,
 } from "../db/schema";
 import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
-import {
-  DEFAULT_MODEL_REVISION_BRANCH_NAME,
-  ModelRevisionAggregate,
-} from "./model-revision-aggregate";
+import { ModelRevisionAggregate } from "./model-revision-aggregate";
 import { modelRevisionMapper } from "./model-revision-mapper";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
@@ -49,32 +46,28 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
     }
 
     const revision = revisionRows[0];
-    const [revisions, branchHeadRows] = await Promise.all([
-      loadRevisionHistory({
-        revisionId: revision.id,
+    const revisions = await loadRevisionHistory({
+      revisionId: revision.id,
+    });
+    const [
+      nodesById,
+      materialsById,
+      modelSettings,
+      sectionProfilesById,
+      element1dsById,
+    ] = await Promise.all([
+      buildNodesFromRevisions({
+        revisions,
       }),
-      getDb()
-        .select()
-        .from(modelBranchHeads)
-        .where(eq(modelBranchHeads.headRevisionId, revision.id))
-        .limit(1),
+      buildMaterialsFromRevisions({ revisions }),
+      buildModelSettingsFromRevisions({ revisions }),
+      buildSectionProfilesFromRevisions({ revisions }),
+      buildElement1dsFromRevisions({ revisions }),
     ]);
-    const [nodesById, materialsById, modelSettings, sectionProfilesById, element1dsById] =
-      await Promise.all([
-        buildNodesFromRevisions({
-          revisions,
-        }),
-        buildMaterialsFromRevisions({ revisions }),
-        buildModelSettingsFromRevisions({ revisions }),
-        buildSectionProfilesFromRevisions({ revisions }),
-        buildElement1dsFromRevisions({ revisions }),
-      ]);
 
     return ModelRevisionAggregate.rehydrate({
       id: revision.id,
       modelId: revision.modelId,
-      branchName:
-        branchHeadRows[0]?.branchName ?? DEFAULT_MODEL_REVISION_BRANCH_NAME,
       name: revision.modelName,
       parentRevisionId: revision.parentRevisionId,
       secondParentRevisionId: revision.secondParentRevisionId,
@@ -90,13 +83,9 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
   },
 
   async save(input) {
-    const { revision, newRevision = false, tx: existingTx } = input;
+    const { revision, tx: existingTx, branchName } = input;
     const snapshot = revision.toSnapshot();
     const events = revision.pullDomainEvents();
-
-    if (!newRevision) {
-      throw new Error("Only new revisions can be saved");
-    }
 
     const persist = async (tx: DbTransaction) => {
       const revisionRow = await tx
@@ -111,15 +100,13 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
       });
 
       if (changeRows.length > 0) {
-        await tx
-          .insert(revisionChanges)
-          .values(changeRows);
+        await tx.insert(revisionChanges).values(changeRows);
       }
 
-      if (snapshot.branchName) {
+      if (branchName) {
         const branchHead = modelBranchHeadMapper.fromInput({
           modelId: snapshot.modelId,
-          branchName: snapshot.branchName,
+          branchName,
           headRevisionId: snapshot.id,
         });
         const branchPersistence =
@@ -146,10 +133,7 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         .from(revisionChanges)
         .where(eq(revisionChanges.revisionId, snapshot.id));
 
-      return modelRevisionMapper.toDomain(
-        revisionRow[0],
-        persistedChangeRows,
-      );
+      return modelRevisionMapper.toDomain(revisionRow[0], persistedChangeRows);
     };
 
     return existingTx ? persist(existingTx) : getDb().transaction(persist);
@@ -202,87 +186,6 @@ export const drizzleModelVersionRepository: ModelRevisionRepository = {
         },
       });
   },
-
-  async commitRevision(input) {
-    const aggregate = modelRevisionMapper.fromCommitInput({
-      id: input.id,
-      modelId: input.modelId,
-      branchName: input.branchName,
-      name: input.name,
-      parentRevisionId: input.parentRevisionId ?? null,
-      secondParentRevisionId: input.secondParentRevisionId ?? null,
-      authorId: input.authorId,
-      message: input.message,
-      nodes: input.nodes,
-    });
-
-    const snapshot = aggregate.toSnapshot();
-
-    return getDb().transaction(async (tx) => {
-      const revisionRow = await tx
-        .insert(modelRevisions)
-        .values(modelRevisionMapper.toPersistence(aggregate))
-        .returning();
-
-      if (input.includeModelChange) {
-        const modelChangeRow = buildModelRevisionChangeRow({
-          modelId: snapshot.modelId,
-          modelName: snapshot.name,
-          revisionId: snapshot.id,
-          op: snapshot.parentRevisionId ? "update" : "insert",
-        });
-        await tx
-          .insert(revisionChanges)
-          .values(modelChangeRow);
-      }
-
-      if (snapshot.nodes.length > 0) {
-        const changeRows = buildRevisionChangeRowsFromNodes({
-          modelId: snapshot.modelId,
-          revisionId: snapshot.id,
-          nodes: snapshot.nodes,
-        });
-
-        if (changeRows.length > 0) {
-          await tx
-            .insert(revisionChanges)
-            .values(changeRows);
-        }
-      }
-
-      if (input.branchName) {
-        const branchHead = modelBranchHeadMapper.fromInput({
-          modelId: snapshot.modelId,
-          branchName: input.branchName,
-          headRevisionId: snapshot.id,
-        });
-        const branchPersistence =
-          modelBranchHeadMapper.toPersistence(branchHead);
-
-        await tx
-          .insert(modelBranchHeads)
-          .values({
-            modelId: branchPersistence.modelId,
-            branchName: branchPersistence.branchName,
-            headRevisionId: branchPersistence.headRevisionId,
-          })
-          .onConflictDoUpdate({
-            target: [modelBranchHeads.modelId, modelBranchHeads.branchName],
-            set: {
-              headRevisionId: branchPersistence.headRevisionId,
-              updatedAt: new Date(),
-            },
-          });
-      }
-
-      const persistedChangeRows = await tx
-        .select()
-        .from(revisionChanges)
-        .where(eq(revisionChanges.revisionId, snapshot.id));
-
-      return modelRevisionMapper.toDomain(revisionRow[0], persistedChangeRows);
-    });
-  },
 };
 
 const buildRevisionChangeRowsFromNodeOps = (input: {
@@ -317,21 +220,6 @@ const buildRevisionChangeRowsFromNodeOps = (input: {
     return revisionChangeMapper.toPersistence(entity);
   });
 };
-
-const buildRevisionChangeRowsFromNodes = (input: {
-  modelId: string;
-  revisionId: string | null;
-  nodes: NodeSnapshot[];
-}): RevisionChangeInsertRow[] =>
-  buildRevisionChangeRowsFromNodeOps({
-    modelId: input.modelId,
-    revisionId: input.revisionId,
-    nodes: input.nodes.map((node) => ({
-      nodeId: node.id,
-      nodeTypeDescriminator: node.nodeTypeDescriminator,
-      op: "update",
-    })),
-  });
 
 const buildRevisionChangeRowsFromEvents = (input: {
   modelId: string;
@@ -423,7 +311,9 @@ const buildRevisionChangeRowsFromEvents = (input: {
 
   const sectionProfileChanges = input.events
     .filter(
-      (event): event is Extract<DomainEvent, { type: "section_profile_created" }> =>
+      (
+        event,
+      ): event is Extract<DomainEvent, { type: "section_profile_created" }> =>
         event.type === "section_profile_created",
     )
     .map((event) =>
@@ -500,7 +390,9 @@ const buildRevisionChangeRowsFromEvents = (input: {
 
   const modelSettingsChanges = input.events
     .filter(
-      (event): event is Extract<DomainEvent, { type: "model_settings_created" }> =>
+      (
+        event,
+      ): event is Extract<DomainEvent, { type: "model_settings_created" }> =>
         event.type === "model_settings_created",
     )
     .map((event) =>
@@ -550,30 +442,14 @@ const buildRevisionChangeRowsFromEvents = (input: {
       ),
     );
 
-  return [...nodeChanges, ...nodeDeleteChanges, ...materialChanges, ...modelSettingsChanges, ...sectionProfileChanges, ...element1dChanges];
-};
-
-const buildModelRevisionChangeRow = (input: {
-  modelId: string;
-  modelName: string;
-  revisionId: string | null;
-  op: "insert" | "update";
-}): RevisionChangeInsertRow => {
-  const entity = RevisionChangeEntity.create({
-    id: crypto.randomUUID(),
-    revisionId: input.revisionId,
-    entityType: "model",
-    entityId: input.modelId,
-    schemaVersion: 1,
-    op: input.op,
-    payload: {
-      id: input.modelId,
-      name: input.modelName,
-    },
-    createdAt: new Date(),
-  });
-
-  return revisionChangeMapper.toPersistence(entity);
+  return [
+    ...nodeChanges,
+    ...nodeDeleteChanges,
+    ...materialChanges,
+    ...modelSettingsChanges,
+    ...sectionProfileChanges,
+    ...element1dChanges,
+  ];
 };
 
 const loadRevisionHistory = async (input: {
@@ -671,7 +547,9 @@ const toNodeSnapshotFromRevisionChange = (input: {
   const restraint = parseRestraint(payload.restraint);
 
   if (nodeTypeDescriminator === "internal") {
-    const distanceAlongElement1d = toFiniteNumber(payload.distanceAlongElement1d);
+    const distanceAlongElement1d = toFiniteNumber(
+      payload.distanceAlongElement1d,
+    );
     return {
       id: input.row.entityId,
       modelRevisionId,
@@ -768,7 +646,10 @@ const buildMaterialsFromRevisions = async (input: {
     const pressureG = toObject(payload.pressureG);
     const pressureEValue = toFiniteNumber(pressureE.value);
     const pressureGValue = toFiniteNumber(pressureG.value);
-    const name = typeof payload.name === "string" && payload.name.length > 0 ? payload.name : "Unnamed Material";
+    const name =
+      typeof payload.name === "string" && payload.name.length > 0
+        ? payload.name
+        : "Unnamed Material";
     if (pressureEValue === undefined || pressureGValue === undefined) {
       continue;
     }
@@ -891,7 +772,9 @@ const buildSectionProfilesFromRevisions = async (input: {
     }
 
     const area = toObject(payload.area);
-    const strongAxisMomentOfInertia = toObject(payload.strongAxisMomentOfInertia);
+    const strongAxisMomentOfInertia = toObject(
+      payload.strongAxisMomentOfInertia,
+    );
     const weakAxisMomentOfInertia = toObject(payload.weakAxisMomentOfInertia);
     const torsionalConstant = toObject(payload.torsionalConstant);
     const warpingConstant = toObject(payload.warpingConstant);
@@ -916,11 +799,15 @@ const buildSectionProfilesFromRevisions = async (input: {
     const strongPlasticValue = toFiniteNumber(
       strongAxisPlasticSectionModulus.value,
     );
-    const weakPlasticValue = toFiniteNumber(weakAxisPlasticSectionModulus.value);
+    const weakPlasticValue = toFiniteNumber(
+      weakAxisPlasticSectionModulus.value,
+    );
     const strongElasticValue = toFiniteNumber(
       strongAxisElasticSectionModulus.value,
     );
-    const weakElasticValue = toFiniteNumber(weakAxisElasticSectionModulus.value);
+    const weakElasticValue = toFiniteNumber(
+      weakAxisElasticSectionModulus.value,
+    );
 
     if (
       areaValue === undefined ||
@@ -960,9 +847,11 @@ const buildSectionProfilesFromRevisions = async (input: {
         AreaMomentOfInertia.FromMetersToTheFourth(torsionalValue),
       warpingConstant:
         WarpingMomentOfInertia.FromMetersToTheSixth(warpingValue),
-      strongAxisPlasticSectionModulus: Volume.FromCubicMeters(strongPlasticValue),
+      strongAxisPlasticSectionModulus:
+        Volume.FromCubicMeters(strongPlasticValue),
       weakAxisPlasticSectionModulus: Volume.FromCubicMeters(weakPlasticValue),
-      strongAxisElasticSectionModulus: Volume.FromCubicMeters(strongElasticValue),
+      strongAxisElasticSectionModulus:
+        Volume.FromCubicMeters(strongElasticValue),
       weakAxisElasticSectionModulus: Volume.FromCubicMeters(weakElasticValue),
       ...(strongAxisShearArea !== undefined
         ? { strongAxisShearArea: Area.FromSquareMeters(strongAxisShearArea) }

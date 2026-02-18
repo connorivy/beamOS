@@ -12,7 +12,6 @@ export const modelRevisionResponseSchema = z
       id: uuidV7Schema,
       version: z.object({
         modelId: uuidV7Schema,
-        branchName: z.string().trim().min(1),
         revisionId: uuidV7Schema,
         revisionsAhead: z.number().min(0).meta({
           description:

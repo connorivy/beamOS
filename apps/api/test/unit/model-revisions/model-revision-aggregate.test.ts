@@ -12,7 +12,6 @@ describe("ModelRevisionAggregate", () => {
   it("pulls domain events from added materials", () => {
     const aggregate = ModelRevisionAggregate.create({
       modelId: Bun.randomUUIDv7(),
-      branchName: "main",
       name: "Revision",
       parentRevisionId: null,
       secondParentRevisionId: null,
@@ -42,7 +41,6 @@ describe("ModelRevisionAggregate", () => {
   it("pulls domain events from added section profiles", () => {
     const aggregate = ModelRevisionAggregate.create({
       modelId: Bun.randomUUIDv7(),
-      branchName: "main",
       name: "Revision",
       parentRevisionId: null,
       secondParentRevisionId: null,

@@ -62,7 +62,7 @@ export type ModelRevisionRepository = {
   ) => Promise<ModelRevisionAggregate | undefined>;
   save: (input: {
     revision: ModelRevisionAggregate;
-    newRevision?: boolean;
+    branchName?: string;
     tx?: DbTransaction;
   }) => Promise<ModelRevisionAggregate>;
   getBranchHead: (
@@ -75,9 +75,6 @@ export type ModelRevisionRepository = {
     branchName: string;
     headRevisionId: string;
   }) => Promise<void>;
-  commitRevision: (
-    input: ModelRevisionCommitInput,
-  ) => Promise<ModelRevisionAggregate>;
 };
 
 export type AppServices = {

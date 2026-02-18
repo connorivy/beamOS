@@ -1,6 +1,5 @@
 import { modelRevisions, revisionChanges } from "../db/schema";
 import {
-  DEFAULT_MODEL_REVISION_BRANCH_NAME,
   ModelRevisionAggregate,
   type ModelRevisionSnapshot,
 } from "./model-revision-aggregate";
@@ -14,7 +13,6 @@ export const modelRevisionMapper = {
     return ModelRevisionAggregate.rehydrate({
       id: row.id,
       modelId: row.modelId,
-      branchName: DEFAULT_MODEL_REVISION_BRANCH_NAME,
       name: row.modelName,
       parentRevisionId: row.parentRevisionId,
       secondParentRevisionId: row.secondParentRevisionId,
@@ -56,7 +54,6 @@ export const modelRevisionMapper = {
   fromCommitInput(input: {
     id: string;
     modelId: string;
-    branchName?: string;
     name: string;
     parentRevisionId: string | null;
     secondParentRevisionId: string | null;
@@ -67,7 +64,6 @@ export const modelRevisionMapper = {
     const snapshot: ModelRevisionSnapshot = {
       id: input.id,
       modelId: input.modelId,
-      branchName: input.branchName ?? DEFAULT_MODEL_REVISION_BRANCH_NAME,
       name: input.name,
       parentRevisionId: input.parentRevisionId,
       secondParentRevisionId: input.secondParentRevisionId,

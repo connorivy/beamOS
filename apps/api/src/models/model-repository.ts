@@ -1,7 +1,6 @@
 import { desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "../db/client";
 import {
-  DEFAULT_MODEL_REVISION_BRANCH_NAME,
   ModelRevisionAggregate,
 } from "../model-revisions/model-revision-aggregate";
 import {
@@ -211,7 +210,6 @@ const toLightweightModelRevisionAggregate = (
   return ModelRevisionAggregate.rehydrate({
     id: row.id,
     modelId: row.modelId,
-    branchName: DEFAULT_MODEL_REVISION_BRANCH_NAME,
     name: row.modelName,
     parentRevisionId: row.parentRevisionId,
     secondParentRevisionId: row.secondParentRevisionId,

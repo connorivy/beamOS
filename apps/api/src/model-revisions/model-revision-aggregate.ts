@@ -15,7 +15,6 @@ import {
 export type ModelRevisionSnapshot = {
   id: string;
   modelId: string;
-  branchName: string;
   name: string;
   parentRevisionId: string | null;
   secondParentRevisionId: string | null;
@@ -34,10 +33,7 @@ export type ModelRevisionCreateSnapshot = Omit<ModelRevisionSnapshot, "id" | "mo
   modelSettings?: ModelSettingsSnapshot | null;
 };
 
-export const DEFAULT_MODEL_REVISION_BRANCH_NAME = "detached";
-
 export class ModelRevisionAggregate {
-  private _branchName: string;
   private _name: string;
   private _parentRevisionId: string | null;
   private _secondParentRevisionId: string | null;
@@ -55,7 +51,6 @@ export class ModelRevisionAggregate {
     const revisionId = snapshot.id ?? Bun.randomUUIDv7();
     assertUuidV7(revisionId, "id");
     assertUuid(snapshot.modelId, "modelId");
-    this.assertRequired(snapshot.branchName, "branchName");
     this.assertRequired(snapshot.name, "name");
     assertUuid(snapshot.authorId, "authorId");
     this.assertRequired(snapshot.message, "message");
@@ -67,7 +62,6 @@ export class ModelRevisionAggregate {
 
     this.id = revisionId;
     this.modelId = snapshot.modelId;
-    this._branchName = snapshot.branchName.trim();
     this._name = snapshot.name.trim();
     this._parentRevisionId = snapshot.parentRevisionId;
     this._secondParentRevisionId = snapshot.secondParentRevisionId;
@@ -103,10 +97,6 @@ export class ModelRevisionAggregate {
 
   get name(): string {
     return this._name;
-  }
-
-  get branchName(): string {
-    return this._branchName;
   }
 
   get parentRevisionId(): string | null {
@@ -203,7 +193,6 @@ export class ModelRevisionAggregate {
     return {
       id: this.id,
       modelId: this.modelId,
-      branchName: this._branchName,
       name: this._name,
       parentRevisionId: this._parentRevisionId,
       secondParentRevisionId: this._secondParentRevisionId,

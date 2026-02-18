@@ -111,9 +111,6 @@ describe("model revision integration", () => {
     }
 
     expect(createRevisionResponse.data.modelRevision.modelId).toBe(modelId);
-    expect(createRevisionResponse.data.modelRevision.version.branchName).toBe(
-      branchName,
-    );
     expect(createRevisionResponse.data.modelRevision.nodes).toHaveLength(1);
     expect(createRevisionResponse.data.modelRevision.sectionProfiles).toHaveLength(
       1,

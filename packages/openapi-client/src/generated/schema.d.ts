@@ -932,7 +932,6 @@ export interface components {
                 version: {
                     /** Format: uuid */
                     modelId: string;
-                    branchName: string;
                     /** Format: uuid */
                     revisionId: string;
                     /** @description Number of revisions ahead of the parent branch. In progress revisions are not included in the number */

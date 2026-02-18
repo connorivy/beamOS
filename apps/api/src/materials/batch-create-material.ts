@@ -102,7 +102,7 @@ export async function batchCreateMaterialHandler(
   await getDb().transaction(async (tx) => {
     await ctx.services.modelRevisionRepository.save({
       revision,
-      newRevision: true,
+      branchName: req.params.branchName,
       tx,
     });
   });
