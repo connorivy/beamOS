@@ -195,33 +195,7 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    branchName: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["BatchPutMaterialRequest"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BatchPutMaterialResponse"];
-                    };
-                };
-            };
-        };
+        put?: never;
         post: {
             parameters: {
                 query?: never;
@@ -687,23 +661,6 @@ export interface components {
         BatchCreateMaterialRequest: {
             materials: components["schemas"]["CreateMaterialRequest"][];
         };
-        BatchPutMaterialResponse: {
-            materials: components["schemas"]["Material"][];
-        };
-        PutMaterialRequest: {
-            name: string;
-            modulusOfElasticity: number;
-            modulusOfRigidity: number;
-            units: {
-                /** @enum {string} */
-                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-            };
-            /** Format: uuid */
-            id: string;
-        };
-        BatchPutMaterialRequest: {
-            materials: components["schemas"]["PutMaterialRequest"][];
-        };
         ModelSettings: {
             units: components["schemas"]["ModelSettingsUnits"];
             yAxisUp: boolean;
@@ -1006,6 +963,17 @@ export interface components {
             update?: components["schemas"]["PutMaterialRequest"][];
             delete?: string[];
         };
+        PutMaterialRequest: {
+            name: string;
+            modulusOfElasticity: number;
+            modulusOfRigidity: number;
+            units: {
+                /** @enum {string} */
+                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+            };
+            /** Format: uuid */
+            id: string;
+        };
         CreateModelRevisionSectionProfileOperationsRequest: {
             create?: components["schemas"]["CreateSectionProfileRequest"][];
             update?: components["schemas"]["PutSectionProfileRequest"][];
@@ -1166,9 +1134,6 @@ export type Material = components['schemas']['Material'];
 export type BatchCreateMaterialResponse = components['schemas']['BatchCreateMaterialResponse'];
 export type CreateMaterialRequest = components['schemas']['CreateMaterialRequest'];
 export type BatchCreateMaterialRequest = components['schemas']['BatchCreateMaterialRequest'];
-export type BatchPutMaterialResponse = components['schemas']['BatchPutMaterialResponse'];
-export type PutMaterialRequest = components['schemas']['PutMaterialRequest'];
-export type BatchPutMaterialRequest = components['schemas']['BatchPutMaterialRequest'];
 export type ModelSettings = components['schemas']['ModelSettings'];
 export type ModelSettingsUnits = components['schemas']['ModelSettingsUnits'];
 export type PutModelSettingsResponse = components['schemas']['PutModelSettingsResponse'];
@@ -1193,6 +1158,7 @@ export type PutElement1dRequest = components['schemas']['PutElement1dRequest'];
 export type CreateModelRevisionNodeOperationsRequest = components['schemas']['CreateModelRevisionNodeOperationsRequest'];
 export type PutNodeRequest = components['schemas']['PutNodeRequest'];
 export type CreateModelRevisionMaterialOperationsRequest = components['schemas']['CreateModelRevisionMaterialOperationsRequest'];
+export type PutMaterialRequest = components['schemas']['PutMaterialRequest'];
 export type CreateModelRevisionSectionProfileOperationsRequest = components['schemas']['CreateModelRevisionSectionProfileOperationsRequest'];
 export type PutSectionProfileRequest = components['schemas']['PutSectionProfileRequest'];
 export type CreateModelRevisionLoadCaseOperationsRequest = components['schemas']['CreateModelRevisionLoadCaseOperationsRequest'];

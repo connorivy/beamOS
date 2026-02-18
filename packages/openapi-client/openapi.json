@@ -241,54 +241,6 @@
             }
           }
         }
-      },
-      "put": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BatchPutMaterialResponse"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          {
-            "name": "branchName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BatchPutMaterialRequest"
-              }
-            }
-          }
-        }
       }
     },
     "/api/projects/{projectId}/branches/{branchName}/model-settings": {
@@ -1226,132 +1178,6 @@
         ],
         "additionalProperties": false,
         "id": "BatchCreateMaterialRequest"
-      },
-      "BatchPutMaterialResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "materials": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Material"
-            }
-          }
-        },
-        "required": [
-          "materials"
-        ],
-        "additionalProperties": false,
-        "id": "BatchPutMaterialResponse"
-      },
-      "PutMaterialRequest": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "modulusOfElasticity": {
-            "type": "number"
-          },
-          "modulusOfRigidity": {
-            "type": "number"
-          },
-          "units": {
-            "type": "object",
-            "properties": {
-              "pressure": {
-                "type": "string",
-                "enum": [
-                  "Pascal",
-                  "Atmosphere",
-                  "Bar",
-                  "KilogramForcePerSquareMeter",
-                  "KilogramForcePerSquareCentimeter",
-                  "KilogramForcePerSquareMillimeter",
-                  "NewtonPerSquareMeter",
-                  "NewtonPerSquareCentimeter",
-                  "NewtonPerSquareMillimeter",
-                  "TechnicalAtmosphere",
-                  "Torr",
-                  "PoundForcePerSquareInch",
-                  "PoundForcePerSquareMil",
-                  "PoundForcePerSquareFoot",
-                  "TonneForcePerSquareMillimeter",
-                  "TonneForcePerSquareMeter",
-                  "MeterOfHead",
-                  "TonneForcePerSquareCentimeter",
-                  "FootOfHead",
-                  "MillimeterOfMercury",
-                  "InchOfMercury",
-                  "DynePerSquareCentimeter",
-                  "PoundPerInchSecondSquared",
-                  "MeterOfWaterColumn",
-                  "InchOfWaterColumn",
-                  "Micropascal",
-                  "Millipascal",
-                  "Decapascal",
-                  "Hectopascal",
-                  "Kilopascal",
-                  "Megapascal",
-                  "Gigapascal",
-                  "Microbar",
-                  "Millibar",
-                  "Centibar",
-                  "Decibar",
-                  "Kilobar",
-                  "Megabar",
-                  "KilonewtonPerSquareMeter",
-                  "MeganewtonPerSquareMeter",
-                  "KilonewtonPerSquareCentimeter",
-                  "KilonewtonPerSquareMillimeter",
-                  "Millitorr",
-                  "KilopoundForcePerSquareInch",
-                  "KilopoundForcePerSquareMil",
-                  "KilopoundForcePerSquareFoot",
-                  "MillimeterOfWaterColumn",
-                  "CentimeterOfWaterColumn"
-                ]
-              }
-            },
-            "required": [
-              "pressure"
-            ],
-            "additionalProperties": false
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "required": [
-          "name",
-          "modulusOfElasticity",
-          "modulusOfRigidity",
-          "units",
-          "id"
-        ],
-        "additionalProperties": false,
-        "id": "PutMaterialRequest"
-      },
-      "BatchPutMaterialRequest": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "materials": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PutMaterialRequest"
-            }
-          }
-        },
-        "required": [
-          "materials"
-        ],
-        "additionalProperties": false,
-        "id": "BatchPutMaterialRequest"
       },
       "ModelSettings": {
         "type": "object",
@@ -2791,6 +2617,97 @@
         },
         "additionalProperties": false,
         "id": "CreateModelRevisionMaterialOperationsRequest"
+      },
+      "PutMaterialRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "modulusOfElasticity": {
+            "type": "number"
+          },
+          "modulusOfRigidity": {
+            "type": "number"
+          },
+          "units": {
+            "type": "object",
+            "properties": {
+              "pressure": {
+                "type": "string",
+                "enum": [
+                  "Pascal",
+                  "Atmosphere",
+                  "Bar",
+                  "KilogramForcePerSquareMeter",
+                  "KilogramForcePerSquareCentimeter",
+                  "KilogramForcePerSquareMillimeter",
+                  "NewtonPerSquareMeter",
+                  "NewtonPerSquareCentimeter",
+                  "NewtonPerSquareMillimeter",
+                  "TechnicalAtmosphere",
+                  "Torr",
+                  "PoundForcePerSquareInch",
+                  "PoundForcePerSquareMil",
+                  "PoundForcePerSquareFoot",
+                  "TonneForcePerSquareMillimeter",
+                  "TonneForcePerSquareMeter",
+                  "MeterOfHead",
+                  "TonneForcePerSquareCentimeter",
+                  "FootOfHead",
+                  "MillimeterOfMercury",
+                  "InchOfMercury",
+                  "DynePerSquareCentimeter",
+                  "PoundPerInchSecondSquared",
+                  "MeterOfWaterColumn",
+                  "InchOfWaterColumn",
+                  "Micropascal",
+                  "Millipascal",
+                  "Decapascal",
+                  "Hectopascal",
+                  "Kilopascal",
+                  "Megapascal",
+                  "Gigapascal",
+                  "Microbar",
+                  "Millibar",
+                  "Centibar",
+                  "Decibar",
+                  "Kilobar",
+                  "Megabar",
+                  "KilonewtonPerSquareMeter",
+                  "MeganewtonPerSquareMeter",
+                  "KilonewtonPerSquareCentimeter",
+                  "KilonewtonPerSquareMillimeter",
+                  "Millitorr",
+                  "KilopoundForcePerSquareInch",
+                  "KilopoundForcePerSquareMil",
+                  "KilopoundForcePerSquareFoot",
+                  "MillimeterOfWaterColumn",
+                  "CentimeterOfWaterColumn"
+                ]
+              }
+            },
+            "required": [
+              "pressure"
+            ],
+            "additionalProperties": false
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "required": [
+          "name",
+          "modulusOfElasticity",
+          "modulusOfRigidity",
+          "units",
+          "id"
+        ],
+        "additionalProperties": false,
+        "id": "PutMaterialRequest"
       },
       "CreateModelRevisionSectionProfileOperationsRequest": {
         "type": "object",

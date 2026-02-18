@@ -5,7 +5,6 @@ import { defineApiPlugin } from "./types";
 import { patchNode } from "src/nodes/patch-node";
 import { batchCreateNode } from "src/nodes/batch-create-node";
 import { batchCreateMaterial } from "src/materials/batch-create-material";
-import { batchPutMaterial } from "src/materials/batch-put-material";
 import { getMaterial } from "src/materials/get-material";
 import { putModelSettings } from "src/model-settings/put-model-settings";
 import { batchCreateSectionProfile } from "src/section-profiles/batch-create-section-profile";
@@ -24,7 +23,6 @@ export const coreApiPlugin = defineApiPlugin({
     batchCreateNode,
     patchModel,
     batchCreateMaterial,
-    batchPutMaterial,
     putModelSettings,
     getMaterial,
     batchCreateSectionProfile,
