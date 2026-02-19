@@ -2,7 +2,6 @@ import {
     AreaMomentOfInertiaUnits,
     AreaUnits,
     ForceUnits,
-    PressureUnits,
     Ratio,
     TorqueUnits,
     VolumeUnits,
@@ -13,7 +12,6 @@ import { modelRevisions, revisionChanges } from "../db/schema";
 import { Element1dEntity } from "../element1ds/element1d-entity";
 import { LoadCaseEntity } from "../load-cases/load-case-entity";
 import { LoadCombinationEntity } from "../load-combinations/load-combination-entity";
-import { MaterialEntity } from "../materials/material-entity";
 import { ModelSettingsEntity } from "../model-settings/model-settings-entity";
 import { NodeEntity } from "../nodes/node-entity";
 import { PointLoadEntity } from "../point-loads/point-load-entity";
@@ -23,6 +21,7 @@ import {
     ModelRevisionAggregate2,
     type ModelRevisionEntityBuckets,
 } from "./model-revision-aggregate2";
+import { ModelEntityCodec, revisionChangeCodecRegistry } from "./codec-registry";
 
 export type ModelRevisionAggregate2Repository = {
     Save: (revision: ModelRevisionAggregate2) => Promise<ModelRevisionAggregate2>;
@@ -74,7 +73,7 @@ const buildRevisionChangeRowsFromTracking = (
         revisionId: revision.id,
         entityType: "material",
         bucket: revision.materialBuckets,
-        toPayload: (entity) => toMaterialRevisionChangePayload(entity),
+        codec: revisionChangeCodecRegistry.material,
         createdAt: now,
     });
 
@@ -144,7 +143,7 @@ const appendBucketChangeRows = <TEntity extends { id: string }>(input: {
     revisionId: string;
     entityType: string;
     bucket: ModelRevisionEntityBuckets<TEntity>;
-    toPayload: (entity: TEntity) => Record<string, unknown>;
+    codec: ModelEntityCodec<TEntity>;
     createdAt: Date;
 }): void => {
     for (const entity of input.bucket.created.values()) {
@@ -155,7 +154,7 @@ const appendBucketChangeRows = <TEntity extends { id: string }>(input: {
             entityId: entity.id,
             schemaVersion: 1,
             op: "created",
-            payload: input.toPayload(entity),
+            payload: input.codec.toPersistencePayload(entity).payload,
             createdAt: input.createdAt,
         });
     }
@@ -168,7 +167,7 @@ const appendBucketChangeRows = <TEntity extends { id: string }>(input: {
             entityId: entity.id,
             schemaVersion: 1,
             op: "updated",
-            payload: input.toPayload(entity),
+            payload: input.codec.toPersistencePayload(entity).payload,
             createdAt: input.createdAt,
         });
     }
@@ -202,24 +201,6 @@ const toNodeRevisionChangePayload = (node: NodeEntity): Record<string, unknown> 
                 ? snapshot.distanceAlongElement1d.DecimalFractions
                 : null,
         restraint: snapshot.restraint ?? null,
-    };
-};
-
-const toMaterialRevisionChangePayload = (material: MaterialEntity): Record<string, unknown> => {
-    const snapshot = material.toSnapshot();
-
-    return {
-        id: snapshot.id,
-        revisionId: snapshot.revisionId,
-        name: snapshot.name,
-        pressureE: {
-            value: snapshot.pressureE.Pascals,
-            unit: PressureUnits.Pascals,
-        },
-        pressureG: {
-            value: snapshot.pressureG.Pascals,
-            unit: PressureUnits.Pascals,
-        },
     };
 };
 
