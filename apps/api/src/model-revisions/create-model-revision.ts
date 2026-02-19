@@ -24,7 +24,7 @@ import {
 import type { Element1dSnapshot } from "src/element1ds/element1d-entity";
 import type { LoadCaseSnapshot } from "src/load-cases/load-case-entity";
 import type { LoadCombinationSnapshot } from "src/load-combinations/load-combination-entity";
-import type { MaterialSnapshot } from "src/materials/material-entity";
+import type { MaterialEntity } from "src/materials/material-entity";
 import type { NodeSnapshot } from "src/nodes/node-entity";
 import type { PointLoadSnapshot } from "src/point-loads/point-load-entity";
 import type { SectionProfileSnapshot } from "src/section-profiles/section-profile-entity";
@@ -61,11 +61,7 @@ export const createModelRevision = defineEndpoint({
     const currentNodesById = new Map(
       parentRevision.nodes.map((node) => [node.id, node.toSnapshot()] as const),
     );
-    const currentMaterialsById = new Map(
-      parentRevision.materials.map(
-        (material) => [material.id, material.toSnapshot()] as const,
-      ),
-    );
+    const currentMaterialsById = parentRevision.materials;
     const currentSectionProfilesById = new Map(
       parentRevision.sectionProfiles.map(
         (sectionProfile) =>
@@ -136,7 +132,7 @@ export const createModelRevision = defineEndpoint({
           node.toSnapshot().nodeTypeDescriminator ??
           (node.nodeType === "internalNode" ? "internal" : "external"),
       })),
-      materials: modelRevision.materials.map((material) => ({
+      materials: [...modelRevision.materials.values()].map((material) => ({
         id: material.id,
         revisionId: material.revisionId,
         name: material.name,
@@ -260,7 +256,7 @@ const buildRevisionChanges = (input: {
   revisionId: string;
   createdAt: Date;
   currentNodesById: Map<string, NodeSnapshot>;
-  currentMaterialsById: Map<string, MaterialSnapshot>;
+  currentMaterialsById: ReadonlyMap<string, MaterialEntity>;
   currentSectionProfilesById: Map<string, SectionProfileSnapshot>;
   currentElement1dsById: Map<string, Element1dSnapshot>;
   currentLoadCasesById: Map<string, LoadCaseSnapshot>;
@@ -1147,8 +1143,8 @@ export async function createNewRevisionAggregateHandler(
     message,
     createdAt: new Date(),
     nodes: parentRevision.nodes.map((node) => node.toSnapshot()),
-    materials: parentRevision.materials.map((material) =>
-      material.toSnapshot(),
+    materials: Array.from(parentRevision.materials.values()).map((material) =>
+      material.toRevisionV1(),
     ),
     modelSettings: parentRevision.modelSettings?.toSnapshot() ?? null,
     sectionProfiles: parentRevision.sectionProfiles.map((sectionProfile) =>

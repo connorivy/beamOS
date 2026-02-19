@@ -1,29 +1,37 @@
 import { assertUuidV7 } from "../common/uuid";
-import { Pressure } from "unitsnet-js";
+import { Pressure, PressureUnits } from "unitsnet-js";
 import type { MaterialDomainEvent } from "./material-events";
+import type { z } from "zod";
+import type { materialPropertiesSchema } from "./material-contract-schemas";
 
-export type MaterialSnapshot = {
+export type MaterialRevisionV1 = {
   id: string;
   revisionId: string;
   name: string;
-  pressureE: Pressure;
-  pressureG: Pressure;
+  pressureE: { value: number; unit: string };
+  pressureG: { value: number; unit: string };
 };
 
 export class MaterialEntity {
   private _domainEvents: MaterialDomainEvent[];
 
-  private constructor(snapshot: MaterialSnapshot) {
-    assertUuidV7(snapshot.id, "id");
-    assertUuidV7(snapshot.revisionId, "revisionId");
-    this.assertPressure(snapshot.pressureE, "pressureE");
-    this.assertPressure(snapshot.pressureG, "pressureG");
+  private constructor(
+    id: string,
+    revisionId: string,
+    name: string,
+    pressureE: Pressure,
+    pressureG: Pressure,
+  ) {
+    assertUuidV7(id, "id");
+    assertUuidV7(revisionId, "revisionId");
+    this.assertPressure(pressureE, "pressureE");
+    this.assertPressure(pressureG, "pressureG");
 
-    this.id = snapshot.id;
-    this.revisionId = snapshot.revisionId;
-    this.name = snapshot.name;
-    this.pressureE = snapshot.pressureE;
-    this.pressureG = snapshot.pressureG;
+    this.id = id;
+    this.revisionId = revisionId;
+    this.name = name;
+    this.pressureE = pressureE;
+    this.pressureG = pressureG;
     this._domainEvents = [];
   }
 
@@ -33,26 +41,43 @@ export class MaterialEntity {
   readonly pressureE: Pressure;
   readonly pressureG: Pressure;
 
-  static create(snapshot: MaterialSnapshot): MaterialEntity {
-    const entity = new MaterialEntity(snapshot);
+  static create(
+    input: z.infer<typeof materialPropertiesSchema> & {
+      id: string;
+      revisionId: string;
+    },
+  ): MaterialEntity {
+    const entity = new MaterialEntity(
+      input.id,
+      input.revisionId,
+      input.name,
+      new Pressure(input.modulusOfElasticity, input.units.pressure),
+      new Pressure(input.modulusOfRigidity, input.units.pressure),
+    );
     entity._domainEvents.push({
       type: "material_created",
-      payload: entity.toSnapshot(),
+      payload: entity.id,
     });
     return entity;
   }
 
-  static rehydrate(snapshot: MaterialSnapshot): MaterialEntity {
-    return new MaterialEntity(snapshot);
+  static rehydrate(v1: MaterialRevisionV1): MaterialEntity {
+    return new MaterialEntity(
+      v1.id,
+      v1.revisionId,
+      v1.name,
+      Pressure.FromPascals(v1.pressureE.value),
+      Pressure.FromPascals(v1.pressureG.value),
+    );
   }
 
-  toSnapshot(): MaterialSnapshot {
+  toRevisionV1(): MaterialRevisionV1 {
     return {
       id: this.id,
       revisionId: this.revisionId,
       name: this.name,
-      pressureE: this.pressureE,
-      pressureG: this.pressureG,
+      pressureE: { value: this.pressureE.Pascals, unit: PressureUnits.Pascals },
+      pressureG: { value: this.pressureG.Pascals, unit: PressureUnits.Pascals },
     };
   }
 

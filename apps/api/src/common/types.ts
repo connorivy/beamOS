@@ -8,7 +8,6 @@ import type { SectionProfileRepository } from "../section-profiles/section-profi
 import type { Element1dRepository } from "../element1ds/element1d-repository";
 import type { RevisionChangeRepository } from "../revision-changes/revision-change-repository";
 import type { DbTransaction } from "../db/client";
-import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
 import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
@@ -27,7 +26,7 @@ export type DomainEvent =
     }
   | {
       type: "material_created";
-      payload: MaterialSnapshot;
+      payload: string;
     }
   | {
       type: "section_profile_created";

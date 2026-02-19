@@ -71,7 +71,7 @@ export async function batchCreateElement1dHandler(
 
   const tempIdToId: Record<string, string> = {};
   const materialIdByName = new Map<string, string>();
-  for (const material of revision.materials) {
+  for (const material of revision.materials.values()) {
     if (materialIdByName.has(material.name)) {
       throw httpError(`Duplicate material name "${material.name}"`, 400);
     }

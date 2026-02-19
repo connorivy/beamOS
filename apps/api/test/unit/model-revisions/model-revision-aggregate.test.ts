@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import {
   Area,
   AreaMomentOfInertia,
-  Pressure,
+  PressureUnits,
   Volume,
   WarpingMomentOfInertia,
 } from "unitsnet-js";
@@ -31,10 +31,10 @@ describe("ModelRevisionAggregate", () => {
 
     aggregate.addMaterial({
       id: Bun.randomUUIDv7(),
-      revisionId: aggregate.id,
       name: "A36 Steel",
-      pressureE: Pressure.FromPascals(1),
-      pressureG: Pressure.FromPascals(2),
+      modulusOfElasticity: 1,
+      modulusOfRigidity: 2,
+      units: { pressure: PressureUnits.Pascals },
     });
 
     const events = aggregate.pullDomainEvents();
@@ -72,19 +72,19 @@ describe("ModelRevisionAggregate", () => {
     const aggregate = createAggregate();
     aggregate.addMaterial({
       id: Bun.randomUUIDv7(),
-      revisionId: aggregate.id,
       name: "A36 Steel",
-      pressureE: Pressure.FromPascals(1),
-      pressureG: Pressure.FromPascals(2),
+      modulusOfElasticity: 1,
+      modulusOfRigidity: 2,
+      units: { pressure: PressureUnits.Pascals },
     });
 
     expect(() =>
       aggregate.addMaterial({
         id: Bun.randomUUIDv7(),
-        revisionId: aggregate.id,
         name: "A36 Steel",
-        pressureE: Pressure.FromPascals(3),
-        pressureG: Pressure.FromPascals(4),
+        modulusOfElasticity: 3,
+        modulusOfRigidity: 4,
+        units: { pressure: PressureUnits.Pascals },
       }),
     ).toThrow('Material name "A36 Steel" already exists');
   });

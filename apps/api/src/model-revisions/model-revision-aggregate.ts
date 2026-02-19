@@ -6,8 +6,10 @@ import {
 } from "../element1ds/element1d-entity";
 import {
   MaterialEntity,
-  type MaterialSnapshot,
+  type MaterialRevisionV1,
 } from "../materials/material-entity";
+import { z } from "zod";
+import { materialPropertiesSchema } from "../materials/material-contract-schemas";
 import {
   LoadCaseEntity,
   type LoadCaseSnapshot,
@@ -39,7 +41,7 @@ export type ModelRevisionSnapshot = {
   message: string;
   createdAt: Date;
   nodes: NodeSnapshot[];
-  materials: MaterialSnapshot[];
+  materials: MaterialRevisionV1[];
   modelSettings: ModelSettingsSnapshot | null;
   sectionProfiles: SectionProfileSnapshot[];
   element1ds: Element1dSnapshot[];
@@ -63,7 +65,7 @@ export class ModelRevisionAggregate {
   private _message: string;
   private _createdAt: Date;
   private _nodes: NodeEntity[];
-  private _materials: MaterialEntity[];
+  private _materialsById: Map<string, MaterialEntity>;
   private _modelSettings: ModelSettingsEntity | null;
   private _sectionProfiles: SectionProfileEntity[];
   private _element1ds: Element1dEntity[];
@@ -94,8 +96,8 @@ export class ModelRevisionAggregate {
     this._message = snapshot.message.trim();
     this._createdAt = snapshot.createdAt;
     this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
-    this._materials = snapshot.materials.map((material) =>
-      MaterialEntity.rehydrate(material),
+    this._materialsById = new Map(
+      snapshot.materials.map((m) => [m.id, MaterialEntity.rehydrate(m)]),
     );
     this._modelSettings = snapshot.modelSettings
       ? ModelSettingsEntity.rehydrate(snapshot.modelSettings)
@@ -153,8 +155,8 @@ export class ModelRevisionAggregate {
     return this._nodes;
   }
 
-  get materials(): readonly MaterialEntity[] {
-    return this._materials;
+  get materials(): ReadonlyMap<string, MaterialEntity> {
+    return this._materialsById;
   }
 
   get modelSettings(): ModelSettingsEntity | null {
@@ -189,15 +191,20 @@ export class ModelRevisionAggregate {
     this._nodes.push(NodeEntity.create(node));
   }
 
-  addMaterial(material: MaterialSnapshot): void {
+  addMaterial(
+    material: z.infer<typeof materialPropertiesSchema> & { id: string },
+  ): void {
     assertUuid(material.id, "materialId");
-    if (this._materials.some((existing) => existing.id === material.id)) {
+    if (this._materialsById.has(material.id)) {
       throw new Error("Material already exists");
     }
-    if (this._materials.some((existing) => existing.name === material.name)) {
-      throw new Error(`Material name "${material.name}" already exists`);
+    for (const existing of this._materialsById.values()) {
+      if (existing.name === material.name) {
+        throw new Error(`Material name "${material.name}" already exists`);
+      }
     }
-    this._materials.push(MaterialEntity.create(material));
+    const entity = MaterialEntity.create({ ...material, revisionId: this.id });
+    this._materialsById.set(entity.id, entity);
   }
 
   setModelSettings(modelSettings: ModelSettingsSnapshot): void {
@@ -285,7 +292,9 @@ export class ModelRevisionAggregate {
       message: this._message,
       createdAt: this._createdAt,
       nodes: this._nodes.map((node) => node.toSnapshot()),
-      materials: this._materials.map((material) => material.toSnapshot()),
+      materials: Array.from(this._materialsById.values()).map((m) =>
+        m.toRevisionV1(),
+      ),
       modelSettings: this._modelSettings?.toSnapshot() ?? null,
       sectionProfiles: this._sectionProfiles.map((sectionProfile) =>
         sectionProfile.toSnapshot(),
@@ -303,8 +312,8 @@ export class ModelRevisionAggregate {
     const nodeEvents = this._nodes.flatMap((node) =>
       node.pullDomainEvents(),
     ) as DomainEvent[];
-    const materialEvents = this._materials.flatMap((material) =>
-      material.pullDomainEvents(),
+    const materialEvents = Array.from(this._materialsById.values()).flatMap(
+      (material) => material.pullDomainEvents(),
     );
     const modelSettingsEvents = this._modelSettings
       ? this._modelSettings.pullDomainEvents()

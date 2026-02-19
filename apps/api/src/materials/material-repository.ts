@@ -5,7 +5,7 @@ import { revisionChanges } from "../db/schema";
 import { MaterialEntity } from "./material-entity";
 import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
-import { Pressure, PressureUnits } from "unitsnet-js";
+import { PressureUnits } from "unitsnet-js";
 import { z } from "zod";
 
 const materialPayloadSchema = z.object({
@@ -37,34 +37,29 @@ export const drizzleMaterialRepository: MaterialRepository = {
     }
 
     const now = new Date();
-    const changeRows = input.flatMap((material) =>
-      material.pullDomainEvents().map((event) =>
+    const changeRows = input.flatMap((material) => {
+      const v1 = material.toRevisionV1();
+      return material.pullDomainEvents().map(() =>
         revisionChangeMapper.toPersistence(
           RevisionChangeEntity.create({
             id: Bun.randomUUIDv7(),
-            revisionId: event.payload.revisionId,
+            revisionId: v1.revisionId,
             entityType: "material",
-            entityId: event.payload.id,
+            entityId: v1.id,
             schemaVersion: 1,
             op: "insert",
             payload: {
-              id: event.payload.id,
-              revisionId: event.payload.revisionId,
-              name: event.payload.name,
-              pressureE: {
-                value: event.payload.pressureE.Pascals,
-                unit: PressureUnits.Pascals,
-              },
-              pressureG: {
-                value: event.payload.pressureG.Pascals,
-                unit: PressureUnits.Pascals,
-              },
+              id: v1.id,
+              revisionId: v1.revisionId,
+              name: v1.name,
+              pressureE: v1.pressureE,
+              pressureG: v1.pressureG,
             },
             createdAt: now,
           }),
         ),
-      ),
-    );
+      );
+    });
 
     if (changeRows.length > 0) {
       await tx.insert(revisionChanges).values(changeRows).onConflictDoNothing();
@@ -100,8 +95,8 @@ export const drizzleMaterialRepository: MaterialRepository = {
       id: payload.id,
       revisionId: payload.revisionId,
       name: payload.name,
-      pressureE: new Pressure(payload.pressureE.value, payload.pressureE.unit),
-      pressureG: new Pressure(payload.pressureG.value, payload.pressureG.unit),
+      pressureE: { value: payload.pressureE.value, unit: payload.pressureE.unit },
+      pressureG: { value: payload.pressureG.value, unit: payload.pressureG.unit },
     });
   },
 };

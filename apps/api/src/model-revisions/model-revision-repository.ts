@@ -7,7 +7,6 @@ import {
   AreaUnits,
   Force,
   ForceUnits,
-  Pressure,
   PressureUnits,
   Ratio,
   Torque,
@@ -30,7 +29,7 @@ import { RevisionChangeEntity } from "../revision-changes/revision-change-entity
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { RevisionChangeInsertRow } from "../revision-changes/revision-change-mapper";
 import type { DomainEvent, ModelRevisionRepository } from "../common/types";
-import type { MaterialSnapshot } from "../materials/material-entity";
+import { MaterialEntity } from "../materials/material-entity";
 import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
@@ -87,7 +86,9 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
       message: revision.message,
       createdAt: revision.createdAt,
       nodes: Array.from(nodesById.values()),
-      materials: Array.from(materialsById.values()),
+      materials: Array.from(materialsById.values()).map((m) =>
+        m.toRevisionV1(),
+      ),
       modelSettings,
       sectionProfiles: Array.from(sectionProfilesById.values()),
       element1ds: Array.from(element1dsById.values()),
@@ -112,6 +113,7 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
         projectId: snapshot.projectId,
         revisionId: snapshot.id,
         events,
+        materialsById: revision.materials,
       });
 
       if (changeRows.length > 0) {
@@ -240,6 +242,7 @@ const buildRevisionChangeRowsFromEvents = (input: {
   projectId: string;
   revisionId: string | null;
   events: DomainEvent[];
+  materialsById: ReadonlyMap<string, MaterialEntity>;
 }): RevisionChangeInsertRow[] => {
   const now = new Date();
 
@@ -297,32 +300,31 @@ const buildRevisionChangeRowsFromEvents = (input: {
       (event): event is Extract<DomainEvent, { type: "material_created" }> =>
         event.type === "material_created",
     )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
+    .map((event) => {
+      const entity = input.materialsById.get(event.payload);
+      if (!entity) {
+        throw new Error(`Material entity not found for id: ${event.payload}`);
+      }
+      const v1 = entity.toRevisionV1();
+      return revisionChangeMapper.toPersistence(
         RevisionChangeEntity.create({
           id: crypto.randomUUID(),
           revisionId: input.revisionId,
           entityType: "material",
-          entityId: event.payload.id,
+          entityId: v1.id,
           schemaVersion: 1,
           op: "insert",
           payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            name: event.payload.name,
-            pressureE: {
-              value: event.payload.pressureE.Pascals,
-              unit: PressureUnits.Pascals,
-            },
-            pressureG: {
-              value: event.payload.pressureG.Pascals,
-              unit: PressureUnits.Pascals,
-            },
+            id: v1.id,
+            revisionId: v1.revisionId,
+            name: v1.name,
+            pressureE: v1.pressureE,
+            pressureG: v1.pressureG,
           },
           createdAt: now,
         }),
-      ),
-    );
+      );
+    });
 
   const sectionProfileChanges = input.events
     .filter(
@@ -745,13 +747,13 @@ const toFiniteNumber = (value: unknown): number | undefined => {
 
 const buildMaterialsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, MaterialSnapshot>> => {
+}): Promise<Map<string, MaterialEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
-  const materialsById = new Map<string, MaterialSnapshot>();
+  const materialsById = new Map<string, MaterialEntity>();
   for (const row of rows) {
     if (row.entityType !== "material") {
       continue;
@@ -774,16 +776,19 @@ const buildMaterialsFromRevisions = async (input: {
       continue;
     }
 
-    materialsById.set(row.entityId, {
-      id: row.entityId,
-      revisionId:
-        typeof payload.revisionId === "string"
-          ? payload.revisionId
-          : (row.revisionId ?? ""),
-      name,
-      pressureE: Pressure.FromPascals(pressureEValue),
-      pressureG: Pressure.FromPascals(pressureGValue),
-    });
+    materialsById.set(
+      row.entityId,
+      MaterialEntity.rehydrate({
+        id: row.entityId,
+        revisionId:
+          typeof payload.revisionId === "string"
+            ? payload.revisionId
+            : (row.revisionId ?? ""),
+        name,
+        pressureE: { value: pressureEValue, unit: "Pascals" },
+        pressureG: { value: pressureGValue, unit: "Pascals" },
+      }),
+    );
   }
 
   return materialsById;

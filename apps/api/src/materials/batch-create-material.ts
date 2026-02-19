@@ -1,10 +1,10 @@
 import { defineEndpoint } from "../contracts/endpoint";
-import { Pressure, PressureUnits } from "unitsnet-js";
+import { PressureUnits } from "unitsnet-js";
 import { z } from "zod";
 import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { getDb } from "../db/client";
-import type { MaterialSnapshot } from "./material-entity";
+import type { MaterialEntity } from "./material-entity";
 import { uuidV7Schema } from "src/common/uuid";
 import {
   createMaterialRequestSchema,
@@ -27,7 +27,7 @@ export const batchCreateMaterialReqSchema = z
   })
   .meta({ id: "BatchCreateMaterialEndpointRequest" });
 
-const toResponseMaterial = (material: MaterialSnapshot) => ({
+const toResponseMaterial = (material: MaterialEntity) => ({
   id: material.id,
   revisionId: material.revisionId,
   name: material.name,
@@ -55,7 +55,7 @@ export async function batchCreateMaterialHandler(
   revision: ModelRevisionAggregate,
 ) {
   const existingMaterialNames = new Set(
-    revision.materials.map((material) => material.name),
+    [...revision.materials.values()].map((material) => material.name),
   );
 
   const materials = req.body.materials.map((material) => {
@@ -65,22 +65,8 @@ export async function batchCreateMaterialHandler(
     existingMaterialNames.add(material.name);
 
     const id = Bun.randomUUIDv7();
-
-    const snapshot: MaterialSnapshot = {
-      id,
-      revisionId: revision.id,
-      name: material.name,
-      pressureE: new Pressure(
-        material.modulusOfElasticity,
-        material.units.pressure,
-      ),
-      pressureG: new Pressure(
-        material.modulusOfRigidity,
-        material.units.pressure,
-      ),
-    };
-    revision.addMaterial(snapshot);
-    return snapshot;
+    revision.addMaterial({ id, ...material });
+    return revision.materials.get(id)!;
   });
 
   await getDb().transaction(async (tx) => {

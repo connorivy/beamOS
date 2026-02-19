@@ -1,4 +1,3 @@
-import { Pressure } from "unitsnet-js";
 import { MaterialEntity } from "./material-entity";
 
 export type MaterialPersistence = {
@@ -15,8 +14,8 @@ export const materialMapper = {
       id: row.id,
       revisionId: row.revisionId,
       name: row.name,
-      pressureE: Pressure.FromPascals(row.pressureESi),
-      pressureG: Pressure.FromPascals(row.pressureGSi),
+      pressureE: { value: row.pressureESi, unit: "Pascals" },
+      pressureG: { value: row.pressureGSi, unit: "Pascals" },
     });
   },
 
