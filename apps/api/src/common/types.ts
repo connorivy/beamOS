@@ -1,13 +1,5 @@
 import type { User } from "../contracts/user";
-import type { ModelBranchHeadAggregate } from "../model-branch-heads/model-branch-head-aggregate";
-import type { ModelRevisionAggregate } from "../model-revisions/model-revision-aggregate";
 import type { NodeSnapshot } from "../nodes/node-entity";
-import { ProjectRepository } from "src/projects/project-repository";
-import type { MaterialRepository } from "../materials/material-repository";
-import type { SectionProfileRepository } from "../section-profiles/section-profile-repository";
-import type { Element1dRepository } from "../element1ds/element1d-repository";
-import type { RevisionChangeRepository } from "../revision-changes/revision-change-repository";
-import type { DbTransaction } from "../db/client";
 import type { MaterialSnapshot } from "../materials/material-entity";
 import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
 import type { Element1dSnapshot } from "../element1ds/element1d-entity";
@@ -15,93 +7,63 @@ import type { ModelSettingsSnapshot } from "../model-settings/model-settings-ent
 import type { LoadCaseSnapshot } from "../load-cases/load-case-entity";
 import type { LoadCombinationSnapshot } from "../load-combinations/load-combination-entity";
 import type { PointLoadSnapshot } from "../point-loads/point-load-entity";
+import type { AppServices } from "src/services";
 
 export type DomainEvent =
-  | {
-      type: "node_created";
-      payload: NodeSnapshot;
-    }
-  | {
-      type: "node_deleted";
-      payload: NodeSnapshot;
-    }
-  | {
-      type: "material_created";
-      payload: MaterialSnapshot;
-    }
-  | {
-      type: "section_profile_created";
-      payload: SectionProfileSnapshot;
-    }
-  | {
-      type: "element1d_created";
-      payload: Element1dSnapshot;
-    }
-  | {
-      type: "model_settings_created";
-      payload: ModelSettingsSnapshot;
-    }
-  | {
-      type: "load_case_created";
-      payload: LoadCaseSnapshot;
-    }
-  | {
-      type: "load_combination_created";
-      payload: LoadCombinationSnapshot;
-    }
-  | {
-      type: "point_load_created";
-      payload: PointLoadSnapshot;
-    };
+    | {
+          type: "node_created";
+          payload: NodeSnapshot;
+      }
+    | {
+          type: "node_deleted";
+          payload: NodeSnapshot;
+      }
+    | {
+          type: "material_created";
+          payload: MaterialSnapshot;
+      }
+    | {
+          type: "section_profile_created";
+          payload: SectionProfileSnapshot;
+      }
+    | {
+          type: "element1d_created";
+          payload: Element1dSnapshot;
+      }
+    | {
+          type: "model_settings_created";
+          payload: ModelSettingsSnapshot;
+      }
+    | {
+          type: "load_case_created";
+          payload: LoadCaseSnapshot;
+      }
+    | {
+          type: "load_combination_created";
+          payload: LoadCombinationSnapshot;
+      }
+    | {
+          type: "point_load_created";
+          payload: PointLoadSnapshot;
+      };
 
 export type UserRepository = {
-  getById: (id: string) => Promise<User | undefined>;
+    getById: (id: string) => Promise<User | undefined>;
 };
 
 export type ModelRevisionCommitInput = {
-  id: string;
-  projectId: string;
-  branchName?: string;
-  parentRevisionId?: string | null;
-  secondParentRevisionId?: string | null;
-  authorId: string;
-  message: string;
-  nodes: NodeSnapshot[];
-  includeModelChange?: boolean;
-};
-
-export type ModelRevisionRepository = {
-  getRevisionById: (
-    revisionId: string,
-  ) => Promise<ModelRevisionAggregate | undefined>;
-  save: (input: {
-    revision: ModelRevisionAggregate;
-    branchName?: string;
-    tx?: DbTransaction;
-  }) => Promise<ModelRevisionAggregate>;
-  getBranchHead: (
-    projectId: string,
-    branchName: string,
-  ) => Promise<ModelBranchHeadAggregate | undefined>;
-  listBranchHeads: (projectId: string) => Promise<ModelBranchHeadAggregate[]>;
-  createBranch: (input: {
+    id: string;
     projectId: string;
-    branchName: string;
-    headRevisionId: string;
-  }) => Promise<void>;
-};
-
-export type AppServices = {
-  userRepository: UserRepository;
-  modelRepository: ProjectRepository;
-  modelRevisionRepository: ModelRevisionRepository;
-  materialRepository: MaterialRepository;
-  sectionProfileRepository: SectionProfileRepository;
-  element1dRepository: Element1dRepository;
-  revisionChangeRepository: RevisionChangeRepository;
+    branchName?: string;
+    parentRevisionId?: string | null;
+    secondParentRevisionId?: string | null;
+    authorId: string;
+    message: string;
+    nodes: NodeSnapshot[];
+    includeModelChange?: boolean;
 };
 
 export type AppContext = {
-  requestId: string;
-  services: AppServices;
+    requestId: string;
+    services: AppServices;
 };

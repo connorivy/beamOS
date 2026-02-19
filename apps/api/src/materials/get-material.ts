@@ -11,6 +11,8 @@ const uuidV7Schema = z.uuid().refine((value) => isUuidV7(value), "Must be a vali
 export const getMaterialReqSchema = z
     .object({
         params: z.object({
+            projectId: uuidV7Schema,
+            branchName: z.string().trim().min(1),
             materialId: uuidV7Schema,
         }),
     })
@@ -18,11 +20,19 @@ export const getMaterialReqSchema = z
 
 export const getMaterial = defineEndpoint({
     method: "GET",
-    path: "/api/materials/:materialId",
+    path: "/api/projects/:projectId/branches/:branchName/materials/:materialId",
     req: getMaterialReqSchema,
     res: materialResponseSchema,
     async handler(req, ctx: AppContext) {
-        const material = await ctx.services.materialRepository.getById(req.params.materialId);
+        const modelRevision = await ctx.services.modelRevisionRepository.load(
+            req.params.projectId,
+            req.params.branchName,
+        );
+        if (!modelRevision) {
+            throw httpError("Model revision not found", 404);
+        }
+
+        const material = modelRevision.getMaterialById(req.params.materialId);
 
         if (!material) {
             throw httpError("Material not found", 404);
@@ -33,7 +43,7 @@ export const getMaterial = defineEndpoint({
             revisionId: material.revisionId,
             name: material.name,
             modulusOfElasticity: material.modulusOfElasticity.Pascals,
-            modulusOfRigidity: material.this.modulusOfRigidity.Pascals,
+            modulusOfRigidity: material.modulusOfRigidity.Pascals,
             units: {
                 pressure: PressureUnits.Pascals as const,
             },

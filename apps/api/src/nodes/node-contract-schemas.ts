@@ -15,21 +15,27 @@ const restraintSchema = z
 const spatialNodeLocationSchema = z.object({
     type: z.literal("spatial"),
     point: z.object({
-        x: z.number().finite(),
-        y: z.number().finite(),
-        z: z.number().finite(),
+        x: z.number(),
+        y: z.number(),
+        z: z.number(),
     }),
 });
 
 const internalNodeLocationSchema = z.object({
     type: z.literal("internal"),
     element1dId: uuidV7Schema,
-    ratioAlongElement1d: z.number().finite().min(0).max(1),
+    ratioAlongElement1d: z.number().min(0).max(1),
 });
+
+export const nodeLocationSchema = z.discriminatedUnion("type", [
+    spatialNodeLocationSchema,
+    internalNodeLocationSchema,
+]);
+export type NodeLocation = z.infer<typeof nodeLocationSchema>;
 
 export const nodePropertiesSchema = z.object({
     restraint: restraintSchema,
-    location: z.discriminatedUnion("type", [spatialNodeLocationSchema, internalNodeLocationSchema]),
+    location: nodeLocationSchema,
 });
 
 export const createNodeRequestSchema = nodePropertiesSchema

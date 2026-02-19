@@ -5,9 +5,8 @@ import {
 } from "./create-model-revision-request-schema";
 import { AppContext } from "src/common/types";
 import { httpError } from "src/common/http-utils";
-import { DbTransaction, getDb } from "src/db/client";
-import { modelBranchHeads, modelRevisions } from "src/db/schema";
-import { ModelRevisionAggregate } from "./model-revision-aggregate";
+import { getDb } from "src/db/client";
+import { modelBranchHeads } from "src/db/schema";
 import {
     AreaMomentOfInertiaUnits,
     AreaUnits,
@@ -18,6 +17,7 @@ import {
     WarpingMomentOfInertiaUnits,
 } from "unitsnet-js";
 import { z } from "zod";
+import { ModelRevisionAggregate } from "./model-revision-aggregate";
 
 export const createModelRevision = defineEndpoint({
     method: "POST",
@@ -25,17 +25,45 @@ export const createModelRevision = defineEndpoint({
     req: createModelRevisionReqSchema,
     res: modelRevisionResSchema,
     async handler(req, ctx: AppContext) {
-        const revision = await createNewRevisionAggregateHandler(req, ctx, "Create model revision");
+        const headRevision = await ctx.services.modelRevisionRepository.load(
+            req.params.projectId,
+            req.params.branchName,
+        );
+        if (!headRevision) {
+            throw httpError(
+                `Could not find branch ${req.params.branchName} for project ${req.params.projectId}`,
+                404,
+            );
+        }
+        const snapshot = headRevision.toSnapshot();
+
+        const now = new Date();
+        const revision = ModelRevisionAggregate.create({
+            ...snapshot,
+            id: Bun.randomUUIDv7(),
+            parentRevisionId: headRevision.id,
+            secondParentRevisionId: null,
+            createdAt: now,
+        });
 
         applyModelRevisionOperations({ req, revision });
 
-        const modelRevision = await getDb().transaction(async (tx) =>
-            ctx.services.modelRevisionRepository.save({
-                revision,
+        const modelRevision = await ctx.services.modelRevisionRepository.save(revision);
+        await getDb()
+            .insert(modelBranchHeads)
+            .values({
+                projectId: req.params.projectId,
                 branchName: req.params.branchName,
-                tx,
-            }),
-        );
+                headRevisionId: modelRevision.id,
+                updatedAt: now,
+            })
+            .onConflictDoUpdate({
+                target: [modelBranchHeads.projectId, modelBranchHeads.branchName],
+                set: {
+                    headRevisionId: modelRevision.id,
+                    updatedAt: now,
+                },
+            });
 
         return {
             id: modelRevision.id,
@@ -57,7 +85,7 @@ export const createModelRevision = defineEndpoint({
                 revisionId: material.revisionId,
                 name: material.name,
                 modulusOfElasticity: material.modulusOfElasticity.Pascals,
-                modulusOfRigidity: material.this.modulusOfRigidity.Pascals,
+                modulusOfRigidity: material.modulusOfRigidity.Pascals,
                 units: {
                     pressure: PressureUnits.Pascals as const,
                 },
@@ -174,13 +202,27 @@ const applyModelRevisionOperations = (input: {
     const { req, revision } = input;
 
     try {
-        revision.addNodeOperations(req.body.nodes);
-        revision.addMaterialOperations(req.body.materials);
-        revision.addSectionProfileOperations(req.body.sectionProfiles);
-        revision.addElement1dOperations(req.body.element1ds);
-        revision.addLoadCaseOperations(req.body.loadCases);
-        revision.addLoadCombinationOperations(req.body.loadCombinations);
-        revision.addPointLoadOperations(req.body.pointLoads);
+        if (req.body.nodes) {
+            revision.applyNodeChanges(req.body.nodes);
+        }
+        if (req.body.materials) {
+            revision.applyMaterialChanges(req.body.materials);
+        }
+        if (req.body.sectionProfiles) {
+            revision.applySectionProfileChanges(req.body.sectionProfiles);
+        }
+        if (req.body.element1ds) {
+            revision.applyElement1dChanges(req.body.element1ds);
+        }
+        if (req.body.loadCases) {
+            revision.applyLoadCaseChanges(req.body.loadCases);
+        }
+        if (req.body.loadCombinations) {
+            revision.applyLoadCombinationChanges(req.body.loadCombinations);
+        }
+        if (req.body.pointLoads) {
+            revision.applyPointLoadChanges(req.body.pointLoads);
+        }
     } catch (error) {
         if (error instanceof Error) {
             throw httpError(error.message, 400);
@@ -188,101 +230,3 @@ const applyModelRevisionOperations = (input: {
         throw error;
     }
 };
-
-export async function createNewRevisionHandler(
-    req: {
-        params: { projectId: string; branchName: string };
-    },
-    ctx: AppContext,
-    tx: DbTransaction,
-) {
-    const { projectId, branchName } = req.params;
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(projectId, branchName);
-    if (!branch) {
-        throw httpError(`Could not find branch ${branchName} on model with ID ${projectId}`, 404);
-    }
-
-    const parentRevision = await ctx.services.modelRevisionRepository.getRevisionById(
-        branch.headRevisionId,
-    );
-    if (!parentRevision) {
-        throw httpError(
-            `Could not find parent revision ${branch.headRevisionId} for branch ${branchName}`,
-            404,
-        );
-    }
-
-    const revisionId = Bun.randomUUIDv7();
-    const now = new Date();
-    await tx.insert(modelRevisions).values({
-        id: revisionId,
-        projectId,
-        parentRevisionId: parentRevision.id,
-        secondParentRevisionId: null,
-        authorId: parentRevision.authorId,
-        message: "Batch create materials",
-        createdAt: now,
-    });
-
-    await tx
-        .insert(modelBranchHeads)
-        .values({
-            projectId,
-            branchName,
-            headRevisionId: revisionId,
-            updatedAt: now,
-        })
-        .onConflictDoUpdate({
-            target: [modelBranchHeads.projectId, modelBranchHeads.branchName],
-            set: {
-                headRevisionId: revisionId,
-                updatedAt: now,
-            },
-        });
-    return revisionId;
-}
-
-export async function createNewRevisionAggregateHandler(
-    req: {
-        params: { projectId: string; branchName: string };
-    },
-    ctx: AppContext,
-    message = "Batch create materials",
-) {
-    const { projectId, branchName } = req.params;
-    const branch = await ctx.services.modelRevisionRepository.getBranchHead(projectId, branchName);
-    if (!branch) {
-        throw httpError(`Could not find branch ${branchName} on model with ID ${projectId}`, 404);
-    }
-
-    const parentRevision = await ctx.services.modelRevisionRepository.getRevisionById(
-        branch.headRevisionId,
-    );
-    if (!parentRevision) {
-        throw httpError(
-            `Could not find parent revision ${branch.headRevisionId} for branch ${branchName}`,
-            404,
-        );
-    }
-
-    return ModelRevisionAggregate.create({
-        projectId,
-        parentRevisionId: parentRevision.id,
-        secondParentRevisionId: null,
-        authorId: parentRevision.authorId,
-        message,
-        createdAt: new Date(),
-        nodes: parentRevision.nodes.map((node) => node.toSnapshot()),
-        materials: parentRevision.materials.map((material) => material.toSnapshot()),
-        modelSettings: parentRevision.modelSettings.toSnapshot(),
-        sectionProfiles: parentRevision.sectionProfiles.map((sectionProfile) =>
-            sectionProfile.toSnapshot(),
-        ),
-        element1ds: parentRevision.element1ds.map((element1d) => element1d.toSnapshot()),
-        loadCases: parentRevision.loadCases.map((loadCase) => loadCase.toSnapshot()),
-        loadCombinations: parentRevision.loadCombinations.map((loadCombination) =>
-            loadCombination.toSnapshot(),
-        ),
-        pointLoads: parentRevision.pointLoads.map((pointLoad) => pointLoad.toSnapshot()),
-    });
-}

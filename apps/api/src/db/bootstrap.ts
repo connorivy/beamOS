@@ -2,26 +2,26 @@ import { sql } from "drizzle-orm";
 import { getDb } from "./client";
 
 export const bootstrapDb = async () => {
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY NOT NULL,
       name TEXT NOT NULL
     );
   `);
 
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS projects (
       id UUID PRIMARY KEY NOT NULL,
       name TEXT NOT NULL,
       description TEXT NOT NULL DEFAULT ''
     );
   `);
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     ALTER TABLE projects
     ADD COLUMN IF NOT EXISTS description TEXT NOT NULL DEFAULT '';
   `);
 
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS model_revisions (
       id UUID PRIMARY KEY NOT NULL,
       project_id UUID NOT NULL REFERENCES projects(id),
@@ -32,12 +32,12 @@ export const bootstrapDb = async () => {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     ALTER TABLE model_revisions
     DROP COLUMN IF EXISTS model_name;
   `);
 
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS revision_changes (
       id UUID PRIMARY KEY NOT NULL,
       revision_id UUID REFERENCES model_revisions(id),
@@ -45,17 +45,17 @@ export const bootstrapDb = async () => {
       entity_id UUID NOT NULL,
       schema_version INTEGER NOT NULL DEFAULT 1,
       op TEXT NOT NULL,
-      payload JSONB NOT NULL,
+      payload JSONB,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
 
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     ALTER TABLE revision_changes
     ADD COLUMN IF NOT EXISTS schema_version INTEGER NOT NULL DEFAULT 1;
   `);
 
-  await getDb().execute(sql`
+    await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS model_branch_heads (
       project_id UUID NOT NULL REFERENCES projects(id),
       branch_name TEXT NOT NULL,

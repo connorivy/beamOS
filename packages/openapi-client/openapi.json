@@ -51,107 +51,6 @@
         }
       }
     },
-    "/api/projects/{projectId}/nodes/{nodeId}": {
-      "patch": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatchNodeResponse"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          {
-            "name": "nodeId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PatchNodeRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/{projectId}/branches/{branchName}/nodes/batch": {
-      "post": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BatchCreateNodeResponse"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          {
-            "name": "branchName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BatchCreateNodeRequest"
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/projects/{projectId}": {
       "patch": {
         "tags": [
@@ -193,107 +92,7 @@
         }
       }
     },
-    "/api/projects/{projectId}/branches/{branchName}/materials/batch": {
-      "post": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MaterialArray"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          {
-            "name": "branchName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BatchCreateMaterialRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/{projectId}/branches/{branchName}/model-settings": {
-      "put": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PutModelSettingsResponse"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          {
-            "name": "branchName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ModelSettingsProperties"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/materials/{materialId}": {
+    "/api/projects/{projectId}/branches/{branchName}/materials/{materialId}": {
       "get": {
         "tags": [
           "core.users"
@@ -312,37 +111,6 @@
         },
         "parameters": [
           {
-            "name": "materialId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          }
-        ]
-      }
-    },
-    "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch": {
-      "post": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BatchCreateSectionProfileResponse"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
             "name": "projectId",
             "in": "path",
             "required": true,
@@ -360,21 +128,21 @@
               "type": "string",
               "minLength": 1
             }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BatchCreateSectionProfileRequest"
-              }
+          },
+          {
+            "name": "materialId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
           }
-        }
+        ]
       }
     },
-    "/api/section-profiles/{sectionProfileId}": {
+    "/api/projects/{projectId}/branches/{branchName}/section-profiles/{sectionProfileId}": {
       "get": {
         "tags": [
           "core.users"
@@ -393,6 +161,25 @@
         },
         "parameters": [
           {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "branchName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
             "name": "sectionProfileId",
             "in": "path",
             "required": true,
@@ -405,8 +192,8 @@
         ]
       }
     },
-    "/api/projects/{projectId}/branches/{branchName}/element1ds/batch": {
-      "post": {
+    "/api/projects/{projectId}/branches/{branchName}/element1ds/{element1dId}": {
+      "get": {
         "tags": [
           "core.users"
         ],
@@ -416,7 +203,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BatchCreateElement1dResponse"
+                  "$ref": "#/components/schemas/GetElement1dResponse"
                 }
               }
             }
@@ -438,41 +225,9 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "minLength": 1
+              "type": "string"
             }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BatchCreateElement1dRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/element1ds/{element1dId}": {
-      "get": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetElement1dResponse"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
+          },
           {
             "name": "element1dId",
             "in": "path",
@@ -486,7 +241,7 @@
         ]
       }
     },
-    "/api/projects/{projectId}/branches/{branchName}/revisions": {
+    "/api/projects/{projectId}/branches/{branchName}": {
       "get": {
         "tags": [
           "core.users"
@@ -524,7 +279,9 @@
             }
           }
         ]
-      },
+      }
+    },
+    "/api/projects/{projectId}/branches/{branchName}/revisions": {
       "post": {
         "tags": [
           "core.users"
@@ -568,6 +325,56 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateModelRevisionRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/projects/{projectId}/branches/{branchName}/model-settings": {
+      "put": {
+        "tags": [
+          "core.users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelSettings"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "branchName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelSettingsProperties"
               }
             }
           }
@@ -834,275 +641,6 @@
         },
         "id": "ProjectsArray"
       },
-      "Node": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "projectId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "required": [
-          "id",
-          "projectId"
-        ],
-        "additionalProperties": false,
-        "id": "Node"
-      },
-      "PatchNodeResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "node": {
-            "$ref": "#/components/schemas/Node"
-          },
-          "version": {
-            "type": "object",
-            "properties": {
-              "projectId": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "revisionId": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              }
-            },
-            "required": [
-              "projectId",
-              "revisionId"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "node",
-          "version"
-        ],
-        "additionalProperties": false,
-        "id": "PatchNodeResponse"
-      },
-      "PatchNodeRequest": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "revisionId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "required": [
-          "name",
-          "revisionId"
-        ],
-        "additionalProperties": false,
-        "id": "PatchNodeRequest"
-      },
-      "RevisionNode": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "projectId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "nodeTypeDescriminator": {
-            "type": "string",
-            "enum": [
-              "external",
-              "internal"
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "projectId",
-          "nodeTypeDescriminator"
-        ],
-        "additionalProperties": false,
-        "id": "RevisionNode"
-      },
-      "BatchCreateNodeResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "nodes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RevisionNode"
-            }
-          },
-          "tempIdToId": {
-            "type": "object",
-            "propertyNames": {
-              "type": "string"
-            },
-            "additionalProperties": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          }
-        },
-        "required": [
-          "nodes",
-          "tempIdToId"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateNodeResponse"
-      },
-      "CreateNodeRequest": {
-        "type": "object",
-        "properties": {
-          "restraint": {
-            "type": "object",
-            "properties": {
-              "canTranslateAlongX": {
-                "type": "boolean"
-              },
-              "canTranslateAlongY": {
-                "type": "boolean"
-              },
-              "canTranslateAlongZ": {
-                "type": "boolean"
-              },
-              "canRotateAboutX": {
-                "type": "boolean"
-              },
-              "canRotateAboutY": {
-                "type": "boolean"
-              },
-              "canRotateAboutZ": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "canTranslateAlongX",
-              "canTranslateAlongY",
-              "canTranslateAlongZ",
-              "canRotateAboutX",
-              "canRotateAboutY",
-              "canRotateAboutZ"
-            ],
-            "additionalProperties": false
-          },
-          "location": {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "const": "spatial"
-                  },
-                  "point": {
-                    "type": "object",
-                    "properties": {
-                      "x": {
-                        "type": "number"
-                      },
-                      "y": {
-                        "type": "number"
-                      },
-                      "z": {
-                        "type": "number"
-                      }
-                    },
-                    "required": [
-                      "x",
-                      "y",
-                      "z"
-                    ],
-                    "additionalProperties": false
-                  }
-                },
-                "required": [
-                  "type",
-                  "point"
-                ],
-                "additionalProperties": false
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "const": "internal"
-                  },
-                  "element1dId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  "ratioAlongElement1d": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 1
-                  }
-                },
-                "required": [
-                  "type",
-                  "element1dId",
-                  "ratioAlongElement1d"
-                ],
-                "additionalProperties": false
-              }
-            ]
-          },
-          "tempId": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "location"
-        ],
-        "additionalProperties": false,
-        "id": "CreateNodeRequest"
-      },
-      "BatchCreateNodeRequest": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "nodes": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateNodeRequest"
-            }
-          }
-        },
-        "required": [
-          "nodes"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateNodeRequest"
-      },
       "PatchModelResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1233,164 +771,6 @@
         ],
         "additionalProperties": false,
         "id": "Material"
-      },
-      "MaterialArray": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Material"
-        },
-        "id": "MaterialArray"
-      },
-      "CreateMaterialRequest": {
-        "id": "CreateMaterialRequest",
-        "$ref": "#/components/schemas/MaterialProperties"
-      },
-      "MaterialProperties": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "modulusOfElasticity": {
-            "type": "number"
-          },
-          "modulusOfRigidity": {
-            "type": "number"
-          },
-          "units": {
-            "type": "object",
-            "properties": {
-              "pressure": {
-                "type": "string",
-                "enum": [
-                  "Pascal",
-                  "Atmosphere",
-                  "Bar",
-                  "KilogramForcePerSquareMeter",
-                  "KilogramForcePerSquareCentimeter",
-                  "KilogramForcePerSquareMillimeter",
-                  "NewtonPerSquareMeter",
-                  "NewtonPerSquareCentimeter",
-                  "NewtonPerSquareMillimeter",
-                  "TechnicalAtmosphere",
-                  "Torr",
-                  "PoundForcePerSquareInch",
-                  "PoundForcePerSquareMil",
-                  "PoundForcePerSquareFoot",
-                  "TonneForcePerSquareMillimeter",
-                  "TonneForcePerSquareMeter",
-                  "MeterOfHead",
-                  "TonneForcePerSquareCentimeter",
-                  "FootOfHead",
-                  "MillimeterOfMercury",
-                  "InchOfMercury",
-                  "DynePerSquareCentimeter",
-                  "PoundPerInchSecondSquared",
-                  "MeterOfWaterColumn",
-                  "InchOfWaterColumn",
-                  "Micropascal",
-                  "Millipascal",
-                  "Decapascal",
-                  "Hectopascal",
-                  "Kilopascal",
-                  "Megapascal",
-                  "Gigapascal",
-                  "Microbar",
-                  "Millibar",
-                  "Centibar",
-                  "Decibar",
-                  "Kilobar",
-                  "Megabar",
-                  "KilonewtonPerSquareMeter",
-                  "MeganewtonPerSquareMeter",
-                  "KilonewtonPerSquareCentimeter",
-                  "KilonewtonPerSquareMillimeter",
-                  "Millitorr",
-                  "KilopoundForcePerSquareInch",
-                  "KilopoundForcePerSquareMil",
-                  "KilopoundForcePerSquareFoot",
-                  "MillimeterOfWaterColumn",
-                  "CentimeterOfWaterColumn"
-                ]
-              }
-            },
-            "required": [
-              "pressure"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "name",
-          "modulusOfElasticity",
-          "modulusOfRigidity",
-          "units"
-        ],
-        "additionalProperties": false,
-        "id": "MaterialProperties"
-      },
-      "BatchCreateMaterialRequest": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "materials": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateMaterialRequest"
-            }
-          }
-        },
-        "required": [
-          "materials"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateMaterialRequest"
-      },
-      "ModelSettings": {
-        "type": "object",
-        "properties": {
-          "units": {
-            "$ref": "#/components/schemas/ModelSettingsUnits"
-          },
-          "yAxisUp": {
-            "type": "boolean"
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "revisionId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "required": [
-          "units",
-          "yAxisUp",
-          "id",
-          "revisionId"
-        ],
-        "additionalProperties": false,
-        "id": "ModelSettings"
-      },
-      "PutModelSettingsResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "modelSettings": {
-            "$ref": "#/components/schemas/ModelSettings"
-          }
-        },
-        "required": [
-          "modelSettings"
-        ],
-        "additionalProperties": false,
-        "id": "PutModelSettingsResponse"
       },
       "SectionProfile": {
         "type": "object",
@@ -1622,211 +1002,6 @@
         "additionalProperties": false,
         "id": "SectionProfile"
       },
-      "BatchCreateSectionProfileResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "sectionProfiles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SectionProfile"
-            }
-          }
-        },
-        "required": [
-          "sectionProfiles"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateSectionProfileResponse"
-      },
-      "CreateSectionProfileRequest": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "area": {
-            "type": "number"
-          },
-          "strongAxisMomentOfInertia": {
-            "type": "number"
-          },
-          "weakAxisMomentOfInertia": {
-            "type": "number"
-          },
-          "torsionalConstant": {
-            "type": "number"
-          },
-          "warpingConstant": {
-            "type": "number"
-          },
-          "strongAxisPlasticSectionModulus": {
-            "type": "number"
-          },
-          "weakAxisPlasticSectionModulus": {
-            "type": "number"
-          },
-          "strongAxisElasticSectionModulus": {
-            "type": "number"
-          },
-          "weakAxisElasticSectionModulus": {
-            "type": "number"
-          },
-          "strongAxisShearArea": {
-            "type": "number"
-          },
-          "weakAxisShearArea": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "name",
-          "area",
-          "strongAxisMomentOfInertia",
-          "weakAxisMomentOfInertia",
-          "torsionalConstant",
-          "warpingConstant",
-          "strongAxisPlasticSectionModulus",
-          "weakAxisPlasticSectionModulus",
-          "strongAxisElasticSectionModulus",
-          "weakAxisElasticSectionModulus"
-        ],
-        "additionalProperties": false,
-        "id": "CreateSectionProfileRequest"
-      },
-      "BatchCreateSectionProfileRequest": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "units": {
-            "type": "object",
-            "properties": {
-              "area": {
-                "type": "string",
-                "enum": [
-                  "SquareKilometer",
-                  "SquareMeter",
-                  "SquareDecimeter",
-                  "SquareCentimeter",
-                  "SquareMillimeter",
-                  "SquareMicrometer",
-                  "SquareMile",
-                  "SquareYard",
-                  "SquareFoot",
-                  "UsSurveySquareFoot",
-                  "SquareInch",
-                  "Acre",
-                  "Hectare",
-                  "SquareNauticalMile"
-                ]
-              },
-              "areaMomentOfInertia": {
-                "type": "string",
-                "enum": [
-                  "MeterToTheFourth",
-                  "DecimeterToTheFourth",
-                  "CentimeterToTheFourth",
-                  "MillimeterToTheFourth",
-                  "FootToTheFourth",
-                  "InchToTheFourth"
-                ]
-              },
-              "warpingMomentOfInertia": {
-                "type": "string",
-                "enum": [
-                  "MeterToTheSixth",
-                  "DecimeterToTheSixth",
-                  "CentimeterToTheSixth",
-                  "MillimeterToTheSixth",
-                  "FootToTheSixth",
-                  "InchToTheSixth"
-                ]
-              },
-              "volume": {
-                "type": "string",
-                "enum": [
-                  "Liter",
-                  "CubicMeter",
-                  "CubicKilometer",
-                  "CubicHectometer",
-                  "CubicDecimeter",
-                  "CubicCentimeter",
-                  "CubicMillimeter",
-                  "CubicMicrometer",
-                  "CubicMile",
-                  "CubicYard",
-                  "CubicFoot",
-                  "CubicInch",
-                  "ImperialGallon",
-                  "ImperialOunce",
-                  "UsGallon",
-                  "UsOunce",
-                  "UsTablespoon",
-                  "AuTablespoon",
-                  "MetricTablespoon",
-                  "UkTablespoon",
-                  "MetricTeaspoon",
-                  "UsTeaspoon",
-                  "MetricCup",
-                  "UsCustomaryCup",
-                  "UsLegalCup",
-                  "OilBarrel",
-                  "UsBeerBarrel",
-                  "ImperialBeerBarrel",
-                  "UsQuart",
-                  "ImperialQuart",
-                  "UsPint",
-                  "AcreFoot",
-                  "ImperialPint",
-                  "BoardFoot",
-                  "Nanoliter",
-                  "Microliter",
-                  "Milliliter",
-                  "Centiliter",
-                  "Deciliter",
-                  "Decaliter",
-                  "Hectoliter",
-                  "Kiloliter",
-                  "Megaliter",
-                  "HectocubicMeter",
-                  "KilocubicMeter",
-                  "HectocubicFoot",
-                  "KilocubicFoot",
-                  "MegacubicFoot",
-                  "KiloimperialGallon",
-                  "MegaimperialGallon",
-                  "DecausGallon",
-                  "DeciusGallon",
-                  "HectousGallon",
-                  "KilousGallon",
-                  "MegausGallon"
-                ]
-              }
-            },
-            "required": [
-              "area",
-              "areaMomentOfInertia",
-              "warpingMomentOfInertia",
-              "volume"
-            ],
-            "additionalProperties": false
-          },
-          "sectionProfiles": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateSectionProfileRequest"
-            }
-          }
-        },
-        "required": [
-          "units",
-          "sectionProfiles"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateSectionProfileRequest"
-      },
       "GetSectionProfileResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1886,88 +1061,6 @@
         "additionalProperties": false,
         "id": "Element1d"
       },
-      "BatchCreateElement1dResponse": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "element1ds": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Element1d"
-            }
-          },
-          "tempIdToId": {
-            "type": "object",
-            "propertyNames": {
-              "type": "string"
-            },
-            "additionalProperties": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          }
-        },
-        "required": [
-          "element1ds",
-          "tempIdToId"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateElement1dResponse"
-      },
-      "CreateElement1dRequest": {
-        "type": "object",
-        "properties": {
-          "startNodeId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "endNodeId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "materialName": {
-            "type": "string",
-            "minLength": 1
-          },
-          "sectionProfileName": {
-            "type": "string",
-            "minLength": 1
-          },
-          "tempId": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "startNodeId",
-          "endNodeId",
-          "materialName",
-          "sectionProfileName"
-        ],
-        "additionalProperties": false,
-        "id": "CreateElement1dRequest"
-      },
-      "BatchCreateElement1dRequest": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "element1ds": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateElement1dRequest"
-            }
-          }
-        },
-        "required": [
-          "element1ds"
-        ],
-        "additionalProperties": false,
-        "id": "BatchCreateElement1dRequest"
-      },
       "GetElement1dResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1981,6 +1074,65 @@
         ],
         "additionalProperties": false,
         "id": "GetElement1dResponse"
+      },
+      "RevisionNode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "nodeTypeDescriminator": {
+            "type": "string",
+            "enum": [
+              "external",
+              "internal"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "nodeTypeDescriminator"
+        ],
+        "additionalProperties": false,
+        "id": "RevisionNode"
+      },
+      "ModelSettings": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "units": {
+            "$ref": "#/components/schemas/ModelSettingsUnits"
+          },
+          "yAxisUp": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "revisionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "required": [
+          "units",
+          "yAxisUp",
+          "id",
+          "revisionId"
+        ],
+        "additionalProperties": false,
+        "id": "ModelSettings"
       },
       "LoadCase": {
         "type": "object",
@@ -2292,6 +1444,41 @@
         "additionalProperties": false,
         "id": "CreateModelRevisionElement1dOperationsRequest"
       },
+      "CreateElement1dRequest": {
+        "type": "object",
+        "properties": {
+          "startNodeId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "endNodeId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "materialName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sectionProfileName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tempId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "startNodeId",
+          "endNodeId",
+          "materialName",
+          "sectionProfileName"
+        ],
+        "additionalProperties": false,
+        "id": "CreateElement1dRequest"
+      },
       "PutElement1dRequest": {
         "type": "object",
         "properties": {
@@ -2357,6 +1544,115 @@
         },
         "additionalProperties": false,
         "id": "CreateModelRevisionNodeOperationsRequest"
+      },
+      "CreateNodeRequest": {
+        "type": "object",
+        "properties": {
+          "restraint": {
+            "type": "object",
+            "properties": {
+              "canTranslateAlongX": {
+                "type": "boolean"
+              },
+              "canTranslateAlongY": {
+                "type": "boolean"
+              },
+              "canTranslateAlongZ": {
+                "type": "boolean"
+              },
+              "canRotateAboutX": {
+                "type": "boolean"
+              },
+              "canRotateAboutY": {
+                "type": "boolean"
+              },
+              "canRotateAboutZ": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "canTranslateAlongX",
+              "canTranslateAlongY",
+              "canTranslateAlongZ",
+              "canRotateAboutX",
+              "canRotateAboutY",
+              "canRotateAboutZ"
+            ],
+            "additionalProperties": false
+          },
+          "location": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "spatial"
+                  },
+                  "point": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "number"
+                      },
+                      "y": {
+                        "type": "number"
+                      },
+                      "z": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y",
+                      "z"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "type",
+                  "point"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "internal"
+                  },
+                  "element1dId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "ratioAlongElement1d": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "element1dId",
+                  "ratioAlongElement1d"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "tempId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "location"
+        ],
+        "additionalProperties": false,
+        "id": "CreateNodeRequest"
       },
       "PutNodeRequest": {
         "type": "object",
@@ -2496,6 +1792,95 @@
         "additionalProperties": false,
         "id": "CreateModelRevisionMaterialOperationsRequest"
       },
+      "CreateMaterialRequest": {
+        "id": "CreateMaterialRequest",
+        "$ref": "#/components/schemas/MaterialProperties"
+      },
+      "MaterialProperties": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "modulusOfElasticity": {
+            "type": "number"
+          },
+          "modulusOfRigidity": {
+            "type": "number"
+          },
+          "units": {
+            "type": "object",
+            "properties": {
+              "pressure": {
+                "type": "string",
+                "enum": [
+                  "Pascal",
+                  "Atmosphere",
+                  "Bar",
+                  "KilogramForcePerSquareMeter",
+                  "KilogramForcePerSquareCentimeter",
+                  "KilogramForcePerSquareMillimeter",
+                  "NewtonPerSquareMeter",
+                  "NewtonPerSquareCentimeter",
+                  "NewtonPerSquareMillimeter",
+                  "TechnicalAtmosphere",
+                  "Torr",
+                  "PoundForcePerSquareInch",
+                  "PoundForcePerSquareMil",
+                  "PoundForcePerSquareFoot",
+                  "TonneForcePerSquareMillimeter",
+                  "TonneForcePerSquareMeter",
+                  "MeterOfHead",
+                  "TonneForcePerSquareCentimeter",
+                  "FootOfHead",
+                  "MillimeterOfMercury",
+                  "InchOfMercury",
+                  "DynePerSquareCentimeter",
+                  "PoundPerInchSecondSquared",
+                  "MeterOfWaterColumn",
+                  "InchOfWaterColumn",
+                  "Micropascal",
+                  "Millipascal",
+                  "Decapascal",
+                  "Hectopascal",
+                  "Kilopascal",
+                  "Megapascal",
+                  "Gigapascal",
+                  "Microbar",
+                  "Millibar",
+                  "Centibar",
+                  "Decibar",
+                  "Kilobar",
+                  "Megabar",
+                  "KilonewtonPerSquareMeter",
+                  "MeganewtonPerSquareMeter",
+                  "KilonewtonPerSquareCentimeter",
+                  "KilonewtonPerSquareMillimeter",
+                  "Millitorr",
+                  "KilopoundForcePerSquareInch",
+                  "KilopoundForcePerSquareMil",
+                  "KilopoundForcePerSquareFoot",
+                  "MillimeterOfWaterColumn",
+                  "CentimeterOfWaterColumn"
+                ]
+              }
+            },
+            "required": [
+              "pressure"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "name",
+          "modulusOfElasticity",
+          "modulusOfRigidity",
+          "units"
+        ],
+        "additionalProperties": false,
+        "id": "MaterialProperties"
+      },
       "PutMaterialRequest": {
         "type": "object",
         "properties": {
@@ -2609,6 +1994,62 @@
         },
         "additionalProperties": false,
         "id": "CreateModelRevisionSectionProfileOperationsRequest"
+      },
+      "CreateSectionProfileRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "area": {
+            "type": "number"
+          },
+          "strongAxisMomentOfInertia": {
+            "type": "number"
+          },
+          "weakAxisMomentOfInertia": {
+            "type": "number"
+          },
+          "torsionalConstant": {
+            "type": "number"
+          },
+          "warpingConstant": {
+            "type": "number"
+          },
+          "strongAxisPlasticSectionModulus": {
+            "type": "number"
+          },
+          "weakAxisPlasticSectionModulus": {
+            "type": "number"
+          },
+          "strongAxisElasticSectionModulus": {
+            "type": "number"
+          },
+          "weakAxisElasticSectionModulus": {
+            "type": "number"
+          },
+          "strongAxisShearArea": {
+            "type": "number"
+          },
+          "weakAxisShearArea": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "area",
+          "strongAxisMomentOfInertia",
+          "weakAxisMomentOfInertia",
+          "torsionalConstant",
+          "warpingConstant",
+          "strongAxisPlasticSectionModulus",
+          "weakAxisPlasticSectionModulus",
+          "strongAxisElasticSectionModulus",
+          "weakAxisElasticSectionModulus"
+        ],
+        "additionalProperties": false,
+        "id": "CreateSectionProfileRequest"
       },
       "PutSectionProfileRequest": {
         "type": "object",

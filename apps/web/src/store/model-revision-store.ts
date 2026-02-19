@@ -383,7 +383,7 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     }
 
     const { data, error } = await apiClient.GET(
-      "/api/projects/{projectId}/branches/{branchName}/revisions",
+      "/api/projects/{projectId}/branches/{branchName}",
       { params: { path: { projectId, branchName } } },
     );
 

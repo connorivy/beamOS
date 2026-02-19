@@ -27,21 +27,13 @@ export const getModelRevisionReqSchema = z
 
 export const getModelRevision = defineEndpoint({
     method: "GET",
-    path: "/api/projects/:projectId/branches/:branchName/revisions",
+    path: "/api/projects/:projectId/branches/:branchName",
     req: getModelRevisionReqSchema,
     res: modelRevisionResSchema,
     async handler(req, ctx: AppContext) {
-        const branch = await ctx.services.modelRevisionRepository.getBranchHead(
+        const modelRevision = await ctx.services.modelRevisionRepository.load(
             req.params.projectId,
             req.params.branchName,
-        );
-
-        if (!branch) {
-            throw httpError("Model branch not found", 404);
-        }
-
-        const modelRevision = await ctx.services.modelRevisionRepository.getRevisionById(
-            branch.headRevisionId,
         );
 
         if (!modelRevision) {
@@ -68,7 +60,7 @@ export const getModelRevision = defineEndpoint({
                 revisionId: material.revisionId,
                 name: material.name,
                 modulusOfElasticity: material.modulusOfElasticity.Pascals,
-                modulusOfRigidity: material.this.modulusOfRigidity.Pascals,
+                modulusOfRigidity: material.modulusOfRigidity.Pascals,
                 units: {
                     pressure: PressureUnits.Pascals as const,
                 },

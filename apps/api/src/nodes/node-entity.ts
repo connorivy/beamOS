@@ -1,6 +1,6 @@
 import { assertUuid } from "../common/uuid";
 import { Ratio } from "unitsnet-js";
-import { CreateNodeRequest, PutNodeRequest } from "./node-contract-schemas";
+import { CreateNodeRequest, NodeLocation, PutNodeRequest } from "./node-contract-schemas";
 
 export type NodeRestraint = {
     canTranslateAlongX: boolean;
@@ -100,20 +100,12 @@ export class NodeEntity {
         this.id = id;
         this.modelRevisionId = revisionId;
         this.restraint = snapshot.restraint ?? NodeRestraints.FREE;
-
-        this.nodeType = "spatialNode";
         this.location = snapshot.location;
     }
 
     readonly id: string;
     readonly modelRevisionId: string;
-    readonly nodeType: "spatialNode" | "internalNode";
-    readonly location:
-        | { type: "spatial"; point: NodePoint }
-        | { type: "internal"; element1dId: string; ratioAlongElement1d: number };
-    readonly point: NodePoint | undefined;
-    readonly element1dId: string | undefined;
-    readonly distanceAlongElement1d: Ratio | undefined;
+    readonly location: NodeLocation;
     readonly restraint: NodeRestraint;
 
     static create(snapshot: CreateNodeRequest, revisionId: string, id?: string): NodeEntity {
@@ -125,22 +117,10 @@ export class NodeEntity {
     }
 
     toSnapshot(): NodeSnapshot {
-        if (this.nodeType === "internalNode") {
-            return {
-                id: this.id,
-                modelRevisionId: this.modelRevisionId,
-                nodeType: "internalNode",
-                element1dId: this.element1dId as string,
-                distanceAlongElement1d: this.distanceAlongElement1d as Ratio,
-                restraint: { ...this.restraint },
-            };
-        }
-
         return {
             id: this.id,
             modelRevisionId: this.modelRevisionId,
-            nodeType: "spatialNode",
-            point: this.point as NodePoint,
+            nodeType: "internalNode",
             restraint: { ...this.restraint },
         };
     }

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Ratio } from "unitsnet-js";
 import { NodeEntity } from "./node-entity";
 
 const nodePayloadV1Schema = z.object({
@@ -7,15 +6,15 @@ const nodePayloadV1Schema = z.object({
         z.object({
             type: z.literal("spatial"),
             point: z.object({
-                x: z.number().finite(),
-                y: z.number().finite(),
-                z: z.number().finite(),
+                x: z.number(),
+                y: z.number(),
+                z: z.number(),
             }),
         }),
         z.object({
             type: z.literal("internal"),
             element1dId: z.string().uuid(),
-            ratioAlongElement1d: z.number().finite().min(0).max(1),
+            ratioAlongElement1d: z.number().min(0).max(1),
         }),
     ]),
     restraint: z
@@ -40,30 +39,21 @@ export const nodeRevisionChangeCodec = {
         schemaVersion: number;
         payload: NodePayloadV1;
     } {
-        const snapshot = entity.toSnapshot();
-
         return {
             schemaVersion: this.currentSchemaVersion,
             payload: {
-                location:
-                    snapshot.nodeType === "internalNode"
-                        ? {
-                              type: "internal",
-                              element1dId: snapshot.element1dId as string,
-                              ratioAlongElement1d: (
-                                  snapshot.distanceAlongElement1d as Ratio
-                              ).DecimalFractions,
-                          }
-                        : {
-                              type: "spatial",
-                              point: snapshot.point as { x: number; y: number; z: number },
-                          },
-                restraint: snapshot.restraint,
+                location: entity.location,
+                restraint: entity.restraint,
             },
         };
     },
 
-    toDomain(revisionId: string, entityId: string, schemaVersion: number, payload: unknown): NodeEntity {
+    toDomain(
+        revisionId: string,
+        entityId: string,
+        schemaVersion: number,
+        payload: unknown,
+    ): NodeEntity {
         if (schemaVersion > this.currentSchemaVersion) {
             throw new Error(`Unsupported schema version: ${schemaVersion}`);
         }

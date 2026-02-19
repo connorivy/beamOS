@@ -62,90 +62,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/projects/{projectId}/nodes/{nodeId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    nodeId: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["PatchNodeRequest"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["PatchNodeResponse"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/api/projects/{projectId}/branches/{branchName}/nodes/batch": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    branchName: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["BatchCreateNodeRequest"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BatchCreateNodeResponse"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/projects/{projectId}": {
         parameters: {
             query?: never;
@@ -187,7 +103,162 @@ export interface paths {
         };
         trace?: never;
     };
-    "/api/projects/{projectId}/branches/{branchName}/materials/batch": {
+    "/api/projects/{projectId}/branches/{branchName}/materials/{materialId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: string;
+                    branchName: string;
+                    materialId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Material"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{projectId}/branches/{branchName}/section-profiles/{sectionProfileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: string;
+                    branchName: string;
+                    sectionProfileId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GetSectionProfileResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{projectId}/branches/{branchName}/element1ds/{element1dId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: string;
+                    branchName: string;
+                    element1dId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GetElement1dResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{projectId}/branches/{branchName}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: string;
+                    branchName: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ModelRevision"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{projectId}/branches/{branchName}/revisions": {
         parameters: {
             query?: never;
             header?: never;
@@ -208,7 +279,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["BatchCreateMaterialRequest"];
+                    "application/json": components["schemas"]["CreateModelRevisionRequest"];
                 };
             };
             responses: {
@@ -218,7 +289,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["MaterialArray"];
+                        "application/json": components["schemas"]["ModelRevision"];
                     };
                 };
             };
@@ -259,271 +330,12 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["PutModelSettingsResponse"];
+                        "application/json": components["schemas"]["ModelSettings"];
                     };
                 };
             };
         };
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/materials/{materialId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    materialId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Material"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/projects/{projectId}/branches/{branchName}/section-profiles/batch": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    branchName: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["BatchCreateSectionProfileRequest"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BatchCreateSectionProfileResponse"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/section-profiles/{sectionProfileId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    sectionProfileId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["GetSectionProfileResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/projects/{projectId}/branches/{branchName}/element1ds/batch": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    branchName: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["BatchCreateElement1dRequest"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BatchCreateElement1dResponse"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/element1ds/{element1dId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    element1dId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["GetElement1dResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/projects/{projectId}/branches/{branchName}/revisions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    branchName: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ModelRevision"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    branchName: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["CreateModelRevisionRequest"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ModelRevision"];
-                    };
-                };
-            };
-        };
         delete?: never;
         options?: never;
         head?: never;
@@ -566,68 +378,6 @@ export interface components {
             modelSettings: components["schemas"]["ModelSettingsProperties"];
         };
         ProjectsArray: components["schemas"]["Project"][];
-        Node: {
-            /** Format: uuid */
-            id: string;
-            /** Format: uuid */
-            projectId: string;
-        };
-        PatchNodeResponse: {
-            node: components["schemas"]["Node"];
-            version: {
-                /** Format: uuid */
-                projectId: string;
-                revisionId: string | null;
-            };
-        };
-        PatchNodeRequest: {
-            name: string;
-            /** Format: uuid */
-            revisionId: string;
-        };
-        RevisionNode: {
-            /** Format: uuid */
-            id: string;
-            /** Format: uuid */
-            projectId: string;
-            /** @enum {string} */
-            nodeTypeDescriminator: "external" | "internal";
-        };
-        BatchCreateNodeResponse: {
-            nodes: components["schemas"]["RevisionNode"][];
-            tempIdToId: {
-                [key: string]: string;
-            };
-        };
-        CreateNodeRequest: {
-            restraint?: {
-                canTranslateAlongX: boolean;
-                canTranslateAlongY: boolean;
-                canTranslateAlongZ: boolean;
-                canRotateAboutX: boolean;
-                canRotateAboutY: boolean;
-                canRotateAboutZ: boolean;
-            };
-            location: {
-                /** @constant */
-                type: "spatial";
-                point: {
-                    x: number;
-                    y: number;
-                    z: number;
-                };
-            } | {
-                /** @constant */
-                type: "internal";
-                /** Format: uuid */
-                element1dId: string;
-                ratioAlongElement1d: number;
-            };
-            tempId?: string;
-        };
-        BatchCreateNodeRequest: {
-            nodes: components["schemas"]["CreateNodeRequest"][];
-        };
         PatchModelResponse: {
             model: {
                 /** Format: uuid */
@@ -658,31 +408,6 @@ export interface components {
             id: string;
             /** Format: uuid */
             revisionId: string;
-        };
-        MaterialArray: components["schemas"]["Material"][];
-        CreateMaterialRequest: components["schemas"]["MaterialProperties"];
-        MaterialProperties: {
-            name: string;
-            modulusOfElasticity: number;
-            modulusOfRigidity: number;
-            units: {
-                /** @enum {string} */
-                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-            };
-        };
-        BatchCreateMaterialRequest: {
-            materials: components["schemas"]["CreateMaterialRequest"][];
-        };
-        ModelSettings: {
-            units: components["schemas"]["ModelSettingsUnits"];
-            yAxisUp: boolean;
-            /** Format: uuid */
-            id: string;
-            /** Format: uuid */
-            revisionId: string;
-        };
-        PutModelSettingsResponse: {
-            modelSettings: components["schemas"]["ModelSettings"];
         };
         SectionProfile: {
             /** Format: uuid */
@@ -748,36 +473,6 @@ export interface components {
                 unit: "SquareMeter";
             };
         };
-        BatchCreateSectionProfileResponse: {
-            sectionProfiles: components["schemas"]["SectionProfile"][];
-        };
-        CreateSectionProfileRequest: {
-            name: string;
-            area: number;
-            strongAxisMomentOfInertia: number;
-            weakAxisMomentOfInertia: number;
-            torsionalConstant: number;
-            warpingConstant: number;
-            strongAxisPlasticSectionModulus: number;
-            weakAxisPlasticSectionModulus: number;
-            strongAxisElasticSectionModulus: number;
-            weakAxisElasticSectionModulus: number;
-            strongAxisShearArea?: number;
-            weakAxisShearArea?: number;
-        };
-        BatchCreateSectionProfileRequest: {
-            units: {
-                /** @enum {string} */
-                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-                /** @enum {string} */
-                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-                /** @enum {string} */
-                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-                /** @enum {string} */
-                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-            };
-            sectionProfiles: components["schemas"]["CreateSectionProfileRequest"][];
-        };
         GetSectionProfileResponse: {
             sectionProfile: components["schemas"]["SectionProfile"];
         };
@@ -795,26 +490,24 @@ export interface components {
             /** Format: uuid */
             revisionId: string;
         };
-        BatchCreateElement1dResponse: {
-            element1ds: components["schemas"]["Element1d"][];
-            tempIdToId: {
-                [key: string]: string;
-            };
-        };
-        CreateElement1dRequest: {
-            /** Format: uuid */
-            startNodeId: string;
-            /** Format: uuid */
-            endNodeId: string;
-            materialName: string;
-            sectionProfileName: string;
-            tempId?: string;
-        };
-        BatchCreateElement1dRequest: {
-            element1ds: components["schemas"]["CreateElement1dRequest"][];
-        };
         GetElement1dResponse: {
             element1d: components["schemas"]["Element1d"];
+        };
+        RevisionNode: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            projectId: string;
+            /** @enum {string} */
+            nodeTypeDescriminator: "external" | "internal";
+        };
+        ModelSettings: {
+            units: components["schemas"]["ModelSettingsUnits"];
+            yAxisUp: boolean;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            revisionId: string;
         };
         LoadCase: {
             name: string;
@@ -887,6 +580,15 @@ export interface components {
             update?: components["schemas"]["PutElement1dRequest"][];
             delete?: string[];
         };
+        CreateElement1dRequest: {
+            /** Format: uuid */
+            startNodeId: string;
+            /** Format: uuid */
+            endNodeId: string;
+            materialName: string;
+            sectionProfileName: string;
+            tempId?: string;
+        };
         PutElement1dRequest: {
             /** Format: uuid */
             startNodeId: string;
@@ -903,6 +605,32 @@ export interface components {
             create?: components["schemas"]["CreateNodeRequest"][];
             update?: components["schemas"]["PutNodeRequest"][];
             delete?: string[];
+        };
+        CreateNodeRequest: {
+            restraint?: {
+                canTranslateAlongX: boolean;
+                canTranslateAlongY: boolean;
+                canTranslateAlongZ: boolean;
+                canRotateAboutX: boolean;
+                canRotateAboutY: boolean;
+                canRotateAboutZ: boolean;
+            };
+            location: {
+                /** @constant */
+                type: "spatial";
+                point: {
+                    x: number;
+                    y: number;
+                    z: number;
+                };
+            } | {
+                /** @constant */
+                type: "internal";
+                /** Format: uuid */
+                element1dId: string;
+                ratioAlongElement1d: number;
+            };
+            tempId?: string;
         };
         PutNodeRequest: {
             restraint?: {
@@ -936,6 +664,16 @@ export interface components {
             update?: components["schemas"]["PutMaterialRequest"][];
             delete?: string[];
         };
+        CreateMaterialRequest: components["schemas"]["MaterialProperties"];
+        MaterialProperties: {
+            name: string;
+            modulusOfElasticity: number;
+            modulusOfRigidity: number;
+            units: {
+                /** @enum {string} */
+                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+            };
+        };
         PutMaterialRequest: {
             name: string;
             modulusOfElasticity: number;
@@ -950,6 +688,20 @@ export interface components {
             create?: components["schemas"]["CreateSectionProfileRequest"][];
             update?: components["schemas"]["PutSectionProfileRequest"][];
             delete?: components["schemas"]["DeleteSectionProfileRequest"][];
+        };
+        CreateSectionProfileRequest: {
+            name: string;
+            area: number;
+            strongAxisMomentOfInertia: number;
+            weakAxisMomentOfInertia: number;
+            torsionalConstant: number;
+            warpingConstant: number;
+            strongAxisPlasticSectionModulus: number;
+            weakAxisPlasticSectionModulus: number;
+            strongAxisElasticSectionModulus: number;
+            weakAxisElasticSectionModulus: number;
+            strongAxisShearArea?: number;
+            weakAxisShearArea?: number;
         };
         PutSectionProfileRequest: {
             name: string;
@@ -1078,43 +830,31 @@ export type ModelSettingsProperties = components['schemas']['ModelSettingsProper
 export type ModelSettingsUnits = components['schemas']['ModelSettingsUnits'];
 export type CreateProjectRequest = components['schemas']['CreateProjectRequest'];
 export type ProjectsArray = components['schemas']['ProjectsArray'];
-export type Node = components['schemas']['Node'];
-export type PatchNodeResponse = components['schemas']['PatchNodeResponse'];
-export type PatchNodeRequest = components['schemas']['PatchNodeRequest'];
-export type RevisionNode = components['schemas']['RevisionNode'];
-export type BatchCreateNodeResponse = components['schemas']['BatchCreateNodeResponse'];
-export type CreateNodeRequest = components['schemas']['CreateNodeRequest'];
-export type BatchCreateNodeRequest = components['schemas']['BatchCreateNodeRequest'];
 export type PatchModelResponse = components['schemas']['PatchModelResponse'];
 export type PatchModelRequest = components['schemas']['PatchModelRequest'];
 export type Material = components['schemas']['Material'];
-export type MaterialArray = components['schemas']['MaterialArray'];
-export type CreateMaterialRequest = components['schemas']['CreateMaterialRequest'];
-export type MaterialProperties = components['schemas']['MaterialProperties'];
-export type BatchCreateMaterialRequest = components['schemas']['BatchCreateMaterialRequest'];
-export type ModelSettings = components['schemas']['ModelSettings'];
-export type PutModelSettingsResponse = components['schemas']['PutModelSettingsResponse'];
 export type SectionProfile = components['schemas']['SectionProfile'];
-export type BatchCreateSectionProfileResponse = components['schemas']['BatchCreateSectionProfileResponse'];
-export type CreateSectionProfileRequest = components['schemas']['CreateSectionProfileRequest'];
-export type BatchCreateSectionProfileRequest = components['schemas']['BatchCreateSectionProfileRequest'];
 export type GetSectionProfileResponse = components['schemas']['GetSectionProfileResponse'];
 export type Element1d = components['schemas']['Element1d'];
-export type BatchCreateElement1dResponse = components['schemas']['BatchCreateElement1dResponse'];
-export type CreateElement1dRequest = components['schemas']['CreateElement1dRequest'];
-export type BatchCreateElement1dRequest = components['schemas']['BatchCreateElement1dRequest'];
 export type GetElement1dResponse = components['schemas']['GetElement1dResponse'];
+export type RevisionNode = components['schemas']['RevisionNode'];
+export type ModelSettings = components['schemas']['ModelSettings'];
 export type LoadCase = components['schemas']['LoadCase'];
 export type LoadCombination = components['schemas']['LoadCombination'];
 export type PointLoad = components['schemas']['PointLoad'];
 export type ModelRevision = components['schemas']['ModelRevision'];
 export type CreateModelRevisionElement1dOperationsRequest = components['schemas']['CreateModelRevisionElement1dOperationsRequest'];
+export type CreateElement1dRequest = components['schemas']['CreateElement1dRequest'];
 export type PutElement1dRequest = components['schemas']['PutElement1dRequest'];
 export type CreateModelRevisionNodeOperationsRequest = components['schemas']['CreateModelRevisionNodeOperationsRequest'];
+export type CreateNodeRequest = components['schemas']['CreateNodeRequest'];
 export type PutNodeRequest = components['schemas']['PutNodeRequest'];
 export type CreateModelRevisionMaterialOperationsRequest = components['schemas']['CreateModelRevisionMaterialOperationsRequest'];
+export type CreateMaterialRequest = components['schemas']['CreateMaterialRequest'];
+export type MaterialProperties = components['schemas']['MaterialProperties'];
 export type PutMaterialRequest = components['schemas']['PutMaterialRequest'];
 export type CreateModelRevisionSectionProfileOperationsRequest = components['schemas']['CreateModelRevisionSectionProfileOperationsRequest'];
+export type CreateSectionProfileRequest = components['schemas']['CreateSectionProfileRequest'];
 export type PutSectionProfileRequest = components['schemas']['PutSectionProfileRequest'];
 export type DeleteSectionProfileRequest = components['schemas']['DeleteSectionProfileRequest'];
 export type CreateModelRevisionLoadCaseOperationsRequest = components['schemas']['CreateModelRevisionLoadCaseOperationsRequest'];
