@@ -27,7 +27,7 @@ export const modelRevisionMapper = {
       createdAt: row.createdAt,
       nodes: changeRows
         .filter((change) => change.entityType === "node")
-        .filter((change) => change.op !== "delete")
+        .filter((change) => change.op !== "delete" && change.op !== "deleted")
         .map((change) => ({
           id: change.entityId,
           modelRevisionId: row.id,

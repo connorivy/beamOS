@@ -47,6 +47,101 @@ const createAggregate = () => {
 };
 
 describe("ModelRevisionAggregate", () => {
+  it("tracks created entities as revision changes", () => {
+    const aggregate = createAggregate();
+
+    const materialId = Bun.randomUUIDv7();
+    aggregate.addMaterial({
+      id: materialId,
+      revisionId: aggregate.id,
+      name: "A36 Steel",
+      pressureE: Pressure.FromPascals(1),
+      pressureG: Pressure.FromPascals(2),
+    });
+
+    const changes = aggregate.pullRevisionChanges();
+    expect(changes).toEqual([
+      expect.objectContaining({
+        entityType: "material",
+        entityId: materialId,
+        op: "created",
+      }),
+    ]);
+    expect(aggregate.pullRevisionChanges()).toHaveLength(0);
+  });
+
+  it("tracks updated entities as revision changes", () => {
+    const aggregate = createAggregate();
+    const existing = aggregate.modelSettings.toSnapshot();
+
+    aggregate.setModelSettings({
+      ...existing,
+      yAxisUp: !existing.yAxisUp,
+    });
+
+    const changes = aggregate.pullRevisionChanges();
+    expect(changes).toEqual([
+      expect.objectContaining({
+        entityType: "model_settings",
+        entityId: existing.id,
+        op: "updated",
+      }),
+    ]);
+  });
+
+  it("tracks deleted entities as revision changes", () => {
+    const revisionId = Bun.randomUUIDv7();
+    const nodeId = Bun.randomUUIDv7();
+    const aggregate = ModelRevisionAggregate.create({
+      id: revisionId,
+      projectId: Bun.randomUUIDv7(),
+      parentRevisionId: Bun.randomUUIDv7(),
+      secondParentRevisionId: null,
+      authorId: Bun.randomUUIDv7(),
+      message: "Delete node",
+      createdAt: new Date(),
+      nodes: [
+        {
+          id: nodeId,
+          modelRevisionId: revisionId,
+          nodeType: "spatialNode",
+          nodeTypeDescriminator: "external",
+          point: { x: 0, y: 0, z: 0 },
+        },
+      ],
+      materials: [],
+      modelSettings: {
+        id: Bun.randomUUIDv7(),
+        revisionId,
+        units: {
+          pressure: PressureUnits.Pascals,
+          area: AreaUnits.SquareMeters,
+          areaMomentOfInertia: AreaMomentOfInertiaUnits.MetersToTheFourth,
+          warpingMomentOfInertia:
+            WarpingMomentOfInertiaUnits.MetersToTheSixth,
+          volume: VolumeUnits.CubicMeters,
+        },
+        yAxisUp: true,
+      },
+      sectionProfiles: [],
+      element1ds: [],
+      loadCases: [],
+      loadCombinations: [],
+      pointLoads: [],
+    });
+
+    aggregate.deleteNode(nodeId);
+
+    const changes = aggregate.pullRevisionChanges();
+    expect(changes).toEqual([
+      expect.objectContaining({
+        entityType: "node",
+        entityId: nodeId,
+        op: "deleted",
+      }),
+    ]);
+  });
+
   it("pulls domain events from added materials", () => {
     const aggregate = createAggregate();
 

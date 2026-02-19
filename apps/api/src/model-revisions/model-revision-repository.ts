@@ -24,21 +24,37 @@ import {
   revisionChanges,
 } from "../db/schema";
 import { modelBranchHeadMapper } from "../model-branch-heads/model-branch-head-mapper";
-import { ModelRevisionAggregate } from "./model-revision-aggregate";
+import {
+  ModelRevisionAggregate,
+  type ModelRevisionEntityChange,
+} from "./model-revision-aggregate";
 import { modelRevisionMapper } from "./model-revision-mapper";
-import { RevisionChangeEntity } from "../revision-changes/revision-change-entity";
-import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { RevisionChangeInsertRow } from "../revision-changes/revision-change-mapper";
-import type { DomainEvent, ModelRevisionRepository } from "../common/types";
-import { MaterialEntity } from "../materials/material-entity";
-import { ModelSettingsEntity, type ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
-import { SectionProfileEntity } from "../section-profiles/section-profile-entity";
-import { Element1dEntity } from "../element1ds/element1d-entity";
+import type { ModelRevisionRepository } from "../common/types";
+import {
+  MaterialEntity,
+  type MaterialSnapshot,
+} from "../materials/material-entity";
+import {
+  ModelSettingsEntity,
+  type ModelSettingsSnapshot,
+} from "../model-settings/model-settings-entity";
+import {
+  SectionProfileEntity,
+  type SectionProfileSnapshot,
+} from "../section-profiles/section-profile-entity";
+import {
+  Element1dEntity,
+  type Element1dSnapshot,
+} from "../element1ds/element1d-entity";
 import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import { parseRestraint } from "../nodes/node-entity";
-import { LoadCaseEntity } from "../load-cases/load-case-entity";
-import { LoadCombinationEntity } from "../load-combinations/load-combination-entity";
-import { PointLoadEntity } from "../point-loads/point-load-entity";
+import { LoadCaseEntity, type LoadCaseSnapshot } from "../load-cases/load-case-entity";
+import {
+  LoadCombinationEntity,
+  type LoadCombinationSnapshot,
+} from "../load-combinations/load-combination-entity";
+import { PointLoadEntity, type PointLoadSnapshot } from "../point-loads/point-load-entity";
 
 export const drizzleModelRevisionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -100,15 +116,17 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
   async save(input) {
     const { revision, tx: existingTx, branchName } = input;
     const snapshot = revision.toSnapshot();
-    const events = revision.pullDomainEvents();
+    const changes = revision.pullRevisionChanges();
+    revision.pullDomainEvents();
 
     const persist = async (tx: DbTransaction) => {
-      await tx.insert(modelRevisions).values(modelRevisionMapper.toPersistence(revision));
+      await tx
+        .insert(modelRevisions)
+        .values(modelRevisionMapper.toPersistence(revision));
 
-      const changeRows = buildRevisionChangeRowsFromEvents({
-        projectId: snapshot.projectId,
+      const changeRows = buildRevisionChangeRowsFromRevisionChanges({
         revisionId: snapshot.id,
-        events,
+        changes,
       });
 
       if (changeRows.length > 0) {
@@ -197,374 +215,225 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
   },
 };
 
-const buildRevisionChangeRowsFromNodeOps = (input: {
-  projectId: string;
-  revisionId: string | null;
-  nodes: {
-    nodeId: string;
-    name?: string;
-    nodeTypeDescriminator?: "external" | "internal";
-    op: "insert" | "update" | "delete";
-  }[];
-}): RevisionChangeInsertRow[] => {
-  const now = new Date();
-
-  return input.nodes.map((node) => {
-    const entity = RevisionChangeEntity.create({
-      id: crypto.randomUUID(),
-      revisionId: input.revisionId,
-      entityType: "node",
-      entityId: node.nodeId,
-      schemaVersion: 1,
-      op: node.op,
-      payload: {
-        id: node.nodeId,
-        projectId: input.projectId,
-        name: node.name ?? "",
-        nodeTypeDescriminator: node.nodeTypeDescriminator ?? "internal",
-      },
-      createdAt: now,
-    });
-
-    return revisionChangeMapper.toPersistence(entity);
-  });
+const toRevisionChangeOp = (
+  op: ModelRevisionEntityChange["op"],
+): "created" | "updated" | "deleted" => {
+  return op;
 };
 
-const buildRevisionChangeRowsFromEvents = (input: {
-  projectId: string;
-  revisionId: string | null;
-  events: DomainEvent[];
-}): RevisionChangeInsertRow[] => {
-  const now = new Date();
-
-  const nodeChanges = input.events
-    .filter(
-      (event): event is Extract<DomainEvent, { type: "node_created" }> =>
-        event.type === "node_created",
-    )
-    .map((event) => {
-      const snapshot = event.payload;
-      return revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "node",
-          entityId: snapshot.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: snapshot.id,
-            modelRevisionId: snapshot.modelRevisionId,
-            nodeType: snapshot.nodeType,
-            nodeTypeDescriminator: snapshot.nodeTypeDescriminator,
-            point: snapshot.point ?? null,
-            element1dId: snapshot.element1dId ?? null,
-            distanceAlongElement1d:
-              snapshot.distanceAlongElement1d instanceof Ratio
-                ? snapshot.distanceAlongElement1d.DecimalFractions
-                : null,
-            restraint: snapshot.restraint,
-          },
-          createdAt: now,
-        }),
+const toRevisionChangePayload = (
+  change: ModelRevisionEntityChange,
+): Record<string, unknown> => {
+  switch (change.entityType) {
+    case "node":
+      return toNodeRevisionChangePayload(change.snapshot as NodeSnapshot);
+    case "material":
+      return toMaterialRevisionChangePayload(change.snapshot as MaterialSnapshot);
+    case "model_settings":
+      return toModelSettingsRevisionChangePayload(
+        change.snapshot as ModelSettingsSnapshot,
       );
-    });
-
-  const nodeDeleteChanges = buildRevisionChangeRowsFromNodeOps({
-    projectId: input.projectId,
-    revisionId: input.revisionId,
-    nodes: input.events
-      .filter(
-        (event): event is Extract<DomainEvent, { type: "node_deleted" }> =>
-          event.type === "node_deleted",
-      )
-      .map((event) => ({
-        nodeId: event.payload.id,
-        name: extractNodeName(event.payload),
-        nodeTypeDescriminator: extractNodeTypeDescriminator(event.payload),
-        op: "delete",
-      })),
-  });
-
-  const materialChanges = input.events
-    .filter(
-      (event): event is Extract<DomainEvent, { type: "material_created" }> =>
-        event.type === "material_created",
-    )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "material",
-          entityId: event.payload.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            name: event.payload.name,
-            pressureE: {
-              value: event.payload.pressureE.Pascals,
-              unit: PressureUnits.Pascals,
-            },
-            pressureG: {
-              value: event.payload.pressureG.Pascals,
-              unit: PressureUnits.Pascals,
-            },
-          },
-          createdAt: now,
-        }),
-      ),
-    );
-
-  const sectionProfileChanges = input.events
-    .filter(
-      (
-        event,
-      ): event is Extract<DomainEvent, { type: "section_profile_created" }> =>
-        event.type === "section_profile_created",
-    )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "section_profile",
-          entityId: event.payload.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            name: event.payload.name,
-            discriminator: event.payload.discriminator,
-            area: {
-              value: event.payload.area.SquareMeters,
-              unit: AreaUnits.SquareMeters,
-            },
-            strongAxisMomentOfInertia: {
-              value: event.payload.strongAxisMomentOfInertia.MetersToTheFourth,
-              unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
-            },
-            weakAxisMomentOfInertia: {
-              value: event.payload.weakAxisMomentOfInertia.MetersToTheFourth,
-              unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
-            },
-            torsionalConstant: {
-              value: event.payload.torsionalConstant.MetersToTheFourth,
-              unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
-            },
-            warpingConstant: {
-              value: event.payload.warpingConstant.MetersToTheSixth,
-              unit: WarpingMomentOfInertiaUnits.MetersToTheSixth,
-            },
-            strongAxisPlasticSectionModulus: {
-              value: event.payload.strongAxisPlasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters,
-            },
-            weakAxisPlasticSectionModulus: {
-              value: event.payload.weakAxisPlasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters,
-            },
-            strongAxisElasticSectionModulus: {
-              value: event.payload.strongAxisElasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters,
-            },
-            weakAxisElasticSectionModulus: {
-              value: event.payload.weakAxisElasticSectionModulus.CubicMeters,
-              unit: VolumeUnits.CubicMeters,
-            },
-            ...(event.payload.strongAxisShearArea
-              ? {
-                  strongAxisShearArea: {
-                    value: event.payload.strongAxisShearArea.SquareMeters,
-                    unit: AreaUnits.SquareMeters,
-                  },
-                }
-              : {}),
-            ...(event.payload.weakAxisShearArea
-              ? {
-                  weakAxisShearArea: {
-                    value: event.payload.weakAxisShearArea.SquareMeters,
-                    unit: AreaUnits.SquareMeters,
-                  },
-                }
-              : {}),
-          },
-          createdAt: now,
-        }),
-      ),
-    );
-
-  const modelSettingsChanges = input.events
-    .filter(
-      (
-        event,
-      ): event is Extract<DomainEvent, { type: "model_settings_created" }> =>
-        event.type === "model_settings_created",
-    )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "model_settings",
-          entityId: event.payload.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            units: event.payload.units,
-            yAxisUp: event.payload.yAxisUp,
-          },
-          createdAt: now,
-        }),
-      ),
-    );
-
-  const element1dChanges = input.events
-    .filter(
-      (event): event is Extract<DomainEvent, { type: "element1d_created" }> =>
-        event.type === "element1d_created",
-    )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "element1d",
-          entityId: event.payload.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            startNodeId: event.payload.startNodeId,
-            endNodeId: event.payload.endNodeId,
-            materialId: event.payload.materialId,
-            sectionProfileId: event.payload.sectionProfileId,
-          },
-          createdAt: now,
-        }),
-      ),
-    );
-
-  const loadCaseChanges = input.events
-    .filter(
-      (event): event is Extract<DomainEvent, { type: "load_case_created" }> =>
-        event.type === "load_case_created",
-    )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "loadcase",
-          entityId: event.payload.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            name: event.payload.name,
-          },
-          createdAt: now,
-        }),
-      ),
-    );
-
-  const loadCombinationChanges = input.events
-    .filter(
-      (
-        event,
-      ): event is Extract<DomainEvent, { type: "load_combination_created" }> =>
-        event.type === "load_combination_created",
-    )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "loadcombination",
-          entityId: event.payload.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            loadCaseFactors: { ...event.payload.loadCaseFactors },
-          },
-          createdAt: now,
-        }),
-      ),
-    );
-
-  const pointLoadChanges = input.events
-    .filter(
-      (event): event is Extract<DomainEvent, { type: "point_load_created" }> =>
-        event.type === "point_load_created",
-    )
-    .map((event) =>
-      revisionChangeMapper.toPersistence(
-        RevisionChangeEntity.create({
-          id: crypto.randomUUID(),
-          revisionId: input.revisionId,
-          entityType: "pointload",
-          entityId: event.payload.id,
-          schemaVersion: 1,
-          op: "insert",
-          payload: {
-            id: event.payload.id,
-            revisionId: event.payload.revisionId,
-            nodeId: event.payload.nodeId,
-            loadCaseId: event.payload.loadCaseId,
-            force: {
-              forceAlongX: {
-                value: event.payload.force.forceAlongX.Newtons,
-                unit: ForceUnits.Newtons,
-              },
-              forceAlongY: {
-                value: event.payload.force.forceAlongY.Newtons,
-                unit: ForceUnits.Newtons,
-              },
-              forceAlongZ: {
-                value: event.payload.force.forceAlongZ.Newtons,
-                unit: ForceUnits.Newtons,
-              },
-              momentAboutX: {
-                value: event.payload.force.momentAboutX.NewtonMeters,
-                unit: TorqueUnits.NewtonMeters,
-              },
-              momentAboutY: {
-                value: event.payload.force.momentAboutY.NewtonMeters,
-                unit: TorqueUnits.NewtonMeters,
-              },
-              momentAboutZ: {
-                value: event.payload.force.momentAboutZ.NewtonMeters,
-                unit: TorqueUnits.NewtonMeters,
-              },
-            },
-            direction: event.payload.direction,
-          },
-          createdAt: now,
-        }),
-      ),
-    );
-
-  return [
-    ...nodeChanges,
-    ...nodeDeleteChanges,
-    ...materialChanges,
-    ...modelSettingsChanges,
-    ...sectionProfileChanges,
-    ...element1dChanges,
-    ...loadCaseChanges,
-    ...loadCombinationChanges,
-    ...pointLoadChanges,
-  ];
+    case "section_profile":
+      return toSectionProfileRevisionChangePayload(
+        change.snapshot as SectionProfileSnapshot,
+      );
+    case "element1d":
+      return toElement1dRevisionChangePayload(
+        change.snapshot as Element1dSnapshot,
+      );
+    case "loadcase":
+      return toLoadCaseRevisionChangePayload(change.snapshot as LoadCaseSnapshot);
+    case "loadcombination":
+      return toLoadCombinationRevisionChangePayload(
+        change.snapshot as LoadCombinationSnapshot,
+      );
+    case "pointload":
+      return toPointLoadRevisionChangePayload(change.snapshot as PointLoadSnapshot);
+  }
 };
+
+const buildRevisionChangeRowsFromRevisionChanges = (input: {
+  revisionId: string | null;
+  changes: ModelRevisionEntityChange[];
+}): RevisionChangeInsertRow[] => {
+  const now = new Date();
+
+  return input.changes.map((change) => ({
+    id: crypto.randomUUID(),
+    revisionId: input.revisionId,
+    entityType: change.entityType,
+    entityId: change.entityId,
+    schemaVersion: 1,
+    op: toRevisionChangeOp(change.op),
+    payload: toRevisionChangePayload(change),
+    createdAt: now,
+  }));
+};
+
+const toNodeRevisionChangePayload = (
+  snapshot: NodeSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  modelRevisionId: snapshot.modelRevisionId ?? null,
+  nodeType: snapshot.nodeType ?? null,
+  nodeTypeDescriminator: snapshot.nodeTypeDescriminator ?? null,
+  point: snapshot.point ?? null,
+  element1dId: snapshot.element1dId ?? null,
+  distanceAlongElement1d:
+    snapshot.distanceAlongElement1d instanceof Ratio
+      ? snapshot.distanceAlongElement1d.DecimalFractions
+      : null,
+  restraint: snapshot.restraint ?? null,
+});
+
+const toMaterialRevisionChangePayload = (
+  snapshot: MaterialSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  revisionId: snapshot.revisionId,
+  name: snapshot.name,
+  pressureE: {
+    value: snapshot.pressureE.Pascals,
+    unit: PressureUnits.Pascals,
+  },
+  pressureG: {
+    value: snapshot.pressureG.Pascals,
+    unit: PressureUnits.Pascals,
+  },
+});
+
+const toModelSettingsRevisionChangePayload = (
+  snapshot: ModelSettingsSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  revisionId: snapshot.revisionId,
+  units: snapshot.units,
+  yAxisUp: snapshot.yAxisUp,
+});
+
+const toSectionProfileRevisionChangePayload = (
+  snapshot: SectionProfileSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  revisionId: snapshot.revisionId,
+  name: snapshot.name,
+  discriminator: snapshot.discriminator,
+  area: {
+    value: snapshot.area.SquareMeters,
+    unit: AreaUnits.SquareMeters,
+  },
+  strongAxisMomentOfInertia: {
+    value: snapshot.strongAxisMomentOfInertia.MetersToTheFourth,
+    unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
+  },
+  weakAxisMomentOfInertia: {
+    value: snapshot.weakAxisMomentOfInertia.MetersToTheFourth,
+    unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
+  },
+  torsionalConstant: {
+    value: snapshot.torsionalConstant.MetersToTheFourth,
+    unit: AreaMomentOfInertiaUnits.MetersToTheFourth,
+  },
+  warpingConstant: {
+    value: snapshot.warpingConstant.MetersToTheSixth,
+    unit: WarpingMomentOfInertiaUnits.MetersToTheSixth,
+  },
+  strongAxisPlasticSectionModulus: {
+    value: snapshot.strongAxisPlasticSectionModulus.CubicMeters,
+    unit: VolumeUnits.CubicMeters,
+  },
+  weakAxisPlasticSectionModulus: {
+    value: snapshot.weakAxisPlasticSectionModulus.CubicMeters,
+    unit: VolumeUnits.CubicMeters,
+  },
+  strongAxisElasticSectionModulus: {
+    value: snapshot.strongAxisElasticSectionModulus.CubicMeters,
+    unit: VolumeUnits.CubicMeters,
+  },
+  weakAxisElasticSectionModulus: {
+    value: snapshot.weakAxisElasticSectionModulus.CubicMeters,
+    unit: VolumeUnits.CubicMeters,
+  },
+  ...(snapshot.strongAxisShearArea
+    ? {
+        strongAxisShearArea: {
+          value: snapshot.strongAxisShearArea.SquareMeters,
+          unit: AreaUnits.SquareMeters,
+        },
+      }
+    : {}),
+  ...(snapshot.weakAxisShearArea
+    ? {
+        weakAxisShearArea: {
+          value: snapshot.weakAxisShearArea.SquareMeters,
+          unit: AreaUnits.SquareMeters,
+        },
+      }
+    : {}),
+});
+
+const toElement1dRevisionChangePayload = (
+  snapshot: Element1dSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  revisionId: snapshot.revisionId,
+  startNodeId: snapshot.startNodeId,
+  endNodeId: snapshot.endNodeId,
+  materialId: snapshot.materialId,
+  sectionProfileId: snapshot.sectionProfileId,
+});
+
+const toLoadCaseRevisionChangePayload = (
+  snapshot: LoadCaseSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  revisionId: snapshot.revisionId,
+  name: snapshot.name,
+});
+
+const toLoadCombinationRevisionChangePayload = (
+  snapshot: LoadCombinationSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  revisionId: snapshot.revisionId,
+  loadCaseFactors: { ...snapshot.loadCaseFactors },
+});
+
+const toPointLoadRevisionChangePayload = (
+  snapshot: PointLoadSnapshot,
+): Record<string, unknown> => ({
+  id: snapshot.id,
+  revisionId: snapshot.revisionId,
+  nodeId: snapshot.nodeId,
+  loadCaseId: snapshot.loadCaseId,
+  force: {
+    forceAlongX: {
+      value: snapshot.force.forceAlongX.Newtons,
+      unit: ForceUnits.Newtons,
+    },
+    forceAlongY: {
+      value: snapshot.force.forceAlongY.Newtons,
+      unit: ForceUnits.Newtons,
+    },
+    forceAlongZ: {
+      value: snapshot.force.forceAlongZ.Newtons,
+      unit: ForceUnits.Newtons,
+    },
+    momentAboutX: {
+      value: snapshot.force.momentAboutX.NewtonMeters,
+      unit: TorqueUnits.NewtonMeters,
+    },
+    momentAboutY: {
+      value: snapshot.force.momentAboutY.NewtonMeters,
+      unit: TorqueUnits.NewtonMeters,
+    },
+    momentAboutZ: {
+      value: snapshot.force.momentAboutZ.NewtonMeters,
+      unit: TorqueUnits.NewtonMeters,
+    },
+  },
+  direction: snapshot.direction,
+});
 
 const loadRevisionHistory = async (input: {
   revisionId?: string | null;
@@ -633,7 +502,7 @@ const buildNodesFromRevisions = async (input: {
     if (row.entityType !== "node") {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       nodesById.delete(row.entityId);
       continue;
     }
@@ -739,6 +608,10 @@ const toFiniteNumber = (value: unknown): number | undefined => {
     : undefined;
 };
 
+const isDeleteOperation = (op: string): boolean => {
+  return op === "delete" || op === "deleted";
+};
+
 const buildMaterialsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
 }): Promise<Map<string, MaterialEntity>> => {
@@ -752,7 +625,7 @@ const buildMaterialsFromRevisions = async (input: {
     if (row.entityType !== "material") {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       materialsById.delete(row.entityId);
       continue;
     }
@@ -801,7 +674,7 @@ const buildModelSettingsFromRevisions = async (input: {
     if (row.entityType !== "model_settings") {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       latestModelSettings = null;
       continue;
     }
@@ -880,7 +753,7 @@ const buildSectionProfilesFromRevisions = async (input: {
     ) {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       sectionProfilesById.delete(row.entityId);
       continue;
     }
@@ -1006,7 +879,7 @@ const buildElement1dsFromRevisions = async (input: {
     if (row.entityType !== "element1d") {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       element1dsById.delete(row.entityId);
       continue;
     }
@@ -1053,7 +926,7 @@ const buildLoadCasesFromRevisions = async (input: {
     if (row.entityType !== "loadcase" && row.entityType !== "load_case") {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       loadCasesById.delete(row.entityId);
       continue;
     }
@@ -1095,7 +968,7 @@ const buildLoadCombinationsFromRevisions = async (input: {
     ) {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       loadCombinationsById.delete(row.entityId);
       continue;
     }
@@ -1138,7 +1011,7 @@ const buildPointLoadsFromRevisions = async (input: {
     if (row.entityType !== "pointload" && row.entityType !== "point_load") {
       continue;
     }
-    if (row.op === "delete") {
+    if (isDeleteOperation(row.op)) {
       pointLoadsById.delete(row.entityId);
       continue;
     }
@@ -1200,16 +1073,6 @@ const buildPointLoadsFromRevisions = async (input: {
   }
 
   return pointLoadsById;
-};
-
-const extractNodeName = (payload: unknown): string => {
-  if (payload && typeof payload === "object") {
-    const name = (payload as { name?: unknown }).name;
-    if (typeof name === "string") {
-      return name;
-    }
-  }
-  return "";
 };
 
 const extractNodeTypeDescriminator = (
