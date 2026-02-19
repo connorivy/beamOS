@@ -29,6 +29,25 @@ import {
   SectionProfileEntity,
   type SectionProfileSnapshot,
 } from "../section-profiles/section-profile-entity";
+import type {
+  Element1dOperationsRequest,
+  LoadCaseOperationsRequest,
+  LoadCombinationOperationsRequest,
+  MaterialOperationsRequest,
+  NodeOperationsRequest,
+  PointLoadOperationsRequest,
+  SectionProfileOperationsRequest,
+} from "./create-model-revision-request-schema";
+import {
+  Area,
+  AreaMomentOfInertia,
+  Force,
+  Pressure,
+  Ratio,
+  Torque,
+  Volume,
+  WarpingMomentOfInertia,
+} from "unitsnet-js";
 
 export type ModelRevisionSnapshot = {
   id: string;
@@ -367,6 +386,501 @@ export class ModelRevisionAggregate {
     };
   }
 
+  addNodeOperations(operations?: NodeOperationsRequest): void {
+    if (!operations) {
+      return;
+    }
+
+    for (const nodeId of operations.delete ?? []) {
+      this.deleteNode(nodeId);
+    }
+
+    for (const createNode of operations.create ?? []) {
+      if (createNode.location.type === "internal") {
+        this.addNode({
+          id: null,
+          modelRevisionId: this.id,
+          nodeType: "internalNode",
+          nodeTypeDescriminator: "internal",
+          element1dId: createNode.location.element1dId,
+          distanceAlongElement1d: Ratio.FromDecimalFractions(
+            createNode.location.ratioAlongElement1d,
+          ),
+          restraint: createNode.restraint,
+        });
+        continue;
+      }
+
+      this.addNode({
+        id: null,
+        modelRevisionId: this.id,
+        nodeType: "spatialNode",
+        nodeTypeDescriminator: "external",
+        point: createNode.location.point,
+        restraint: createNode.restraint,
+      });
+    }
+
+    for (const putNode of operations.update ?? []) {
+      if (!this.nodes.some((node) => node.id === putNode.id)) {
+        throw new Error(`Node ${putNode.id} not found`);
+      }
+      if (putNode.location.type === "internal") {
+        this.addNode({
+          id: putNode.id,
+          modelRevisionId: this.id,
+          nodeType: "internalNode",
+          nodeTypeDescriminator: "internal",
+          element1dId: putNode.location.element1dId,
+          distanceAlongElement1d: Ratio.FromDecimalFractions(
+            putNode.location.ratioAlongElement1d,
+          ),
+          restraint: putNode.restraint,
+        });
+        continue;
+      }
+
+      this.addNode({
+        id: putNode.id,
+        modelRevisionId: this.id,
+        nodeType: "spatialNode",
+        nodeTypeDescriminator: "external",
+        point: putNode.location.point,
+        restraint: putNode.restraint,
+      });
+    }
+  }
+
+  addMaterialOperations(operations?: MaterialOperationsRequest): void {
+    if (!operations) {
+      return;
+    }
+
+    const normalizeName = (value: string) => value.trim().toLowerCase();
+    const materialIdByNormalizedName = new Map(
+      this.materials.map((material) => [
+        normalizeName(material.name),
+        material.id,
+      ]),
+    );
+
+    for (const materialId of operations.delete ?? []) {
+      const existing = this.materials.find((material) => material.id === materialId);
+      if (existing) {
+        materialIdByNormalizedName.delete(normalizeName(existing.name));
+      }
+      this.deleteMaterial(materialId);
+    }
+
+    for (const createMaterial of operations.create ?? []) {
+      const normalized = normalizeName(createMaterial.name);
+      if (materialIdByNormalizedName.has(normalized)) {
+        throw new Error(`Duplicate material name "${createMaterial.name}"`);
+      }
+      this.addMaterial({
+        id: null,
+        revisionId: this.id,
+        name: createMaterial.name,
+        pressureE: new Pressure(
+          createMaterial.modulusOfElasticity,
+          createMaterial.units.pressure,
+        ),
+        pressureG: new Pressure(
+          createMaterial.modulusOfRigidity,
+          createMaterial.units.pressure,
+        ),
+      });
+      const created = this.materials.find(
+        (material) => normalizeName(material.name) === normalized,
+      );
+      if (created) {
+        materialIdByNormalizedName.set(normalized, created.id);
+      }
+    }
+
+    for (const putMaterial of operations.update ?? []) {
+      const sourceId = materialIdByNormalizedName.get(
+        normalizeName(putMaterial.name),
+      );
+      if (!sourceId) {
+        throw new Error(`Material "${putMaterial.name}" not found`);
+      }
+      const targetName = putMaterial.newName ?? putMaterial.name;
+      const targetNormalized = normalizeName(targetName);
+      const existingTargetId = materialIdByNormalizedName.get(targetNormalized);
+      if (existingTargetId && existingTargetId !== sourceId) {
+        throw new Error(`Duplicate material name "${targetName}"`);
+      }
+      this.addMaterial({
+        id: sourceId,
+        revisionId: this.id,
+        name: targetName,
+        pressureE: new Pressure(
+          putMaterial.modulusOfElasticity,
+          putMaterial.units.pressure,
+        ),
+        pressureG: new Pressure(
+          putMaterial.modulusOfRigidity,
+          putMaterial.units.pressure,
+        ),
+      });
+      materialIdByNormalizedName.delete(normalizeName(putMaterial.name));
+      materialIdByNormalizedName.set(targetNormalized, sourceId);
+    }
+  }
+
+  addSectionProfileOperations(
+    operations?: SectionProfileOperationsRequest,
+  ): void {
+    if (!operations) {
+      return;
+    }
+
+    const sectionProfileIdByName = new Map(
+      this.sectionProfiles.map((sectionProfile) => [
+        sectionProfile.name,
+        sectionProfile.id,
+      ]),
+    );
+
+    for (const sectionProfileName of operations.delete ?? []) {
+      const sectionProfileId = sectionProfileIdByName.get(sectionProfileName);
+      if (sectionProfileId) {
+        this.deleteSectionProfile(sectionProfileId);
+        sectionProfileIdByName.delete(sectionProfileName);
+      }
+    }
+
+    for (const createSectionProfile of operations.create ?? []) {
+      const hasStrong = createSectionProfile.strongAxisShearArea !== undefined;
+      const hasWeak = createSectionProfile.weakAxisShearArea !== undefined;
+      if (hasStrong !== hasWeak) {
+        throw new Error(
+          "strongAxisShearArea and weakAxisShearArea must both be provided or both be omitted",
+        );
+      }
+      if (sectionProfileIdByName.has(createSectionProfile.name)) {
+        throw new Error(
+          `Duplicate section profile name "${createSectionProfile.name}"`,
+        );
+      }
+
+      this.addSectionProfile({
+        id: null,
+        revisionId: this.id,
+        name: createSectionProfile.name,
+        discriminator: hasStrong && hasWeak ? "WITH_SHEAR_AREAS" : "STANDARD",
+        area: Area.FromSquareMeters(createSectionProfile.area),
+        strongAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+          createSectionProfile.strongAxisMomentOfInertia,
+        ),
+        weakAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+          createSectionProfile.weakAxisMomentOfInertia,
+        ),
+        torsionalConstant: AreaMomentOfInertia.FromMetersToTheFourth(
+          createSectionProfile.torsionalConstant,
+        ),
+        warpingConstant: WarpingMomentOfInertia.FromMetersToTheSixth(
+          createSectionProfile.warpingConstant,
+        ),
+        strongAxisPlasticSectionModulus: Volume.FromCubicMeters(
+          createSectionProfile.strongAxisPlasticSectionModulus,
+        ),
+        weakAxisPlasticSectionModulus: Volume.FromCubicMeters(
+          createSectionProfile.weakAxisPlasticSectionModulus,
+        ),
+        strongAxisElasticSectionModulus: Volume.FromCubicMeters(
+          createSectionProfile.strongAxisElasticSectionModulus,
+        ),
+        weakAxisElasticSectionModulus: Volume.FromCubicMeters(
+          createSectionProfile.weakAxisElasticSectionModulus,
+        ),
+        ...(hasStrong && hasWeak
+          ? {
+              strongAxisShearArea: Area.FromSquareMeters(
+                createSectionProfile.strongAxisShearArea!,
+              ),
+              weakAxisShearArea: Area.FromSquareMeters(
+                createSectionProfile.weakAxisShearArea!,
+              ),
+            }
+          : {}),
+      });
+
+      const created = this.sectionProfiles.find(
+        (sectionProfile) => sectionProfile.name === createSectionProfile.name,
+      );
+      if (created) {
+        sectionProfileIdByName.set(createSectionProfile.name, created.id);
+      }
+    }
+
+    for (const putSectionProfile of operations.update ?? []) {
+      const sectionProfileId = sectionProfileIdByName.get(putSectionProfile.name);
+      if (!sectionProfileId) {
+        throw new Error(`Section profile "${putSectionProfile.name}" not found`);
+      }
+
+      const targetName = putSectionProfile.newName ?? putSectionProfile.name;
+      const existingTargetId = sectionProfileIdByName.get(targetName);
+      if (existingTargetId && existingTargetId !== sectionProfileId) {
+        throw new Error(`Duplicate section profile name "${targetName}"`);
+      }
+
+      const hasStrong = putSectionProfile.strongAxisShearArea !== undefined;
+      const hasWeak = putSectionProfile.weakAxisShearArea !== undefined;
+      if (hasStrong !== hasWeak) {
+        throw new Error(
+          "strongAxisShearArea and weakAxisShearArea must both be provided or both be omitted",
+        );
+      }
+
+      this.addSectionProfile({
+        id: sectionProfileId,
+        revisionId: this.id,
+        name: targetName,
+        discriminator: hasStrong && hasWeak ? "WITH_SHEAR_AREAS" : "STANDARD",
+        area: Area.FromSquareMeters(putSectionProfile.area),
+        strongAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+          putSectionProfile.strongAxisMomentOfInertia,
+        ),
+        weakAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+          putSectionProfile.weakAxisMomentOfInertia,
+        ),
+        torsionalConstant: AreaMomentOfInertia.FromMetersToTheFourth(
+          putSectionProfile.torsionalConstant,
+        ),
+        warpingConstant: WarpingMomentOfInertia.FromMetersToTheSixth(
+          putSectionProfile.warpingConstant,
+        ),
+        strongAxisPlasticSectionModulus: Volume.FromCubicMeters(
+          putSectionProfile.strongAxisPlasticSectionModulus,
+        ),
+        weakAxisPlasticSectionModulus: Volume.FromCubicMeters(
+          putSectionProfile.weakAxisPlasticSectionModulus,
+        ),
+        strongAxisElasticSectionModulus: Volume.FromCubicMeters(
+          putSectionProfile.strongAxisElasticSectionModulus,
+        ),
+        weakAxisElasticSectionModulus: Volume.FromCubicMeters(
+          putSectionProfile.weakAxisElasticSectionModulus,
+        ),
+        ...(hasStrong && hasWeak
+          ? {
+              strongAxisShearArea: Area.FromSquareMeters(
+                putSectionProfile.strongAxisShearArea!,
+              ),
+              weakAxisShearArea: Area.FromSquareMeters(
+                putSectionProfile.weakAxisShearArea!,
+              ),
+            }
+          : {}),
+      });
+
+      sectionProfileIdByName.delete(putSectionProfile.name);
+      sectionProfileIdByName.set(targetName, sectionProfileId);
+    }
+  }
+
+  addElement1dOperations(operations?: Element1dOperationsRequest): void {
+    if (!operations) {
+      return;
+    }
+
+    for (const element1dId of operations.delete ?? []) {
+      this.deleteElement1d(element1dId);
+    }
+
+    for (const createElement1d of operations.create ?? []) {
+      const material = this.materials.find(
+        (entry) => entry.name === createElement1d.materialName,
+      );
+      if (!material) {
+        throw new Error(`Material "${createElement1d.materialName}" not found`);
+      }
+      const sectionProfile = this.sectionProfiles.find(
+        (entry) => entry.name === createElement1d.sectionProfileName,
+      );
+      if (!sectionProfile) {
+        throw new Error(
+          `Section profile "${createElement1d.sectionProfileName}" not found`,
+        );
+      }
+
+      this.addElement1d({
+        id: null,
+        revisionId: this.id,
+        startNodeId: createElement1d.startNodeId,
+        endNodeId: createElement1d.endNodeId,
+        materialId: material.id,
+        sectionProfileId: sectionProfile.id,
+      });
+    }
+
+    for (const putElement1d of operations.update ?? []) {
+      if (!this.element1ds.some((element1d) => element1d.id === putElement1d.id)) {
+        throw new Error(`Element1d ${putElement1d.id} not found`);
+      }
+      this.addElement1d({
+        id: putElement1d.id,
+        revisionId: this.id,
+        startNodeId: putElement1d.startNodeId,
+        endNodeId: putElement1d.endNodeId,
+        materialId: putElement1d.materialId,
+        sectionProfileId: putElement1d.sectionProfileId,
+      });
+    }
+  }
+
+  addLoadCaseOperations(operations?: LoadCaseOperationsRequest): void {
+    if (!operations) {
+      return;
+    }
+
+    for (const loadCaseId of operations.delete ?? []) {
+      this.deleteLoadCase(loadCaseId);
+    }
+
+    for (const createLoadCase of operations.create ?? []) {
+      this.addLoadCase({
+        id: null,
+        revisionId: this.id,
+        name: createLoadCase.name,
+      });
+    }
+
+    for (const putLoadCase of operations.update ?? []) {
+      if (!this.loadCases.some((loadCase) => loadCase.id === putLoadCase.id)) {
+        throw new Error(`Load case ${putLoadCase.id} not found`);
+      }
+      this.addLoadCase({
+        id: putLoadCase.id,
+        revisionId: this.id,
+        name: putLoadCase.name,
+      });
+    }
+  }
+
+  addLoadCombinationOperations(
+    operations?: LoadCombinationOperationsRequest,
+  ): void {
+    if (!operations) {
+      return;
+    }
+
+    for (const loadCombinationId of operations.delete ?? []) {
+      this.deleteLoadCombination(loadCombinationId);
+    }
+
+    for (const createLoadCombination of operations.create ?? []) {
+      this.addLoadCombination({
+        id: null,
+        revisionId: this.id,
+        loadCaseFactors: { ...createLoadCombination.loadCaseFactors },
+      });
+    }
+
+    for (const putLoadCombination of operations.update ?? []) {
+      if (
+        !this.loadCombinations.some(
+          (loadCombination) => loadCombination.id === putLoadCombination.id,
+        )
+      ) {
+        throw new Error(`Load combination ${putLoadCombination.id} not found`);
+      }
+      this.addLoadCombination({
+        id: putLoadCombination.id,
+        revisionId: this.id,
+        loadCaseFactors: { ...putLoadCombination.loadCaseFactors },
+      });
+    }
+  }
+
+  addPointLoadOperations(operations?: PointLoadOperationsRequest): void {
+    if (!operations) {
+      return;
+    }
+
+    for (const pointLoadId of operations.delete ?? []) {
+      this.deletePointLoad(pointLoadId);
+    }
+
+    for (const createPointLoad of operations.create ?? []) {
+      this.addPointLoad({
+        id: null,
+        revisionId: this.id,
+        nodeId: createPointLoad.nodeId,
+        loadCaseId: createPointLoad.loadCaseId,
+        force: {
+          forceAlongX: new Force(
+            createPointLoad.force.forceAlongX,
+            createPointLoad.units.force,
+          ),
+          forceAlongY: new Force(
+            createPointLoad.force.forceAlongY,
+            createPointLoad.units.force,
+          ),
+          forceAlongZ: new Force(
+            createPointLoad.force.forceAlongZ,
+            createPointLoad.units.force,
+          ),
+          momentAboutX: new Torque(
+            createPointLoad.force.momentAboutX,
+            createPointLoad.units.torque,
+          ),
+          momentAboutY: new Torque(
+            createPointLoad.force.momentAboutY,
+            createPointLoad.units.torque,
+          ),
+          momentAboutZ: new Torque(
+            createPointLoad.force.momentAboutZ,
+            createPointLoad.units.torque,
+          ),
+        },
+        direction: createPointLoad.direction,
+      });
+    }
+
+    for (const putPointLoad of operations.update ?? []) {
+      if (!this.pointLoads.some((pointLoad) => pointLoad.id === putPointLoad.id)) {
+        throw new Error(`Point load ${putPointLoad.id} not found`);
+      }
+      this.addPointLoad({
+        id: putPointLoad.id,
+        revisionId: this.id,
+        nodeId: putPointLoad.nodeId,
+        loadCaseId: putPointLoad.loadCaseId,
+        force: {
+          forceAlongX: new Force(
+            putPointLoad.force.forceAlongX,
+            putPointLoad.units.force,
+          ),
+          forceAlongY: new Force(
+            putPointLoad.force.forceAlongY,
+            putPointLoad.units.force,
+          ),
+          forceAlongZ: new Force(
+            putPointLoad.force.forceAlongZ,
+            putPointLoad.units.force,
+          ),
+          momentAboutX: new Torque(
+            putPointLoad.force.momentAboutX,
+            putPointLoad.units.torque,
+          ),
+          momentAboutY: new Torque(
+            putPointLoad.force.momentAboutY,
+            putPointLoad.units.torque,
+          ),
+          momentAboutZ: new Torque(
+            putPointLoad.force.momentAboutZ,
+            putPointLoad.units.torque,
+          ),
+        },
+        direction: putPointLoad.direction,
+      });
+    }
+  }
+
   addNode(node: AddEntityInput<NodeSnapshot>): void {
     const nodeId = this.resolveEntityId(node.id, "nodeId");
     const normalizedNode: NodeSnapshot = {
@@ -619,6 +1133,36 @@ export class ModelRevisionAggregate {
     if (!createdNode && !updatedNode && !unchangedNode) {
       throw new Error("Node does not exist");
     }
+  }
+
+  deleteMaterial(materialId: string): void {
+    assertUuid(materialId, "materialId");
+    this.deleteEntityFromBucket(this._materials, materialId);
+  }
+
+  deleteSectionProfile(sectionProfileId: string): void {
+    assertUuid(sectionProfileId, "sectionProfileId");
+    this.deleteEntityFromBucket(this._sectionProfiles, sectionProfileId);
+  }
+
+  deleteElement1d(element1dId: string): void {
+    assertUuid(element1dId, "element1dId");
+    this.deleteEntityFromBucket(this._element1ds, element1dId);
+  }
+
+  deleteLoadCase(loadCaseId: string): void {
+    assertUuid(loadCaseId, "loadCaseId");
+    this.deleteEntityFromBucket(this._loadCases, loadCaseId);
+  }
+
+  deleteLoadCombination(loadCombinationId: string): void {
+    assertUuid(loadCombinationId, "loadCombinationId");
+    this.deleteEntityFromBucket(this._loadCombinations, loadCombinationId);
+  }
+
+  deletePointLoad(pointLoadId: string): void {
+    assertUuid(pointLoadId, "pointLoadId");
+    this.deleteEntityFromBucket(this._pointLoads, pointLoadId);
   }
 
   toSnapshot(): ModelRevisionSnapshot {
@@ -910,5 +1454,23 @@ export class ModelRevisionAggregate {
     }
 
     return Bun.randomUUIDv7();
+  }
+
+  private deleteEntityFromBucket<TEntity>(
+    bucket: EntityBucket<TEntity>,
+    entityId: string,
+  ): void {
+    if (bucket.created.delete(entityId)) {
+      return;
+    }
+
+    if (bucket.updated.delete(entityId)) {
+      bucket.deleted.add(entityId);
+      return;
+    }
+
+    if (bucket.unchanged.delete(entityId)) {
+      bucket.deleted.add(entityId);
+    }
   }
 }

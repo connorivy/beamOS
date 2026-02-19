@@ -38,7 +38,7 @@ import {
 } from "../section-profiles/section-profile-contract-schemas";
 import { modelSettingsResponseSchema } from "src/model-settings/model-settings-contract-schemas";
 
-const element1dOperationsRequestSchema = z
+export const element1dOperationsRequestSchema = z
   .object({
     create: z.array(createElement1dRequestSchema).optional(),
     update: z.array(updateElement1dRequestSchema).optional(),
@@ -46,7 +46,7 @@ const element1dOperationsRequestSchema = z
   })
   .meta({ id: "CreateModelRevisionElement1dOperationsRequest" });
 
-const nodeOperationsRequestSchema = z
+export const nodeOperationsRequestSchema = z
   .object({
     create: z.array(createNodeRequestSchema).optional(),
     update: z.array(updateNodeRequestSchema).optional(),
@@ -54,7 +54,7 @@ const nodeOperationsRequestSchema = z
   })
   .meta({ id: "CreateModelRevisionNodeOperationsRequest" });
 
-const materialOperationsRequestSchema = z
+export const materialOperationsRequestSchema = z
   .object({
     create: z.array(createMaterialRequestSchema).optional(),
     update: z.array(updateMaterialRequestSchema).optional(),
@@ -62,7 +62,7 @@ const materialOperationsRequestSchema = z
   })
   .meta({ id: "CreateModelRevisionMaterialOperationsRequest" });
 
-const sectionProfileOperationsRequestSchema = z
+export const sectionProfileOperationsRequestSchema = z
   .object({
     create: z.array(createSectionProfileRequestSchema).optional(),
     update: z.array(updateSectionProfileRequestSchema).optional(),
@@ -70,7 +70,7 @@ const sectionProfileOperationsRequestSchema = z
   })
   .meta({ id: "CreateModelRevisionSectionProfileOperationsRequest" });
 
-const loadCaseOperationsRequestSchema = z
+export const loadCaseOperationsRequestSchema = z
   .object({
     create: z.array(createLoadCaseRequestSchema).optional(),
     update: z.array(updateLoadCaseRequestSchema).optional(),
@@ -78,7 +78,7 @@ const loadCaseOperationsRequestSchema = z
   })
   .meta({ id: "CreateModelRevisionLoadCaseOperationsRequest" });
 
-const loadCombinationOperationsRequestSchema = z
+export const loadCombinationOperationsRequestSchema = z
   .object({
     create: z.array(createLoadCombinationRequestSchema).optional(),
     update: z.array(updateLoadCombinationRequestSchema).optional(),
@@ -86,7 +86,7 @@ const loadCombinationOperationsRequestSchema = z
   })
   .meta({ id: "CreateModelRevisionLoadCombinationOperationsRequest" });
 
-const pointLoadOperationsRequestSchema = z
+export const pointLoadOperationsRequestSchema = z
   .object({
     create: z.array(createPointLoadRequestSchema).optional(),
     update: z.array(updatePointLoadRequestSchema).optional(),
@@ -133,3 +133,23 @@ export const modelRevisionResSchema = z
     pointLoads: z.array(pointLoadResponseSchema),
   })
   .meta({ id: "ModelRevision" });
+
+export type NodeOperationsRequest = z.infer<typeof nodeOperationsRequestSchema>;
+export type MaterialOperationsRequest = z.infer<
+  typeof materialOperationsRequestSchema
+>;
+export type SectionProfileOperationsRequest = z.infer<
+  typeof sectionProfileOperationsRequestSchema
+>;
+export type Element1dOperationsRequest = z.infer<
+  typeof element1dOperationsRequestSchema
+>;
+export type LoadCaseOperationsRequest = z.infer<
+  typeof loadCaseOperationsRequestSchema
+>;
+export type LoadCombinationOperationsRequest = z.infer<
+  typeof loadCombinationOperationsRequestSchema
+>;
+export type PointLoadOperationsRequest = z.infer<
+  typeof pointLoadOperationsRequestSchema
+>;
