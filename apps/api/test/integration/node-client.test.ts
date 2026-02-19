@@ -4,6 +4,17 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const defaultModelSettings = {
+  units: {
+    pressure: "Pascal",
+    area: "SquareMeter",
+    areaMomentOfInertia: "MeterToTheFourth",
+    warpingMomentOfInertia: "MeterToTheSixth",
+    volume: "CubicMeter",
+  },
+  yAxisUp: true,
+} as const;
+
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
 }, 30_000);
@@ -21,6 +32,7 @@ describe("typed node api client integration", () => {
       body: {
         name: "Node Integration Model",
         description: "Create model for nodes test",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -158,6 +170,7 @@ describe("typed node api client integration", () => {
       body: {
         name: "Duplicate Node TempId Model",
         description: "Create model for duplicate node tempId test",
+      modelSettings: defaultModelSettings,
       },
     });
 

@@ -13,6 +13,17 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const defaultModelSettings = {
+  units: {
+    pressure: "Pascal",
+    area: "SquareMeter",
+    areaMomentOfInertia: "MeterToTheFourth",
+    warpingMomentOfInertia: "MeterToTheSixth",
+    volume: "CubicMeter",
+  },
+  yAxisUp: true,
+} as const;
+
 const createSectionProfileInput = () => ({
   name: "W12x26",
   discriminator: "STANDARD" as const,
@@ -43,6 +54,7 @@ describe("model revision integration", () => {
       body: {
         name: "Material Name Reference Model",
         description: "Uses material names for material update operations",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -123,6 +135,7 @@ describe("model revision integration", () => {
         name: "Section Profile Name Reference Model",
         description:
           "Uses section profile names for section profile operations",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -219,6 +232,7 @@ describe("model revision integration", () => {
       body: {
         name: "Create Revision Operations Model",
         description: "Create base model",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -318,6 +332,7 @@ describe("model revision integration", () => {
       body: {
         name: "Stacked Revision Model",
         description: "Create base model",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -617,6 +632,7 @@ describe("model revision integration", () => {
       body: {
         name: "Load Entities Model",
         description: "Create base model",
+      modelSettings: defaultModelSettings,
       },
     });
 

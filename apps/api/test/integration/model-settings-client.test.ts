@@ -4,6 +4,17 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const defaultModelSettings = {
+  units: {
+    pressure: "Pascal",
+    area: "SquareMeter",
+    areaMomentOfInertia: "MeterToTheFourth",
+    warpingMomentOfInertia: "MeterToTheSixth",
+    volume: "CubicMeter",
+  },
+  yAxisUp: true,
+} as const;
+
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
 }, 30_000);
@@ -20,6 +31,7 @@ describe("model settings integration", () => {
       body: {
         name: "Model Settings Model",
         description: "Create model for settings test",
+      modelSettings: defaultModelSettings,
       },
     });
 

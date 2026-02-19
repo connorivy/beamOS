@@ -4,6 +4,17 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const defaultModelSettings = {
+  units: {
+    pressure: "Pascal",
+    area: "SquareMeter",
+    areaMomentOfInertia: "MeterToTheFourth",
+    warpingMomentOfInertia: "MeterToTheSixth",
+    volume: "CubicMeter",
+  },
+  yAxisUp: true,
+} as const;
+
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
 }, 30_000);
@@ -19,6 +30,7 @@ describe("typed openapi client integration", () => {
     const requestBody = {
       name: "Integration Test Model",
       description: "Create a model through typed OpenAPI client",
+      modelSettings: defaultModelSettings,
     };
 
     const { data, error, response } = await client.POST("/api/projects", {
@@ -62,6 +74,12 @@ describe("typed openapi client integration", () => {
     expect(mainBranchRevisionResponse.data.parentRevisionId).toBeNull();
     expect(mainBranchRevisionResponse.data.nodes).toHaveLength(0);
     expect(mainBranchRevisionResponse.data.materials).toHaveLength(0);
+    expect(mainBranchRevisionResponse.data.modelSettings).toEqual({
+      id: expect.any(String),
+      revisionId: expect.any(String),
+      units: defaultModelSettings.units,
+      yAxisUp: defaultModelSettings.yAxisUp,
+    });
     expect(mainBranchRevisionResponse.data.sectionProfiles).toHaveLength(0);
     expect(mainBranchRevisionResponse.data.element1ds).toHaveLength(0);
 
@@ -86,6 +104,7 @@ describe("typed openapi client integration", () => {
     const requestBody = {
       name: "List Models Integration Test",
       description: "Create a model for list endpoint",
+      modelSettings: defaultModelSettings,
     };
 
     const createResponse = await client.POST("/api/projects", {

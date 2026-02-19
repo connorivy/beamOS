@@ -5,6 +5,17 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const defaultModelSettings = {
+  units: {
+    pressure: "Pascal",
+    area: "SquareMeter",
+    areaMomentOfInertia: "MeterToTheFourth",
+    warpingMomentOfInertia: "MeterToTheSixth",
+    volume: "CubicMeter",
+  },
+  yAxisUp: true,
+} as const;
+
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
 }, 30_000);
@@ -22,6 +33,7 @@ describe("typed material api client integration", () => {
       body: {
         name: "Material Integration Model",
         description: "Create model for materials test",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -139,6 +151,7 @@ describe("typed material api client integration", () => {
       body: {
         name: "Duplicate Material Name Model",
         description: "Create model for duplicate material name test",
+      modelSettings: defaultModelSettings,
       },
     });
 

@@ -2,14 +2,21 @@ import { describe, expect, it } from "bun:test";
 import {
   Area,
   AreaMomentOfInertia,
+  AreaMomentOfInertiaUnits,
+  AreaUnits,
   Pressure,
+  PressureUnits,
   Volume,
+  VolumeUnits,
   WarpingMomentOfInertia,
+  WarpingMomentOfInertiaUnits,
 } from "unitsnet-js";
 import { ModelRevisionAggregate } from "../../../src/model-revisions/model-revision-aggregate";
 
-const createAggregate = () =>
-  ModelRevisionAggregate.create({
+const createAggregate = () => {
+  const revisionId = Bun.randomUUIDv7();
+  return ModelRevisionAggregate.create({
+    id: revisionId,
     projectId: Bun.randomUUIDv7(),
     parentRevisionId: null,
     secondParentRevisionId: null,
@@ -18,12 +25,26 @@ const createAggregate = () =>
     createdAt: new Date(),
     nodes: [],
     materials: [],
+    modelSettings: {
+      id: Bun.randomUUIDv7(),
+      revisionId,
+      units: {
+        pressure: PressureUnits.Pascals,
+        area: AreaUnits.SquareMeters,
+        areaMomentOfInertia: AreaMomentOfInertiaUnits.MetersToTheFourth,
+        warpingMomentOfInertia:
+          WarpingMomentOfInertiaUnits.MetersToTheSixth,
+        volume: VolumeUnits.CubicMeters,
+      },
+      yAxisUp: true,
+    },
     sectionProfiles: [],
     element1ds: [],
     loadCases: [],
     loadCombinations: [],
     pointLoads: [],
   });
+};
 
 describe("ModelRevisionAggregate", () => {
   it("pulls domain events from added materials", () => {

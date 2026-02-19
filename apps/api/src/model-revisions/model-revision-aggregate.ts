@@ -40,7 +40,7 @@ export type ModelRevisionSnapshot = {
   createdAt: Date;
   nodes: NodeSnapshot[];
   materials: MaterialSnapshot[];
-  modelSettings: ModelSettingsSnapshot | null;
+  modelSettings: ModelSettingsSnapshot;
   sectionProfiles: SectionProfileSnapshot[];
   element1ds: Element1dSnapshot[];
   loadCases: LoadCaseSnapshot[];
@@ -50,10 +50,9 @@ export type ModelRevisionSnapshot = {
 
 export type ModelRevisionCreateSnapshot = Omit<
   ModelRevisionSnapshot,
-  "id" | "modelSettings"
+  "id"
 > & {
   id?: string;
-  modelSettings?: ModelSettingsSnapshot | null;
 };
 
 export class ModelRevisionAggregate {
@@ -64,7 +63,7 @@ export class ModelRevisionAggregate {
   private _createdAt: Date;
   private _nodes: NodeEntity[];
   private _materials: MaterialEntity[];
-  private _modelSettings: ModelSettingsEntity | null;
+  private _modelSettings: ModelSettingsEntity;
   private _sectionProfiles: SectionProfileEntity[];
   private _element1ds: Element1dEntity[];
   private _loadCases: LoadCaseEntity[];
@@ -97,9 +96,7 @@ export class ModelRevisionAggregate {
     this._materials = snapshot.materials.map((material) =>
       MaterialEntity.rehydrate(material),
     );
-    this._modelSettings = snapshot.modelSettings
-      ? ModelSettingsEntity.rehydrate(snapshot.modelSettings)
-      : null;
+    this._modelSettings = ModelSettingsEntity.rehydrate(snapshot.modelSettings);
     this._sectionProfiles = snapshot.sectionProfiles.map((sectionProfile) =>
       SectionProfileEntity.rehydrate(sectionProfile),
     );
@@ -157,7 +154,7 @@ export class ModelRevisionAggregate {
     return this._materials;
   }
 
-  get modelSettings(): ModelSettingsEntity | null {
+  get modelSettings(): ModelSettingsEntity {
     return this._modelSettings;
   }
 
@@ -286,7 +283,7 @@ export class ModelRevisionAggregate {
       createdAt: this._createdAt,
       nodes: this._nodes.map((node) => node.toSnapshot()),
       materials: this._materials.map((material) => material.toSnapshot()),
-      modelSettings: this._modelSettings?.toSnapshot() ?? null,
+      modelSettings: this._modelSettings.toSnapshot(),
       sectionProfiles: this._sectionProfiles.map((sectionProfile) =>
         sectionProfile.toSnapshot(),
       ),
@@ -306,9 +303,7 @@ export class ModelRevisionAggregate {
     const materialEvents = this._materials.flatMap((material) =>
       material.pullDomainEvents(),
     );
-    const modelSettingsEvents = this._modelSettings
-      ? this._modelSettings.pullDomainEvents()
-      : [];
+    const modelSettingsEvents = this._modelSettings.pullDomainEvents();
     const sectionProfileEvents = this._sectionProfiles.flatMap(
       (sectionProfile) => sectionProfile.pullDomainEvents(),
     );

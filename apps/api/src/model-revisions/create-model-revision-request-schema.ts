@@ -125,7 +125,7 @@ export const modelRevisionResSchema = z
     createdAt: z.iso.datetime(),
     nodes: z.array(revisionNodeResponseSchema),
     materials: z.array(materialResponseSchema),
-    modelSettings: modelSettingsResponseSchema.nullable(),
+    modelSettings: modelSettingsResponseSchema,
     sectionProfiles: z.array(sectionProfileResponseSchema),
     element1ds: z.array(element1dResponseSchema),
     loadCases: z.array(loadCaseResponseSchema),

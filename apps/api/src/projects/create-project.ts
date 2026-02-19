@@ -4,12 +4,14 @@ import type { AppContext } from "../common/types";
 import { z } from "zod";
 import { projectMapper as projectMapper } from "./project-mapper";
 import { uuidV7Schema } from "src/common/uuid";
+import { modelSettingsPropertiesSchema } from "src/model-settings/model-settings-contract-schemas";
 
 const createProjectReqSchema = z.object({
   body: z
     .object({
       name: z.string().min(1),
       description: z.string().min(1),
+      modelSettings: modelSettingsPropertiesSchema,
     })
     .meta({ id: "CreateProjectRequest" }),
 });
@@ -37,6 +39,7 @@ export const createProject = defineEndpoint({
     const createdProject = await ctx.services.modelRepository.create({
       model: project,
       message: req.body.description,
+      modelSettings: req.body.modelSettings,
     });
     return projectMapper.toResponse(createdProject);
   },

@@ -55,3 +55,13 @@ export const materialResponseSchema = materialPropertiesResponseSchema
 export const materialResponseArraySchema = z
   .array(materialResponseSchema)
   .meta({ id: "MaterialArray" });
+
+export const materialPersistenceSchemaV1 = z
+  .object({
+    name: z.string().min(1),
+    modulusOfElasticity: z.number(),
+    modulusOfRigidity: z.number(),
+  })
+  .meta({ id: "MaterialPersistenceV1" });
+
+export type MaterialPersistenceV1 = z.infer<typeof materialPersistenceSchemaV1>;

@@ -544,9 +544,26 @@ export interface components {
             /** @enum {string} */
             role: "Owner" | "Contributor" | "Reviewer";
         };
+        ModelSettingsProperties: {
+            units: components["schemas"]["ModelSettingsUnits"];
+            yAxisUp: boolean;
+        };
+        ModelSettingsUnits: {
+            /** @enum {string} */
+            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
+            /** @enum {string} */
+            area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+            /** @enum {string} */
+            areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+            /** @enum {string} */
+            warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+            /** @enum {string} */
+            volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+        };
         CreateProjectRequest: {
             name: string;
             description: string;
+            modelSettings: components["schemas"]["ModelSettingsProperties"];
         };
         ProjectsArray: components["schemas"]["Project"][];
         Node: {
@@ -664,24 +681,8 @@ export interface components {
             /** Format: uuid */
             revisionId: string;
         };
-        ModelSettingsUnits: {
-            /** @enum {string} */
-            pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
-            /** @enum {string} */
-            area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
-            /** @enum {string} */
-            areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
-            /** @enum {string} */
-            warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
-            /** @enum {string} */
-            volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
-        };
         PutModelSettingsResponse: {
             modelSettings: components["schemas"]["ModelSettings"];
-        };
-        ModelSettingsProperties: {
-            units: components["schemas"]["ModelSettingsUnits"];
-            yAxisUp: boolean;
         };
         SectionProfile: {
             /** Format: uuid */
@@ -874,7 +875,7 @@ export interface components {
             createdAt: string;
             nodes: components["schemas"]["RevisionNode"][];
             materials: components["schemas"]["Material"][];
-            modelSettings: components["schemas"]["ModelSettings"] | null;
+            modelSettings: components["schemas"]["ModelSettings"];
             sectionProfiles: components["schemas"]["SectionProfile"][];
             element1ds: components["schemas"]["Element1d"][];
             loadCases: components["schemas"]["LoadCase"][];
@@ -1073,6 +1074,8 @@ export interface components {
     pathItems: never;
 }
 export type Project = components['schemas']['Project'];
+export type ModelSettingsProperties = components['schemas']['ModelSettingsProperties'];
+export type ModelSettingsUnits = components['schemas']['ModelSettingsUnits'];
 export type CreateProjectRequest = components['schemas']['CreateProjectRequest'];
 export type ProjectsArray = components['schemas']['ProjectsArray'];
 export type Node = components['schemas']['Node'];
@@ -1090,9 +1093,7 @@ export type CreateMaterialRequest = components['schemas']['CreateMaterialRequest
 export type MaterialProperties = components['schemas']['MaterialProperties'];
 export type BatchCreateMaterialRequest = components['schemas']['BatchCreateMaterialRequest'];
 export type ModelSettings = components['schemas']['ModelSettings'];
-export type ModelSettingsUnits = components['schemas']['ModelSettingsUnits'];
 export type PutModelSettingsResponse = components['schemas']['PutModelSettingsResponse'];
-export type ModelSettingsProperties = components['schemas']['ModelSettingsProperties'];
 export type SectionProfile = components['schemas']['SectionProfile'];
 export type BatchCreateSectionProfileResponse = components['schemas']['BatchCreateSectionProfileResponse'];
 export type CreateSectionProfileRequest = components['schemas']['CreateSectionProfileRequest'];

@@ -11,6 +11,17 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const defaultModelSettings = {
+  units: {
+    pressure: "Pascal",
+    area: "SquareMeter",
+    areaMomentOfInertia: "MeterToTheFourth",
+    warpingMomentOfInertia: "MeterToTheSixth",
+    volume: "CubicMeter",
+  },
+  yAxisUp: true,
+} as const;
+
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
 }, 30_000);
@@ -28,6 +39,7 @@ describe("typed element1d api client integration", () => {
       body: {
         name: "Element1d Integration Model",
         description: "Create model for element1d test",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -225,6 +237,7 @@ describe("typed element1d api client integration", () => {
       body: {
         name: "Duplicate Element1d TempId Model",
         description: "Create model for duplicate element1d tempId test",
+      modelSettings: defaultModelSettings,
       },
     });
 

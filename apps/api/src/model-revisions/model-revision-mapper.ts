@@ -4,6 +4,13 @@ import {
   type ModelRevisionSnapshot,
 } from "./model-revision-aggregate";
 import type { NodeSnapshot } from "../nodes/node-entity";
+import {
+  AreaMomentOfInertiaUnits,
+  AreaUnits,
+  PressureUnits,
+  VolumeUnits,
+  WarpingMomentOfInertiaUnits,
+} from "unitsnet-js";
 
 export const modelRevisionMapper = {
   toDomain(
@@ -28,7 +35,9 @@ export const modelRevisionMapper = {
           nodeTypeDescriminator: extractNodeTypeDescriminator(change.payload),
         })),
       materials: [],
-      modelSettings: null,
+      modelSettings: createDefaultModelSettingsSnapshot({
+        revisionId: row.id,
+      }),
       sectionProfiles: [],
       element1ds: [],
       loadCases: [],
@@ -76,7 +85,9 @@ export const modelRevisionMapper = {
         nodeTypeDescriminator: node.nodeTypeDescriminator,
       })),
       materials: [],
-      modelSettings: null,
+      modelSettings: createDefaultModelSettingsSnapshot({
+        revisionId: input.id,
+      }),
       sectionProfiles: [],
       element1ds: [],
       loadCases: [],
@@ -87,6 +98,20 @@ export const modelRevisionMapper = {
     return ModelRevisionAggregate.create(snapshot);
   },
 };
+
+const createDefaultModelSettingsSnapshot = (input: { revisionId: string }) => ({
+  id: Bun.randomUUIDv7(),
+  revisionId: input.revisionId,
+  units: {
+    pressure: PressureUnits.Pascals as const,
+    area: AreaUnits.SquareMeters as const,
+    areaMomentOfInertia: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+    warpingMomentOfInertia:
+      WarpingMomentOfInertiaUnits.MetersToTheSixth as const,
+    volume: VolumeUnits.CubicMeters as const,
+  },
+  yAxisUp: true,
+});
 
 const extractNodeTypeDescriminator = (
   payload: unknown,

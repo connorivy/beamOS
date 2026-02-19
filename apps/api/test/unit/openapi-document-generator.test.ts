@@ -73,7 +73,7 @@ describe("openapi document generator", () => {
     expect(
       postModels?.responses?.["200"]?.content?.["application/json"]?.schema
         ?.$ref,
-    ).toBe("#/components/schemas/Model");
+    ).toBe("#/components/schemas/Project");
 
     const getModels = document.paths["/api/projects"]?.get as
       | {
@@ -94,9 +94,9 @@ describe("openapi document generator", () => {
     expect(
       getModels?.responses?.["200"]?.content?.["application/json"]?.schema
         ?.$ref,
-    ).toBe("#/components/schemas/ModelsArray");
-    expect(document.components?.schemas?.Model).toBeDefined();
-    expect(document.components?.schemas?.ModelsArray).toBeDefined();
+    ).toBe("#/components/schemas/ProjectsArray");
+    expect(document.components?.schemas?.Project).toBeDefined();
+    expect(document.components?.schemas?.ProjectsArray).toBeDefined();
     expect(JSON.stringify(document)).not.toContain("#/$defs/");
   });
 });

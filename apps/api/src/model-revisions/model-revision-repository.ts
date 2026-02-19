@@ -103,10 +103,7 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
     const events = revision.pullDomainEvents();
 
     const persist = async (tx: DbTransaction) => {
-      const revisionRow = await tx
-        .insert(modelRevisions)
-        .values(modelRevisionMapper.toPersistence(revision))
-        .returning();
+      await tx.insert(modelRevisions).values(modelRevisionMapper.toPersistence(revision));
 
       const changeRows = buildRevisionChangeRowsFromEvents({
         projectId: snapshot.projectId,
@@ -143,12 +140,9 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
           });
       }
 
-      const persistedChangeRows = await tx
-        .select()
-        .from(revisionChanges)
-        .where(eq(revisionChanges.revisionId, snapshot.id));
-
-      return modelRevisionMapper.toDomain(revisionRow[0], persistedChangeRows);
+      return ModelRevisionAggregate.rehydrate({
+        ...snapshot,
+      });
     };
 
     return existingTx ? persist(existingTx) : getDb().transaction(persist);
@@ -791,9 +785,9 @@ const buildMaterialsFromRevisions = async (input: {
 
 const buildModelSettingsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<ModelSettingsSnapshot | null> => {
+}): Promise<ModelSettingsSnapshot> => {
   if (input.revisions.length === 0) {
-    return null;
+    throw new Error("Cannot build model settings without revision history");
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
@@ -854,6 +848,12 @@ const buildModelSettingsFromRevisions = async (input: {
       },
       yAxisUp: payload.yAxisUp === false ? false : true,
     };
+  }
+
+  if (!latestModelSettings) {
+    throw new Error(
+      `Model settings were not found in revision history for revision ${input.revisions[input.revisions.length - 1]?.id ?? "unknown"}`,
+    );
   }
 
   return latestModelSettings;

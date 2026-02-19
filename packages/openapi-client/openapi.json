@@ -616,6 +616,192 @@
         "additionalProperties": false,
         "id": "Project"
       },
+      "ModelSettingsProperties": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "units": {
+            "$ref": "#/components/schemas/ModelSettingsUnits"
+          },
+          "yAxisUp": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "units",
+          "yAxisUp"
+        ],
+        "additionalProperties": false,
+        "id": "ModelSettingsProperties"
+      },
+      "ModelSettingsUnits": {
+        "type": "object",
+        "properties": {
+          "pressure": {
+            "type": "string",
+            "enum": [
+              "Pascal",
+              "Atmosphere",
+              "Bar",
+              "KilogramForcePerSquareMeter",
+              "KilogramForcePerSquareCentimeter",
+              "KilogramForcePerSquareMillimeter",
+              "NewtonPerSquareMeter",
+              "NewtonPerSquareCentimeter",
+              "NewtonPerSquareMillimeter",
+              "TechnicalAtmosphere",
+              "Torr",
+              "PoundForcePerSquareInch",
+              "PoundForcePerSquareMil",
+              "PoundForcePerSquareFoot",
+              "TonneForcePerSquareMillimeter",
+              "TonneForcePerSquareMeter",
+              "MeterOfHead",
+              "TonneForcePerSquareCentimeter",
+              "FootOfHead",
+              "MillimeterOfMercury",
+              "InchOfMercury",
+              "DynePerSquareCentimeter",
+              "PoundPerInchSecondSquared",
+              "MeterOfWaterColumn",
+              "InchOfWaterColumn",
+              "Micropascal",
+              "Millipascal",
+              "Decapascal",
+              "Hectopascal",
+              "Kilopascal",
+              "Megapascal",
+              "Gigapascal",
+              "Microbar",
+              "Millibar",
+              "Centibar",
+              "Decibar",
+              "Kilobar",
+              "Megabar",
+              "KilonewtonPerSquareMeter",
+              "MeganewtonPerSquareMeter",
+              "KilonewtonPerSquareCentimeter",
+              "KilonewtonPerSquareMillimeter",
+              "Millitorr",
+              "KilopoundForcePerSquareInch",
+              "KilopoundForcePerSquareMil",
+              "KilopoundForcePerSquareFoot",
+              "MillimeterOfWaterColumn",
+              "CentimeterOfWaterColumn"
+            ]
+          },
+          "area": {
+            "type": "string",
+            "enum": [
+              "SquareKilometer",
+              "SquareMeter",
+              "SquareDecimeter",
+              "SquareCentimeter",
+              "SquareMillimeter",
+              "SquareMicrometer",
+              "SquareMile",
+              "SquareYard",
+              "SquareFoot",
+              "UsSurveySquareFoot",
+              "SquareInch",
+              "Acre",
+              "Hectare",
+              "SquareNauticalMile"
+            ]
+          },
+          "areaMomentOfInertia": {
+            "type": "string",
+            "enum": [
+              "MeterToTheFourth",
+              "DecimeterToTheFourth",
+              "CentimeterToTheFourth",
+              "MillimeterToTheFourth",
+              "FootToTheFourth",
+              "InchToTheFourth"
+            ]
+          },
+          "warpingMomentOfInertia": {
+            "type": "string",
+            "enum": [
+              "MeterToTheSixth",
+              "DecimeterToTheSixth",
+              "CentimeterToTheSixth",
+              "MillimeterToTheSixth",
+              "FootToTheSixth",
+              "InchToTheSixth"
+            ]
+          },
+          "volume": {
+            "type": "string",
+            "enum": [
+              "Liter",
+              "CubicMeter",
+              "CubicKilometer",
+              "CubicHectometer",
+              "CubicDecimeter",
+              "CubicCentimeter",
+              "CubicMillimeter",
+              "CubicMicrometer",
+              "CubicMile",
+              "CubicYard",
+              "CubicFoot",
+              "CubicInch",
+              "ImperialGallon",
+              "ImperialOunce",
+              "UsGallon",
+              "UsOunce",
+              "UsTablespoon",
+              "AuTablespoon",
+              "MetricTablespoon",
+              "UkTablespoon",
+              "MetricTeaspoon",
+              "UsTeaspoon",
+              "MetricCup",
+              "UsCustomaryCup",
+              "UsLegalCup",
+              "OilBarrel",
+              "UsBeerBarrel",
+              "ImperialBeerBarrel",
+              "UsQuart",
+              "ImperialQuart",
+              "UsPint",
+              "AcreFoot",
+              "ImperialPint",
+              "BoardFoot",
+              "Nanoliter",
+              "Microliter",
+              "Milliliter",
+              "Centiliter",
+              "Deciliter",
+              "Decaliter",
+              "Hectoliter",
+              "Kiloliter",
+              "Megaliter",
+              "HectocubicMeter",
+              "KilocubicMeter",
+              "HectocubicFoot",
+              "KilocubicFoot",
+              "MegacubicFoot",
+              "KiloimperialGallon",
+              "MegaimperialGallon",
+              "DecausGallon",
+              "DeciusGallon",
+              "HectousGallon",
+              "KilousGallon",
+              "MegausGallon"
+            ]
+          }
+        },
+        "required": [
+          "pressure",
+          "area",
+          "areaMomentOfInertia",
+          "warpingMomentOfInertia",
+          "volume"
+        ],
+        "additionalProperties": false,
+        "id": "ModelSettingsUnits"
+      },
       "CreateProjectRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -627,11 +813,15 @@
           "description": {
             "type": "string",
             "minLength": 1
+          },
+          "modelSettings": {
+            "$ref": "#/components/schemas/ModelSettingsProperties"
           }
         },
         "required": [
           "name",
-          "description"
+          "description",
+          "modelSettings"
         ],
         "additionalProperties": false,
         "id": "CreateProjectRequest"
@@ -1188,174 +1378,6 @@
         "additionalProperties": false,
         "id": "ModelSettings"
       },
-      "ModelSettingsUnits": {
-        "type": "object",
-        "properties": {
-          "pressure": {
-            "type": "string",
-            "enum": [
-              "Pascal",
-              "Atmosphere",
-              "Bar",
-              "KilogramForcePerSquareMeter",
-              "KilogramForcePerSquareCentimeter",
-              "KilogramForcePerSquareMillimeter",
-              "NewtonPerSquareMeter",
-              "NewtonPerSquareCentimeter",
-              "NewtonPerSquareMillimeter",
-              "TechnicalAtmosphere",
-              "Torr",
-              "PoundForcePerSquareInch",
-              "PoundForcePerSquareMil",
-              "PoundForcePerSquareFoot",
-              "TonneForcePerSquareMillimeter",
-              "TonneForcePerSquareMeter",
-              "MeterOfHead",
-              "TonneForcePerSquareCentimeter",
-              "FootOfHead",
-              "MillimeterOfMercury",
-              "InchOfMercury",
-              "DynePerSquareCentimeter",
-              "PoundPerInchSecondSquared",
-              "MeterOfWaterColumn",
-              "InchOfWaterColumn",
-              "Micropascal",
-              "Millipascal",
-              "Decapascal",
-              "Hectopascal",
-              "Kilopascal",
-              "Megapascal",
-              "Gigapascal",
-              "Microbar",
-              "Millibar",
-              "Centibar",
-              "Decibar",
-              "Kilobar",
-              "Megabar",
-              "KilonewtonPerSquareMeter",
-              "MeganewtonPerSquareMeter",
-              "KilonewtonPerSquareCentimeter",
-              "KilonewtonPerSquareMillimeter",
-              "Millitorr",
-              "KilopoundForcePerSquareInch",
-              "KilopoundForcePerSquareMil",
-              "KilopoundForcePerSquareFoot",
-              "MillimeterOfWaterColumn",
-              "CentimeterOfWaterColumn"
-            ]
-          },
-          "area": {
-            "type": "string",
-            "enum": [
-              "SquareKilometer",
-              "SquareMeter",
-              "SquareDecimeter",
-              "SquareCentimeter",
-              "SquareMillimeter",
-              "SquareMicrometer",
-              "SquareMile",
-              "SquareYard",
-              "SquareFoot",
-              "UsSurveySquareFoot",
-              "SquareInch",
-              "Acre",
-              "Hectare",
-              "SquareNauticalMile"
-            ]
-          },
-          "areaMomentOfInertia": {
-            "type": "string",
-            "enum": [
-              "MeterToTheFourth",
-              "DecimeterToTheFourth",
-              "CentimeterToTheFourth",
-              "MillimeterToTheFourth",
-              "FootToTheFourth",
-              "InchToTheFourth"
-            ]
-          },
-          "warpingMomentOfInertia": {
-            "type": "string",
-            "enum": [
-              "MeterToTheSixth",
-              "DecimeterToTheSixth",
-              "CentimeterToTheSixth",
-              "MillimeterToTheSixth",
-              "FootToTheSixth",
-              "InchToTheSixth"
-            ]
-          },
-          "volume": {
-            "type": "string",
-            "enum": [
-              "Liter",
-              "CubicMeter",
-              "CubicKilometer",
-              "CubicHectometer",
-              "CubicDecimeter",
-              "CubicCentimeter",
-              "CubicMillimeter",
-              "CubicMicrometer",
-              "CubicMile",
-              "CubicYard",
-              "CubicFoot",
-              "CubicInch",
-              "ImperialGallon",
-              "ImperialOunce",
-              "UsGallon",
-              "UsOunce",
-              "UsTablespoon",
-              "AuTablespoon",
-              "MetricTablespoon",
-              "UkTablespoon",
-              "MetricTeaspoon",
-              "UsTeaspoon",
-              "MetricCup",
-              "UsCustomaryCup",
-              "UsLegalCup",
-              "OilBarrel",
-              "UsBeerBarrel",
-              "ImperialBeerBarrel",
-              "UsQuart",
-              "ImperialQuart",
-              "UsPint",
-              "AcreFoot",
-              "ImperialPint",
-              "BoardFoot",
-              "Nanoliter",
-              "Microliter",
-              "Milliliter",
-              "Centiliter",
-              "Deciliter",
-              "Decaliter",
-              "Hectoliter",
-              "Kiloliter",
-              "Megaliter",
-              "HectocubicMeter",
-              "KilocubicMeter",
-              "HectocubicFoot",
-              "KilocubicFoot",
-              "MegacubicFoot",
-              "KiloimperialGallon",
-              "MegaimperialGallon",
-              "DecausGallon",
-              "DeciusGallon",
-              "HectousGallon",
-              "KilousGallon",
-              "MegausGallon"
-            ]
-          }
-        },
-        "required": [
-          "pressure",
-          "area",
-          "areaMomentOfInertia",
-          "warpingMomentOfInertia",
-          "volume"
-        ],
-        "additionalProperties": false,
-        "id": "ModelSettingsUnits"
-      },
       "PutModelSettingsResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1369,24 +1391,6 @@
         ],
         "additionalProperties": false,
         "id": "PutModelSettingsResponse"
-      },
-      "ModelSettingsProperties": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "units": {
-            "$ref": "#/components/schemas/ModelSettingsUnits"
-          },
-          "yAxisUp": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "units",
-          "yAxisUp"
-        ],
-        "additionalProperties": false,
-        "id": "ModelSettingsProperties"
       },
       "SectionProfile": {
         "type": "object",
@@ -2208,14 +2212,7 @@
             }
           },
           "modelSettings": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ModelSettings"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/ModelSettings"
           },
           "sectionProfiles": {
             "type": "array",

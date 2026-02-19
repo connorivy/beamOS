@@ -10,6 +10,17 @@ import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
 
 let baseUrl = "";
 
+const defaultModelSettings = {
+  units: {
+    pressure: "Pascal",
+    area: "SquareMeter",
+    areaMomentOfInertia: "MeterToTheFourth",
+    warpingMomentOfInertia: "MeterToTheSixth",
+    volume: "CubicMeter",
+  },
+  yAxisUp: true,
+} as const;
+
 beforeAll(async () => {
   baseUrl = await setupIntegrationApp();
 }, 30_000);
@@ -26,6 +37,7 @@ describe("typed section profile api client integration", () => {
       body: {
         name: "Section Profile Integration Model",
         description: "Create model for section profile test",
+      modelSettings: defaultModelSettings,
       },
     });
 
@@ -195,6 +207,7 @@ describe("typed section profile api client integration", () => {
       body: {
         name: "Duplicate Section Profile Name Model",
         description: "Create model for duplicate section profile name test",
+      modelSettings: defaultModelSettings,
       },
     });
 
