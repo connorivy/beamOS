@@ -38,6 +38,24 @@ export type ModelRevisionSnapshot = {
   authorId: string;
   message: string;
   createdAt: Date;
+  nodes: NodeEntity[];
+  materials: MaterialEntity[];
+  modelSettings: ModelSettingsEntity;
+  sectionProfiles: SectionProfileEntity[];
+  element1ds: Element1dEntity[];
+  loadCases: LoadCaseEntity[];
+  loadCombinations: LoadCombinationEntity[];
+  pointLoads: PointLoadEntity[];
+};
+
+export type ModelRevisionCreateSnapshot = {
+  id?: string;
+  projectId: string;
+  parentRevisionId: string | null;
+  secondParentRevisionId: string | null;
+  authorId: string;
+  message: string;
+  createdAt: Date;
   nodes: NodeSnapshot[];
   materials: MaterialSnapshot[];
   modelSettings: ModelSettingsSnapshot;
@@ -46,13 +64,6 @@ export type ModelRevisionSnapshot = {
   loadCases: LoadCaseSnapshot[];
   loadCombinations: LoadCombinationSnapshot[];
   pointLoads: PointLoadSnapshot[];
-};
-
-export type ModelRevisionCreateSnapshot = Omit<
-  ModelRevisionSnapshot,
-  "id"
-> & {
-  id?: string;
 };
 
 export class ModelRevisionAggregate {
@@ -92,25 +103,42 @@ export class ModelRevisionAggregate {
     this._authorId = snapshot.authorId;
     this._message = snapshot.message.trim();
     this._createdAt = snapshot.createdAt;
-    this._nodes = snapshot.nodes.map((node) => NodeEntity.rehydrate(node));
-    this._materials = snapshot.materials.map((material) =>
-      MaterialEntity.rehydrate(material),
+    this._nodes = snapshot.nodes.map((node) =>
+      node instanceof NodeEntity ? node : NodeEntity.rehydrate(node),
     );
-    this._modelSettings = ModelSettingsEntity.rehydrate(snapshot.modelSettings);
+    this._materials = snapshot.materials.map((material) =>
+      material instanceof MaterialEntity
+        ? material
+        : MaterialEntity.rehydrate(material),
+    );
+    this._modelSettings =
+      snapshot.modelSettings instanceof ModelSettingsEntity
+        ? snapshot.modelSettings
+        : ModelSettingsEntity.rehydrate(snapshot.modelSettings);
     this._sectionProfiles = snapshot.sectionProfiles.map((sectionProfile) =>
-      SectionProfileEntity.rehydrate(sectionProfile),
+      sectionProfile instanceof SectionProfileEntity
+        ? sectionProfile
+        : SectionProfileEntity.rehydrate(sectionProfile),
     );
     this._element1ds = snapshot.element1ds.map((element1d) =>
-      Element1dEntity.rehydrate(element1d),
+      element1d instanceof Element1dEntity
+        ? element1d
+        : Element1dEntity.rehydrate(element1d),
     );
     this._loadCases = snapshot.loadCases.map((loadCase) =>
-      LoadCaseEntity.rehydrate(loadCase),
+      loadCase instanceof LoadCaseEntity
+        ? loadCase
+        : LoadCaseEntity.rehydrate(loadCase),
     );
     this._loadCombinations = snapshot.loadCombinations.map((loadCombination) =>
-      LoadCombinationEntity.rehydrate(loadCombination),
+      loadCombination instanceof LoadCombinationEntity
+        ? loadCombination
+        : LoadCombinationEntity.rehydrate(loadCombination),
     );
     this._pointLoads = snapshot.pointLoads.map((pointLoad) =>
-      PointLoadEntity.rehydrate(pointLoad),
+      pointLoad instanceof PointLoadEntity
+        ? pointLoad
+        : PointLoadEntity.rehydrate(pointLoad),
     );
     this._domainEvents = [];
   }
@@ -281,18 +309,14 @@ export class ModelRevisionAggregate {
       authorId: this._authorId,
       message: this._message,
       createdAt: this._createdAt,
-      nodes: this._nodes.map((node) => node.toSnapshot()),
-      materials: this._materials.map((material) => material.toSnapshot()),
-      modelSettings: this._modelSettings.toSnapshot(),
-      sectionProfiles: this._sectionProfiles.map((sectionProfile) =>
-        sectionProfile.toSnapshot(),
-      ),
-      element1ds: this._element1ds.map((element1d) => element1d.toSnapshot()),
-      loadCases: this._loadCases.map((loadCase) => loadCase.toSnapshot()),
-      loadCombinations: this._loadCombinations.map((loadCombination) =>
-        loadCombination.toSnapshot(),
-      ),
-      pointLoads: this._pointLoads.map((pointLoad) => pointLoad.toSnapshot()),
+      nodes: [...this._nodes],
+      materials: [...this._materials],
+      modelSettings: this._modelSettings,
+      sectionProfiles: [...this._sectionProfiles],
+      element1ds: [...this._element1ds],
+      loadCases: [...this._loadCases],
+      loadCombinations: [...this._loadCombinations],
+      pointLoads: [...this._pointLoads],
     };
   }
 

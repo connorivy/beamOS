@@ -1,7 +1,7 @@
 import { modelRevisions, revisionChanges } from "../db/schema";
 import {
   ModelRevisionAggregate,
-  type ModelRevisionSnapshot,
+  type ModelRevisionCreateSnapshot,
 } from "./model-revision-aggregate";
 import type { NodeSnapshot } from "../nodes/node-entity";
 import {
@@ -17,7 +17,7 @@ export const modelRevisionMapper = {
     row: typeof modelRevisions.$inferSelect,
     changeRows: (typeof revisionChanges.$inferSelect)[],
   ): ModelRevisionAggregate {
-    return ModelRevisionAggregate.rehydrate({
+    return ModelRevisionAggregate.create({
       id: row.id,
       projectId: row.projectId,
       parentRevisionId: row.parentRevisionId,
@@ -70,7 +70,7 @@ export const modelRevisionMapper = {
     message: string;
     nodes: NodeSnapshot[];
   }): ModelRevisionAggregate {
-    const snapshot: ModelRevisionSnapshot = {
+    const snapshot: ModelRevisionCreateSnapshot = {
       id: input.id,
       projectId: input.projectId,
       parentRevisionId: input.parentRevisionId,

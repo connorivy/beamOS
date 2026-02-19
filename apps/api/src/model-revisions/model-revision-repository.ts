@@ -30,15 +30,15 @@ import { RevisionChangeEntity } from "../revision-changes/revision-change-entity
 import { revisionChangeMapper } from "../revision-changes/revision-change-mapper";
 import type { RevisionChangeInsertRow } from "../revision-changes/revision-change-mapper";
 import type { DomainEvent, ModelRevisionRepository } from "../common/types";
-import type { MaterialSnapshot } from "../materials/material-entity";
-import type { ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
-import type { SectionProfileSnapshot } from "../section-profiles/section-profile-entity";
-import type { Element1dSnapshot } from "../element1ds/element1d-entity";
-import type { NodeSnapshot } from "../nodes/node-entity";
+import { MaterialEntity } from "../materials/material-entity";
+import { ModelSettingsEntity, type ModelSettingsSnapshot } from "../model-settings/model-settings-entity";
+import { SectionProfileEntity } from "../section-profiles/section-profile-entity";
+import { Element1dEntity } from "../element1ds/element1d-entity";
+import { NodeEntity, type NodeSnapshot } from "../nodes/node-entity";
 import { parseRestraint } from "../nodes/node-entity";
-import type { LoadCaseSnapshot } from "../load-cases/load-case-entity";
-import type { LoadCombinationSnapshot } from "../load-combinations/load-combination-entity";
-import type { PointLoadSnapshot } from "../point-loads/point-load-entity";
+import { LoadCaseEntity } from "../load-cases/load-case-entity";
+import { LoadCombinationEntity } from "../load-combinations/load-combination-entity";
+import { PointLoadEntity } from "../point-loads/point-load-entity";
 
 export const drizzleModelRevisionRepository: ModelRevisionRepository = {
   async getRevisionById(revisionId) {
@@ -621,14 +621,14 @@ const loadRevisionHistory = async (input: {
 
 const buildNodesFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, NodeSnapshot>> => {
+}): Promise<Map<string, NodeEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
 
-  const nodesById = new Map<string, NodeSnapshot>();
+  const nodesById = new Map<string, NodeEntity>();
   for (const row of rows) {
     if (row.entityType !== "node") {
       continue;
@@ -640,9 +640,11 @@ const buildNodesFromRevisions = async (input: {
 
     nodesById.set(
       row.entityId,
-      toNodeSnapshotFromRevisionChange({
-        row,
-      }),
+      NodeEntity.rehydrate(
+        toNodeSnapshotFromRevisionChange({
+          row,
+        }),
+      ),
     );
   }
 
@@ -739,13 +741,13 @@ const toFiniteNumber = (value: unknown): number | undefined => {
 
 const buildMaterialsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, MaterialSnapshot>> => {
+}): Promise<Map<string, MaterialEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
-  const materialsById = new Map<string, MaterialSnapshot>();
+  const materialsById = new Map<string, MaterialEntity>();
   for (const row of rows) {
     if (row.entityType !== "material") {
       continue;
@@ -768,16 +770,19 @@ const buildMaterialsFromRevisions = async (input: {
       continue;
     }
 
-    materialsById.set(row.entityId, {
-      id: row.entityId,
-      revisionId:
-        typeof payload.revisionId === "string"
-          ? payload.revisionId
-          : (row.revisionId ?? ""),
-      name,
-      pressureE: Pressure.FromPascals(pressureEValue),
-      pressureG: Pressure.FromPascals(pressureGValue),
-    });
+    materialsById.set(
+      row.entityId,
+      MaterialEntity.rehydrate({
+        id: row.entityId,
+        revisionId:
+          typeof payload.revisionId === "string"
+            ? payload.revisionId
+            : (row.revisionId ?? ""),
+        name,
+        pressureE: Pressure.FromPascals(pressureEValue),
+        pressureG: Pressure.FromPascals(pressureGValue),
+      }),
+    );
   }
 
   return materialsById;
@@ -785,7 +790,7 @@ const buildMaterialsFromRevisions = async (input: {
 
 const buildModelSettingsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<ModelSettingsSnapshot> => {
+}): Promise<ModelSettingsEntity> => {
   if (input.revisions.length === 0) {
     throw new Error("Cannot build model settings without revision history");
   }
@@ -856,18 +861,18 @@ const buildModelSettingsFromRevisions = async (input: {
     );
   }
 
-  return latestModelSettings;
+  return ModelSettingsEntity.rehydrate(latestModelSettings);
 };
 
 const buildSectionProfilesFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, SectionProfileSnapshot>> => {
+}): Promise<Map<string, SectionProfileEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
-  const sectionProfilesById = new Map<string, SectionProfileSnapshot>();
+  const sectionProfilesById = new Map<string, SectionProfileEntity>();
   for (const row of rows) {
     if (
       row.entityType !== "sectionprofile" &&
@@ -950,36 +955,39 @@ const buildSectionProfilesFromRevisions = async (input: {
       toObject(payload.weakAxisShearArea).value,
     );
 
-    sectionProfilesById.set(row.entityId, {
-      id: row.entityId,
-      revisionId:
-        typeof payload.revisionId === "string"
-          ? payload.revisionId
-          : (row.revisionId ?? ""),
-      name: payload.name,
-      discriminator,
-      area: Area.FromSquareMeters(areaValue),
-      strongAxisMomentOfInertia:
-        AreaMomentOfInertia.FromMetersToTheFourth(strongIValue),
-      weakAxisMomentOfInertia:
-        AreaMomentOfInertia.FromMetersToTheFourth(weakIValue),
-      torsionalConstant:
-        AreaMomentOfInertia.FromMetersToTheFourth(torsionalValue),
-      warpingConstant:
-        WarpingMomentOfInertia.FromMetersToTheSixth(warpingValue),
-      strongAxisPlasticSectionModulus:
-        Volume.FromCubicMeters(strongPlasticValue),
-      weakAxisPlasticSectionModulus: Volume.FromCubicMeters(weakPlasticValue),
-      strongAxisElasticSectionModulus:
-        Volume.FromCubicMeters(strongElasticValue),
-      weakAxisElasticSectionModulus: Volume.FromCubicMeters(weakElasticValue),
-      ...(strongAxisShearArea !== undefined
-        ? { strongAxisShearArea: Area.FromSquareMeters(strongAxisShearArea) }
-        : {}),
-      ...(weakAxisShearArea !== undefined
-        ? { weakAxisShearArea: Area.FromSquareMeters(weakAxisShearArea) }
-        : {}),
-    });
+    sectionProfilesById.set(
+      row.entityId,
+      SectionProfileEntity.rehydrate({
+        id: row.entityId,
+        revisionId:
+          typeof payload.revisionId === "string"
+            ? payload.revisionId
+            : (row.revisionId ?? ""),
+        name: payload.name,
+        discriminator,
+        area: Area.FromSquareMeters(areaValue),
+        strongAxisMomentOfInertia:
+          AreaMomentOfInertia.FromMetersToTheFourth(strongIValue),
+        weakAxisMomentOfInertia:
+          AreaMomentOfInertia.FromMetersToTheFourth(weakIValue),
+        torsionalConstant:
+          AreaMomentOfInertia.FromMetersToTheFourth(torsionalValue),
+        warpingConstant:
+          WarpingMomentOfInertia.FromMetersToTheSixth(warpingValue),
+        strongAxisPlasticSectionModulus:
+          Volume.FromCubicMeters(strongPlasticValue),
+        weakAxisPlasticSectionModulus: Volume.FromCubicMeters(weakPlasticValue),
+        strongAxisElasticSectionModulus:
+          Volume.FromCubicMeters(strongElasticValue),
+        weakAxisElasticSectionModulus: Volume.FromCubicMeters(weakElasticValue),
+        ...(strongAxisShearArea !== undefined
+          ? { strongAxisShearArea: Area.FromSquareMeters(strongAxisShearArea) }
+          : {}),
+        ...(weakAxisShearArea !== undefined
+          ? { weakAxisShearArea: Area.FromSquareMeters(weakAxisShearArea) }
+          : {}),
+      }),
+    );
   }
 
   return sectionProfilesById;
@@ -987,13 +995,13 @@ const buildSectionProfilesFromRevisions = async (input: {
 
 const buildElement1dsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, Element1dSnapshot>> => {
+}): Promise<Map<string, Element1dEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
-  const element1dsById = new Map<string, Element1dSnapshot>();
+  const element1dsById = new Map<string, Element1dEntity>();
   for (const row of rows) {
     if (row.entityType !== "element1d") {
       continue;
@@ -1013,17 +1021,20 @@ const buildElement1dsFromRevisions = async (input: {
       continue;
     }
 
-    element1dsById.set(row.entityId, {
-      id: row.entityId,
-      revisionId:
-        typeof payload.revisionId === "string"
-          ? payload.revisionId
-          : (row.revisionId ?? ""),
-      startNodeId: payload.startNodeId,
-      endNodeId: payload.endNodeId,
-      materialId: payload.materialId,
-      sectionProfileId: payload.sectionProfileId,
-    });
+    element1dsById.set(
+      row.entityId,
+      Element1dEntity.rehydrate({
+        id: row.entityId,
+        revisionId:
+          typeof payload.revisionId === "string"
+            ? payload.revisionId
+            : (row.revisionId ?? ""),
+        startNodeId: payload.startNodeId,
+        endNodeId: payload.endNodeId,
+        materialId: payload.materialId,
+        sectionProfileId: payload.sectionProfileId,
+      }),
+    );
   }
 
   return element1dsById;
@@ -1031,13 +1042,13 @@ const buildElement1dsFromRevisions = async (input: {
 
 const buildLoadCasesFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, LoadCaseSnapshot>> => {
+}): Promise<Map<string, LoadCaseEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
-  const loadCasesById = new Map<string, LoadCaseSnapshot>();
+  const loadCasesById = new Map<string, LoadCaseEntity>();
   for (const row of rows) {
     if (row.entityType !== "loadcase" && row.entityType !== "load_case") {
       continue;
@@ -1052,14 +1063,17 @@ const buildLoadCasesFromRevisions = async (input: {
       continue;
     }
 
-    loadCasesById.set(row.entityId, {
-      id: row.entityId,
-      revisionId:
-        typeof payload.revisionId === "string"
-          ? payload.revisionId
-          : (row.revisionId ?? ""),
-      name: payload.name,
-    });
+    loadCasesById.set(
+      row.entityId,
+      LoadCaseEntity.rehydrate({
+        id: row.entityId,
+        revisionId:
+          typeof payload.revisionId === "string"
+            ? payload.revisionId
+            : (row.revisionId ?? ""),
+        name: payload.name,
+      }),
+    );
   }
 
   return loadCasesById;
@@ -1067,13 +1081,13 @@ const buildLoadCasesFromRevisions = async (input: {
 
 const buildLoadCombinationsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, LoadCombinationSnapshot>> => {
+}): Promise<Map<string, LoadCombinationEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
-  const loadCombinationsById = new Map<string, LoadCombinationSnapshot>();
+  const loadCombinationsById = new Map<string, LoadCombinationEntity>();
   for (const row of rows) {
     if (
       row.entityType !== "loadcombination" &&
@@ -1095,14 +1109,17 @@ const buildLoadCombinationsFromRevisions = async (input: {
       }
     }
 
-    loadCombinationsById.set(row.entityId, {
-      id: row.entityId,
-      revisionId:
-        typeof payload.revisionId === "string"
-          ? payload.revisionId
-          : (row.revisionId ?? ""),
-      loadCaseFactors,
-    });
+    loadCombinationsById.set(
+      row.entityId,
+      LoadCombinationEntity.rehydrate({
+        id: row.entityId,
+        revisionId:
+          typeof payload.revisionId === "string"
+            ? payload.revisionId
+            : (row.revisionId ?? ""),
+        loadCaseFactors,
+      }),
+    );
   }
 
   return loadCombinationsById;
@@ -1110,13 +1127,13 @@ const buildLoadCombinationsFromRevisions = async (input: {
 
 const buildPointLoadsFromRevisions = async (input: {
   revisions: (typeof modelRevisions.$inferSelect)[];
-}): Promise<Map<string, PointLoadSnapshot>> => {
+}): Promise<Map<string, PointLoadEntity>> => {
   if (input.revisions.length === 0) {
     return new Map();
   }
 
   const rows = await loadOrderedRevisionChanges(input.revisions);
-  const pointLoadsById = new Map<string, PointLoadSnapshot>();
+  const pointLoadsById = new Map<string, PointLoadEntity>();
   for (const row of rows) {
     if (row.entityType !== "pointload" && row.entityType !== "point_load") {
       continue;
@@ -1155,28 +1172,31 @@ const buildPointLoadsFromRevisions = async (input: {
       continue;
     }
 
-    pointLoadsById.set(row.entityId, {
-      id: row.entityId,
-      revisionId:
-        typeof payload.revisionId === "string"
-          ? payload.revisionId
-          : (row.revisionId ?? ""),
-      nodeId: payload.nodeId,
-      loadCaseId: payload.loadCaseId,
-      force: {
-        forceAlongX: Force.FromNewtons(forceAlongX),
-        forceAlongY: Force.FromNewtons(forceAlongY),
-        forceAlongZ: Force.FromNewtons(forceAlongZ),
-        momentAboutX: Torque.FromNewtonMeters(momentAboutX),
-        momentAboutY: Torque.FromNewtonMeters(momentAboutY),
-        momentAboutZ: Torque.FromNewtonMeters(momentAboutZ),
-      },
-      direction: {
-        x: directionX,
-        y: directionY,
-        z: directionZ,
-      },
-    });
+    pointLoadsById.set(
+      row.entityId,
+      PointLoadEntity.rehydrate({
+        id: row.entityId,
+        revisionId:
+          typeof payload.revisionId === "string"
+            ? payload.revisionId
+            : (row.revisionId ?? ""),
+        nodeId: payload.nodeId,
+        loadCaseId: payload.loadCaseId,
+        force: {
+          forceAlongX: Force.FromNewtons(forceAlongX),
+          forceAlongY: Force.FromNewtons(forceAlongY),
+          forceAlongZ: Force.FromNewtons(forceAlongZ),
+          momentAboutX: Torque.FromNewtonMeters(momentAboutX),
+          momentAboutY: Torque.FromNewtonMeters(momentAboutY),
+          momentAboutZ: Torque.FromNewtonMeters(momentAboutZ),
+        },
+        direction: {
+          x: directionX,
+          y: directionY,
+          z: directionZ,
+        },
+      }),
+    );
   }
 
   return pointLoadsById;

@@ -215,7 +215,7 @@ const toLightweightModelRevisionAggregate = (
     createDefaultModelSettingsSnapshot({
       revisionId: row.id,
     });
-  return ModelRevisionAggregate.rehydrate({
+  return ModelRevisionAggregate.create({
     id: row.id,
     projectId: row.projectId,
     parentRevisionId: row.parentRevisionId,
