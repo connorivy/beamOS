@@ -102,6 +102,13 @@ export type ModelRevisionEntityChange = {
   snapshot: ModelRevisionEntitySnapshot;
 };
 
+type AddEntityInput<TSnapshot extends { id: string }> = Omit<
+  TSnapshot,
+  "id"
+> & {
+  id: string | null;
+};
+
 type EntityBucket<TEntity> = {
   unchanged: Map<string, TEntity>;
   created: Map<string, TEntity>;
@@ -360,43 +367,63 @@ export class ModelRevisionAggregate {
     };
   }
 
-  addNode(node: NodeSnapshot): void {
-    assertUuid(node.id, "nodeId");
-    if (
-      this._nodes.unchanged.has(node.id) ||
-      this._nodes.updated.has(node.id) ||
-      this._nodes.created.has(node.id)
-    ) {
-      throw new Error("Node already exists");
-    }
+  addNode(node: AddEntityInput<NodeSnapshot>): void {
+    const nodeId = this.resolveEntityId(node.id, "nodeId");
+    const normalizedNode: NodeSnapshot = {
+      ...node,
+      id: nodeId,
+    };
+    const next =
+      node.id === null
+        ? NodeEntity.create(normalizedNode)
+        : NodeEntity.rehydrate(normalizedNode);
 
-    if (this._nodes.deleted.delete(node.id)) {
-      this._nodes.updated.set(node.id, NodeEntity.rehydrate(node));
-      return;
+    if (this._nodes.unchanged.delete(nodeId)) {
+      this._nodes.updated.delete(nodeId);
+      this._nodes.created.delete(nodeId);
+      this._nodes.deleted.delete(nodeId);
+      this._nodes.updated.set(nodeId, next);
+    } else {
+      this._nodes.updated.delete(nodeId);
+      this._nodes.created.set(nodeId, next);
+      this._nodes.deleted.delete(nodeId);
     }
-
-    this._nodes.created.set(node.id, NodeEntity.create(node));
   }
 
-  addMaterial(material: MaterialSnapshot): void {
-    assertUuid(material.id, "materialId");
+  addMaterial(material: AddEntityInput<MaterialSnapshot>): void {
+    const materialId = this.resolveEntityId(material.id, "materialId");
+    const normalizedMaterial: MaterialSnapshot = {
+      ...material,
+      id: materialId,
+    };
     if (
-      this._materials.unchanged.has(material.id) ||
-      this._materials.updated.has(material.id) ||
-      this._materials.created.has(material.id)
+      this.materials.some(
+        (existing) =>
+          existing.name === normalizedMaterial.name &&
+          existing.id !== materialId,
+      )
     ) {
-      throw new Error("Material already exists");
-    }
-    if (this.materials.some((existing) => existing.name === material.name)) {
-      throw new Error(`Material name "${material.name}" already exists`);
+      throw new Error(
+        `Material name "${normalizedMaterial.name}" already exists`,
+      );
     }
 
-    if (this._materials.deleted.delete(material.id)) {
-      this._materials.updated.set(material.id, MaterialEntity.rehydrate(material));
+    const next =
+      material.id === null
+        ? MaterialEntity.create(normalizedMaterial)
+        : MaterialEntity.rehydrate(normalizedMaterial);
+
+    if (this._materials.unchanged.delete(materialId)) {
+      this._materials.updated.delete(materialId);
+      this._materials.created.delete(materialId);
+      this._materials.deleted.delete(materialId);
+      this._materials.updated.set(materialId, next);
       return;
     }
 
-    this._materials.created.set(material.id, MaterialEntity.create(material));
+    this._materials.updated.delete(materialId);
+    this._materials.created.set(materialId, next);
+    this._materials.deleted.delete(materialId);
   }
 
   setModelSettings(modelSettings: ModelSettingsSnapshot): void {
@@ -412,101 +439,146 @@ export class ModelRevisionAggregate {
     };
   }
 
-  addSectionProfile(sectionProfile: SectionProfileSnapshot): void {
-    assertUuid(sectionProfile.id, "sectionProfileId");
-    if (this.hasActiveEntity(this._sectionProfiles, sectionProfile.id)) {
-      throw new Error("Section profile already exists");
-    }
+  addSectionProfile(
+    sectionProfile: AddEntityInput<SectionProfileSnapshot>,
+  ): void {
+    const sectionProfileId = this.resolveEntityId(
+      sectionProfile.id,
+      "sectionProfileId",
+    );
+    const normalizedSectionProfile: SectionProfileSnapshot = {
+      ...sectionProfile,
+      id: sectionProfileId,
+    };
     if (
       this.sectionProfiles.some(
-        (existing) => existing.name === sectionProfile.name,
+        (existing) =>
+          existing.name === normalizedSectionProfile.name &&
+          existing.id !== sectionProfileId,
       )
     ) {
       throw new Error(
-        `Section profile name "${sectionProfile.name}" already exists`,
+        `Section profile name "${normalizedSectionProfile.name}" already exists`,
       );
     }
 
-    if (this._sectionProfiles.deleted.delete(sectionProfile.id)) {
-      this._sectionProfiles.updated.set(
-        sectionProfile.id,
-        SectionProfileEntity.rehydrate(sectionProfile),
-      );
+    const next =
+      sectionProfile.id === null
+        ? SectionProfileEntity.create(normalizedSectionProfile)
+        : SectionProfileEntity.rehydrate(normalizedSectionProfile);
+
+    if (this._sectionProfiles.unchanged.delete(sectionProfileId)) {
+      this._sectionProfiles.updated.delete(sectionProfileId);
+      this._sectionProfiles.created.delete(sectionProfileId);
+      this._sectionProfiles.deleted.delete(sectionProfileId);
+      this._sectionProfiles.updated.set(sectionProfileId, next);
       return;
     }
 
-    this._sectionProfiles.created.set(
-      sectionProfile.id,
-      SectionProfileEntity.create(sectionProfile),
-    );
+    this._sectionProfiles.updated.delete(sectionProfileId);
+    this._sectionProfiles.created.set(sectionProfileId, next);
+    this._sectionProfiles.deleted.delete(sectionProfileId);
   }
 
-  addElement1d(element1d: Element1dSnapshot): void {
-    assertUuid(element1d.id, "element1dId");
-    if (this.hasActiveEntity(this._element1ds, element1d.id)) {
-      throw new Error("Element1d already exists");
-    }
+  addElement1d(element1d: AddEntityInput<Element1dSnapshot>): void {
+    const element1dId = this.resolveEntityId(element1d.id, "element1dId");
+    const normalizedElement1d: Element1dSnapshot = {
+      ...element1d,
+      id: element1dId,
+    };
+    const next =
+      element1d.id === null
+        ? Element1dEntity.create(normalizedElement1d)
+        : Element1dEntity.rehydrate(normalizedElement1d);
 
-    if (this._element1ds.deleted.delete(element1d.id)) {
-      this._element1ds.updated.set(
-        element1d.id,
-        Element1dEntity.rehydrate(element1d),
-      );
+    if (this._element1ds.unchanged.delete(element1dId)) {
+      this._element1ds.updated.delete(element1dId);
+      this._element1ds.created.delete(element1dId);
+      this._element1ds.deleted.delete(element1dId);
+      this._element1ds.updated.set(element1dId, next);
       return;
     }
 
-    this._element1ds.created.set(element1d.id, Element1dEntity.create(element1d));
+    this._element1ds.updated.delete(element1dId);
+    this._element1ds.created.set(element1dId, next);
+    this._element1ds.deleted.delete(element1dId);
   }
 
-  addLoadCase(loadCase: LoadCaseSnapshot): void {
-    assertUuid(loadCase.id, "loadCaseId");
-    if (this.hasActiveEntity(this._loadCases, loadCase.id)) {
-      throw new Error("Load case already exists");
-    }
+  addLoadCase(loadCase: AddEntityInput<LoadCaseSnapshot>): void {
+    const loadCaseId = this.resolveEntityId(loadCase.id, "loadCaseId");
+    const normalizedLoadCase: LoadCaseSnapshot = {
+      ...loadCase,
+      id: loadCaseId,
+    };
+    const next =
+      loadCase.id === null
+        ? LoadCaseEntity.create(normalizedLoadCase)
+        : LoadCaseEntity.rehydrate(normalizedLoadCase);
 
-    if (this._loadCases.deleted.delete(loadCase.id)) {
-      this._loadCases.updated.set(loadCase.id, LoadCaseEntity.rehydrate(loadCase));
+    if (this._loadCases.unchanged.delete(loadCaseId)) {
+      this._loadCases.updated.delete(loadCaseId);
+      this._loadCases.created.delete(loadCaseId);
+      this._loadCases.deleted.delete(loadCaseId);
+      this._loadCases.updated.set(loadCaseId, next);
       return;
     }
 
-    this._loadCases.created.set(loadCase.id, LoadCaseEntity.create(loadCase));
+    this._loadCases.updated.delete(loadCaseId);
+    this._loadCases.created.set(loadCaseId, next);
+    this._loadCases.deleted.delete(loadCaseId);
   }
 
-  addLoadCombination(loadCombination: LoadCombinationSnapshot): void {
-    assertUuid(loadCombination.id, "loadCombinationId");
-    if (this.hasActiveEntity(this._loadCombinations, loadCombination.id)) {
-      throw new Error("Load combination already exists");
-    }
-
-    if (this._loadCombinations.deleted.delete(loadCombination.id)) {
-      this._loadCombinations.updated.set(
-        loadCombination.id,
-        LoadCombinationEntity.rehydrate(loadCombination),
-      );
-      return;
-    }
-
-    this._loadCombinations.created.set(
+  addLoadCombination(
+    loadCombination: AddEntityInput<LoadCombinationSnapshot>,
+  ): void {
+    const loadCombinationId = this.resolveEntityId(
       loadCombination.id,
-      LoadCombinationEntity.create(loadCombination),
+      "loadCombinationId",
     );
-  }
+    const normalizedLoadCombination: LoadCombinationSnapshot = {
+      ...loadCombination,
+      id: loadCombinationId,
+    };
+    const next =
+      loadCombination.id === null
+        ? LoadCombinationEntity.create(normalizedLoadCombination)
+        : LoadCombinationEntity.rehydrate(normalizedLoadCombination);
 
-  addPointLoad(pointLoad: PointLoadSnapshot): void {
-    assertUuid(pointLoad.id, "pointLoadId");
-    if (this.hasActiveEntity(this._pointLoads, pointLoad.id)) {
-      throw new Error("Point load already exists");
-    }
-
-    if (this._pointLoads.deleted.delete(pointLoad.id)) {
-      this._pointLoads.updated.set(
-        pointLoad.id,
-        PointLoadEntity.rehydrate(pointLoad),
-      );
+    if (this._loadCombinations.unchanged.delete(loadCombinationId)) {
+      this._loadCombinations.updated.delete(loadCombinationId);
+      this._loadCombinations.created.delete(loadCombinationId);
+      this._loadCombinations.deleted.delete(loadCombinationId);
+      this._loadCombinations.updated.set(loadCombinationId, next);
       return;
     }
 
-    this._pointLoads.created.set(pointLoad.id, PointLoadEntity.create(pointLoad));
+    this._loadCombinations.updated.delete(loadCombinationId);
+    this._loadCombinations.created.set(loadCombinationId, next);
+    this._loadCombinations.deleted.delete(loadCombinationId);
+  }
+
+  addPointLoad(pointLoad: AddEntityInput<PointLoadSnapshot>): void {
+    const pointLoadId = this.resolveEntityId(pointLoad.id, "pointLoadId");
+    const normalizedPointLoad: PointLoadSnapshot = {
+      ...pointLoad,
+      id: pointLoadId,
+    };
+    const next =
+      pointLoad.id === null
+        ? PointLoadEntity.create(normalizedPointLoad)
+        : PointLoadEntity.rehydrate(normalizedPointLoad);
+
+    if (this._pointLoads.unchanged.delete(pointLoadId)) {
+      this._pointLoads.updated.delete(pointLoadId);
+      this._pointLoads.created.delete(pointLoadId);
+      this._pointLoads.deleted.delete(pointLoadId);
+      this._pointLoads.updated.set(pointLoadId, next);
+      return;
+    }
+
+    this._pointLoads.updated.delete(pointLoadId);
+    this._pointLoads.created.set(pointLoadId, next);
+    this._pointLoads.deleted.delete(pointLoadId);
   }
 
   deleteNode(nodeId: string): void {
@@ -822,15 +894,6 @@ export class ModelRevisionAggregate {
     ];
   }
 
-  private hasActiveEntity<TEntity>(
-    bucket: EntityBucket<TEntity>,
-    id: string,
-  ): boolean {
-    return (
-      bucket.unchanged.has(id) || bucket.updated.has(id) || bucket.created.has(id)
-    );
-  }
-
   private hasFiniteBaseValue(value: unknown): value is { BaseValue: number } {
     if (!value || typeof value !== "object") {
       return false;
@@ -838,5 +901,14 @@ export class ModelRevisionAggregate {
 
     const baseValue = (value as { BaseValue?: unknown }).BaseValue;
     return typeof baseValue === "number" && Number.isFinite(baseValue);
+  }
+
+  private resolveEntityId(id: string | null, field: string): string {
+    if (id !== null) {
+      assertUuid(id, field);
+      return id;
+    }
+
+    return Bun.randomUUIDv7();
   }
 }

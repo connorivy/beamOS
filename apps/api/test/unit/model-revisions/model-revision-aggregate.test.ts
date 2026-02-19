@@ -146,7 +146,7 @@ describe("ModelRevisionAggregate", () => {
     const aggregate = createAggregate();
 
     aggregate.addMaterial({
-      id: Bun.randomUUIDv7(),
+      id: null,
       revisionId: aggregate.id,
       name: "A36 Steel",
       pressureE: Pressure.FromPascals(1),
@@ -163,7 +163,7 @@ describe("ModelRevisionAggregate", () => {
     const aggregate = createAggregate();
 
     aggregate.addSectionProfile({
-      id: Bun.randomUUIDv7(),
+      id: null,
       revisionId: aggregate.id,
       name: "W12x26",
       discriminator: "STANDARD",
