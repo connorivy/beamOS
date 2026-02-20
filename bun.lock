@@ -5,6 +5,7 @@
     "": {
       "name": "beamos",
       "dependencies": {
+        "@beamos/openapi-client": "workspace:*",
         "@typescript-eslint/eslint-plugin": "^8.55.0",
         "@typescript-eslint/parser": "^8.55.0",
         "eslint": "^10.0.0",

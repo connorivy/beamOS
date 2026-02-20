@@ -81,7 +81,7 @@ export const kassimaliExample8_4BaseRevision: CreateModelRevisionRequest = {
         strongAxisMomentOfInertia: 716,
         weakAxisMomentOfInertia: 236,
         torsionalConstant: 15.1,
-        warpingConstant: 1,
+        warpingConstant: 0,
         strongAxisPlasticSectionModulus: 0,
         weakAxisPlasticSectionModulus: 0,
         strongAxisElasticSectionModulus: 0,
