@@ -223,6 +223,9 @@ const applyModelRevisionOperations = (input: {
         if (req.body.pointLoads) {
             revision.applyPointLoadChanges(req.body.pointLoads);
         }
+        if (req.body.modelSettings) {
+            revision.applyModelSettingsUpdate(req.body.modelSettings);
+        }
     } catch (error) {
         if (error instanceof Error) {
             throw httpError(error.message, 400);

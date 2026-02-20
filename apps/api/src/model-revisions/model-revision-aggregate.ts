@@ -20,6 +20,7 @@ import {
     LoadCaseOperationsRequest,
     LoadCombinationOperationsRequest,
     MaterialOperationsRequest,
+    ModelSettingsUpdateRequest,
     NodeOperationsRequest,
     PointLoadOperationsRequest,
     SectionProfileOperationsRequest,
@@ -749,6 +750,18 @@ export class ModelRevisionAggregate {
                 "point load",
             );
         }
+    }
+
+    public applyModelSettingsUpdate(settings: ModelSettingsUpdateRequest) {
+        this._modelSettings = {
+            status: "updated",
+            entity: ModelSettingsEntity.create({
+                id: this._modelSettings.entity.id,
+                revisionId: this.id,
+                units: settings.units,
+                yAxisUp: settings.yAxisUp,
+            }),
+        };
     }
 
     private deleteById<TEntity>(

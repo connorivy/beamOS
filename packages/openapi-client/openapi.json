@@ -330,56 +330,6 @@
           }
         }
       }
-    },
-    "/api/projects/{projectId}/branches/{branchName}/model-settings": {
-      "put": {
-        "tags": [
-          "core.users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ModelSettings"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          {
-            "name": "branchName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ModelSettingsProperties"
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -424,7 +374,6 @@
         "id": "Project"
       },
       "ModelSettingsProperties": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "units": {
@@ -1105,7 +1054,6 @@
         "id": "RevisionNode"
       },
       "ModelSettings": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "units": {
@@ -2593,6 +2541,9 @@
           },
           "pointLoads": {
             "$ref": "#/components/schemas/CreateModelRevisionPointLoadOperationsRequest"
+          },
+          "modelSettings": {
+            "$ref": "#/components/schemas/ModelSettingsProperties"
           }
         },
         "additionalProperties": false,
