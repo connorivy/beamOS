@@ -106,6 +106,12 @@ describe("typed element1d api client integration", () => {
                                 weakAxisPlasticSectionModulus: 8.94,
                                 strongAxisElasticSectionModulus: 34,
                                 weakAxisElasticSectionModulus: 5.77,
+                                units: {
+                                    area: "SquareInch",
+                                    areaMomentOfInertia: "InchToTheFourth",
+                                    warpingMomentOfInertia: "InchToTheSixth",
+                                    volume: "CubicInch",
+                                },
                             },
                         ],
                     },
@@ -280,6 +286,12 @@ describe("typed element1d api client integration", () => {
                                 weakAxisPlasticSectionModulus: 2.1,
                                 strongAxisElasticSectionModulus: 3,
                                 weakAxisElasticSectionModulus: 2,
+                                units: {
+                                    area: "SquareMeter",
+                                    areaMomentOfInertia: "MeterToTheFourth",
+                                    warpingMomentOfInertia: "MeterToTheSixth",
+                                    volume: "CubicMeter",
+                                },
                             },
                             {
                                 name: "Section B",
@@ -292,6 +304,12 @@ describe("typed element1d api client integration", () => {
                                 weakAxisPlasticSectionModulus: 3.1,
                                 strongAxisElasticSectionModulus: 4,
                                 weakAxisElasticSectionModulus: 3,
+                                units: {
+                                    area: "SquareMeter",
+                                    areaMomentOfInertia: "MeterToTheFourth",
+                                    warpingMomentOfInertia: "MeterToTheSixth",
+                                    volume: "CubicMeter",
+                                },
                             },
                         ],
                     },

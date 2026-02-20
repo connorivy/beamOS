@@ -1977,6 +1977,119 @@
           "weakAxisElasticSectionModulus": {
             "type": "number"
           },
+          "units": {
+            "type": "object",
+            "properties": {
+              "area": {
+                "type": "string",
+                "enum": [
+                  "SquareKilometer",
+                  "SquareMeter",
+                  "SquareDecimeter",
+                  "SquareCentimeter",
+                  "SquareMillimeter",
+                  "SquareMicrometer",
+                  "SquareMile",
+                  "SquareYard",
+                  "SquareFoot",
+                  "UsSurveySquareFoot",
+                  "SquareInch",
+                  "Acre",
+                  "Hectare",
+                  "SquareNauticalMile"
+                ]
+              },
+              "areaMomentOfInertia": {
+                "type": "string",
+                "enum": [
+                  "MeterToTheFourth",
+                  "DecimeterToTheFourth",
+                  "CentimeterToTheFourth",
+                  "MillimeterToTheFourth",
+                  "FootToTheFourth",
+                  "InchToTheFourth"
+                ]
+              },
+              "warpingMomentOfInertia": {
+                "type": "string",
+                "enum": [
+                  "MeterToTheSixth",
+                  "DecimeterToTheSixth",
+                  "CentimeterToTheSixth",
+                  "MillimeterToTheSixth",
+                  "FootToTheSixth",
+                  "InchToTheSixth"
+                ]
+              },
+              "volume": {
+                "type": "string",
+                "enum": [
+                  "Liter",
+                  "CubicMeter",
+                  "CubicKilometer",
+                  "CubicHectometer",
+                  "CubicDecimeter",
+                  "CubicCentimeter",
+                  "CubicMillimeter",
+                  "CubicMicrometer",
+                  "CubicMile",
+                  "CubicYard",
+                  "CubicFoot",
+                  "CubicInch",
+                  "ImperialGallon",
+                  "ImperialOunce",
+                  "UsGallon",
+                  "UsOunce",
+                  "UsTablespoon",
+                  "AuTablespoon",
+                  "MetricTablespoon",
+                  "UkTablespoon",
+                  "MetricTeaspoon",
+                  "UsTeaspoon",
+                  "MetricCup",
+                  "UsCustomaryCup",
+                  "UsLegalCup",
+                  "OilBarrel",
+                  "UsBeerBarrel",
+                  "ImperialBeerBarrel",
+                  "UsQuart",
+                  "ImperialQuart",
+                  "UsPint",
+                  "AcreFoot",
+                  "ImperialPint",
+                  "BoardFoot",
+                  "Nanoliter",
+                  "Microliter",
+                  "Milliliter",
+                  "Centiliter",
+                  "Deciliter",
+                  "Decaliter",
+                  "Hectoliter",
+                  "Kiloliter",
+                  "Megaliter",
+                  "HectocubicMeter",
+                  "KilocubicMeter",
+                  "HectocubicFoot",
+                  "KilocubicFoot",
+                  "MegacubicFoot",
+                  "KiloimperialGallon",
+                  "MegaimperialGallon",
+                  "DecausGallon",
+                  "DeciusGallon",
+                  "HectousGallon",
+                  "KilousGallon",
+                  "MegausGallon"
+                ]
+              }
+            },
+            "required": [
+              "area",
+              "areaMomentOfInertia",
+              "warpingMomentOfInertia",
+              "volume"
+            ],
+            "additionalProperties": false
+          },
           "strongAxisShearArea": {
             "type": "number"
           },
@@ -1994,7 +2107,8 @@
           "strongAxisPlasticSectionModulus",
           "weakAxisPlasticSectionModulus",
           "strongAxisElasticSectionModulus",
-          "weakAxisElasticSectionModulus"
+          "weakAxisElasticSectionModulus",
+          "units"
         ],
         "additionalProperties": false,
         "id": "CreateSectionProfileRequest"
@@ -2033,6 +2147,119 @@
           "weakAxisElasticSectionModulus": {
             "type": "number"
           },
+          "units": {
+            "type": "object",
+            "properties": {
+              "area": {
+                "type": "string",
+                "enum": [
+                  "SquareKilometer",
+                  "SquareMeter",
+                  "SquareDecimeter",
+                  "SquareCentimeter",
+                  "SquareMillimeter",
+                  "SquareMicrometer",
+                  "SquareMile",
+                  "SquareYard",
+                  "SquareFoot",
+                  "UsSurveySquareFoot",
+                  "SquareInch",
+                  "Acre",
+                  "Hectare",
+                  "SquareNauticalMile"
+                ]
+              },
+              "areaMomentOfInertia": {
+                "type": "string",
+                "enum": [
+                  "MeterToTheFourth",
+                  "DecimeterToTheFourth",
+                  "CentimeterToTheFourth",
+                  "MillimeterToTheFourth",
+                  "FootToTheFourth",
+                  "InchToTheFourth"
+                ]
+              },
+              "warpingMomentOfInertia": {
+                "type": "string",
+                "enum": [
+                  "MeterToTheSixth",
+                  "DecimeterToTheSixth",
+                  "CentimeterToTheSixth",
+                  "MillimeterToTheSixth",
+                  "FootToTheSixth",
+                  "InchToTheSixth"
+                ]
+              },
+              "volume": {
+                "type": "string",
+                "enum": [
+                  "Liter",
+                  "CubicMeter",
+                  "CubicKilometer",
+                  "CubicHectometer",
+                  "CubicDecimeter",
+                  "CubicCentimeter",
+                  "CubicMillimeter",
+                  "CubicMicrometer",
+                  "CubicMile",
+                  "CubicYard",
+                  "CubicFoot",
+                  "CubicInch",
+                  "ImperialGallon",
+                  "ImperialOunce",
+                  "UsGallon",
+                  "UsOunce",
+                  "UsTablespoon",
+                  "AuTablespoon",
+                  "MetricTablespoon",
+                  "UkTablespoon",
+                  "MetricTeaspoon",
+                  "UsTeaspoon",
+                  "MetricCup",
+                  "UsCustomaryCup",
+                  "UsLegalCup",
+                  "OilBarrel",
+                  "UsBeerBarrel",
+                  "ImperialBeerBarrel",
+                  "UsQuart",
+                  "ImperialQuart",
+                  "UsPint",
+                  "AcreFoot",
+                  "ImperialPint",
+                  "BoardFoot",
+                  "Nanoliter",
+                  "Microliter",
+                  "Milliliter",
+                  "Centiliter",
+                  "Deciliter",
+                  "Decaliter",
+                  "Hectoliter",
+                  "Kiloliter",
+                  "Megaliter",
+                  "HectocubicMeter",
+                  "KilocubicMeter",
+                  "HectocubicFoot",
+                  "KilocubicFoot",
+                  "MegacubicFoot",
+                  "KiloimperialGallon",
+                  "MegaimperialGallon",
+                  "DecausGallon",
+                  "DeciusGallon",
+                  "HectousGallon",
+                  "KilousGallon",
+                  "MegausGallon"
+                ]
+              }
+            },
+            "required": [
+              "area",
+              "areaMomentOfInertia",
+              "warpingMomentOfInertia",
+              "volume"
+            ],
+            "additionalProperties": false
+          },
           "strongAxisShearArea": {
             "type": "number"
           },
@@ -2054,7 +2281,8 @@
           "strongAxisPlasticSectionModulus",
           "weakAxisPlasticSectionModulus",
           "strongAxisElasticSectionModulus",
-          "weakAxisElasticSectionModulus"
+          "weakAxisElasticSectionModulus",
+          "units"
         ],
         "additionalProperties": false,
         "id": "PutSectionProfileRequest"

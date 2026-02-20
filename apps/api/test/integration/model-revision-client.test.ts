@@ -32,6 +32,12 @@ const createSectionProfileInput = () => ({
     weakAxisPlasticSectionModulus: 8.94,
     strongAxisElasticSectionModulus: 34,
     weakAxisElasticSectionModulus: 5.77,
+    units: {
+        area: "SquareInch" as const,
+        areaMomentOfInertia: "InchToTheFourth" as const,
+        warpingMomentOfInertia: "InchToTheSixth" as const,
+        volume: "CubicInch" as const,
+    },
 });
 
 beforeAll(async () => {
@@ -180,6 +186,12 @@ describe("model revision integration", () => {
                                 weakAxisPlasticSectionModulus: 9.8,
                                 strongAxisElasticSectionModulus: 36.1,
                                 weakAxisElasticSectionModulus: 6.12,
+                                units: {
+                                    area: "SquareInch",
+                                    areaMomentOfInertia: "InchToTheFourth",
+                                    warpingMomentOfInertia: "InchToTheSixth",
+                                    volume: "CubicInch",
+                                },
                             },
                         ],
                     },
@@ -191,7 +203,7 @@ describe("model revision integration", () => {
         expect(updateRevisionResponse.response.status).toBe(200);
         expect(updateRevisionResponse.data?.sectionProfiles).toHaveLength(1);
         expect(updateRevisionResponse.data?.sectionProfiles[0]?.name).toBe("W12x26-Renamed");
-        expect(updateRevisionResponse.data?.sectionProfiles[0]?.area.value).toBe(8.75);
+        expect(updateRevisionResponse.data?.sectionProfiles[0]?.area.value).toBe(0.00564515);
 
         const deleteRevisionResponse = await client.POST(
             "/api/projects/{projectId}/branches/{branchName}/revisions",
@@ -389,6 +401,12 @@ describe("model revision integration", () => {
                                 weakAxisPlasticSectionModulus: 8.94,
                                 strongAxisElasticSectionModulus: 34,
                                 weakAxisElasticSectionModulus: 5.77,
+                                units: {
+                                    area: "SquareInch",
+                                    areaMomentOfInertia: "InchToTheFourth",
+                                    warpingMomentOfInertia: "InchToTheSixth",
+                                    volume: "CubicInch",
+                                },
                             },
                         ],
                     },
@@ -505,6 +523,12 @@ describe("model revision integration", () => {
                                 weakAxisElasticSectionModulus: 28.5,
                                 strongAxisShearArea: 19.8,
                                 weakAxisShearArea: 13.2,
+                                units: {
+                                    area: "SquareCentimeter",
+                                    areaMomentOfInertia: "CentimeterToTheFourth",
+                                    warpingMomentOfInertia: "CentimeterToTheSixth",
+                                    volume: "CubicCentimeter",
+                                },
                             },
                         ],
                     },
@@ -559,7 +583,7 @@ describe("model revision integration", () => {
             throw new Error("Expected element1d batch response for revision 2");
         }
 
-        const elementRev2RevisionId = elementRev2Response.data.element1ds[0]?.revisionId;
+        const elementRev2RevisionId = elementRev2Response.data.id;
         expect(elementRev2RevisionId).toBeDefined();
 
         const getModelRevisionResponse = await client.GET(

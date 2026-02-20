@@ -722,6 +722,7 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
             sectionProfile.strongAxisElasticSectionModulus,
           weakAxisElasticSectionModulus:
             sectionProfile.weakAxisElasticSectionModulus,
+          units: sectionProfile.units,
           ...(sectionProfile.strongAxisShearArea !== undefined &&
           sectionProfile.weakAxisShearArea !== undefined
             ? {
