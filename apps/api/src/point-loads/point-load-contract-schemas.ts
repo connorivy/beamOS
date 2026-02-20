@@ -26,21 +26,26 @@ const pointLoadForceResponseSchema = z.object({
   momentAboutZ: z.number().finite(),
 });
 
-export const pointLoadPropertiesSchema = z
-  .object({
+const pointLoadSharedPropertiesSchema = z.object({
+  force: pointLoadForceRequestSchema,
+  direction: pointLoadVector3dSchema,
+  units: z.object({
+    force: z.enum(ForceUnits),
+    torque: z.enum(TorqueUnits),
+  }),
+});
+
+export const pointLoadPropertiesSchema = pointLoadSharedPropertiesSchema
+  .extend({
     nodeId: uuidV7Schema,
     loadCaseId: uuidV7Schema,
-    force: pointLoadForceRequestSchema,
-    direction: pointLoadVector3dSchema,
-    units: z.object({
-      force: z.enum(ForceUnits),
-      torque: z.enum(TorqueUnits),
-    }),
   })
   .meta({ id: "PointLoadProperties" });
 
-export const createPointLoadRequestSchema = pointLoadPropertiesSchema
+export const createPointLoadRequestSchema = pointLoadSharedPropertiesSchema
   .extend({
+    nodeId: z.string().trim().min(1),
+    loadCaseId: z.string().trim().min(1),
     tempId: z.string().trim().min(1).optional(),
   })
   .meta({ id: "CreatePointLoadRequest" });

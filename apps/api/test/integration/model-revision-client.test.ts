@@ -6,6 +6,7 @@ import {
     TorqueUnits,
 } from "unitsnet-js";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
+import { kassimaliExample3_8BaseRevision } from "../../../../tests/fixtures/Kassimali_MatrixAnalysisOfStructures2ndEd";
 
 let baseUrl = "";
 
@@ -747,5 +748,66 @@ describe("model revision integration", () => {
         expect(createLoadsRevisionResponse.data?.pointLoads[0]?.units.force).toBe(
             ForceUnits.Newtons,
         );
+    });
+
+    it("creates all entities in a single revision using tempId references", async () => {
+        const client = createApiClient(baseUrl);
+
+        const createModelResponse = await client.POST("/api/projects", {
+            body: {
+                name: "Single Operation TempId Model",
+                description: "Create all entities in a single revision using tempIds",
+                modelSettings: defaultModelSettings,
+            },
+        });
+
+        expect(createModelResponse.error).toBeUndefined();
+        expect(createModelResponse.response.status).toBe(200);
+        expect(createModelResponse.data).toBeDefined();
+
+        if (!createModelResponse.data) {
+            throw new Error("Expected model response");
+        }
+
+        const projectId = createModelResponse.data.id;
+        const branchName = "main";
+
+        const singleOpResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: { path: { projectId, branchName } },
+                body: kassimaliExample3_8BaseRevision,
+            },
+        );
+
+        expect(singleOpResponse.error).toBeUndefined();
+        expect(singleOpResponse.response.status).toBe(200);
+        expect(singleOpResponse.data).toBeDefined();
+
+        if (!singleOpResponse.data) {
+            throw new Error("Expected single operation revision response");
+        }
+
+        expect(singleOpResponse.data.nodes).toHaveLength(4);
+        expect(singleOpResponse.data.element1ds).toHaveLength(3);
+        expect(singleOpResponse.data.pointLoads).toHaveLength(2);
+        expect(singleOpResponse.data.loadCases).toHaveLength(1);
+        expect(singleOpResponse.data.loadCombinations).toHaveLength(2);
+
+        const nodeIds = singleOpResponse.data.nodes.map((n) => n.id);
+        for (const element1d of singleOpResponse.data.element1ds) {
+            expect(nodeIds).toContain(element1d.startNodeId);
+            expect(nodeIds).toContain(element1d.endNodeId);
+        }
+
+        const loadCaseId = singleOpResponse.data.loadCases[0]?.id;
+        expect(loadCaseId).toBeDefined();
+        for (const pointLoad of singleOpResponse.data.pointLoads) {
+            expect(pointLoad.loadCaseId).toBe(loadCaseId);
+            expect(nodeIds).toContain(pointLoad.nodeId);
+        }
+        for (const loadCombination of singleOpResponse.data.loadCombinations) {
+            expect(loadCombination.loadCaseFactors[loadCaseId!]).toBe(1);
+        }
     });
 });
