@@ -2,7 +2,6 @@ import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
 import { getIntegrationBaseUrl } from "./shared-test-app";
 
-
 const defaultModelSettings = {
     units: {
         pressure: "Pascal",
@@ -13,7 +12,6 @@ const defaultModelSettings = {
     },
     yAxisUp: true,
 } as const;
-
 
 describe("typed node api client integration", () => {
     it("batch creates nodes and verifies persistence in revision", async () => {
@@ -216,6 +214,6 @@ describe("typed node api client integration", () => {
         );
 
         expect(batchCreateResponse.data).toBeUndefined();
-        expect(batchCreateResponse.response.status).toBe(400);
+        expect(batchCreateResponse.response.status).toBe(409);
     });
 });

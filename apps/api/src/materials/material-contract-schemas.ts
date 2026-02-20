@@ -6,8 +6,9 @@ import { uuidV7Schema } from "../common/uuid";
 export const materialPropertiesSchema = z
     .object({
         name: z.string().trim().min(1),
-        modulusOfElasticity: z.number().finite(),
-        modulusOfRigidity: z.number().finite(),
+        modulusOfElasticity: z.number(),
+        modulusOfRigidity: z.number(),
+        applicationId: z.string().trim().min(1).optional(),
         units: z.object({
             pressure: z.enum(PressureUnits),
         }),
@@ -35,19 +36,7 @@ export const deleteMaterialRequestSchema = z
     .min(1)
     .meta({ id: "DeleteMaterialRequest" });
 
-// Material response schemas
-export const materialPropertiesResponseSchema = z
-    .object({
-        name: z.string().min(1),
-        modulusOfElasticity: z.number().finite(),
-        modulusOfRigidity: z.number().finite(),
-        units: z.object({
-            pressure: z.enum(PressureUnits),
-        }),
-    })
-    .meta({ id: "MaterialPropertiesResponse" });
-
-export const materialResponseSchema = materialPropertiesResponseSchema
+export const materialResponseSchema = materialPropertiesSchema
     .extend({
         id: uuidV7Schema,
         revisionId: uuidV7Schema,

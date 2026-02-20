@@ -3,7 +3,6 @@ import { createApiClient } from "@beamos/openapi-client";
 import { PressureUnits } from "unitsnet-js";
 import { getIntegrationBaseUrl } from "./shared-test-app";
 
-
 const defaultModelSettings = {
     units: {
         pressure: "Pascal",
@@ -14,7 +13,6 @@ const defaultModelSettings = {
     },
     yAxisUp: true,
 } as const;
-
 
 describe("typed element1d api client integration", () => {
     it("batch creates element1ds and snapshots get responses", async () => {
@@ -345,6 +343,6 @@ describe("typed element1d api client integration", () => {
         );
 
         expect(batchCreateResponse.data).toBeUndefined();
-        expect(batchCreateResponse.response.status).toBe(400);
+        expect(batchCreateResponse.response.status).toBe(409);
     });
 });

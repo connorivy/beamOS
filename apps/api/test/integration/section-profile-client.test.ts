@@ -2,7 +2,6 @@ import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
 import { getIntegrationBaseUrl } from "./shared-test-app";
 
-
 const defaultModelSettings = {
     units: {
         pressure: "Pascal",
@@ -13,7 +12,6 @@ const defaultModelSettings = {
     },
     yAxisUp: true,
 } as const;
-
 
 describe("typed section profile api client integration", () => {
     it("batch creates section profiles and snapshots get responses", async () => {
@@ -222,7 +220,6 @@ describe("typed section profile api client integration", () => {
                         create: [
                             {
                                 name: "Duplicate Section",
-                                discriminator: "STANDARD",
                                 area: 5,
                                 strongAxisMomentOfInertia: 10,
                                 weakAxisMomentOfInertia: 4,
@@ -241,7 +238,6 @@ describe("typed section profile api client integration", () => {
                             },
                             {
                                 name: "Duplicate Section",
-                                discriminator: "STANDARD",
                                 area: 6,
                                 strongAxisMomentOfInertia: 11,
                                 weakAxisMomentOfInertia: 5,
@@ -265,6 +261,6 @@ describe("typed section profile api client integration", () => {
         );
 
         expect(batchCreateResponse.data).toBeUndefined();
-        expect(batchCreateResponse.response.status).toBe(400);
+        expect(batchCreateResponse.response.status).toBe(409);
     });
 });

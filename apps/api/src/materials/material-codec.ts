@@ -6,6 +6,7 @@ const materialPayloadV1Schema = z.object({
     name: z.string(),
     modulusOfElasticity: z.number(),
     modulusOfRigidity: z.number(),
+    applicationId: z.string().trim().min(1).optional(),
 });
 type MaterialPayloadV1 = z.infer<typeof materialPayloadV1Schema>;
 
@@ -23,6 +24,7 @@ export const materialRevisionChangeCodec = {
                 name: entity.name,
                 modulusOfElasticity: entity.modulusOfElasticity.Pascals,
                 modulusOfRigidity: entity.modulusOfRigidity.Pascals,
+                applicationId: entity.applicationId,
             },
         };
     },

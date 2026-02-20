@@ -26,6 +26,7 @@ export class MaterialEntity {
         this.id = id;
         this.revisionId = revisionId;
         this.name = snapshot.name;
+        this.applicationId = snapshot.applicationId;
     }
 
     readonly id: string;
@@ -33,6 +34,7 @@ export class MaterialEntity {
     readonly name: string;
     readonly modulusOfElasticity: Pressure;
     readonly modulusOfRigidity: Pressure;
+    readonly applicationId?: string;
 
     static create(
         snapshot: CreateMaterialRequest,

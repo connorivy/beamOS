@@ -3,7 +3,6 @@ import { createApiClient } from "@beamos/openapi-client";
 import { PressureUnits } from "unitsnet-js";
 import { getIntegrationBaseUrl } from "./shared-test-app";
 
-
 const defaultModelSettings = {
     units: {
         pressure: "Pascal",
@@ -14,7 +13,6 @@ const defaultModelSettings = {
     },
     yAxisUp: true,
 } as const;
-
 
 describe("typed material api client integration", () => {
     it("batch creates materials and snapshots get responses", async () => {
@@ -190,6 +188,191 @@ describe("typed material api client integration", () => {
         );
 
         expect(batchCreateResponse.data).toBeUndefined();
-        expect(batchCreateResponse.response.status).toBe(400);
+        expect(batchCreateResponse.response.status).toBe(409);
+    });
+
+    it("supports material applicationId semantics for create and update", async () => {
+        const client = createApiClient(getIntegrationBaseUrl());
+
+        const createModelResponse = await client.POST("/api/projects", {
+            body: {
+                name: "Material ApplicationId Model",
+                description: "Create model for material applicationId test",
+                modelSettings: defaultModelSettings,
+            },
+        });
+
+        expect(createModelResponse.error).toBeUndefined();
+        expect(createModelResponse.response.status).toBe(200);
+        expect(createModelResponse.data).toBeDefined();
+
+        if (!createModelResponse.data) {
+            throw new Error("Expected model response");
+        }
+
+        const projectId = createModelResponse.data.id;
+        const branchName = "main";
+
+        const initialCreateResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    materials: {
+                        create: [
+                            {
+                                name: "Material App 1",
+                                applicationId: "app-material-1",
+                                modulusOfElasticity: 1000,
+                                modulusOfRigidity: 900,
+                                units: { pressure: PressureUnits.Pascals },
+                            },
+                            {
+                                name: "Material App 2",
+                                applicationId: "app-material-2",
+                                modulusOfElasticity: 1000,
+                                modulusOfRigidity: 900,
+                                units: { pressure: PressureUnits.Pascals },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+
+        expect(initialCreateResponse.error).toBeUndefined();
+        expect(initialCreateResponse.response.status).toBe(200);
+        expect(initialCreateResponse.data).toBeDefined();
+        expect(initialCreateResponse.data?.materials[0]?.applicationId).toBe("app-material-1");
+
+        const createdMaterial = initialCreateResponse.data?.materials.find(
+            (material) => material.applicationId === "app-material-1",
+        );
+        if (!createdMaterial) {
+            throw new Error("Expected created material with applicationId");
+        }
+
+        const duplicateApplicationIdCreateResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    materials: {
+                        create: [
+                            {
+                                name: "Material App 1 Duplicate",
+                                applicationId: "app-material-1",
+                                modulusOfElasticity: 1100,
+                                modulusOfRigidity: 950,
+                                units: { pressure: PressureUnits.Pascals },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+        expect(duplicateApplicationIdCreateResponse.response.status).toBe(409);
+        expect(duplicateApplicationIdCreateResponse.data).toBeUndefined();
+
+        const unknownApplicationIdUpdateResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    materials: {
+                        update: [
+                            {
+                                name: "Unknown App Material",
+                                applicationId: "app-material-unknown",
+                                modulusOfElasticity: 1200,
+                                modulusOfRigidity: 1000,
+                                units: { pressure: PressureUnits.Pascals },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+        expect(unknownApplicationIdUpdateResponse.response.status).toBe(404);
+        expect(unknownApplicationIdUpdateResponse.data).toBeUndefined();
+
+        const mismatchedNameAndApplicationIdResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    materials: {
+                        update: [
+                            {
+                                name: "Material App 2",
+                                applicationId: "app-material-1",
+                                modulusOfElasticity: 1300,
+                                modulusOfRigidity: 1100,
+                                units: { pressure: PressureUnits.Pascals },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+        expect(mismatchedNameAndApplicationIdResponse.response.status).toBe(409);
+        expect(mismatchedNameAndApplicationIdResponse.data).toBeUndefined();
+
+        const validUpdateByApplicationIdResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    materials: {
+                        update: [
+                            {
+                                name: "Material App 1",
+                                applicationId: "app-material-1",
+                                modulusOfElasticity: 1400,
+                                modulusOfRigidity: 1200,
+                                units: { pressure: PressureUnits.Pascals },
+                                newName: "Material App 1 Updated",
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+
+        expect(validUpdateByApplicationIdResponse.error).toBeUndefined();
+        expect(validUpdateByApplicationIdResponse.response.status).toBe(200);
+        expect(validUpdateByApplicationIdResponse.data).toBeDefined();
+
+        const updatedMaterial = validUpdateByApplicationIdResponse.data?.materials.find(
+            (material) => material.applicationId === "app-material-1",
+        );
+        expect(updatedMaterial).toBeDefined();
+        expect(updatedMaterial?.id).toBe(createdMaterial.id);
+        expect(updatedMaterial?.name).toBe("Material App 1 Updated");
     });
 });

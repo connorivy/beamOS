@@ -25,6 +25,7 @@ import {
     PointLoadOperationsRequest,
     SectionProfileOperationsRequest,
 } from "./create-model-revision-request-schema";
+import { httpError } from "src/common/http-utils";
 
 export type ModelRevisionSnapshot = {
     id: string;
@@ -61,6 +62,7 @@ type EntityBucket<TEntity> = {
     created: Map<string, TEntity>;
     updated: Map<string, TEntity>;
     deleted: Set<string>;
+    applicationIdToEntityIds: Map<string, string>;
 };
 
 export type ModelRevisionEntityBuckets<TEntity> = {
@@ -321,7 +323,7 @@ export class ModelRevisionAggregate {
         };
     }
 
-    private createInitialBucket<TEntity extends { id: string }>(
+    private createInitialBucket<TEntity extends { id: string; applicationId?: string }>(
         entities: TEntity[],
     ): EntityBucket<TEntity> {
         return {
@@ -329,6 +331,11 @@ export class ModelRevisionAggregate {
             created: new Map(),
             updated: new Map(),
             deleted: new Set(),
+            applicationIdToEntityIds: new Map(
+                entities
+                    .filter((entity) => entity.applicationId !== undefined)
+                    .map((entity) => [entity.applicationId!, entity.id]),
+            ),
         };
     }
 
@@ -348,6 +355,7 @@ export class ModelRevisionAggregate {
             created: new Map(),
             updated: new Map(),
             deleted: new Set(),
+            applicationIdToEntityIds: new Map(bucket.applicationIdToEntityIds),
         };
     }
 
@@ -388,8 +396,9 @@ export class ModelRevisionAggregate {
                     .concat(Array.from(this._materials.created.values()))
                     .some((material) => material.name.toLowerCase() === createOp.name.toLowerCase())
             ) {
-                throw new Error(
+                throw httpError(
                     `Cannot create material with name "${createOp.name}" - a material with that name already exists`,
+                    409,
                 );
             }
             this.applyCreateOp(
@@ -401,12 +410,15 @@ export class ModelRevisionAggregate {
         }
 
         for (const updateOp of ops.update ?? []) {
-            const existingId = Array.from(this._materials.unchanged.values()).find(
-                (material) => material.name.toLowerCase() === updateOp.name.toLowerCase(),
-            )?.id;
-            if (!existingId) {
-                throw new Error(
-                    `Cannot find existing material with name "${updateOp.name}" for update operation`,
+            const existingId = this.getExistingEntityIdByNameOrApplicationId(
+                this._materials,
+                updateOp.name,
+                updateOp.applicationId,
+            );
+            if (updateOp.id && updateOp.id !== existingId) {
+                throw httpError(
+                    `id "${updateOp.id}" and material lookup resolved to different entities`,
+                    409,
                 );
             }
             this.applyUpdateOp(
@@ -425,13 +437,15 @@ export class ModelRevisionAggregate {
 
     public applySectionProfileChanges(ops: SectionProfileOperationsRequest) {
         for (const sectionProfileName of ops.delete ?? []) {
-            const sectionProfileId = this.sectionProfiles.find(
-                (sectionProfile) =>
-                    sectionProfile.name.toLowerCase() === sectionProfileName.toLowerCase(),
-            )?.id;
+            const sectionProfileId = this.getExistingEntityIdByNameOrApplicationId(
+                this._sectionProfiles,
+                sectionProfileName,
+                undefined,
+            );
             if (!sectionProfileId) {
-                throw new Error(
-                    "Cannot find existing section profile with name " + sectionProfileName,
+                throw httpError(
+                    `Cannot find existing section profile with name "${sectionProfileName}"`,
+                    404,
                 );
             }
             this.deleteById(this._sectionProfiles, sectionProfileId, "section profile");
@@ -441,8 +455,9 @@ export class ModelRevisionAggregate {
             const hasStrong = createOp.strongAxisShearArea !== undefined;
             const hasWeak = createOp.weakAxisShearArea !== undefined;
             if (hasStrong !== hasWeak) {
-                throw new Error(
+                throw httpError(
                     "strongAxisShearArea and weakAxisShearArea must both be provided or both be omitted",
+                    400,
                 );
             }
 
@@ -452,7 +467,7 @@ export class ModelRevisionAggregate {
                         sectionProfile.name.toLowerCase() === createOp.name.toLowerCase(),
                 )
             ) {
-                throw new Error(`Duplicate section profile name "${createOp.name}"`);
+                throw httpError(`Duplicate section profile name "${createOp.name}"`, 409);
             }
 
             this.applyCreateOp(
@@ -517,7 +532,7 @@ export class ModelRevisionAggregate {
                     sectionProfile.name.toLowerCase() === updateOp.name.toLowerCase(),
             )?.id;
             if (!existingId) {
-                throw new Error(`Section profile "${updateOp.name}" not found`);
+                throw httpError(`Section profile "${updateOp.name}" not found`, 404);
             }
 
             const targetName = updateOp.newName ?? updateOp.name;
@@ -525,14 +540,15 @@ export class ModelRevisionAggregate {
                 (sectionProfile) => sectionProfile.name.toLowerCase() === targetName.toLowerCase(),
             )?.id;
             if (existingTargetId && existingTargetId !== existingId) {
-                throw new Error(`Duplicate section profile name "${targetName}"`);
+                throw httpError(`Duplicate section profile name "${targetName}"`, 409);
             }
 
             const hasStrong = updateOp.strongAxisShearArea !== undefined;
             const hasWeak = updateOp.weakAxisShearArea !== undefined;
             if (hasStrong !== hasWeak) {
-                throw new Error(
+                throw httpError(
                     "strongAxisShearArea and weakAxisShearArea must both be provided or both be omitted",
+                    400,
                 );
             }
 
@@ -608,13 +624,13 @@ export class ModelRevisionAggregate {
         for (const createOp of ops.create ?? []) {
             const material = this.materials.find((entry) => entry.name === createOp.materialName);
             if (!material) {
-                throw new Error(`Material "${createOp.materialName}" not found`);
+                throw httpError(`Material "${createOp.materialName}" not found`, 404);
             }
             const sectionProfile = this.sectionProfiles.find(
                 (entry) => entry.name === createOp.sectionProfileName,
             );
             if (!sectionProfile) {
-                throw new Error(`Section profile "${createOp.sectionProfileName}" not found`);
+                throw httpError(`Section profile "${createOp.sectionProfileName}" not found`, 404);
             }
 
             const resolvedStartNodeId = this.resolveId(createOp.startNodeId);
@@ -814,7 +830,7 @@ export class ModelRevisionAggregate {
             !bucket.updated.has(entityId) &&
             !bucket.created.has(entityId)
         ) {
-            throw new Error(`Cannot delete ${entityTypeName} with id ${entityId} - not found`);
+            throw httpError(`Cannot delete ${entityTypeName} with id ${entityId} - not found`, 404);
         }
         bucket.unchanged.delete(entityId);
         bucket.updated.delete(entityId);
@@ -822,22 +838,92 @@ export class ModelRevisionAggregate {
         bucket.deleted.add(entityId);
     }
 
-    private applyCreateOp<TCreateOp extends object, TEntity extends { id: string }>(
+    private getExistingEntityIdByIdOrApplicationId<
+        TEntity extends { id: string; applicationId?: string },
+    >(bucket: EntityBucket<TEntity>, id?: string, applicationId?: string): string {
+        if (id) {
+            return id;
+        } else if (applicationId) {
+            const existingId = bucket.applicationIdToEntityIds.get(applicationId);
+            if (!existingId) {
+                throw httpError(
+                    `Cannot find existing entity with applicationId "${applicationId}"`,
+                    404,
+                );
+            }
+            return existingId;
+        } else {
+            throw httpError(`Operation must include either id or applicationId`, 400);
+        }
+    }
+
+    private getExistingEntityIdByNameOrApplicationId<TEntity extends { id: string; name: string }>(
+        bucket: EntityBucket<TEntity>,
+        name: string,
+        applicationId?: string,
+    ): string {
+        const existingEntity =
+            Array.from(bucket.unchanged.values()).find(
+                (entity) => entity.name.toLowerCase() === name.toLowerCase(),
+            ) ??
+            Array.from(bucket.updated.values()).find(
+                (entity) => entity.name.toLowerCase() === name.toLowerCase(),
+            ) ??
+            Array.from(bucket.created.values()).find(
+                (entity) => entity.name.toLowerCase() === name.toLowerCase(),
+            );
+
+        let existingId: string | undefined;
+        if (applicationId) {
+            existingId = bucket.applicationIdToEntityIds.get(applicationId);
+        }
+
+        if (name && applicationId) {
+            if (existingId !== existingEntity?.id) {
+                throw httpError(
+                    `Name "${name}" and applicationId "${applicationId}" resolved to different entities"`,
+                    409,
+                );
+            }
+        }
+        existingId = existingId ?? existingEntity?.id;
+
+        if (!existingId) {
+            throw httpError(
+                `Cannot find existing entity with name "${name}" or applicationId "${applicationId}"`,
+                404,
+            );
+        }
+        return existingId;
+    }
+
+    private applyCreateOp<
+        TCreateOp extends object,
+        TEntity extends { id: string; applicationId?: string },
+    >(
         createOp: TCreateOp,
         bucket: EntityBucket<TEntity>,
         createFunction: (createOp: TCreateOp, revisionId: string) => TEntity,
         entityTypeName: string,
     ): void {
         const entity = createFunction(createOp, this.id);
+        if (entity.applicationId) {
+            if (bucket.applicationIdToEntityIds.has(entity.applicationId)) {
+                throw httpError(
+                    `Duplicate applicationId "${entity.applicationId}" in ${entityTypeName}`,
+                    409,
+                );
+            }
+            bucket.applicationIdToEntityIds.set(entity.applicationId, entity.id);
+        }
+
         bucket.created.set(entity.id, entity);
 
         const tempId = "tempId" in createOp ? (createOp as { tempId?: unknown }).tempId : undefined;
 
         if (typeof tempId === "string" && tempId.length > 0) {
             if (this.tempIdToRealIdMap.has(tempId)) {
-                throw new Error(
-                    `Duplicate tempId "${tempId}" in ${entityTypeName} create operations`,
-                );
+                throw httpError(`Duplicate tempId "${tempId}" in ${entityTypeName}`, 409);
             }
             this.tempIdToRealIdMap.set(tempId, entity.id);
         }
@@ -850,13 +936,17 @@ export class ModelRevisionAggregate {
         entityTypeName: string,
     ): void {
         if (bucket.deleted.has(updateOp.id)) {
-            throw new Error(
+            throw httpError(
                 `Cannot update ${entityTypeName} with id ${updateOp.id} - it is marked for deletion`,
+                409,
             );
         }
 
         if (!bucket.unchanged.has(updateOp.id) && !bucket.updated.has(updateOp.id)) {
-            throw new Error(`Cannot update ${entityTypeName} with id ${updateOp.id} - not found`);
+            throw httpError(
+                `Cannot update ${entityTypeName} with id ${updateOp.id} - not found`,
+                404,
+            );
         }
 
         const entity = updateFunction(updateOp, this.id);

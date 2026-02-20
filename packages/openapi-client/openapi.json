@@ -702,6 +702,10 @@
           "modulusOfRigidity": {
             "type": "number"
           },
+          "applicationId": {
+            "type": "string",
+            "minLength": 1
+          },
           "units": {
             "type": "object",
             "properties": {
@@ -2205,6 +2209,10 @@
           "modulusOfRigidity": {
             "type": "number"
           },
+          "applicationId": {
+            "type": "string",
+            "minLength": 1
+          },
           "units": {
             "type": "object",
             "properties": {
@@ -2289,6 +2297,10 @@
           },
           "modulusOfRigidity": {
             "type": "number"
+          },
+          "applicationId": {
+            "type": "string",
+            "minLength": 1
           },
           "units": {
             "type": "object",

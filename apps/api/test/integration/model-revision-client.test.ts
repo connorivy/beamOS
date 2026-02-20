@@ -4,7 +4,6 @@ import { ForceUnits, PressureUnits, TorqueUnits } from "unitsnet-js";
 import { getIntegrationBaseUrl } from "./shared-test-app";
 import { kassimaliExample3_8Model } from "../../../../tests/fixtures/Kassimali_MatrixAnalysisOfStructures2ndEd";
 
-
 const defaultModelSettings = {
     units: {
         pressure: "Pascal",
@@ -35,7 +34,6 @@ const createSectionProfileInput = () => ({
         volume: "CubicInch" as const,
     },
 });
-
 
 describe("model revision integration", () => {
     it("updates materials by material name using case-insensitive matching", async () => {
@@ -380,7 +378,6 @@ describe("model revision integration", () => {
                         create: [
                             {
                                 name: "W12x26",
-                                discriminator: "STANDARD",
                                 area: 7.65,
                                 strongAxisMomentOfInertia: 204,
                                 weakAxisMomentOfInertia: 17.3,
@@ -500,7 +497,6 @@ describe("model revision integration", () => {
                         create: [
                             {
                                 name: "IPE 200",
-                                discriminator: "WITH_SHEAR_AREAS",
                                 area: 33.4,
                                 strongAxisMomentOfInertia: 1940,
                                 weakAxisMomentOfInertia: 142,

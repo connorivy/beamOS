@@ -85,6 +85,7 @@ export const createModelRevision = defineEndpoint({
                 name: material.name,
                 modulusOfElasticity: material.modulusOfElasticity.Pascals,
                 modulusOfRigidity: material.modulusOfRigidity.Pascals,
+                applicationId: material.applicationId,
                 units: {
                     pressure: PressureUnits.Pascals as const,
                 },
@@ -200,35 +201,28 @@ const applyModelRevisionOperations = (input: {
 }) => {
     const { req, revision } = input;
 
-    try {
-        if (req.body.nodes) {
-            revision.applyNodeChanges(req.body.nodes);
-        }
-        if (req.body.materials) {
-            revision.applyMaterialChanges(req.body.materials);
-        }
-        if (req.body.sectionProfiles) {
-            revision.applySectionProfileChanges(req.body.sectionProfiles);
-        }
-        if (req.body.element1ds) {
-            revision.applyElement1dChanges(req.body.element1ds);
-        }
-        if (req.body.loadCases) {
-            revision.applyLoadCaseChanges(req.body.loadCases);
-        }
-        if (req.body.loadCombinations) {
-            revision.applyLoadCombinationChanges(req.body.loadCombinations);
-        }
-        if (req.body.pointLoads) {
-            revision.applyPointLoadChanges(req.body.pointLoads);
-        }
-        if (req.body.modelSettings) {
-            revision.applyModelSettingsUpdate(req.body.modelSettings);
-        }
-    } catch (error) {
-        if (error instanceof Error) {
-            throw httpError(error.message, 400);
-        }
-        throw error;
+    if (req.body.nodes) {
+        revision.applyNodeChanges(req.body.nodes);
+    }
+    if (req.body.materials) {
+        revision.applyMaterialChanges(req.body.materials);
+    }
+    if (req.body.sectionProfiles) {
+        revision.applySectionProfileChanges(req.body.sectionProfiles);
+    }
+    if (req.body.element1ds) {
+        revision.applyElement1dChanges(req.body.element1ds);
+    }
+    if (req.body.loadCases) {
+        revision.applyLoadCaseChanges(req.body.loadCases);
+    }
+    if (req.body.loadCombinations) {
+        revision.applyLoadCombinationChanges(req.body.loadCombinations);
+    }
+    if (req.body.pointLoads) {
+        revision.applyPointLoadChanges(req.body.pointLoads);
+    }
+    if (req.body.modelSettings) {
+        revision.applyModelSettingsUpdate(req.body.modelSettings);
     }
 };

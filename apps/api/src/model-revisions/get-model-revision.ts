@@ -76,6 +76,7 @@ export const getModelRevision = defineEndpoint({
                 name: material.name,
                 modulusOfElasticity: material.modulusOfElasticity.convert(responseUnits.pressure),
                 modulusOfRigidity: material.modulusOfRigidity.convert(responseUnits.pressure),
+                applicationId: material.applicationId,
                 units: {
                     pressure: responseUnits.pressure,
                 },
