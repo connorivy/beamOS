@@ -88,47 +88,38 @@ export const kassimaliExample8_4BaseRevision: CreateModelRevisionRequest = {
         weakAxisElasticSectionModulus: 0,
         strongAxisShearArea: 1,
         weakAxisShearArea: 1,
+        units: {
+          area: "SquareInch",
+          areaMomentOfInertia: "InchToTheFourth",
+          warpingMomentOfInertia: "InchToTheSixth",
+          volume: "CubicInch",
+        },
       },
     ],
   },
   loadCases: {
     create: [{ tempId: "lc1", name: "Load Case 1" }],
   },
-};
-
-export type KassimaliExample8_4FollowUpInput = {
-  nodeIds: {
-    node1: string;
-    node2: string;
-    node3: string;
-    node4: string;
-  };
-  loadCaseId: string;
-};
-
-export const createKassimaliExample8_4FollowUpRevision = (
-  input: KassimaliExample8_4FollowUpInput,
-): CreateModelRevisionRequest => ({
   element1ds: {
     create: [
       {
         tempId: "e1",
-        startNodeId: input.nodeIds.node2,
-        endNodeId: input.nodeIds.node1,
+        startNodeId: "n2",
+        endNodeId: "n1",
         materialName: "1",
         sectionProfileName: "Default",
       },
       {
         tempId: "e2",
-        startNodeId: input.nodeIds.node3,
-        endNodeId: input.nodeIds.node1,
+        startNodeId: "n3",
+        endNodeId: "n1",
         materialName: "1",
         sectionProfileName: "Default",
       },
       {
         tempId: "e3",
-        startNodeId: input.nodeIds.node4,
-        endNodeId: input.nodeIds.node1,
+        startNodeId: "n4",
+        endNodeId: "n1",
         materialName: "1",
         sectionProfileName: "Default",
       },
@@ -138,8 +129,8 @@ export const createKassimaliExample8_4FollowUpRevision = (
     create: [
       {
         tempId: "pl1",
-        nodeId: input.nodeIds.node1,
-        loadCaseId: input.loadCaseId,
+        nodeId: "n1",
+        loadCaseId: "lc1",
         force: {
           forceAlongX: 0,
           forceAlongY: -30,
@@ -153,8 +144,8 @@ export const createKassimaliExample8_4FollowUpRevision = (
       },
       {
         tempId: "pl2",
-        nodeId: input.nodeIds.node2,
-        loadCaseId: input.loadCaseId,
+        nodeId: "n2",
+        loadCaseId: "lc1",
         force: {
           forceAlongX: 0,
           forceAlongY: -30,
@@ -168,8 +159,8 @@ export const createKassimaliExample8_4FollowUpRevision = (
       },
       {
         tempId: "ml1",
-        nodeId: input.nodeIds.node1,
-        loadCaseId: input.loadCaseId,
+        nodeId: "n1",
+        loadCaseId: "lc1",
         force: {
           forceAlongX: 0,
           forceAlongY: 0,
@@ -183,8 +174,8 @@ export const createKassimaliExample8_4FollowUpRevision = (
       },
       {
         tempId: "ml2",
-        nodeId: input.nodeIds.node1,
-        loadCaseId: input.loadCaseId,
+        nodeId: "n1",
+        loadCaseId: "lc1",
         force: {
           forceAlongX: 0,
           forceAlongY: 0,
@@ -198,8 +189,8 @@ export const createKassimaliExample8_4FollowUpRevision = (
       },
       {
         tempId: "ml3",
-        nodeId: input.nodeIds.node1,
-        loadCaseId: input.loadCaseId,
+        nodeId: "n1",
+        loadCaseId: "lc1",
         force: {
           forceAlongX: 0,
           forceAlongY: 0,
@@ -213,8 +204,8 @@ export const createKassimaliExample8_4FollowUpRevision = (
       },
       {
         tempId: "ml4",
-        nodeId: input.nodeIds.node2,
-        loadCaseId: input.loadCaseId,
+        nodeId: "n2",
+        loadCaseId: "lc1",
         force: {
           forceAlongX: 0,
           forceAlongY: 0,
@@ -230,8 +221,8 @@ export const createKassimaliExample8_4FollowUpRevision = (
   },
   loadCombinations: {
     create: [
-      { tempId: "comb1", loadCaseFactors: { [input.loadCaseId]: 1 } },
-      { tempId: "comb2", loadCaseFactors: { [input.loadCaseId]: 1 } },
+      { tempId: "comb1", loadCaseFactors: { lc1: 1 } },
+      { tempId: "comb2", loadCaseFactors: { lc1: 1 } },
     ],
   },
-});
+};
