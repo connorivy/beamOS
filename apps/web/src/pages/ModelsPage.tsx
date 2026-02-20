@@ -14,6 +14,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { useAuthStore } from "../store/auth-store";
 import { useModelsStore, type ModelRole } from "../store/models-store";
 
+export const TUTORIAL_PROJECT_ID = "00000000-0000-7000-8000-000000000002";
+
 const roleColor: Record<ModelRole, "primary" | "secondary" | "default"> = {
   owner: "primary",
   contributor: "secondary",
@@ -31,7 +33,7 @@ type ModelCardItem = {
 
 const sampleModelCards: ModelCardItem[] = [
   {
-    id: "sample-001",
+    id: TUTORIAL_PROJECT_ID,
     name: "Tutorial",
     description: "Learn the basics of BeamOS with this interactive tutorial",
     createdAt: "2024-01-01T12:00:00Z",
@@ -55,11 +57,16 @@ const ModelCardsSection = ({
         {models.map((model) => (
           <Paper
             key={model.id}
+            component={RouterLink}
+            to={`/editor/projects/${model.id}/main`}
             variant="outlined"
             sx={{
               p: 2.5,
               borderRadius: 2,
               bgcolor: "background.paper",
+              textDecoration: "none",
+              display: "block",
+              "&:hover": { bgcolor: "action.hover" },
             }}
           >
             <Stack spacing={1.25}>

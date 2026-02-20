@@ -9,6 +9,7 @@ import { modelSettingsPropertiesSchema } from "src/model-settings/model-settings
 const createProjectReqSchema = z.object({
   body: z
     .object({
+      id: uuidV7Schema.optional(),
       name: z.string().min(1),
       description: z.string().min(1),
       modelSettings: modelSettingsPropertiesSchema,
@@ -33,6 +34,7 @@ export const createProject = defineEndpoint({
   res: projectResponseSchema,
   async handler(req, ctx: AppContext) {
     const project = ProjectEntity.create({
+      id: req.body.id,
       name: req.body.name,
       description: req.body.description,
     });

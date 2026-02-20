@@ -15,7 +15,7 @@ export const coreWebPlugin = defineWebPlugin({
       Component: ModelsPage,
     },
     {
-      path: "/editor/:projectId/:branchName",
+      path: "/editor/projects/:projectId/:branchName",
       Component: ModelRevisionEditorPage,
     },
   ],
