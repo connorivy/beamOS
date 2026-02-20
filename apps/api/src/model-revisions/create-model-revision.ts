@@ -76,9 +76,8 @@ export const createModelRevision = defineEndpoint({
             nodes: modelRevision.nodes.map((node) => ({
                 id: node.id,
                 projectId: modelRevision.projectId,
-                nodeTypeDescriminator:
-                    node.toSnapshot().nodeTypeDescriminator ??
-                    (node.nodeType === "internalNode" ? "internal" : "external"),
+                location: node.location,
+                restraint: node.restraint,
             })),
             materials: modelRevision.materials.map((material) => ({
                 id: material.id,

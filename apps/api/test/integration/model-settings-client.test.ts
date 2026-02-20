@@ -1,8 +1,7 @@
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
-import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
+import { getIntegrationBaseUrl } from "./shared-test-app";
 
-let baseUrl = "";
 
 const defaultModelSettings = {
     units: {
@@ -15,17 +14,10 @@ const defaultModelSettings = {
     yAxisUp: true,
 } as const;
 
-beforeAll(async () => {
-    baseUrl = await setupIntegrationApp();
-}, 30_000);
-
-afterAll(async () => {
-    await teardownIntegrationApp();
-}, 30_000);
 
 describe("model settings integration", () => {
     it("stores latest model settings in model revision aggregate", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {
@@ -94,6 +86,55 @@ describe("model settings integration", () => {
         expect(secondResponse.error).toBeUndefined();
         expect(secondResponse.response.status).toBe(200);
 
+        const createEntitiesResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: { projectId, branchName },
+                },
+                body: {
+                    materials: {
+                        create: [
+                            {
+                                name: "A36",
+                                modulusOfElasticity: 2,
+                                modulusOfRigidity: 1,
+                                units: { pressure: "Bar" },
+                            },
+                        ],
+                    },
+                    sectionProfiles: {
+                        create: [
+                            {
+                                name: "W12x26",
+                                discriminator: "STANDARD",
+                                area: 10,
+                                strongAxisMomentOfInertia: 20,
+                                weakAxisMomentOfInertia: 30,
+                                torsionalConstant: 40,
+                                warpingConstant: 50,
+                                strongAxisPlasticSectionModulus: 60,
+                                weakAxisPlasticSectionModulus: 70,
+                                strongAxisElasticSectionModulus: 80,
+                                weakAxisElasticSectionModulus: 90,
+                                units: {
+                                    area: "SquareFoot",
+                                    areaMomentOfInertia: "FootToTheFourth",
+                                    warpingMomentOfInertia: "FootToTheSixth",
+                                    volume: "CubicFoot",
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+
+        expect(createEntitiesResponse.error).toBeUndefined();
+        expect(createEntitiesResponse.response.status).toBe(200);
+        expect(createEntitiesResponse.data?.materials[0]?.units.pressure).toBe("Pascal");
+        expect(createEntitiesResponse.data?.sectionProfiles[0]?.area.unit).toBe("SquareMeter");
+
         const getRevisionResponse = await client.GET(
             "/api/projects/{projectId}/branches/{branchName}",
             {
@@ -125,5 +166,37 @@ describe("model settings integration", () => {
             },
             yAxisUp: false,
         });
+        expect(modelRevision.materials[0]?.units.pressure).toBe("Bar");
+        expect(modelRevision.sectionProfiles[0]?.area.unit).toBe("SquareFoot");
+
+        const getRevisionResponseWithSiUnits = await client.GET(
+            "/api/projects/{projectId}/branches/{branchName}",
+            {
+                params: {
+                    path: { projectId, branchName },
+                    query: { units: "SI" },
+                },
+            },
+        );
+
+        expect(getRevisionResponseWithSiUnits.error).toBeUndefined();
+        expect(getRevisionResponseWithSiUnits.response.status).toBe(200);
+        expect(getRevisionResponseWithSiUnits.data).toBeDefined();
+
+        if (!getRevisionResponseWithSiUnits.data) {
+            throw new Error("Expected model revision response");
+        }
+
+        expect(getRevisionResponseWithSiUnits.data.modelSettings.units).toEqual({
+            pressure: "Bar",
+            area: "SquareFoot",
+            areaMomentOfInertia: "FootToTheFourth",
+            warpingMomentOfInertia: "FootToTheSixth",
+            volume: "CubicFoot",
+        });
+        expect(getRevisionResponseWithSiUnits.data.materials[0]?.units.pressure).toBe("Pascal");
+        expect(getRevisionResponseWithSiUnits.data.sectionProfiles[0]?.area.unit).toBe(
+            "SquareMeter",
+        );
     });
 });

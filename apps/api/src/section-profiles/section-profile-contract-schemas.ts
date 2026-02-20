@@ -62,50 +62,50 @@ export const sectionProfileResponseSchema = z
     discriminator: z.enum(SECTION_PROFILE_DISCRIMINATORS),
     area: z.object({
       value: z.number().finite(),
-      unit: z.literal(AreaUnits.SquareMeters),
+      unit: z.enum(AreaUnits),
     }),
     strongAxisMomentOfInertia: z.object({
       value: z.number().finite(),
-      unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
+      unit: z.enum(AreaMomentOfInertiaUnits),
     }),
     weakAxisMomentOfInertia: z.object({
       value: z.number().finite(),
-      unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
+      unit: z.enum(AreaMomentOfInertiaUnits),
     }),
     torsionalConstant: z.object({
       value: z.number().finite(),
-      unit: z.literal(AreaMomentOfInertiaUnits.MetersToTheFourth),
+      unit: z.enum(AreaMomentOfInertiaUnits),
     }),
     warpingConstant: z.object({
       value: z.number().finite(),
-      unit: z.literal(WarpingMomentOfInertiaUnits.MetersToTheSixth),
+      unit: z.enum(WarpingMomentOfInertiaUnits),
     }),
     strongAxisPlasticSectionModulus: z.object({
       value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
+      unit: z.enum(VolumeUnits),
     }),
     weakAxisPlasticSectionModulus: z.object({
       value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
+      unit: z.enum(VolumeUnits),
     }),
     strongAxisElasticSectionModulus: z.object({
       value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
+      unit: z.enum(VolumeUnits),
     }),
     weakAxisElasticSectionModulus: z.object({
       value: z.number().finite(),
-      unit: z.literal(VolumeUnits.CubicMeters),
+      unit: z.enum(VolumeUnits),
     }),
     strongAxisShearArea: z
       .object({
         value: z.number().finite(),
-        unit: z.literal(AreaUnits.SquareMeters),
+        unit: z.enum(AreaUnits),
       })
       .optional(),
     weakAxisShearArea: z
       .object({
         value: z.number().finite(),
-        unit: z.literal(AreaUnits.SquareMeters),
+        unit: z.enum(AreaUnits),
       })
       .optional(),
   })

@@ -1,9 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
 import { PressureUnits } from "unitsnet-js";
-import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
+import { getIntegrationBaseUrl } from "./shared-test-app";
 
-let baseUrl = "";
 
 const defaultModelSettings = {
     units: {
@@ -16,17 +15,10 @@ const defaultModelSettings = {
     yAxisUp: true,
 } as const;
 
-beforeAll(async () => {
-    baseUrl = await setupIntegrationApp();
-}, 30_000);
-
-afterAll(async () => {
-    await teardownIntegrationApp();
-}, 30_000);
 
 describe("typed material api client integration", () => {
     it("batch creates materials and snapshots get responses", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
         const materialNames = ["Material 1", "Material 2", "Material 3"];
 
         const createModelResponse = await client.POST("/api/projects", {
@@ -148,7 +140,7 @@ describe("typed material api client integration", () => {
     });
 
     it("rejects duplicate material names in batch create", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {

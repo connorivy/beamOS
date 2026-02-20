@@ -229,7 +229,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    units?: "SI";
+                };
                 header?: never;
                 path: {
                     projectId: string;
@@ -361,8 +363,8 @@ export interface components {
             modulusOfElasticity: number;
             modulusOfRigidity: number;
             units: {
-                /** @constant */
-                pressure: "Pascal";
+                /** @enum {string} */
+                pressure: "Pascal" | "Atmosphere" | "Bar" | "KilogramForcePerSquareMeter" | "KilogramForcePerSquareCentimeter" | "KilogramForcePerSquareMillimeter" | "NewtonPerSquareMeter" | "NewtonPerSquareCentimeter" | "NewtonPerSquareMillimeter" | "TechnicalAtmosphere" | "Torr" | "PoundForcePerSquareInch" | "PoundForcePerSquareMil" | "PoundForcePerSquareFoot" | "TonneForcePerSquareMillimeter" | "TonneForcePerSquareMeter" | "MeterOfHead" | "TonneForcePerSquareCentimeter" | "FootOfHead" | "MillimeterOfMercury" | "InchOfMercury" | "DynePerSquareCentimeter" | "PoundPerInchSecondSquared" | "MeterOfWaterColumn" | "InchOfWaterColumn" | "Micropascal" | "Millipascal" | "Decapascal" | "Hectopascal" | "Kilopascal" | "Megapascal" | "Gigapascal" | "Microbar" | "Millibar" | "Centibar" | "Decibar" | "Kilobar" | "Megabar" | "KilonewtonPerSquareMeter" | "MeganewtonPerSquareMeter" | "KilonewtonPerSquareCentimeter" | "KilonewtonPerSquareMillimeter" | "Millitorr" | "KilopoundForcePerSquareInch" | "KilopoundForcePerSquareMil" | "KilopoundForcePerSquareFoot" | "MillimeterOfWaterColumn" | "CentimeterOfWaterColumn";
             };
             /** Format: uuid */
             id: string;
@@ -379,58 +381,58 @@ export interface components {
             discriminator: "STANDARD" | "WITH_SHEAR_AREAS";
             area: {
                 value: number;
-                /** @constant */
-                unit: "SquareMeter";
+                /** @enum {string} */
+                unit: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
             };
             strongAxisMomentOfInertia: {
                 value: number;
-                /** @constant */
-                unit: "MeterToTheFourth";
+                /** @enum {string} */
+                unit: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
             };
             weakAxisMomentOfInertia: {
                 value: number;
-                /** @constant */
-                unit: "MeterToTheFourth";
+                /** @enum {string} */
+                unit: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
             };
             torsionalConstant: {
                 value: number;
-                /** @constant */
-                unit: "MeterToTheFourth";
+                /** @enum {string} */
+                unit: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
             };
             warpingConstant: {
                 value: number;
-                /** @constant */
-                unit: "MeterToTheSixth";
+                /** @enum {string} */
+                unit: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
             };
             strongAxisPlasticSectionModulus: {
                 value: number;
-                /** @constant */
-                unit: "CubicMeter";
+                /** @enum {string} */
+                unit: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
             };
             weakAxisPlasticSectionModulus: {
                 value: number;
-                /** @constant */
-                unit: "CubicMeter";
+                /** @enum {string} */
+                unit: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
             };
             strongAxisElasticSectionModulus: {
                 value: number;
-                /** @constant */
-                unit: "CubicMeter";
+                /** @enum {string} */
+                unit: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
             };
             weakAxisElasticSectionModulus: {
                 value: number;
-                /** @constant */
-                unit: "CubicMeter";
+                /** @enum {string} */
+                unit: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
             };
             strongAxisShearArea?: {
                 value: number;
-                /** @constant */
-                unit: "SquareMeter";
+                /** @enum {string} */
+                unit: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
             };
             weakAxisShearArea?: {
                 value: number;
-                /** @constant */
-                unit: "SquareMeter";
+                /** @enum {string} */
+                unit: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
             };
         };
         GetSectionProfileResponse: {
@@ -453,13 +455,34 @@ export interface components {
         GetElement1dResponse: {
             element1d: components["schemas"]["Element1d"];
         };
-        RevisionNode: {
+        Node: {
+            restraint?: {
+                canTranslateAlongX: boolean;
+                canTranslateAlongY: boolean;
+                canTranslateAlongZ: boolean;
+                canRotateAboutX: boolean;
+                canRotateAboutY: boolean;
+                canRotateAboutZ: boolean;
+            };
+            location: {
+                /** @constant */
+                type: "spatial";
+                point: {
+                    x: number;
+                    y: number;
+                    z: number;
+                };
+            } | {
+                /** @constant */
+                type: "internal";
+                /** Format: uuid */
+                element1dId: string;
+                ratioAlongElement1d: number;
+            };
             /** Format: uuid */
             id: string;
             /** Format: uuid */
             projectId: string;
-            /** @enum {string} */
-            nodeTypeDescriminator: "external" | "internal";
         };
         ModelSettings: {
             units: components["schemas"]["ModelSettingsUnits"];
@@ -526,7 +549,7 @@ export interface components {
             message: string;
             /** Format: date-time */
             createdAt: string;
-            nodes: components["schemas"]["RevisionNode"][];
+            nodes: components["schemas"]["Node"][];
             materials: components["schemas"]["Material"][];
             modelSettings: components["schemas"]["ModelSettings"];
             sectionProfiles: components["schemas"]["SectionProfile"][];
@@ -814,7 +837,7 @@ export type SectionProfile = components['schemas']['SectionProfile'];
 export type GetSectionProfileResponse = components['schemas']['GetSectionProfileResponse'];
 export type Element1d = components['schemas']['Element1d'];
 export type GetElement1dResponse = components['schemas']['GetElement1dResponse'];
-export type RevisionNode = components['schemas']['RevisionNode'];
+export type Node = components['schemas']['Node'];
 export type ModelSettings = components['schemas']['ModelSettings'];
 export type LoadCase = components['schemas']['LoadCase'];
 export type LoadCombination = components['schemas']['LoadCombination'];

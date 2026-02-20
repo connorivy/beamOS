@@ -277,6 +277,17 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "units",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SI"
+              ]
+            }
           }
         ]
       }
@@ -696,7 +707,56 @@
             "properties": {
               "pressure": {
                 "type": "string",
-                "const": "Pascal"
+                "enum": [
+                  "Pascal",
+                  "Atmosphere",
+                  "Bar",
+                  "KilogramForcePerSquareMeter",
+                  "KilogramForcePerSquareCentimeter",
+                  "KilogramForcePerSquareMillimeter",
+                  "NewtonPerSquareMeter",
+                  "NewtonPerSquareCentimeter",
+                  "NewtonPerSquareMillimeter",
+                  "TechnicalAtmosphere",
+                  "Torr",
+                  "PoundForcePerSquareInch",
+                  "PoundForcePerSquareMil",
+                  "PoundForcePerSquareFoot",
+                  "TonneForcePerSquareMillimeter",
+                  "TonneForcePerSquareMeter",
+                  "MeterOfHead",
+                  "TonneForcePerSquareCentimeter",
+                  "FootOfHead",
+                  "MillimeterOfMercury",
+                  "InchOfMercury",
+                  "DynePerSquareCentimeter",
+                  "PoundPerInchSecondSquared",
+                  "MeterOfWaterColumn",
+                  "InchOfWaterColumn",
+                  "Micropascal",
+                  "Millipascal",
+                  "Decapascal",
+                  "Hectopascal",
+                  "Kilopascal",
+                  "Megapascal",
+                  "Gigapascal",
+                  "Microbar",
+                  "Millibar",
+                  "Centibar",
+                  "Decibar",
+                  "Kilobar",
+                  "Megabar",
+                  "KilonewtonPerSquareMeter",
+                  "MeganewtonPerSquareMeter",
+                  "KilonewtonPerSquareCentimeter",
+                  "KilonewtonPerSquareMillimeter",
+                  "Millitorr",
+                  "KilopoundForcePerSquareInch",
+                  "KilopoundForcePerSquareMil",
+                  "KilopoundForcePerSquareFoot",
+                  "MillimeterOfWaterColumn",
+                  "CentimeterOfWaterColumn"
+                ]
               }
             },
             "required": [
@@ -758,7 +818,22 @@
               },
               "unit": {
                 "type": "string",
-                "const": "SquareMeter"
+                "enum": [
+                  "SquareKilometer",
+                  "SquareMeter",
+                  "SquareDecimeter",
+                  "SquareCentimeter",
+                  "SquareMillimeter",
+                  "SquareMicrometer",
+                  "SquareMile",
+                  "SquareYard",
+                  "SquareFoot",
+                  "UsSurveySquareFoot",
+                  "SquareInch",
+                  "Acre",
+                  "Hectare",
+                  "SquareNauticalMile"
+                ]
               }
             },
             "required": [
@@ -775,7 +850,14 @@
               },
               "unit": {
                 "type": "string",
-                "const": "MeterToTheFourth"
+                "enum": [
+                  "MeterToTheFourth",
+                  "DecimeterToTheFourth",
+                  "CentimeterToTheFourth",
+                  "MillimeterToTheFourth",
+                  "FootToTheFourth",
+                  "InchToTheFourth"
+                ]
               }
             },
             "required": [
@@ -792,7 +874,14 @@
               },
               "unit": {
                 "type": "string",
-                "const": "MeterToTheFourth"
+                "enum": [
+                  "MeterToTheFourth",
+                  "DecimeterToTheFourth",
+                  "CentimeterToTheFourth",
+                  "MillimeterToTheFourth",
+                  "FootToTheFourth",
+                  "InchToTheFourth"
+                ]
               }
             },
             "required": [
@@ -809,7 +898,14 @@
               },
               "unit": {
                 "type": "string",
-                "const": "MeterToTheFourth"
+                "enum": [
+                  "MeterToTheFourth",
+                  "DecimeterToTheFourth",
+                  "CentimeterToTheFourth",
+                  "MillimeterToTheFourth",
+                  "FootToTheFourth",
+                  "InchToTheFourth"
+                ]
               }
             },
             "required": [
@@ -826,7 +922,14 @@
               },
               "unit": {
                 "type": "string",
-                "const": "MeterToTheSixth"
+                "enum": [
+                  "MeterToTheSixth",
+                  "DecimeterToTheSixth",
+                  "CentimeterToTheSixth",
+                  "MillimeterToTheSixth",
+                  "FootToTheSixth",
+                  "InchToTheSixth"
+                ]
               }
             },
             "required": [
@@ -843,7 +946,63 @@
               },
               "unit": {
                 "type": "string",
-                "const": "CubicMeter"
+                "enum": [
+                  "Liter",
+                  "CubicMeter",
+                  "CubicKilometer",
+                  "CubicHectometer",
+                  "CubicDecimeter",
+                  "CubicCentimeter",
+                  "CubicMillimeter",
+                  "CubicMicrometer",
+                  "CubicMile",
+                  "CubicYard",
+                  "CubicFoot",
+                  "CubicInch",
+                  "ImperialGallon",
+                  "ImperialOunce",
+                  "UsGallon",
+                  "UsOunce",
+                  "UsTablespoon",
+                  "AuTablespoon",
+                  "MetricTablespoon",
+                  "UkTablespoon",
+                  "MetricTeaspoon",
+                  "UsTeaspoon",
+                  "MetricCup",
+                  "UsCustomaryCup",
+                  "UsLegalCup",
+                  "OilBarrel",
+                  "UsBeerBarrel",
+                  "ImperialBeerBarrel",
+                  "UsQuart",
+                  "ImperialQuart",
+                  "UsPint",
+                  "AcreFoot",
+                  "ImperialPint",
+                  "BoardFoot",
+                  "Nanoliter",
+                  "Microliter",
+                  "Milliliter",
+                  "Centiliter",
+                  "Deciliter",
+                  "Decaliter",
+                  "Hectoliter",
+                  "Kiloliter",
+                  "Megaliter",
+                  "HectocubicMeter",
+                  "KilocubicMeter",
+                  "HectocubicFoot",
+                  "KilocubicFoot",
+                  "MegacubicFoot",
+                  "KiloimperialGallon",
+                  "MegaimperialGallon",
+                  "DecausGallon",
+                  "DeciusGallon",
+                  "HectousGallon",
+                  "KilousGallon",
+                  "MegausGallon"
+                ]
               }
             },
             "required": [
@@ -860,7 +1019,63 @@
               },
               "unit": {
                 "type": "string",
-                "const": "CubicMeter"
+                "enum": [
+                  "Liter",
+                  "CubicMeter",
+                  "CubicKilometer",
+                  "CubicHectometer",
+                  "CubicDecimeter",
+                  "CubicCentimeter",
+                  "CubicMillimeter",
+                  "CubicMicrometer",
+                  "CubicMile",
+                  "CubicYard",
+                  "CubicFoot",
+                  "CubicInch",
+                  "ImperialGallon",
+                  "ImperialOunce",
+                  "UsGallon",
+                  "UsOunce",
+                  "UsTablespoon",
+                  "AuTablespoon",
+                  "MetricTablespoon",
+                  "UkTablespoon",
+                  "MetricTeaspoon",
+                  "UsTeaspoon",
+                  "MetricCup",
+                  "UsCustomaryCup",
+                  "UsLegalCup",
+                  "OilBarrel",
+                  "UsBeerBarrel",
+                  "ImperialBeerBarrel",
+                  "UsQuart",
+                  "ImperialQuart",
+                  "UsPint",
+                  "AcreFoot",
+                  "ImperialPint",
+                  "BoardFoot",
+                  "Nanoliter",
+                  "Microliter",
+                  "Milliliter",
+                  "Centiliter",
+                  "Deciliter",
+                  "Decaliter",
+                  "Hectoliter",
+                  "Kiloliter",
+                  "Megaliter",
+                  "HectocubicMeter",
+                  "KilocubicMeter",
+                  "HectocubicFoot",
+                  "KilocubicFoot",
+                  "MegacubicFoot",
+                  "KiloimperialGallon",
+                  "MegaimperialGallon",
+                  "DecausGallon",
+                  "DeciusGallon",
+                  "HectousGallon",
+                  "KilousGallon",
+                  "MegausGallon"
+                ]
               }
             },
             "required": [
@@ -877,7 +1092,63 @@
               },
               "unit": {
                 "type": "string",
-                "const": "CubicMeter"
+                "enum": [
+                  "Liter",
+                  "CubicMeter",
+                  "CubicKilometer",
+                  "CubicHectometer",
+                  "CubicDecimeter",
+                  "CubicCentimeter",
+                  "CubicMillimeter",
+                  "CubicMicrometer",
+                  "CubicMile",
+                  "CubicYard",
+                  "CubicFoot",
+                  "CubicInch",
+                  "ImperialGallon",
+                  "ImperialOunce",
+                  "UsGallon",
+                  "UsOunce",
+                  "UsTablespoon",
+                  "AuTablespoon",
+                  "MetricTablespoon",
+                  "UkTablespoon",
+                  "MetricTeaspoon",
+                  "UsTeaspoon",
+                  "MetricCup",
+                  "UsCustomaryCup",
+                  "UsLegalCup",
+                  "OilBarrel",
+                  "UsBeerBarrel",
+                  "ImperialBeerBarrel",
+                  "UsQuart",
+                  "ImperialQuart",
+                  "UsPint",
+                  "AcreFoot",
+                  "ImperialPint",
+                  "BoardFoot",
+                  "Nanoliter",
+                  "Microliter",
+                  "Milliliter",
+                  "Centiliter",
+                  "Deciliter",
+                  "Decaliter",
+                  "Hectoliter",
+                  "Kiloliter",
+                  "Megaliter",
+                  "HectocubicMeter",
+                  "KilocubicMeter",
+                  "HectocubicFoot",
+                  "KilocubicFoot",
+                  "MegacubicFoot",
+                  "KiloimperialGallon",
+                  "MegaimperialGallon",
+                  "DecausGallon",
+                  "DeciusGallon",
+                  "HectousGallon",
+                  "KilousGallon",
+                  "MegausGallon"
+                ]
               }
             },
             "required": [
@@ -894,7 +1165,63 @@
               },
               "unit": {
                 "type": "string",
-                "const": "CubicMeter"
+                "enum": [
+                  "Liter",
+                  "CubicMeter",
+                  "CubicKilometer",
+                  "CubicHectometer",
+                  "CubicDecimeter",
+                  "CubicCentimeter",
+                  "CubicMillimeter",
+                  "CubicMicrometer",
+                  "CubicMile",
+                  "CubicYard",
+                  "CubicFoot",
+                  "CubicInch",
+                  "ImperialGallon",
+                  "ImperialOunce",
+                  "UsGallon",
+                  "UsOunce",
+                  "UsTablespoon",
+                  "AuTablespoon",
+                  "MetricTablespoon",
+                  "UkTablespoon",
+                  "MetricTeaspoon",
+                  "UsTeaspoon",
+                  "MetricCup",
+                  "UsCustomaryCup",
+                  "UsLegalCup",
+                  "OilBarrel",
+                  "UsBeerBarrel",
+                  "ImperialBeerBarrel",
+                  "UsQuart",
+                  "ImperialQuart",
+                  "UsPint",
+                  "AcreFoot",
+                  "ImperialPint",
+                  "BoardFoot",
+                  "Nanoliter",
+                  "Microliter",
+                  "Milliliter",
+                  "Centiliter",
+                  "Deciliter",
+                  "Decaliter",
+                  "Hectoliter",
+                  "Kiloliter",
+                  "Megaliter",
+                  "HectocubicMeter",
+                  "KilocubicMeter",
+                  "HectocubicFoot",
+                  "KilocubicFoot",
+                  "MegacubicFoot",
+                  "KiloimperialGallon",
+                  "MegaimperialGallon",
+                  "DecausGallon",
+                  "DeciusGallon",
+                  "HectousGallon",
+                  "KilousGallon",
+                  "MegausGallon"
+                ]
               }
             },
             "required": [
@@ -911,7 +1238,22 @@
               },
               "unit": {
                 "type": "string",
-                "const": "SquareMeter"
+                "enum": [
+                  "SquareKilometer",
+                  "SquareMeter",
+                  "SquareDecimeter",
+                  "SquareCentimeter",
+                  "SquareMillimeter",
+                  "SquareMicrometer",
+                  "SquareMile",
+                  "SquareYard",
+                  "SquareFoot",
+                  "UsSurveySquareFoot",
+                  "SquareInch",
+                  "Acre",
+                  "Hectare",
+                  "SquareNauticalMile"
+                ]
               }
             },
             "required": [
@@ -928,7 +1270,22 @@
               },
               "unit": {
                 "type": "string",
-                "const": "SquareMeter"
+                "enum": [
+                  "SquareKilometer",
+                  "SquareMeter",
+                  "SquareDecimeter",
+                  "SquareCentimeter",
+                  "SquareMillimeter",
+                  "SquareMicrometer",
+                  "SquareMile",
+                  "SquareYard",
+                  "SquareFoot",
+                  "UsSurveySquareFoot",
+                  "SquareInch",
+                  "Acre",
+                  "Hectare",
+                  "SquareNauticalMile"
+                ]
               }
             },
             "required": [
@@ -1029,9 +1386,104 @@
         "additionalProperties": false,
         "id": "GetElement1dResponse"
       },
-      "RevisionNode": {
+      "Node": {
         "type": "object",
         "properties": {
+          "restraint": {
+            "type": "object",
+            "properties": {
+              "canTranslateAlongX": {
+                "type": "boolean"
+              },
+              "canTranslateAlongY": {
+                "type": "boolean"
+              },
+              "canTranslateAlongZ": {
+                "type": "boolean"
+              },
+              "canRotateAboutX": {
+                "type": "boolean"
+              },
+              "canRotateAboutY": {
+                "type": "boolean"
+              },
+              "canRotateAboutZ": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "canTranslateAlongX",
+              "canTranslateAlongY",
+              "canTranslateAlongZ",
+              "canRotateAboutX",
+              "canRotateAboutY",
+              "canRotateAboutZ"
+            ],
+            "additionalProperties": false
+          },
+          "location": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "spatial"
+                  },
+                  "point": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "number"
+                      },
+                      "y": {
+                        "type": "number"
+                      },
+                      "z": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y",
+                      "z"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "type",
+                  "point"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "internal"
+                  },
+                  "element1dId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "ratioAlongElement1d": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "element1dId",
+                  "ratioAlongElement1d"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -1041,22 +1493,15 @@
             "type": "string",
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "nodeTypeDescriminator": {
-            "type": "string",
-            "enum": [
-              "external",
-              "internal"
-            ]
           }
         },
         "required": [
+          "location",
           "id",
-          "projectId",
-          "nodeTypeDescriminator"
+          "projectId"
         ],
         "additionalProperties": false,
-        "id": "RevisionNode"
+        "id": "Node"
       },
       "ModelSettings": {
         "type": "object",
@@ -1307,7 +1752,7 @@
           "nodes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RevisionNode"
+              "$ref": "#/components/schemas/Node"
             }
           },
           "materials": {

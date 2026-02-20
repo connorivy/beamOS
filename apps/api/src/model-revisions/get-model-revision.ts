@@ -13,8 +13,17 @@ import type { AppContext } from "../common/types";
 import { httpError } from "../common/http-utils";
 import { isUuidV7 } from "../common/uuid";
 import { modelRevisionResSchema } from "./create-model-revision-request-schema";
+import type { ModelSettingsUnitsSnapshot } from "../model-settings/model-settings-entity";
 
 const uuidV7Schema = z.uuid().refine((value) => isUuidV7(value), "Must be a valid UUIDv7");
+const modelUnitsOverrideSchema = z.enum(["SI"]);
+const siModelUnits: ModelSettingsUnitsSnapshot = {
+    pressure: PressureUnits.Pascals,
+    area: AreaUnits.SquareMeters,
+    areaMomentOfInertia: AreaMomentOfInertiaUnits.MetersToTheFourth,
+    warpingMomentOfInertia: WarpingMomentOfInertiaUnits.MetersToTheSixth,
+    volume: VolumeUnits.CubicMeters,
+};
 
 export const getModelRevisionReqSchema = z
     .object({
@@ -22,6 +31,11 @@ export const getModelRevisionReqSchema = z
             projectId: uuidV7Schema,
             branchName: z.string().trim().min(1),
         }),
+        query: z
+            .object({
+                units: modelUnitsOverrideSchema.optional(),
+            })
+            .optional(),
     })
     .meta({ id: "GetModelRevisionRequest" });
 
@@ -39,6 +53,8 @@ export const getModelRevision = defineEndpoint({
         if (!modelRevision) {
             throw httpError("Model revision not found", 404);
         }
+        const responseUnits =
+            req.query?.units === "SI" ? siModelUnits : modelRevision.modelSettings.units;
 
         return {
             id: modelRevision.id,
@@ -51,18 +67,17 @@ export const getModelRevision = defineEndpoint({
             nodes: modelRevision.nodes.map((node) => ({
                 id: node.id,
                 projectId: modelRevision.projectId,
-                nodeTypeDescriminator:
-                    node.toSnapshot().nodeTypeDescriminator ??
-                    (node.nodeType === "internalNode" ? "internal" : "external"),
+                location: node.location,
+                restraint: node.restraint,
             })),
             materials: modelRevision.materials.map((material) => ({
                 id: material.id,
                 revisionId: material.revisionId,
                 name: material.name,
-                modulusOfElasticity: material.modulusOfElasticity.Pascals,
-                modulusOfRigidity: material.modulusOfRigidity.Pascals,
+                modulusOfElasticity: material.modulusOfElasticity.convert(responseUnits.pressure),
+                modulusOfRigidity: material.modulusOfRigidity.convert(responseUnits.pressure),
                 units: {
-                    pressure: PressureUnits.Pascals as const,
+                    pressure: responseUnits.pressure,
                 },
             })),
             modelSettings: {
@@ -77,54 +92,70 @@ export const getModelRevision = defineEndpoint({
                 name: sectionProfile.name,
                 discriminator: sectionProfile.discriminator,
                 area: {
-                    value: sectionProfile.area.SquareMeters,
-                    unit: AreaUnits.SquareMeters as const,
+                    value: sectionProfile.area.convert(responseUnits.area),
+                    unit: responseUnits.area,
                 },
                 strongAxisMomentOfInertia: {
-                    value: sectionProfile.strongAxisMomentOfInertia.MetersToTheFourth,
-                    unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+                    value: sectionProfile.strongAxisMomentOfInertia.convert(
+                        responseUnits.areaMomentOfInertia,
+                    ),
+                    unit: responseUnits.areaMomentOfInertia,
                 },
                 weakAxisMomentOfInertia: {
-                    value: sectionProfile.weakAxisMomentOfInertia.MetersToTheFourth,
-                    unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+                    value: sectionProfile.weakAxisMomentOfInertia.convert(
+                        responseUnits.areaMomentOfInertia,
+                    ),
+                    unit: responseUnits.areaMomentOfInertia,
                 },
                 torsionalConstant: {
-                    value: sectionProfile.torsionalConstant.MetersToTheFourth,
-                    unit: AreaMomentOfInertiaUnits.MetersToTheFourth as const,
+                    value: sectionProfile.torsionalConstant.convert(
+                        responseUnits.areaMomentOfInertia,
+                    ),
+                    unit: responseUnits.areaMomentOfInertia,
                 },
                 warpingConstant: {
-                    value: sectionProfile.warpingConstant.MetersToTheSixth,
-                    unit: WarpingMomentOfInertiaUnits.MetersToTheSixth as const,
+                    value: sectionProfile.warpingConstant.convert(
+                        responseUnits.warpingMomentOfInertia,
+                    ),
+                    unit: responseUnits.warpingMomentOfInertia,
                 },
                 strongAxisPlasticSectionModulus: {
-                    value: sectionProfile.strongAxisPlasticSectionModulus.CubicMeters,
-                    unit: VolumeUnits.CubicMeters as const,
+                    value: sectionProfile.strongAxisPlasticSectionModulus.convert(
+                        responseUnits.volume,
+                    ),
+                    unit: responseUnits.volume,
                 },
                 weakAxisPlasticSectionModulus: {
-                    value: sectionProfile.weakAxisPlasticSectionModulus.CubicMeters,
-                    unit: VolumeUnits.CubicMeters as const,
+                    value: sectionProfile.weakAxisPlasticSectionModulus.convert(
+                        responseUnits.volume,
+                    ),
+                    unit: responseUnits.volume,
                 },
                 strongAxisElasticSectionModulus: {
-                    value: sectionProfile.strongAxisElasticSectionModulus.CubicMeters,
-                    unit: VolumeUnits.CubicMeters as const,
+                    value: sectionProfile.strongAxisElasticSectionModulus.convert(
+                        responseUnits.volume,
+                    ),
+                    unit: responseUnits.volume,
                 },
                 weakAxisElasticSectionModulus: {
-                    value: sectionProfile.weakAxisElasticSectionModulus.CubicMeters,
-                    unit: VolumeUnits.CubicMeters as const,
+                    value: sectionProfile.weakAxisElasticSectionModulus.convert(
+                        responseUnits.volume,
+                    ),
+                    unit: responseUnits.volume,
                 },
                 ...(sectionProfile.strongAxisShearArea
                     ? {
                           strongAxisShearArea: {
-                              value: sectionProfile.strongAxisShearArea.SquareMeters,
-                              unit: AreaUnits.SquareMeters as const,
+                              value: sectionProfile.strongAxisShearArea.convert(responseUnits.area),
+                              unit: responseUnits.area,
                           },
                       }
                     : {}),
                 ...(sectionProfile.weakAxisShearArea
                     ? {
                           weakAxisShearArea: {
-                              value: sectionProfile.weakAxisShearArea.SquareMeters,
-                              unit: AreaUnits.SquareMeters as const,
+                              value: sectionProfile.weakAxisShearArea.convert(responseUnits.area),
+                              unit: responseUnits.area,
                           },
                       }
                     : {}),

@@ -4,18 +4,63 @@ exports[`typed node api client integration batch creates nodes and verifies pers
 [
   {
     "id": "<db-id>",
-    "nodeTypeDescriminator": "external",
+    "location": {
+      "point": {
+        "x": 0,
+        "y": 1,
+        "z": 2,
+      },
+      "type": "spatial",
+    },
     "projectId": "<project-id>",
+    "restraint": {
+      "canRotateAboutX": true,
+      "canRotateAboutY": true,
+      "canRotateAboutZ": true,
+      "canTranslateAlongX": false,
+      "canTranslateAlongY": true,
+      "canTranslateAlongZ": true,
+    },
   },
   {
     "id": "<db-id>",
-    "nodeTypeDescriminator": "external",
+    "location": {
+      "point": {
+        "x": 3,
+        "y": 4,
+        "z": 5,
+      },
+      "type": "spatial",
+    },
     "projectId": "<project-id>",
+    "restraint": {
+      "canRotateAboutX": true,
+      "canRotateAboutY": true,
+      "canRotateAboutZ": true,
+      "canTranslateAlongX": true,
+      "canTranslateAlongY": false,
+      "canTranslateAlongZ": true,
+    },
   },
   {
     "id": "<db-id>",
-    "nodeTypeDescriminator": "external",
+    "location": {
+      "point": {
+        "x": 10,
+        "y": 20,
+        "z": 30,
+      },
+      "type": "spatial",
+    },
     "projectId": "<project-id>",
+    "restraint": {
+      "canRotateAboutX": false,
+      "canRotateAboutY": false,
+      "canRotateAboutZ": false,
+      "canTranslateAlongX": false,
+      "canTranslateAlongY": false,
+      "canTranslateAlongZ": false,
+    },
   },
 ]
 `;

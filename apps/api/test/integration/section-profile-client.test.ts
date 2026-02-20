@@ -1,8 +1,7 @@
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
-import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
+import { getIntegrationBaseUrl } from "./shared-test-app";
 
-let baseUrl = "";
 
 const defaultModelSettings = {
     units: {
@@ -15,17 +14,10 @@ const defaultModelSettings = {
     yAxisUp: true,
 } as const;
 
-beforeAll(async () => {
-    baseUrl = await setupIntegrationApp();
-}, 30_000);
-
-afterAll(async () => {
-    await teardownIntegrationApp();
-}, 30_000);
 
 describe("typed section profile api client integration", () => {
     it("batch creates section profiles and snapshots get responses", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {
@@ -196,7 +188,7 @@ describe("typed section profile api client integration", () => {
     });
 
     it("rejects duplicate section profile names in batch create", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {

@@ -9,7 +9,7 @@
     "build": "bun build src/index.ts --outdir dist --target bun",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:unit": "sh -c 'if [ -d test/unit ] && rg -q --glob \"*.test.*\" --glob \"*.spec.*\" --files test/unit; then bun test test/unit; else echo \"No API unit tests found; skipping.\"; fi'",
-    "test:integration": "bun test --only-failures test/integration",
+    "test:integration": "bun test --preload ./test/integration/global-test-setup.ts --only-failures test/integration",
     "test": "bun run test:unit && bun run test:integration",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run src/db/migrate.ts",

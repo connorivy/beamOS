@@ -1,10 +1,9 @@
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
 import { ForceUnits, PressureUnits, TorqueUnits } from "unitsnet-js";
-import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
+import { getIntegrationBaseUrl } from "./shared-test-app";
 import { kassimaliExample3_8Model } from "../../../../tests/fixtures/Kassimali_MatrixAnalysisOfStructures2ndEd";
 
-let baseUrl = "";
 
 const defaultModelSettings = {
     units: {
@@ -37,17 +36,10 @@ const createSectionProfileInput = () => ({
     },
 });
 
-beforeAll(async () => {
-    baseUrl = await setupIntegrationApp();
-}, 30_000);
-
-afterAll(async () => {
-    await teardownIntegrationApp();
-}, 30_000);
 
 describe("model revision integration", () => {
     it("updates materials by material name using case-insensitive matching", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {
@@ -123,7 +115,7 @@ describe("model revision integration", () => {
     });
 
     it("updates and deletes section profiles by section profile name", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {
@@ -222,7 +214,7 @@ describe("model revision integration", () => {
     });
 
     it("creates a model revision from batched entity operations", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {
@@ -320,7 +312,7 @@ describe("model revision integration", () => {
     });
 
     it("gets a branch model revision built by stacking revisions", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {
@@ -623,7 +615,7 @@ describe("model revision integration", () => {
     });
 
     it("creates and returns load entities in model revisions", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {
@@ -747,7 +739,7 @@ describe("model revision integration", () => {
     });
 
     it("creates all entities in a single revision using tempId references", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {

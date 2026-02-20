@@ -54,17 +54,9 @@ export type PutNodeRequest = z.infer<typeof putNodeRequestSchema>;
 
 export const deleteNodeRequestSchema = z.string().trim().min(1).meta({ id: "DeleteNodeRequest" });
 
-export const nodeResponseSchema = z
-    .object({
+export const nodeResponseSchema = nodePropertiesSchema
+    .extend({
         id: uuidV7Schema,
         projectId: uuidV7Schema,
     })
     .meta({ id: "Node" });
-
-export const revisionNodeResponseSchema = z
-    .object({
-        id: uuidV7Schema,
-        projectId: uuidV7Schema,
-        nodeTypeDescriminator: z.enum(["external", "internal"]),
-    })
-    .meta({ id: "RevisionNode" });

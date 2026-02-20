@@ -27,7 +27,7 @@ import {
 } from "../point-loads/point-load-contract-schemas";
 import {
   createNodeRequestSchema,
-  revisionNodeResponseSchema,
+  nodeResponseSchema,
   putNodeRequestSchema as updateNodeRequestSchema,
 } from "../nodes/node-contract-schemas";
 import {
@@ -124,7 +124,7 @@ export const modelRevisionResSchema = z
     authorId: z.uuid(),
     message: z.string().min(1),
     createdAt: z.iso.datetime(),
-    nodes: z.array(revisionNodeResponseSchema),
+    nodes: z.array(nodeResponseSchema),
     materials: z.array(materialResponseSchema),
     modelSettings: modelSettingsResponseSchema,
     sectionProfiles: z.array(sectionProfileResponseSchema),

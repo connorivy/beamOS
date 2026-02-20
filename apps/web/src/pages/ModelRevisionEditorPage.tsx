@@ -9,7 +9,6 @@ import ConstructionRoundedIcon from "@mui/icons-material/ConstructionRounded";
 import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 import PanToolAltRoundedIcon from "@mui/icons-material/PanToolAltRounded";
-import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
@@ -21,7 +20,6 @@ import {
   IconButton,
   Paper,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -54,6 +52,7 @@ const DEFAULT_NODE_RESTRAINT: NonNullable<PutNodeRequest["restraint"]> = {
 };
 
 const canvasId = "beamos-editor-canvas";
+const editorTopBarHeight = 52;
 
 const parseInitialRouteState = () => {
   const pathMatch = window.location.pathname.match(/^\/editor\/projects\/([^/]+)\/([^/]+)$/);
@@ -73,8 +72,8 @@ const parseInitialRouteState = () => {
 
 export const ModelRevisionEditorPage = () => {
   const initialRouteState = useMemo(() => parseInitialRouteState(), []);
-  const [projectIdInput, setProjectIdInput] = useState(initialRouteState.projectId);
-  const [branchInput, setBranchInput] = useState(initialRouteState.branchName);
+  const [projectIdInput] = useState(initialRouteState.projectId);
+  const [branchInput] = useState(initialRouteState.branchName);
 
   const canvasRef = useRef<globalThis.HTMLCanvasElement | null>(null);
   const editorRef = useRef<BeamOsEditor | null>(null);
@@ -88,7 +87,6 @@ export const ModelRevisionEditorPage = () => {
   const activeEntry = useModelRevisionStore((state) => state.getActiveBranch());
 
   const openBranch = useModelRevisionStore((state) => state.openBranch);
-  const refreshActiveBranch = useModelRevisionStore((state) => state.refreshActiveBranch);
   const saveActiveBranch = useModelRevisionStore((state) => state.saveActiveBranch);
   const queueNodeUpdate = useModelRevisionStore((state) => state.queueNodeUpdate);
   const models = useModelsStore((state) => state.models);
@@ -177,9 +175,7 @@ export const ModelRevisionEditorPage = () => {
     const nextNumericToUuid = new Map<number, string>();
     const nextUuidToNumeric = new Map<string, number>();
 
-    const externalNodes = modelRevision.nodes.filter(
-      (node) => node.nodeTypeDescriminator === "external",
-    );
+    const externalNodes = modelRevision.nodes;
 
     const pendingNodeUpdatesById = new Map(
       (activePendingRevision?.nodes?.update ?? []).map(
@@ -195,14 +191,19 @@ export const ModelRevisionEditorPage = () => {
       const pendingUpdate = pendingNodeUpdatesById.get(node.id);
       const fallbackX = (index % 10) * 2;
       const fallbackY = Math.floor(index / 10) * 2;
+      const resolvedLocation = pendingUpdate?.location ?? node.location;
+      const locationPoint =
+        resolvedLocation.type === "spatial"
+          ? resolvedLocation.point
+          : { x: fallbackX, y: fallbackY, z: 0 };
 
       return NodeResponse.fromJS({
         id: numericId,
         modelId: modelRevision.projectId,
         locationPoint: {
-          x: pendingUpdate?.location.type === "spatial" ? pendingUpdate.location.point.x : fallbackX,
-          y: pendingUpdate?.location.type === "spatial" ? pendingUpdate.location.point.y : fallbackY,
-          z: pendingUpdate?.location.type === "spatial" ? pendingUpdate.location.point.z : 0,
+          x: locationPoint.x,
+          y: locationPoint.y,
+          z: locationPoint.z,
         },
         restraint: pendingUpdate?.restraint ?? DEFAULT_NODE_RESTRAINT,
       });
@@ -264,22 +265,6 @@ export const ModelRevisionEditorPage = () => {
     void editor.api.clear().then(() => editor.api.createModel(projection));
   }, [activeModelRevision, activePendingRevision]);
 
-  const handleLoad = () => {
-    const projectId = trimmedProjectId;
-    if (!projectId) {
-      return;
-    }
-
-    const branchName = trimmedBranch;
-    const nextUrl = `/editor/projects/${encodeURIComponent(projectId)}/${encodeURIComponent(branchName)}`;
-    window.history.replaceState({}, "", nextUrl);
-
-    void openBranch(projectId, branchName, {
-      preferCache: true,
-      refreshInBackground: true,
-    });
-  };
-
   const toolbarButtons = [
     { label: "Select", icon: <PanToolAltRoundedIcon fontSize="small" /> },
     { label: "Drag", icon: <BackHandRoundedIcon fontSize="small" /> },
@@ -309,7 +294,9 @@ export const ModelRevisionEditorPage = () => {
           right: 0,
           zIndex: 20,
           px: 2,
-          py: 1,
+          height: `${editorTopBarHeight}px`,
+          display: "flex",
+          alignItems: "center",
           borderBottom: "1px solid",
           borderColor: "divider",
           borderRadius: 0,
@@ -324,34 +311,8 @@ export const ModelRevisionEditorPage = () => {
             Projects / {projectName} / {trimmedBranch}
           </Typography>
           <Box sx={{ flex: 1 }} />
-          <TextField
-            label="Project"
-            size="small"
-            value={projectIdInput}
-            onChange={(event) => setProjectIdInput(event.target.value)}
-            sx={{ width: { xs: 140, sm: 200, md: 260 } }}
-          />
-          <TextField
-            label="Branch"
-            size="small"
-            value={branchInput}
-            onChange={(event) => setBranchInput(event.target.value)}
-            sx={{ width: 140 }}
-          />
-          <Button variant="contained" onClick={handleLoad} disabled={!trimmedProjectId}>
-            Load
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<RefreshRoundedIcon />}
-            onClick={() => void refreshActiveBranch()}
-            disabled={!activeBranchKey}
-          >
-            Refresh
-          </Button>
           <Button
             variant="contained"
-            color="secondary"
             startIcon={<SaveRoundedIcon />}
             onClick={() => void saveActiveBranch()}
             disabled={!activeBranchKey}
@@ -361,7 +322,7 @@ export const ModelRevisionEditorPage = () => {
         </Stack>
       </Paper>
 
-      <Box sx={{ position: "absolute", inset: 0, pt: "58px" }}>
+      <Box sx={{ position: "absolute", inset: 0, pt: `${editorTopBarHeight}px` }}>
         <Box
           component="canvas"
           id={canvasId}
@@ -374,7 +335,7 @@ export const ModelRevisionEditorPage = () => {
         elevation={2}
         sx={{
           position: "absolute",
-          top: 72,
+          top: editorTopBarHeight + 14,
           left: 12,
           zIndex: 12,
           p: 0.75,
@@ -400,7 +361,7 @@ export const ModelRevisionEditorPage = () => {
         elevation={3}
         sx={{
           position: "absolute",
-          top: 72,
+          top: editorTopBarHeight + 14,
           left: 72,
           zIndex: 12,
           width: 320,
@@ -445,7 +406,7 @@ export const ModelRevisionEditorPage = () => {
         elevation={3}
         sx={{
           position: "absolute",
-          top: 72,
+          top: editorTopBarHeight + 14,
           right: 12,
           zIndex: 12,
           width: { xs: 290, sm: 330 },
@@ -479,7 +440,7 @@ export const ModelRevisionEditorPage = () => {
             </Alert>
           ) : null}
           <Alert severity="info" sx={{ py: 0 }}>
-            External nodes without coordinates are projected to a temporary grid layout.
+            Nodes render from API location data; only non-spatial nodes fall back to a temporary grid.
           </Alert>
         </Stack>
       </Paper>

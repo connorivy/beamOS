@@ -1,8 +1,7 @@
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
-import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
+import { getIntegrationBaseUrl } from "./shared-test-app";
 
-let baseUrl = "";
 
 const defaultModelSettings = {
     units: {
@@ -15,17 +14,10 @@ const defaultModelSettings = {
     yAxisUp: true,
 } as const;
 
-beforeAll(async () => {
-    baseUrl = await setupIntegrationApp();
-}, 30_000);
-
-afterAll(async () => {
-    await teardownIntegrationApp();
-}, 30_000);
 
 describe("typed openapi client integration", () => {
     it("creates a model", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const requestBody = {
             name: "Integration Test Model",
@@ -100,7 +92,7 @@ describe("typed openapi client integration", () => {
     });
 
     it("lists models with last modified timestamp and role", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
         const requestBody = {
             name: "List Models Integration Test",
             description: "Create a model for list endpoint",

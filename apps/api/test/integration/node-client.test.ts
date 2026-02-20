@@ -1,8 +1,7 @@
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
-import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
+import { getIntegrationBaseUrl } from "./shared-test-app";
 
-let baseUrl = "";
 
 const defaultModelSettings = {
     units: {
@@ -15,17 +14,10 @@ const defaultModelSettings = {
     yAxisUp: true,
 } as const;
 
-beforeAll(async () => {
-    baseUrl = await setupIntegrationApp();
-}, 30_000);
-
-afterAll(async () => {
-    await teardownIntegrationApp();
-}, 30_000);
 
 describe("typed node api client integration", () => {
     it("batch creates nodes and verifies persistence in revision", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
         const tempIds = ["node-01", "node-02", "node-03"];
 
         const createModelResponse = await client.POST("/api/projects", {
@@ -157,20 +149,22 @@ describe("typed node api client integration", () => {
             expect(nodeInRevision).toBeDefined();
             expect(nodeInRevision?.id).toBe(nodeId);
             expect(nodeInRevision?.projectId).toBe(projectId);
-            expect(nodeInRevision?.nodeTypeDescriminator).toBe("external");
         }
 
         // Snapshot the nodes data structure
-        const nodesSnapshot = getRevisionResponse.data?.nodes.map((node) => ({
-            ...node,
-            id: "<db-id>",
-            projectId: "<project-id>",
-        }));
+        const nodesSnapshot = getRevisionResponse.data?.nodes
+            .slice()
+            .sort((a, b) => a.id.localeCompare(b.id))
+            .map((node) => ({
+                ...node,
+                id: "<db-id>",
+                projectId: "<project-id>",
+            }));
         expect(nodesSnapshot).toMatchSnapshot();
     });
 
     it("rejects duplicate temp ids in batch create", async () => {
-        const client = createApiClient(baseUrl);
+        const client = createApiClient(getIntegrationBaseUrl());
 
         const createModelResponse = await client.POST("/api/projects", {
             body: {

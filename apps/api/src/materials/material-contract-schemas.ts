@@ -42,7 +42,7 @@ export const materialPropertiesResponseSchema = z
         modulusOfElasticity: z.number().finite(),
         modulusOfRigidity: z.number().finite(),
         units: z.object({
-            pressure: z.literal(PressureUnits.Pascals),
+            pressure: z.enum(PressureUnits),
         }),
     })
     .meta({ id: "MaterialPropertiesResponse" });
