@@ -593,6 +593,13 @@ export class ModelRevisionAggregate {
         }
     }
 
+    private resolveId(value: string, entityTypeName: string): string {
+        if (this.tempIdToRealIdMap.has(value)) {
+            return this.tempIdToRealIdMap.get(value)!;
+        }
+        return value;
+    }
+
     public applyElement1dChanges(ops: Element1dOperationsRequest) {
         for (const element1dId of ops.delete ?? []) {
             this.deleteById(this._element1ds, element1dId, "element1d");
@@ -610,9 +617,14 @@ export class ModelRevisionAggregate {
                 throw new Error(`Section profile "${createOp.sectionProfileName}" not found`);
             }
 
+            const resolvedStartNodeId = this.resolveId(createOp.startNodeId, "node");
+            const resolvedEndNodeId = this.resolveId(createOp.endNodeId, "node");
+
             this.applyCreateOp(
                 {
                     ...createOp,
+                    startNodeId: resolvedStartNodeId,
+                    endNodeId: resolvedEndNodeId,
                     materialId: material.id,
                     sectionProfileId: sectionProfile.id,
                 },
@@ -688,8 +700,15 @@ export class ModelRevisionAggregate {
         }
 
         for (const createOp of ops.create ?? []) {
+            const resolvedLoadCaseFactors = Object.fromEntries(
+                Object.entries(createOp.loadCaseFactors).map(([key, value]) => [
+                    this.resolveId(key, "load case"),
+                    value,
+                ]),
+            );
+
             this.applyCreateOp(
-                createOp,
+                { ...createOp, loadCaseFactors: resolvedLoadCaseFactors },
                 this._loadCombinations,
                 (op, revisionId) =>
                     LoadCombinationEntity.create({
@@ -722,8 +741,11 @@ export class ModelRevisionAggregate {
         }
 
         for (const createOp of ops.create ?? []) {
+            const resolvedNodeId = this.resolveId(createOp.nodeId, "node");
+            const resolvedLoadCaseId = this.resolveId(createOp.loadCaseId, "load case");
+
             this.applyCreateOp(
-                createOp,
+                { ...createOp, nodeId: resolvedNodeId, loadCaseId: resolvedLoadCaseId },
                 this._pointLoads,
                 (op, revisionId) =>
                     PointLoadEntity.create({

@@ -1397,13 +1397,11 @@
         "properties": {
           "startNodeId": {
             "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "minLength": 1
           },
           "endNodeId": {
             "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "minLength": 1
           },
           "materialName": {
             "type": "string",
@@ -2391,8 +2389,7 @@
             "type": "object",
             "propertyNames": {
               "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              "minLength": 1
             },
             "additionalProperties": {
               "type": "number"
@@ -2466,16 +2463,6 @@
       "CreatePointLoadRequest": {
         "type": "object",
         "properties": {
-          "nodeId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "loadCaseId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
           "force": {
             "type": "object",
             "properties": {
@@ -2587,6 +2574,14 @@
               "torque"
             ],
             "additionalProperties": false
+          },
+          "nodeId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "loadCaseId": {
+            "type": "string",
+            "minLength": 1
           },
           "tempId": {
             "type": "string",
@@ -2594,11 +2589,11 @@
           }
         },
         "required": [
-          "nodeId",
-          "loadCaseId",
           "force",
           "direction",
-          "units"
+          "units",
+          "nodeId",
+          "loadCaseId"
         ],
         "additionalProperties": false,
         "id": "CreatePointLoadRequest"
@@ -2606,16 +2601,6 @@
       "PutPointLoadRequest": {
         "type": "object",
         "properties": {
-          "nodeId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "loadCaseId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
           "force": {
             "type": "object",
             "properties": {
@@ -2727,6 +2712,16 @@
               "torque"
             ],
             "additionalProperties": false
+          },
+          "nodeId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "loadCaseId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "id": {
             "type": "string",
@@ -2735,11 +2730,11 @@
           }
         },
         "required": [
-          "nodeId",
-          "loadCaseId",
           "force",
           "direction",
           "units",
+          "nodeId",
+          "loadCaseId",
           "id"
         ],
         "additionalProperties": false,

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { uuidV7Schema } from "../common/uuid";
 
 const loadCaseFactorsSchema = z.record(uuidV7Schema, z.number().finite());
+const createLoadCaseFactorsSchema = z.record(z.string().trim().min(1), z.number().finite());
 
 export const loadCombinationPropertiesSchema = z
   .object({
@@ -9,8 +10,9 @@ export const loadCombinationPropertiesSchema = z
   })
   .meta({ id: "LoadCombinationProperties" });
 
-export const createLoadCombinationRequestSchema = loadCombinationPropertiesSchema
-  .extend({
+export const createLoadCombinationRequestSchema = z
+  .object({
+    loadCaseFactors: createLoadCaseFactorsSchema,
     tempId: z.string().trim().min(1).optional(),
   })
   .meta({ id: "CreateLoadCombinationRequest" });

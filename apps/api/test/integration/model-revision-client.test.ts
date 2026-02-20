@@ -748,4 +748,147 @@ describe("model revision integration", () => {
             ForceUnits.Newtons,
         );
     });
+
+    it("creates all entities in a single revision using tempId references", async () => {
+        const client = createApiClient(baseUrl);
+
+        const createModelResponse = await client.POST("/api/projects", {
+            body: {
+                name: "Single Operation TempId Model",
+                description: "Create all entities in a single revision using tempIds",
+                modelSettings: defaultModelSettings,
+            },
+        });
+
+        expect(createModelResponse.error).toBeUndefined();
+        expect(createModelResponse.response.status).toBe(200);
+        expect(createModelResponse.data).toBeDefined();
+
+        if (!createModelResponse.data) {
+            throw new Error("Expected model response");
+        }
+
+        const projectId = createModelResponse.data.id;
+        const branchName = "main";
+
+        const singleOpResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: { path: { projectId, branchName } },
+                body: {
+                    nodes: {
+                        create: [
+                            {
+                                tempId: "node-start",
+                                location: { type: "spatial", point: { x: 0, y: 0, z: 0 } },
+                                restraint: {
+                                    canTranslateAlongX: false,
+                                    canTranslateAlongY: false,
+                                    canTranslateAlongZ: false,
+                                    canRotateAboutX: false,
+                                    canRotateAboutY: false,
+                                    canRotateAboutZ: false,
+                                },
+                            },
+                            {
+                                tempId: "node-end",
+                                location: { type: "spatial", point: { x: 10, y: 0, z: 0 } },
+                                restraint: {
+                                    canTranslateAlongX: true,
+                                    canTranslateAlongY: true,
+                                    canTranslateAlongZ: true,
+                                    canRotateAboutX: true,
+                                    canRotateAboutY: true,
+                                    canRotateAboutZ: true,
+                                },
+                            },
+                        ],
+                    },
+                    materials: {
+                        create: [
+                            {
+                                name: "Steel",
+                                modulusOfElasticity: 200000000000,
+                                modulusOfRigidity: 77000000000,
+                                units: { pressure: "Pascal" },
+                            },
+                        ],
+                    },
+                    sectionProfiles: {
+                        create: [createSectionProfileInput()],
+                    },
+                    loadCases: {
+                        create: [{ tempId: "lc-dead", name: "Dead Load" }],
+                    },
+                    element1ds: {
+                        create: [
+                            {
+                                tempId: "beam-1",
+                                startNodeId: "node-start",
+                                endNodeId: "node-end",
+                                materialName: "Steel",
+                                sectionProfileName: "W12x26",
+                            },
+                        ],
+                    },
+                    pointLoads: {
+                        create: [
+                            {
+                                tempId: "pl-1",
+                                nodeId: "node-end",
+                                loadCaseId: "lc-dead",
+                                force: {
+                                    forceAlongX: 0,
+                                    forceAlongY: -50000,
+                                    forceAlongZ: 0,
+                                    momentAboutX: 0,
+                                    momentAboutY: 0,
+                                    momentAboutZ: 0,
+                                },
+                                direction: { x: 0, y: -1, z: 0 },
+                                units: { force: ForceUnits.Newtons, torque: TorqueUnits.NewtonMeters },
+                            },
+                        ],
+                    },
+                    loadCombinations: {
+                        create: [
+                            { tempId: "combo-1", loadCaseFactors: { "lc-dead": 1.0 } },
+                        ],
+                    },
+                },
+            },
+        );
+
+        expect(singleOpResponse.error).toBeUndefined();
+        expect(singleOpResponse.response.status).toBe(200);
+        expect(singleOpResponse.data).toBeDefined();
+
+        if (!singleOpResponse.data) {
+            throw new Error("Expected single operation revision response");
+        }
+
+        expect(singleOpResponse.data.nodes).toHaveLength(2);
+        expect(singleOpResponse.data.element1ds).toHaveLength(1);
+        expect(singleOpResponse.data.pointLoads).toHaveLength(1);
+        expect(singleOpResponse.data.loadCases).toHaveLength(1);
+        expect(singleOpResponse.data.loadCombinations).toHaveLength(1);
+
+        const nodeStartId = singleOpResponse.data.nodes.find(
+            (n) => n.id !== singleOpResponse.data!.nodes.find((x) => x.id === n.id)?.id || true,
+        );
+        const nodeIds = singleOpResponse.data.nodes.map((n) => n.id);
+        const element1d = singleOpResponse.data.element1ds[0];
+        expect(element1d).toBeDefined();
+        expect(nodeIds).toContain(element1d?.startNodeId);
+        expect(nodeIds).toContain(element1d?.endNodeId);
+
+        const loadCaseId = singleOpResponse.data.loadCases[0]?.id;
+        expect(loadCaseId).toBeDefined();
+        expect(singleOpResponse.data.pointLoads[0]?.loadCaseId).toBe(loadCaseId);
+        expect(singleOpResponse.data.loadCombinations[0]?.loadCaseFactors[loadCaseId!]).toBe(1.0);
+
+        const pointLoadNodeId = singleOpResponse.data.pointLoads[0]?.nodeId;
+        expect(pointLoadNodeId).toBeDefined();
+        expect(nodeIds).toContain(pointLoadNodeId);
+    });
 });

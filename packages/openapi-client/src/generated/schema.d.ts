@@ -539,9 +539,7 @@ export interface components {
             delete?: string[];
         };
         CreateElement1dRequest: {
-            /** Format: uuid */
             startNodeId: string;
-            /** Format: uuid */
             endNodeId: string;
             materialName: string;
             sectionProfileName: string;
@@ -735,10 +733,6 @@ export interface components {
             delete?: string[];
         };
         CreatePointLoadRequest: {
-            /** Format: uuid */
-            nodeId: string;
-            /** Format: uuid */
-            loadCaseId: string;
             force: {
                 forceAlongX: number;
                 forceAlongY: number;
@@ -758,13 +752,11 @@ export interface components {
                 /** @enum {string} */
                 torque: "NewtonMillimeter" | "NewtonCentimeter" | "NewtonMeter" | "PoundalFoot" | "PoundForceInch" | "PoundForceFoot" | "GramForceMillimeter" | "GramForceCentimeter" | "GramForceMeter" | "KilogramForceMillimeter" | "KilogramForceCentimeter" | "KilogramForceMeter" | "TonneForceMillimeter" | "TonneForceCentimeter" | "TonneForceMeter" | "KilonewtonMillimeter" | "MeganewtonMillimeter" | "KilonewtonCentimeter" | "MeganewtonCentimeter" | "KilonewtonMeter" | "MeganewtonMeter" | "KilopoundForceInch" | "MegapoundForceInch" | "KilopoundForceFoot" | "MegapoundForceFoot";
             };
+            nodeId: string;
+            loadCaseId: string;
             tempId?: string;
         };
         PutPointLoadRequest: {
-            /** Format: uuid */
-            nodeId: string;
-            /** Format: uuid */
-            loadCaseId: string;
             force: {
                 forceAlongX: number;
                 forceAlongY: number;
@@ -784,6 +776,10 @@ export interface components {
                 /** @enum {string} */
                 torque: "NewtonMillimeter" | "NewtonCentimeter" | "NewtonMeter" | "PoundalFoot" | "PoundForceInch" | "PoundForceFoot" | "GramForceMillimeter" | "GramForceCentimeter" | "GramForceMeter" | "KilogramForceMillimeter" | "KilogramForceCentimeter" | "KilogramForceMeter" | "TonneForceMillimeter" | "TonneForceCentimeter" | "TonneForceMeter" | "KilonewtonMillimeter" | "MeganewtonMillimeter" | "KilonewtonCentimeter" | "MeganewtonCentimeter" | "KilonewtonMeter" | "MeganewtonMeter" | "KilopoundForceInch" | "MegapoundForceInch" | "KilopoundForceFoot" | "MegapoundForceFoot";
             };
+            /** Format: uuid */
+            nodeId: string;
+            /** Format: uuid */
+            loadCaseId: string;
             /** Format: uuid */
             id: string;
         };
