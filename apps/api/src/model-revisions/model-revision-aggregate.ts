@@ -593,7 +593,7 @@ export class ModelRevisionAggregate {
         }
     }
 
-    private resolveId(value: string, entityTypeName: string): string {
+    private resolveId(value: string): string {
         if (this.tempIdToRealIdMap.has(value)) {
             return this.tempIdToRealIdMap.get(value)!;
         }
@@ -617,8 +617,8 @@ export class ModelRevisionAggregate {
                 throw new Error(`Section profile "${createOp.sectionProfileName}" not found`);
             }
 
-            const resolvedStartNodeId = this.resolveId(createOp.startNodeId, "node");
-            const resolvedEndNodeId = this.resolveId(createOp.endNodeId, "node");
+            const resolvedStartNodeId = this.resolveId(createOp.startNodeId);
+            const resolvedEndNodeId = this.resolveId(createOp.endNodeId);
 
             this.applyCreateOp(
                 {
@@ -702,7 +702,7 @@ export class ModelRevisionAggregate {
         for (const createOp of ops.create ?? []) {
             const resolvedLoadCaseFactors = Object.fromEntries(
                 Object.entries(createOp.loadCaseFactors).map(([key, value]) => [
-                    this.resolveId(key, "load case"),
+                    this.resolveId(key),
                     value,
                 ]),
             );
@@ -741,8 +741,8 @@ export class ModelRevisionAggregate {
         }
 
         for (const createOp of ops.create ?? []) {
-            const resolvedNodeId = this.resolveId(createOp.nodeId, "node");
-            const resolvedLoadCaseId = this.resolveId(createOp.loadCaseId, "load case");
+            const resolvedNodeId = this.resolveId(createOp.nodeId);
+            const resolvedLoadCaseId = this.resolveId(createOp.loadCaseId);
 
             this.applyCreateOp(
                 { ...createOp, nodeId: resolvedNodeId, loadCaseId: resolvedLoadCaseId },
