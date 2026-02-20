@@ -658,6 +658,16 @@ export interface components {
             weakAxisPlasticSectionModulus: number;
             strongAxisElasticSectionModulus: number;
             weakAxisElasticSectionModulus: number;
+            units: {
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
             strongAxisShearArea?: number;
             weakAxisShearArea?: number;
         };
@@ -672,6 +682,16 @@ export interface components {
             weakAxisPlasticSectionModulus: number;
             strongAxisElasticSectionModulus: number;
             weakAxisElasticSectionModulus: number;
+            units: {
+                /** @enum {string} */
+                area: "SquareKilometer" | "SquareMeter" | "SquareDecimeter" | "SquareCentimeter" | "SquareMillimeter" | "SquareMicrometer" | "SquareMile" | "SquareYard" | "SquareFoot" | "UsSurveySquareFoot" | "SquareInch" | "Acre" | "Hectare" | "SquareNauticalMile";
+                /** @enum {string} */
+                areaMomentOfInertia: "MeterToTheFourth" | "DecimeterToTheFourth" | "CentimeterToTheFourth" | "MillimeterToTheFourth" | "FootToTheFourth" | "InchToTheFourth";
+                /** @enum {string} */
+                warpingMomentOfInertia: "MeterToTheSixth" | "DecimeterToTheSixth" | "CentimeterToTheSixth" | "MillimeterToTheSixth" | "FootToTheSixth" | "InchToTheSixth";
+                /** @enum {string} */
+                volume: "Liter" | "CubicMeter" | "CubicKilometer" | "CubicHectometer" | "CubicDecimeter" | "CubicCentimeter" | "CubicMillimeter" | "CubicMicrometer" | "CubicMile" | "CubicYard" | "CubicFoot" | "CubicInch" | "ImperialGallon" | "ImperialOunce" | "UsGallon" | "UsOunce" | "UsTablespoon" | "AuTablespoon" | "MetricTablespoon" | "UkTablespoon" | "MetricTeaspoon" | "UsTeaspoon" | "MetricCup" | "UsCustomaryCup" | "UsLegalCup" | "OilBarrel" | "UsBeerBarrel" | "ImperialBeerBarrel" | "UsQuart" | "ImperialQuart" | "UsPint" | "AcreFoot" | "ImperialPint" | "BoardFoot" | "Nanoliter" | "Microliter" | "Milliliter" | "Centiliter" | "Deciliter" | "Decaliter" | "Hectoliter" | "Kiloliter" | "Megaliter" | "HectocubicMeter" | "KilocubicMeter" | "HectocubicFoot" | "KilocubicFoot" | "MegacubicFoot" | "KiloimperialGallon" | "MegaimperialGallon" | "DecausGallon" | "DeciusGallon" | "HectousGallon" | "KilousGallon" | "MegausGallon";
+            };
             strongAxisShearArea?: number;
             weakAxisShearArea?: number;
             newName?: string;

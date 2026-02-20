@@ -19,6 +19,12 @@ export const sectionPropertiesInputSchema = z
     weakAxisPlasticSectionModulus: z.number().finite(),
     strongAxisElasticSectionModulus: z.number().finite(),
     weakAxisElasticSectionModulus: z.number().finite(),
+    units: z.object({
+      area: z.enum(AreaUnits),
+      areaMomentOfInertia: z.enum(AreaMomentOfInertiaUnits),
+      warpingMomentOfInertia: z.enum(WarpingMomentOfInertiaUnits),
+      volume: z.enum(VolumeUnits),
+    }),
   })
   .meta({ id: "SectionPropertiesInput" });
 

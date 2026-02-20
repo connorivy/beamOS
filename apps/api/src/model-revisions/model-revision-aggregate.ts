@@ -464,37 +464,46 @@ export class ModelRevisionAggregate {
                         revisionId,
                         name: op.name,
                         discriminator: hasStrong && hasWeak ? "WITH_SHEAR_AREAS" : "STANDARD",
-                        area: Area.FromSquareMeters(op.area),
-                        strongAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+                        area: new Area(op.area, op.units.area),
+                        strongAxisMomentOfInertia: new AreaMomentOfInertia(
                             op.strongAxisMomentOfInertia,
+                            op.units.areaMomentOfInertia,
                         ),
-                        weakAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+                        weakAxisMomentOfInertia: new AreaMomentOfInertia(
                             op.weakAxisMomentOfInertia,
+                            op.units.areaMomentOfInertia,
                         ),
-                        torsionalConstant: AreaMomentOfInertia.FromMetersToTheFourth(
+                        torsionalConstant: new AreaMomentOfInertia(
                             op.torsionalConstant,
+                            op.units.areaMomentOfInertia,
                         ),
-                        warpingConstant: WarpingMomentOfInertia.FromMetersToTheSixth(
+                        warpingConstant: new WarpingMomentOfInertia(
                             op.warpingConstant,
+                            op.units.warpingMomentOfInertia,
                         ),
-                        strongAxisPlasticSectionModulus: Volume.FromCubicMeters(
+                        strongAxisPlasticSectionModulus: new Volume(
                             op.strongAxisPlasticSectionModulus,
+                            op.units.volume,
                         ),
-                        weakAxisPlasticSectionModulus: Volume.FromCubicMeters(
+                        weakAxisPlasticSectionModulus: new Volume(
                             op.weakAxisPlasticSectionModulus,
+                            op.units.volume,
                         ),
-                        strongAxisElasticSectionModulus: Volume.FromCubicMeters(
+                        strongAxisElasticSectionModulus: new Volume(
                             op.strongAxisElasticSectionModulus,
+                            op.units.volume,
                         ),
-                        weakAxisElasticSectionModulus: Volume.FromCubicMeters(
+                        weakAxisElasticSectionModulus: new Volume(
                             op.weakAxisElasticSectionModulus,
+                            op.units.volume,
                         ),
                         ...(hasStrong && hasWeak
                             ? {
-                                  strongAxisShearArea: Area.FromSquareMeters(
+                                  strongAxisShearArea: new Area(
                                       op.strongAxisShearArea!,
+                                      op.units.area,
                                   ),
-                                  weakAxisShearArea: Area.FromSquareMeters(op.weakAxisShearArea!),
+                                  weakAxisShearArea: new Area(op.weakAxisShearArea!, op.units.area),
                               }
                             : {}),
                     }),
@@ -536,37 +545,46 @@ export class ModelRevisionAggregate {
                         revisionId,
                         name: op.newName ?? op.name,
                         discriminator: hasStrong && hasWeak ? "WITH_SHEAR_AREAS" : "STANDARD",
-                        area: Area.FromSquareMeters(op.area),
-                        strongAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+                        area: new Area(op.area, op.units.area),
+                        strongAxisMomentOfInertia: new AreaMomentOfInertia(
                             op.strongAxisMomentOfInertia,
+                            op.units.areaMomentOfInertia,
                         ),
-                        weakAxisMomentOfInertia: AreaMomentOfInertia.FromMetersToTheFourth(
+                        weakAxisMomentOfInertia: new AreaMomentOfInertia(
                             op.weakAxisMomentOfInertia,
+                            op.units.areaMomentOfInertia,
                         ),
-                        torsionalConstant: AreaMomentOfInertia.FromMetersToTheFourth(
+                        torsionalConstant: new AreaMomentOfInertia(
                             op.torsionalConstant,
+                            op.units.areaMomentOfInertia,
                         ),
-                        warpingConstant: WarpingMomentOfInertia.FromMetersToTheSixth(
+                        warpingConstant: new WarpingMomentOfInertia(
                             op.warpingConstant,
+                            op.units.warpingMomentOfInertia,
                         ),
-                        strongAxisPlasticSectionModulus: Volume.FromCubicMeters(
+                        strongAxisPlasticSectionModulus: new Volume(
                             op.strongAxisPlasticSectionModulus,
+                            op.units.volume,
                         ),
-                        weakAxisPlasticSectionModulus: Volume.FromCubicMeters(
+                        weakAxisPlasticSectionModulus: new Volume(
                             op.weakAxisPlasticSectionModulus,
+                            op.units.volume,
                         ),
-                        strongAxisElasticSectionModulus: Volume.FromCubicMeters(
+                        strongAxisElasticSectionModulus: new Volume(
                             op.strongAxisElasticSectionModulus,
+                            op.units.volume,
                         ),
-                        weakAxisElasticSectionModulus: Volume.FromCubicMeters(
+                        weakAxisElasticSectionModulus: new Volume(
                             op.weakAxisElasticSectionModulus,
+                            op.units.volume,
                         ),
                         ...(hasStrong && hasWeak
                             ? {
-                                  strongAxisShearArea: Area.FromSquareMeters(
+                                  strongAxisShearArea: new Area(
                                       op.strongAxisShearArea!,
+                                      op.units.area,
                                   ),
-                                  weakAxisShearArea: Area.FromSquareMeters(op.weakAxisShearArea!),
+                                  weakAxisShearArea: new Area(op.weakAxisShearArea!, op.units.area),
                               }
                             : {}),
                     }),

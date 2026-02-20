@@ -4,7 +4,7 @@ exports[`typed section profile api client integration batch creates section prof
 {
   "area": {
     "unit": "SquareMeter",
-    "value": 7.65,
+    "value": 0.0049354740000000005,
   },
   "discriminator": "STANDARD",
   "id": "<db-id>",
@@ -12,35 +12,35 @@ exports[`typed section profile api client integration batch creates section prof
   "revisionId": "<revision-id>",
   "strongAxisElasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 34,
+    "value": 0.000557160176,
   },
   "strongAxisMomentOfInertia": {
     "unit": "MeterToTheFourth",
-    "value": 204,
+    "value": 0.0000849112108224,
   },
   "strongAxisPlasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 38.4,
+    "value": 0.0006292632576,
   },
   "torsionalConstant": {
     "unit": "MeterToTheFourth",
-    "value": 0.346,
+    "value": 0.0000001440160732576,
   },
   "warpingConstant": {
     "unit": "MeterToTheSixth",
-    "value": 337,
+    "value": 0.00000009049658702401236,
   },
   "weakAxisElasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 5.77,
+    "value": 0.00009455335927999998,
   },
   "weakAxisMomentOfInertia": {
     "unit": "MeterToTheFourth",
-    "value": 17.3,
+    "value": 0.000007200803662880001,
   },
   "weakAxisPlasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 8.94,
+    "value": 0.00014650035215999998,
   },
 }
 `;
@@ -49,7 +49,7 @@ exports[`typed section profile api client integration batch creates section prof
 {
   "area": {
     "unit": "SquareMeter",
-    "value": 33.4,
+    "value": 0.00334,
   },
   "discriminator": "WITH_SHEAR_AREAS",
   "id": "<db-id>",
@@ -57,43 +57,43 @@ exports[`typed section profile api client integration batch creates section prof
   "revisionId": "<revision-id>",
   "strongAxisElasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 194,
+    "value": 0.000194,
   },
   "strongAxisMomentOfInertia": {
     "unit": "MeterToTheFourth",
-    "value": 1940,
+    "value": 0.0000194,
   },
   "strongAxisPlasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 220,
+    "value": 0.00022,
   },
   "strongAxisShearArea": {
     "unit": "SquareMeter",
-    "value": 19.8,
+    "value": 0.00198,
   },
   "torsionalConstant": {
     "unit": "MeterToTheFourth",
-    "value": 14,
+    "value": 0.00000014,
   },
   "warpingConstant": {
     "unit": "MeterToTheSixth",
-    "value": 11700,
+    "value": 0.0000000117,
   },
   "weakAxisElasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 28.5,
+    "value": 0.0000285,
   },
   "weakAxisMomentOfInertia": {
     "unit": "MeterToTheFourth",
-    "value": 142,
+    "value": 0.00000142,
   },
   "weakAxisPlasticSectionModulus": {
     "unit": "CubicMeter",
-    "value": 44.6,
+    "value": 0.0000446,
   },
   "weakAxisShearArea": {
     "unit": "SquareMeter",
-    "value": 13.2,
+    "value": 0.00132,
   },
 }
 `;
