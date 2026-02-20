@@ -36,7 +36,7 @@ import {
   sectionProfileResponseSchema,
   putSectionProfileRequestSchema as updateSectionProfileRequestSchema,
 } from "../section-profiles/section-profile-contract-schemas";
-import { modelSettingsResponseSchema } from "src/model-settings/model-settings-contract-schemas";
+import { modelSettingsPropertiesSchema, modelSettingsResponseSchema } from "src/model-settings/model-settings-contract-schemas";
 
 export const element1dOperationsRequestSchema = z
   .object({
@@ -109,6 +109,7 @@ export const createModelRevisionReqSchema = z
         loadCases: loadCaseOperationsRequestSchema.optional(),
         loadCombinations: loadCombinationOperationsRequestSchema.optional(),
         pointLoads: pointLoadOperationsRequestSchema.optional(),
+        modelSettings: modelSettingsPropertiesSchema.optional(),
       })
       .meta({ id: "CreateModelRevisionRequest" }),
   })
@@ -153,3 +154,4 @@ export type LoadCombinationOperationsRequest = z.infer<
 export type PointLoadOperationsRequest = z.infer<
   typeof pointLoadOperationsRequestSchema
 >;
+export type ModelSettingsUpdateRequest = z.infer<typeof modelSettingsPropertiesSchema>;

@@ -46,40 +46,53 @@ describe("model settings integration", () => {
         const projectId = createModelResponse.data.id;
         const branchName = "main";
 
-        const putSettings = async (body: { units: Record<string, string>; yAxisUp: boolean }) =>
-            fetch(`${baseUrl}/api/projects/${projectId}/branches/${branchName}/model-settings`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
+        const firstResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: { projectId, branchName },
                 },
-                body: JSON.stringify(body),
-            });
-
-        const firstResponse = await putSettings({
-            units: {
-                pressure: "Pascal",
-                area: "SquareMeter",
-                areaMomentOfInertia: "MeterToTheFourth",
-                warpingMomentOfInertia: "MeterToTheSixth",
-                volume: "CubicMeter",
+                body: {
+                    modelSettings: {
+                        units: {
+                            pressure: "Pascal",
+                            area: "SquareMeter",
+                            areaMomentOfInertia: "MeterToTheFourth",
+                            warpingMomentOfInertia: "MeterToTheSixth",
+                            volume: "CubicMeter",
+                        },
+                        yAxisUp: true,
+                    },
+                },
             },
-            yAxisUp: true,
-        });
+        );
 
-        expect(firstResponse.status).toBe(200);
+        expect(firstResponse.error).toBeUndefined();
+        expect(firstResponse.response.status).toBe(200);
 
-        const secondResponse = await putSettings({
-            units: {
-                pressure: "Bar",
-                area: "SquareFoot",
-                areaMomentOfInertia: "FootToTheFourth",
-                warpingMomentOfInertia: "FootToTheSixth",
-                volume: "CubicFoot",
+        const secondResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: { projectId, branchName },
+                },
+                body: {
+                    modelSettings: {
+                        units: {
+                            pressure: "Bar",
+                            area: "SquareFoot",
+                            areaMomentOfInertia: "FootToTheFourth",
+                            warpingMomentOfInertia: "FootToTheSixth",
+                            volume: "CubicFoot",
+                        },
+                        yAxisUp: false,
+                    },
+                },
             },
-            yAxisUp: false,
-        });
+        );
 
-        expect(secondResponse.status).toBe(200);
+        expect(secondResponse.error).toBeUndefined();
+        expect(secondResponse.response.status).toBe(200);
 
         const getRevisionResponse = await client.GET(
             "/api/projects/{projectId}/branches/{branchName}",

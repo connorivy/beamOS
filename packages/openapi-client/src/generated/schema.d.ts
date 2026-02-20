@@ -300,48 +300,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/projects/{projectId}/branches/{branchName}/model-settings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    projectId: string;
-                    branchName: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["ModelSettingsProperties"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ModelSettings"];
-                    };
-                };
-            };
-        };
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -817,6 +775,7 @@ export interface components {
             loadCases?: components["schemas"]["CreateModelRevisionLoadCaseOperationsRequest"];
             loadCombinations?: components["schemas"]["CreateModelRevisionLoadCombinationOperationsRequest"];
             pointLoads?: components["schemas"]["CreateModelRevisionPointLoadOperationsRequest"];
+            modelSettings?: components["schemas"]["ModelSettingsProperties"];
         };
     };
     responses: never;
