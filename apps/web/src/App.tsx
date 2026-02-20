@@ -7,12 +7,13 @@
 
 import { collectPluginRoutes } from "./plugins/types";
 import { webPlugins } from "./plugins/registry";
-import { matchPath } from "react-router-dom";
+import { matchPath, useLocation } from "react-router-dom";
+import { AppLayout } from "./layout/AppLayout";
 
 const routes = collectPluginRoutes(webPlugins);
 
 export const App = () => {
-  const currentPath = window.location.pathname;
+  const { pathname: currentPath } = useLocation();
   const route = routes.find((entry) => matchPath({ path: entry.path, end: true }, currentPath));
 
   if (!route) {
@@ -27,7 +28,11 @@ export const App = () => {
   }
 
   const RouteComponent = route.Component;
-  return <RouteComponent />;
+  return (
+    <AppLayout>
+      <RouteComponent />
+    </AppLayout>
+  );
 };
 // export const App = () => {
 //   const [plugins, setPlugins] = useState<WebPlugin[]>([]);

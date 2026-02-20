@@ -7,11 +7,16 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import type { ReactNode } from "react";
 import { Link as RouterLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth-store";
 import { useUiStore } from "../store/ui-store";
 
-export const AppLayout = () => {
+type AppLayoutProps = {
+  children?: ReactNode;
+};
+
+export const AppLayout = ({ children }: AppLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { mode, setMode } = useUiStore();
@@ -64,7 +69,7 @@ export const AppLayout = () => {
         </Toolbar>
       </AppBar>
       <Container sx={{ py: 4 }}>
-        <Outlet />
+        {children ?? <Outlet />}
       </Container>
     </Box>
   );

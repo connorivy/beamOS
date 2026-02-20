@@ -1,0 +1,191 @@
+import type { CreateModelRevisionRequest } from "@beamos/openapi-client";
+
+export const kassimaliExample3_8BaseRevision: CreateModelRevisionRequest = {
+  modelSettings: {
+    units: {
+      pressure: "KilopoundForcePerSquareInch",
+      area: "SquareInch",
+      areaMomentOfInertia: "InchToTheFourth",
+      warpingMomentOfInertia: "InchToTheSixth",
+      volume: "CubicInch",
+    },
+    yAxisUp: true,
+  },
+  nodes: {
+    create: [
+      {
+        tempId: "n1",
+        location: { type: "spatial", point: { x: 12, y: 16, z: 0 } },
+        restraint: {
+          canTranslateAlongX: true,
+          canTranslateAlongY: true,
+          canTranslateAlongZ: false,
+          canRotateAboutX: false,
+          canRotateAboutY: false,
+          canRotateAboutZ: true,
+        },
+      },
+      {
+        tempId: "n2",
+        location: { type: "spatial", point: { x: 0, y: 0, z: 0 } },
+        restraint: {
+          canTranslateAlongX: false,
+          canTranslateAlongY: false,
+          canTranslateAlongZ: false,
+          canRotateAboutX: false,
+          canRotateAboutY: false,
+          canRotateAboutZ: true,
+        },
+      },
+      {
+        tempId: "n3",
+        location: { type: "spatial", point: { x: 12, y: 0, z: 0 } },
+        restraint: {
+          canTranslateAlongX: false,
+          canTranslateAlongY: false,
+          canTranslateAlongZ: false,
+          canRotateAboutX: false,
+          canRotateAboutY: false,
+          canRotateAboutZ: true,
+        },
+      },
+      {
+        tempId: "n4",
+        location: { type: "spatial", point: { x: 24, y: 0, z: 0 } },
+        restraint: {
+          canTranslateAlongX: false,
+          canTranslateAlongY: false,
+          canTranslateAlongZ: false,
+          canRotateAboutX: false,
+          canRotateAboutY: false,
+          canRotateAboutZ: true,
+        },
+      },
+    ],
+  },
+  materials: {
+    create: [
+      {
+        name: "992",
+        modulusOfElasticity: 29000,
+        modulusOfRigidity: 1,
+        units: { pressure: "KilopoundForcePerSquareInch" },
+      },
+    ],
+  },
+  sectionProfiles: {
+    create: [
+      {
+        name: "8",
+        area: 8,
+        strongAxisMomentOfInertia: 1,
+        weakAxisMomentOfInertia: 1,
+        torsionalConstant: 1,
+        warpingConstant: 1,
+        strongAxisPlasticSectionModulus: 1,
+        weakAxisPlasticSectionModulus: 1,
+        strongAxisElasticSectionModulus: 1,
+        weakAxisElasticSectionModulus: 1,
+        strongAxisShearArea: 1,
+        weakAxisShearArea: 1,
+      },
+      {
+        name: "6",
+        area: 6,
+        strongAxisMomentOfInertia: 1,
+        weakAxisMomentOfInertia: 1,
+        torsionalConstant: 1,
+        warpingConstant: 1,
+        strongAxisPlasticSectionModulus: 1,
+        weakAxisPlasticSectionModulus: 1,
+        strongAxisElasticSectionModulus: 1,
+        weakAxisElasticSectionModulus: 1,
+        strongAxisShearArea: 1,
+        weakAxisShearArea: 1,
+      },
+    ],
+  },
+  loadCases: {
+    create: [{ tempId: "lc1", name: "Load Case 1" }],
+  },
+};
+
+export type KassimaliExample3_8FollowUpInput = {
+  nodeIds: {
+    node1: string;
+    node2: string;
+    node3: string;
+    node4: string;
+  };
+  loadCaseId: string;
+};
+
+export const createKassimaliExample3_8FollowUpRevision = (
+  input: KassimaliExample3_8FollowUpInput,
+): CreateModelRevisionRequest => ({
+  element1ds: {
+    create: [
+      {
+        tempId: "e1",
+        startNodeId: input.nodeIds.node2,
+        endNodeId: input.nodeIds.node1,
+        materialName: "992",
+        sectionProfileName: "8",
+      },
+      {
+        tempId: "e2",
+        startNodeId: input.nodeIds.node3,
+        endNodeId: input.nodeIds.node1,
+        materialName: "992",
+        sectionProfileName: "6",
+      },
+      {
+        tempId: "e3",
+        startNodeId: input.nodeIds.node4,
+        endNodeId: input.nodeIds.node1,
+        materialName: "992",
+        sectionProfileName: "8",
+      },
+    ],
+  },
+  pointLoads: {
+    create: [
+      {
+        tempId: "pl1",
+        nodeId: input.nodeIds.node1,
+        loadCaseId: input.loadCaseId,
+        force: {
+          forceAlongX: 150,
+          forceAlongY: 0,
+          forceAlongZ: 0,
+          momentAboutX: 0,
+          momentAboutY: 0,
+          momentAboutZ: 0,
+        },
+        direction: { x: 1, y: 0, z: 0 },
+        units: { force: "KilopoundForce", torque: "KilopoundForceInch" },
+      },
+      {
+        tempId: "pl2",
+        nodeId: input.nodeIds.node1,
+        loadCaseId: input.loadCaseId,
+        force: {
+          forceAlongX: 0,
+          forceAlongY: -300,
+          forceAlongZ: 0,
+          momentAboutX: 0,
+          momentAboutY: 0,
+          momentAboutZ: 0,
+        },
+        direction: { x: 0, y: -1, z: 0 },
+        units: { force: "KilopoundForce", torque: "KilopoundForceInch" },
+      },
+    ],
+  },
+  loadCombinations: {
+    create: [
+      { tempId: "comb1", loadCaseFactors: { [input.loadCaseId]: 1 } },
+      { tempId: "comb2", loadCaseFactors: { [input.loadCaseId]: 1 } },
+    ],
+  },
+});
