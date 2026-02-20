@@ -1,12 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { createApiClient } from "@beamos/openapi-client";
-import {
-    ForceUnits,
-    PressureUnits,
-    TorqueUnits,
-} from "unitsnet-js";
+import { ForceUnits, PressureUnits, TorqueUnits } from "unitsnet-js";
 import { setupIntegrationApp, teardownIntegrationApp } from "./shared-test-app";
-import { kassimaliExample3_8BaseRevision } from "../../../../tests/fixtures/Kassimali_MatrixAnalysisOfStructures2ndEd";
+import { kassimaliExample3_8Model } from "../../../../tests/fixtures/Kassimali_MatrixAnalysisOfStructures2ndEd";
 
 let baseUrl = "";
 
@@ -776,7 +772,7 @@ describe("model revision integration", () => {
             "/api/projects/{projectId}/branches/{branchName}/revisions",
             {
                 params: { path: { projectId, branchName } },
-                body: kassimaliExample3_8BaseRevision,
+                body: kassimaliExample3_8Model,
             },
         );
 

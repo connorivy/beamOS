@@ -10,7 +10,7 @@ import { spawnSync } from "node:child_process";
 import { test as setup } from "@playwright/test";
 import { GenericContainer, Wait } from "testcontainers";
 import { spawnDetachedProcess, stopProcessTree } from "./api-process";
-import { seedSampleProjects } from "../../apps/api/src/db/seed-sample-projects";
+import { seedSampleProjects } from "./seed-sample-projects";
 
 const ARTIFACTS_DIR = path.resolve(process.cwd(), ".playwright");
 const STATE_FILE = path.join(ARTIFACTS_DIR, "testcontainers-state.json");

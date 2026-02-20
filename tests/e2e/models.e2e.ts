@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { TUTORIAL_PROJECT_ID } from "../../apps/api/src/db/seed-sample-projects";
+import { TUTORIAL_PROJECT_ID } from "../setup/seed-sample-projects";
 
 test("clicking tutorial card navigates to the editor", async ({ page }) => {
   await page.goto("/models");

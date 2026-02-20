@@ -1,4 +1,29 @@
-import { Alert, Box, Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import ArchitectureRoundedIcon from "@mui/icons-material/ArchitectureRounded";
+import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
+import BackHandRoundedIcon from "@mui/icons-material/BackHandRounded";
+import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
+import CenterFocusStrongRoundedIcon from "@mui/icons-material/CenterFocusStrongRounded";
+import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
+import ConstructionRoundedIcon from "@mui/icons-material/ConstructionRounded";
+import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
+import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
+import PanToolAltRoundedIcon from "@mui/icons-material/PanToolAltRounded";
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
+import ZoomInRoundedIcon from "@mui/icons-material/ZoomInRounded";
+import {
+  Alert,
+  Box,
+  Button,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PutNodeRequest } from "@beamos/openapi-client";
 import { BeamOsEditor } from "../components/editor/BeamOsEditor";
@@ -17,6 +42,7 @@ import {
   selectActivePendingRevision,
   useModelRevisionStore,
 } from "../store/model-revision-store";
+import { useModelsStore } from "../store/models-store";
 
 const DEFAULT_NODE_RESTRAINT: NonNullable<PutNodeRequest["restraint"]> = {
   canTranslateAlongX: true,
@@ -65,6 +91,15 @@ export const ModelRevisionEditorPage = () => {
   const refreshActiveBranch = useModelRevisionStore((state) => state.refreshActiveBranch);
   const saveActiveBranch = useModelRevisionStore((state) => state.saveActiveBranch);
   const queueNodeUpdate = useModelRevisionStore((state) => state.queueNodeUpdate);
+  const models = useModelsStore((state) => state.models);
+  const loadProjects = useModelsStore((state) => state.loadProjects);
+  const trimmedProjectId = projectIdInput.trim();
+  const trimmedBranch = branchInput.trim() || "main";
+  const breadcrumbProjectId = activeEntry?.projectId ?? trimmedProjectId;
+  const projectName =
+    models.find((model) => model.id === breadcrumbProjectId)?.name ??
+    breadcrumbProjectId ??
+    "project";
 
   useEffect(() => {
     if (!canvasRef.current || editorRef.current) {
@@ -119,6 +154,13 @@ export const ModelRevisionEditorPage = () => {
       refreshInBackground: true,
     });
   }, [branchInput, openBranch, projectIdInput]);
+
+  useEffect(() => {
+    if (models.length > 0) {
+      return;
+    }
+    void loadProjects();
+  }, [loadProjects, models.length]);
 
   useEffect(() => {
     if (!editorRef.current) {
@@ -223,12 +265,12 @@ export const ModelRevisionEditorPage = () => {
   }, [activeModelRevision, activePendingRevision]);
 
   const handleLoad = () => {
-    const projectId = projectIdInput.trim();
+    const projectId = trimmedProjectId;
     if (!projectId) {
       return;
     }
 
-    const branchName = branchInput.trim() || "main";
+    const branchName = trimmedBranch;
     const nextUrl = `/editor/projects/${encodeURIComponent(projectId)}/${encodeURIComponent(branchName)}`;
     window.history.replaceState({}, "", nextUrl);
 
@@ -238,55 +280,88 @@ export const ModelRevisionEditorPage = () => {
     });
   };
 
-  return (
-    <Stack spacing={2} sx={{ p: 2 }}>
-      <Typography variant="h4">Model Revision Editor</Typography>
+  const toolbarButtons = [
+    { label: "Select", icon: <PanToolAltRoundedIcon fontSize="small" /> },
+    { label: "Drag", icon: <BackHandRoundedIcon fontSize="small" /> },
+    { label: "Node", icon: <AddRoundedIcon fontSize="small" /> },
+    { label: "Element", icon: <CompareArrowsRoundedIcon fontSize="small" /> },
+    { label: "Zoom", icon: <ZoomInRoundedIcon fontSize="small" /> },
+    { label: "Focus", icon: <CenterFocusStrongRoundedIcon fontSize="small" /> },
+    { label: "Grid", icon: <GridOnRoundedIcon fontSize="small" /> },
+    { label: "Tools", icon: <ConstructionRoundedIcon fontSize="small" /> },
+    { label: "Inspect", icon: <TuneRoundedIcon fontSize="small" /> },
+  ] as const;
 
-      <Paper variant="outlined" sx={{ p: 2 }}>
-        <Stack direction={{ xs: "column", md: "row" }} spacing={2} alignItems={{ md: "center" }}>
+  return (
+    <Box
+      sx={{
+        height: "100vh",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <Paper
+        elevation={0}
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 20,
+          px: 2,
+          py: 1,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          borderRadius: 0,
+        }}
+      >
+        <Stack direction="row" alignItems="center" spacing={1.5}>
+          <ArchitectureRoundedIcon />
+          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+            beamOS Editor
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+            Projects / {projectName} / {trimmedBranch}
+          </Typography>
+          <Box sx={{ flex: 1 }} />
           <TextField
-            label="Project ID"
+            label="Project"
+            size="small"
             value={projectIdInput}
             onChange={(event) => setProjectIdInput(event.target.value)}
-            fullWidth
+            sx={{ width: { xs: 140, sm: 200, md: 260 } }}
           />
           <TextField
             label="Branch"
+            size="small"
             value={branchInput}
             onChange={(event) => setBranchInput(event.target.value)}
-            sx={{ minWidth: 200 }}
+            sx={{ width: 140 }}
           />
-          <Button variant="contained" onClick={handleLoad} disabled={!projectIdInput.trim()}>
+          <Button variant="contained" onClick={handleLoad} disabled={!trimmedProjectId}>
             Load
           </Button>
-          <Button variant="outlined" onClick={() => void refreshActiveBranch()} disabled={!activeBranchKey}>
+          <Button
+            variant="outlined"
+            startIcon={<RefreshRoundedIcon />}
+            onClick={() => void refreshActiveBranch()}
+            disabled={!activeBranchKey}
+          >
             Refresh
           </Button>
-          <Button variant="contained" color="secondary" onClick={() => void saveActiveBranch()} disabled={!activeBranchKey}>
-            Save Revision
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<SaveRoundedIcon />}
+            onClick={() => void saveActiveBranch()}
+            disabled={!activeBranchKey}
+          >
+            Save
           </Button>
         </Stack>
       </Paper>
 
-      {activeEntry?.error ? <Alert severity="error">{activeEntry.error}</Alert> : null}
-
-      <Alert severity="info">
-        Revision nodes currently do not include server-side spatial coordinates, so this projection uses a temporary grid layout for external nodes.
-      </Alert>
-
-      <Paper variant="outlined" sx={{ p: 1 }}>
-        <Stack direction="row" spacing={2} sx={{ px: 1, py: 0.5 }}>
-          <Typography variant="body2">
-            Active: {activeEntry ? `${activeEntry.projectId}/${activeEntry.branchName}` : "none"}
-          </Typography>
-          <Typography variant="body2">Sync: {activeEntry?.syncStatus ?? "idle"}</Typography>
-          <Typography variant="body2">
-            Pending node updates: {activePendingRevision?.nodes?.update?.length ?? 0}
-          </Typography>
-        </Stack>
-      </Paper>
-
-      <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 1, overflow: "hidden", height: "70vh", minHeight: 420 }}>
+      <Box sx={{ position: "absolute", inset: 0, pt: "58px" }}>
         <Box
           component="canvas"
           id={canvasId}
@@ -294,6 +369,140 @@ export const ModelRevisionEditorPage = () => {
           sx={{ width: "100%", height: "100%", display: "block" }}
         />
       </Box>
-    </Stack>
+
+      <Paper
+        elevation={2}
+        sx={{
+          position: "absolute",
+          top: 72,
+          left: 12,
+          zIndex: 12,
+          p: 0.75,
+          borderRadius: 2,
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <Stack spacing={0.5}>
+          {toolbarButtons.map((button) => (
+            <IconButton
+              key={button.label}
+              size="small"
+              aria-label={button.label}
+            >
+              {button.icon}
+            </IconButton>
+          ))}
+        </Stack>
+      </Paper>
+
+      <Paper
+        elevation={3}
+        sx={{
+          position: "absolute",
+          top: 72,
+          left: 72,
+          zIndex: 12,
+          width: 320,
+          p: 1.25,
+          borderRadius: 2,
+        }}
+      >
+        <Stack spacing={1}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <LayersRoundedIcon fontSize="small" />
+            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+              Models
+            </Typography>
+            <Box sx={{ flex: 1 }} />
+            <Button size="small" variant="outlined" startIcon={<AddRoundedIcon />}>
+              Add
+            </Button>
+          </Stack>
+          <Paper variant="outlined" sx={{ p: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {activeEntry ? `${activeEntry.projectId}/${activeEntry.branchName}` : "No branch loaded"}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Sync: {activeEntry?.syncStatus ?? "idle"}
+            </Typography>
+          </Paper>
+          <Stack direction="row" spacing={1}>
+            <Button size="small" variant="text" startIcon={<CategoryRoundedIcon />}>
+              Isolate
+            </Button>
+            <Button size="small" variant="text" startIcon={<AutoFixHighRoundedIcon />}>
+              Style
+            </Button>
+            <IconButton size="small" sx={{ ml: "auto" }}>
+              <SettingsRoundedIcon fontSize="small" />
+            </IconButton>
+          </Stack>
+        </Stack>
+      </Paper>
+
+      <Paper
+        elevation={3}
+        sx={{
+          position: "absolute",
+          top: 72,
+          right: 12,
+          zIndex: 12,
+          width: { xs: 290, sm: 330 },
+          p: 1.25,
+          borderRadius: 2,
+        }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+            Selection Info
+          </Typography>
+          <Stack direction="row" spacing={1}>
+            <Button size="small" variant="outlined">Hide</Button>
+            <Button size="small" variant="outlined">Isolate</Button>
+          </Stack>
+          <Paper variant="outlined" sx={{ p: 1 }}>
+            <Typography variant="caption" color="text.secondary">Active</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {activeEntry ? `${activeEntry.projectId}/${activeEntry.branchName}` : "none"}
+            </Typography>
+          </Paper>
+          <Paper variant="outlined" sx={{ p: 1 }}>
+            <Typography variant="caption" color="text.secondary">Pending node updates</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {activePendingRevision?.nodes?.update?.length ?? 0}
+            </Typography>
+          </Paper>
+          {activeEntry?.error ? (
+            <Alert severity="error" sx={{ py: 0 }}>
+              {activeEntry.error}
+            </Alert>
+          ) : null}
+          <Alert severity="info" sx={{ py: 0 }}>
+            External nodes without coordinates are projected to a temporary grid layout.
+          </Alert>
+        </Stack>
+      </Paper>
+
+      <Paper
+        elevation={2}
+        sx={{
+          position: "absolute",
+          left: 12,
+          bottom: 12,
+          zIndex: 12,
+          px: 1.25,
+          py: 0.75,
+        }}
+      >
+        <Stack direction="row" spacing={2}>
+          <Typography variant="caption">Branch: {trimmedBranch}</Typography>
+          <Typography variant="caption">Sync: {activeEntry?.syncStatus ?? "idle"}</Typography>
+          <Typography variant="caption">
+            Nodes: {activeModelRevision?.nodes.length ?? 0}
+          </Typography>
+        </Stack>
+      </Paper>
+    </Box>
   );
 };

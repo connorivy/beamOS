@@ -18,6 +18,7 @@ type AppLayoutProps = {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const location = useLocation();
+  const isEditorRoute = location.pathname.startsWith("/editor/");
   const navigate = useNavigate();
   const { mode, setMode } = useUiStore();
   const { isAuthenticated, logout } = useAuthStore();
@@ -26,6 +27,10 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     logout();
     navigate("/");
   };
+
+  if (isEditorRoute) {
+    return <Box sx={{ minHeight: "100vh" }}>{children ?? <Outlet />}</Box>;
+  }
 
   return (
     <Box sx={{ minHeight: "100vh" }}>

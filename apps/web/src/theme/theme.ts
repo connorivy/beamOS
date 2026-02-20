@@ -17,7 +17,7 @@ export const defaultThemeConfig: ThemeConfig = {
   primaryMain: "#7e57c2",
   primaryDark: "#5e35b1",
   primaryLight: "#b085f5",
-  backgroundDefault: "#f5f2ff",
+  backgroundDefault: "#f5f5f7",
   backgroundPaper: "#ffffff",
 };
 
@@ -32,8 +32,8 @@ export const createAppTheme = ({ mode, themeConfig }: CreateThemeArgs) =>
       },
       background: {
         default:
-          mode === "light" ? themeConfig.backgroundDefault : "#12101a",
-        paper: mode === "light" ? themeConfig.backgroundPaper : "#1b1628",
+          mode === "light" ? themeConfig.backgroundDefault : "#121316",
+        paper: mode === "light" ? themeConfig.backgroundPaper : "#1a1d21",
       },
     },
     shape: {

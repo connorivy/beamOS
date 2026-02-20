@@ -13,8 +13,9 @@ import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAuthStore } from "../store/auth-store";
 import { useModelsStore, type ModelRole } from "../store/models-store";
+import { kassimaliExample3_8Project } from "../../../../tests/fixtures/Kassimali_MatrixAnalysisOfStructures2ndEd/Kassimali_Example3_8.fixture";
 
-export const TUTORIAL_PROJECT_ID = "00000000-0000-7000-8000-000000000002";
+export const TUTORIAL_PROJECT_ID = kassimaliExample3_8Project.project.id;
 
 const roleColor: Record<ModelRole, "primary" | "secondary" | "default"> = {
   owner: "primary",

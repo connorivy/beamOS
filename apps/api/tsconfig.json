@@ -10,5 +10,5 @@
     "noEmit": false,
     "types": ["bun-types", "node"]
   },
-  "include": ["src", "test", "drizzle.config.ts"]
+  "include": ["src", "test", "drizzle.config.ts", "../../tests/setup/seed-sample-projects.ts"]
 }
