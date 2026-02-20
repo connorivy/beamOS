@@ -559,7 +559,7 @@ describe("model revision integration", () => {
             throw new Error("Expected element1d batch response for revision 2");
         }
 
-        const elementRev2RevisionId = elementRev2Response.data.element1ds[0]?.revisionId;
+        const elementRev2RevisionId = elementRev2Response.data.id;
         expect(elementRev2RevisionId).toBeDefined();
 
         const getModelRevisionResponse = await client.GET(
