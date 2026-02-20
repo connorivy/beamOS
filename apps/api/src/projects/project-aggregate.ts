@@ -37,13 +37,14 @@ export class ProjectEntity {
   readonly id: string;
 
   static create(snapshot: {
+    id?: string;
     name: string;
     description?: string;
     modelBranchHeads?: ModelBranchHeadAggregate[] | null;
     modelRevisions?: ModelRevisionAggregate[] | null;
   }): ProjectEntity {
     const model = new ProjectEntity({
-      id: Bun.randomUUIDv7(),
+      id: snapshot.id ?? Bun.randomUUIDv7(),
       name: snapshot.name,
       description: snapshot.description ?? "",
       modelBranchHeads: snapshot.modelBranchHeads ?? null,

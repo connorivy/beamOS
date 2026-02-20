@@ -30,7 +30,7 @@ const DEFAULT_NODE_RESTRAINT: NonNullable<PutNodeRequest["restraint"]> = {
 const canvasId = "beamos-editor-canvas";
 
 const parseInitialRouteState = () => {
-  const pathMatch = window.location.pathname.match(/^\/editor\/([^/]+)\/([^/]+)$/);
+  const pathMatch = window.location.pathname.match(/^\/editor\/projects\/([^/]+)\/([^/]+)$/);
   if (pathMatch) {
     return {
       projectId: decodeURIComponent(pathMatch[1]),
@@ -229,7 +229,7 @@ export const ModelRevisionEditorPage = () => {
     }
 
     const branchName = branchInput.trim() || "main";
-    const nextUrl = `/editor/${encodeURIComponent(projectId)}/${encodeURIComponent(branchName)}`;
+    const nextUrl = `/editor/projects/${encodeURIComponent(projectId)}/${encodeURIComponent(branchName)}`;
     window.history.replaceState({}, "", nextUrl);
 
     void openBranch(projectId, branchName, {
