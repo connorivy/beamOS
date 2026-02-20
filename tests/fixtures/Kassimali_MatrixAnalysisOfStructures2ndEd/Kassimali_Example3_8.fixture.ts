@@ -88,6 +88,12 @@ export const kassimaliExample3_8BaseRevision: CreateModelRevisionRequest = {
         weakAxisElasticSectionModulus: 0,
         strongAxisShearArea: 1,
         weakAxisShearArea: 1,
+        units: {
+          area: "SquareInch",
+          areaMomentOfInertia: "InchToTheFourth",
+          warpingMomentOfInertia: "InchToTheSixth",
+          volume: "CubicInch",
+        },
       },
       {
         name: "6",
@@ -102,6 +108,12 @@ export const kassimaliExample3_8BaseRevision: CreateModelRevisionRequest = {
         weakAxisElasticSectionModulus: 0,
         strongAxisShearArea: 1,
         weakAxisShearArea: 1,
+        units: {
+          area: "SquareInch",
+          areaMomentOfInertia: "InchToTheFourth",
+          warpingMomentOfInertia: "InchToTheSixth",
+          volume: "CubicInch",
+        },
       },
     ],
   },
