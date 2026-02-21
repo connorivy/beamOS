@@ -101,12 +101,14 @@ export class NodeEntity {
         this.modelRevisionId = revisionId;
         this.restraint = snapshot.restraint ?? NodeRestraints.FREE;
         this.location = snapshot.location;
+        this.applicationId = snapshot.applicationId;
     }
 
     readonly id: string;
     readonly modelRevisionId: string;
     readonly location: NodeLocation;
     readonly restraint: NodeRestraint;
+    readonly applicationId?: string;
 
     static create(snapshot: CreateNodeRequest, revisionId: string, id?: string): NodeEntity {
         return new NodeEntity(snapshot, revisionId, id);

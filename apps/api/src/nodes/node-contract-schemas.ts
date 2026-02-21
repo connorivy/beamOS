@@ -36,6 +36,7 @@ export type NodeLocation = z.infer<typeof nodeLocationSchema>;
 export const nodePropertiesSchema = z.object({
     restraint: restraintSchema,
     location: nodeLocationSchema,
+    applicationId: z.string().trim().min(1).optional(),
 });
 
 export const createNodeRequestSchema = nodePropertiesSchema
@@ -47,7 +48,7 @@ export type CreateNodeRequest = z.infer<typeof createNodeRequestSchema>;
 
 export const putNodeRequestSchema = nodePropertiesSchema
     .extend({
-        id: uuidV7Schema,
+        id: uuidV7Schema.optional(),
     })
     .meta({ id: "PutNodeRequest" });
 export type PutNodeRequest = z.infer<typeof putNodeRequestSchema>;

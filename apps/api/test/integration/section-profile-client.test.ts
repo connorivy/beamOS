@@ -50,7 +50,6 @@ describe("typed section profile api client integration", () => {
                         create: [
                             {
                                 name: "W12x26",
-                                discriminator: "STANDARD",
                                 area: 7.65,
                                 strongAxisMomentOfInertia: 204,
                                 weakAxisMomentOfInertia: 17.3,
@@ -87,7 +86,6 @@ describe("typed section profile api client integration", () => {
                         create: [
                             {
                                 name: "IPE 200",
-                                discriminator: "WITH_SHEAR_AREAS",
                                 area: 33.4,
                                 strongAxisMomentOfInertia: 1940,
                                 weakAxisMomentOfInertia: 142,

@@ -480,6 +480,7 @@ export interface components {
                 element1dId: string;
                 ratioAlongElement1d: number;
             };
+            applicationId?: string;
             /** Format: uuid */
             id: string;
             /** Format: uuid */
@@ -612,6 +613,7 @@ export interface components {
                 element1dId: string;
                 ratioAlongElement1d: number;
             };
+            applicationId?: string;
             tempId?: string;
         };
         PutNodeRequest: {
@@ -638,8 +640,9 @@ export interface components {
                 element1dId: string;
                 ratioAlongElement1d: number;
             };
+            applicationId?: string;
             /** Format: uuid */
-            id: string;
+            id?: string;
         };
         CreateModelRevisionMaterialOperationsRequest: {
             create?: components["schemas"]["CreateMaterialRequest"][];

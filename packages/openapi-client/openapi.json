@@ -1488,6 +1488,10 @@
               }
             ]
           },
+          "applicationId": {
+            "type": "string",
+            "minLength": 1
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -2043,6 +2047,10 @@
               }
             ]
           },
+          "applicationId": {
+            "type": "string",
+            "minLength": 1
+          },
           "tempId": {
             "type": "string",
             "minLength": 1
@@ -2152,6 +2160,10 @@
               }
             ]
           },
+          "applicationId": {
+            "type": "string",
+            "minLength": 1
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -2159,8 +2171,7 @@
           }
         },
         "required": [
-          "location",
-          "id"
+          "location"
         ],
         "additionalProperties": false,
         "id": "PutNodeRequest"

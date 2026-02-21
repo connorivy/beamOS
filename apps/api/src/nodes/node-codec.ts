@@ -27,6 +27,7 @@ const nodePayloadV1Schema = z.object({
             canRotateAboutZ: z.boolean(),
         })
         .optional(),
+    applicationId: z.string().trim().min(1).optional(),
 });
 
 type NodePayloadV1 = z.infer<typeof nodePayloadV1Schema>;

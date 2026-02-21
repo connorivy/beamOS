@@ -107,7 +107,6 @@ describe("model settings integration", () => {
                         create: [
                             {
                                 name: "W12x26",
-                                discriminator: "STANDARD",
                                 area: 10,
                                 strongAxisMomentOfInertia: 20,
                                 weakAxisMomentOfInertia: 30,

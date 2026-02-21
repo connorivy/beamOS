@@ -376,8 +376,14 @@ export class ModelRevisionAggregate {
         }
 
         for (const updateOp of ops.update ?? []) {
+            const existingId = this.getExistingEntityIdByIdOrApplicationId(
+                this._nodes,
+                updateOp.id,
+                updateOp.applicationId,
+            );
             this.applyUpdateOp(
                 updateOp,
+                existingId,
                 this._nodes,
                 (op, revisionId) => NodeEntity.create(op, revisionId, op.id),
                 "node",
@@ -415,20 +421,15 @@ export class ModelRevisionAggregate {
                 updateOp.name,
                 updateOp.applicationId,
             );
-            if (updateOp.id && updateOp.id !== existingId) {
-                throw httpError(
-                    `id "${updateOp.id}" and material lookup resolved to different entities`,
-                    409,
-                );
-            }
             this.applyUpdateOp(
-                { ...updateOp, id: existingId },
+                updateOp,
+                existingId,
                 this._materials,
-                (op, revisionId) =>
+                (op, revisionId, existingEntityId) =>
                     MaterialEntity.create(
                         { ...op, name: updateOp.newName ?? updateOp.name },
                         revisionId,
-                        op.id,
+                        existingEntityId,
                     ),
                 "material",
             );
@@ -553,11 +554,12 @@ export class ModelRevisionAggregate {
             }
 
             this.applyUpdateOp(
-                { ...updateOp, id: existingId },
+                updateOp,
+                existingId,
                 this._sectionProfiles,
-                (op, revisionId) =>
+                (op, revisionId, existingEntityId) =>
                     SectionProfileEntity.create({
-                        id: op.id,
+                        id: existingEntityId,
                         revisionId,
                         name: op.newName ?? op.name,
                         discriminator: hasStrong && hasWeak ? "WITH_SHEAR_AREAS" : "STANDARD",
@@ -659,12 +661,17 @@ export class ModelRevisionAggregate {
         }
 
         for (const updateOp of ops.update ?? []) {
+            const existingId = this.getExistingEntityIdByIdOrApplicationId(
+                this._element1ds,
+                updateOp.id,
+            );
             this.applyUpdateOp(
                 updateOp,
+                existingId,
                 this._element1ds,
-                (op, revisionId) =>
+                (op, revisionId, existingEntityId) =>
                     Element1dEntity.create({
-                        id: op.id,
+                        id: existingEntityId,
                         revisionId,
                         startNodeId: op.startNodeId,
                         endNodeId: op.endNodeId,
@@ -696,12 +703,17 @@ export class ModelRevisionAggregate {
         }
 
         for (const updateOp of ops.update ?? []) {
+            const existingId = this.getExistingEntityIdByIdOrApplicationId(
+                this._loadCases,
+                updateOp.id,
+            );
             this.applyUpdateOp(
                 updateOp,
+                existingId,
                 this._loadCases,
-                (op, revisionId) =>
+                (op, revisionId, existingEntityId) =>
                     LoadCaseEntity.create({
-                        id: op.id,
+                        id: existingEntityId,
                         revisionId,
                         name: op.name,
                     }),
@@ -737,12 +749,17 @@ export class ModelRevisionAggregate {
         }
 
         for (const updateOp of ops.update ?? []) {
+            const existingId = this.getExistingEntityIdByIdOrApplicationId(
+                this._loadCombinations,
+                updateOp.id,
+            );
             this.applyUpdateOp(
                 updateOp,
+                existingId,
                 this._loadCombinations,
-                (op, revisionId) =>
+                (op, revisionId, existingEntityId) =>
                     LoadCombinationEntity.create({
-                        id: op.id,
+                        id: existingEntityId,
                         revisionId,
                         loadCaseFactors: { ...op.loadCaseFactors },
                     }),
@@ -784,12 +801,17 @@ export class ModelRevisionAggregate {
         }
 
         for (const updateOp of ops.update ?? []) {
+            const existingId = this.getExistingEntityIdByIdOrApplicationId(
+                this._pointLoads,
+                updateOp.id,
+            );
             this.applyUpdateOp(
                 updateOp,
+                existingId,
                 this._pointLoads,
-                (op, revisionId) =>
+                (op, revisionId, existingEntityId) =>
                     PointLoadEntity.create({
-                        id: op.id,
+                        id: existingEntityId,
                         revisionId,
                         nodeId: op.nodeId,
                         loadCaseId: op.loadCaseId,
@@ -839,22 +861,32 @@ export class ModelRevisionAggregate {
     }
 
     private getExistingEntityIdByIdOrApplicationId<
-        TEntity extends { id: string; applicationId?: string },
+        TEntity extends { id?: string; applicationId?: string },
     >(bucket: EntityBucket<TEntity>, id?: string, applicationId?: string): string {
-        if (id) {
-            return id;
-        } else if (applicationId) {
-            const existingId = bucket.applicationIdToEntityIds.get(applicationId);
-            if (!existingId) {
+        if (!id && !applicationId) {
+            throw httpError("Either id or applicationId must be provided", 400);
+        }
+
+        const existingIdByAppId = applicationId
+            ? bucket.applicationIdToEntityIds.get(applicationId)
+            : undefined;
+
+        if (id && applicationId) {
+            if (existingIdByAppId !== id) {
                 throw httpError(
-                    `Cannot find existing entity with applicationId "${applicationId}"`,
-                    404,
+                    `id "${id}" and applicationId "${applicationId}" resolved to different entities"`,
+                    409,
                 );
             }
-            return existingId;
-        } else {
-            throw httpError(`Operation must include either id or applicationId`, 400);
         }
+        id = id ?? existingIdByAppId;
+        if (!id) {
+            throw httpError(
+                `Cannot find existing entity with id "${id}" or applicationId "${applicationId}"`,
+                404,
+            );
+        }
+        return id;
     }
 
     private getExistingEntityIdByNameOrApplicationId<TEntity extends { id: string; name: string }>(
@@ -929,28 +961,33 @@ export class ModelRevisionAggregate {
         }
     }
 
-    private applyUpdateOp<TUpdateOp extends { id: string }, TEntity extends { id: string }>(
+    private applyUpdateOp<TUpdateOp, TEntity extends { id: string }>(
         updateOp: TUpdateOp,
+        existingEntityId: string,
         bucket: EntityBucket<TEntity>,
-        updateFunction: (updateOp: TUpdateOp, revisionId: string) => TEntity,
+        updateFunction: (
+            updateOp: TUpdateOp,
+            revisionId: string,
+            existingEntityId: string,
+        ) => TEntity,
         entityTypeName: string,
     ): void {
-        if (bucket.deleted.has(updateOp.id)) {
+        if (bucket.deleted.has(existingEntityId)) {
             throw httpError(
-                `Cannot update ${entityTypeName} with id ${updateOp.id} - it is marked for deletion`,
+                `Cannot update ${entityTypeName} with id ${existingEntityId} - it is marked for deletion`,
                 409,
             );
         }
 
-        if (!bucket.unchanged.has(updateOp.id) && !bucket.updated.has(updateOp.id)) {
+        if (!bucket.unchanged.has(existingEntityId) && !bucket.updated.has(existingEntityId)) {
             throw httpError(
-                `Cannot update ${entityTypeName} with id ${updateOp.id} - not found`,
+                `Cannot update ${entityTypeName} with id ${existingEntityId} - not found`,
                 404,
             );
         }
 
-        const entity = updateFunction(updateOp, this.id);
+        const entity = updateFunction(updateOp, this.id, existingEntityId);
         bucket.updated.set(entity.id, entity);
-        bucket.unchanged.delete(updateOp.id);
+        bucket.unchanged.delete(existingEntityId);
     }
 }
