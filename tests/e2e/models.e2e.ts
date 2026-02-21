@@ -30,7 +30,9 @@ test("tutorial editor: complete Mission 1 by forking and land on new project pag
     await expect(page.getByText("Fork the Project")).toBeVisible();
 
     // Click the Fork Project button to complete Mission 1
-    await page.getByRole("button", { name: /Fork Project/ }).click();
+    // Use force: true because the joyride spotlight overlay intercepts pointer events
+    // but spotlightClicks: true on the step allows real user clicks through it
+    await page.getByRole("button", { name: /Fork Project/ }).click({ force: true });
 
     // After forking, the app navigates to the new forked project (a different ID)
     await page.waitForURL(
