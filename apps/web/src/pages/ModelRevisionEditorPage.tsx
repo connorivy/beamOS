@@ -81,7 +81,7 @@ export const ModelRevisionEditorPage = () => {
   const initialRouteState = useMemo(() => parseInitialRouteState(), []);
   const [projectIdInput] = useState(initialRouteState.projectId);
   const [branchInput] = useState(initialRouteState.branchName);
-  const [revisionControlOpen, setRevisionControlOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState<"models" | "revisionControl">("models");
   const [isForkLoading, setIsForkLoading] = useState(false);
   const [forkError, setForkError] = useState<string | null>(null);
 
@@ -389,12 +389,22 @@ export const ModelRevisionEditorPage = () => {
             </Tooltip>
           ))}
           <Divider />
+          <Tooltip title="Models" placement="right">
+            <IconButton
+              size="small"
+              aria-label="Models"
+              onClick={() => setActivePanel("models")}
+              sx={activePanel === "models" ? { color: "primary.main", bgcolor: "action.selected" } : {}}
+            >
+              <LayersRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Revision Control" placement="right">
             <IconButton
               size="small"
               aria-label="Revision Control"
-              onClick={() => setRevisionControlOpen((o) => !o)}
-              sx={revisionControlOpen ? { color: "primary.main", bgcolor: "action.selected" } : {}}
+              onClick={() => setActivePanel("revisionControl")}
+              sx={activePanel === "revisionControl" ? { color: "primary.main", bgcolor: "action.selected" } : {}}
             >
               <CallSplitRoundedIcon fontSize="small" />
             </IconButton>
@@ -402,19 +412,19 @@ export const ModelRevisionEditorPage = () => {
         </Stack>
       </Paper>
 
-      {revisionControlOpen ? (
-        <Paper
-          elevation={3}
-          sx={{
-            position: "absolute",
-            top: editorTopBarHeight + 14,
-            left: 72,
-            zIndex: 13,
-            width: 280,
-            p: 1.5,
-            borderRadius: 2,
-          }}
-        >
+      <Paper
+        elevation={3}
+        sx={{
+          position: "absolute",
+          top: editorTopBarHeight + 14,
+          left: 72,
+          zIndex: 12,
+          width: 320,
+          p: 1.25,
+          borderRadius: 2,
+        }}
+      >
+        {activePanel === "revisionControl" ? (
           <Stack spacing={1.5}>
             <Stack direction="row" alignItems="center" spacing={1}>
               <CallSplitRoundedIcon fontSize="small" color="primary" />
@@ -451,52 +461,39 @@ export const ModelRevisionEditorPage = () => {
               {isForkLoading ? "Forking…" : "Fork Project"}
             </Button>
           </Stack>
-        </Paper>
-      ) : null}
-
-      <Paper
-        elevation={3}
-        sx={{
-          position: "absolute",
-          top: editorTopBarHeight + 14,
-          left: 72,
-          zIndex: 12,
-          width: 320,
-          p: 1.25,
-          borderRadius: 2,
-        }}
-      >
-        <Stack spacing={1}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <LayersRoundedIcon fontSize="small" />
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Models
-            </Typography>
-            <Box sx={{ flex: 1 }} />
-            <Button size="small" variant="outlined" startIcon={<AddRoundedIcon />}>
-              Add
-            </Button>
+        ) : (
+          <Stack spacing={1}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <LayersRoundedIcon fontSize="small" />
+              <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                Models
+              </Typography>
+              <Box sx={{ flex: 1 }} />
+              <Button size="small" variant="outlined" startIcon={<AddRoundedIcon />}>
+                Add
+              </Button>
+            </Stack>
+            <Paper variant="outlined" sx={{ p: 1 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {activeEntry ? `${activeEntry.projectId}/${activeEntry.branchName}` : "No branch loaded"}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Sync: {activeEntry?.syncStatus ?? "idle"}
+              </Typography>
+            </Paper>
+            <Stack direction="row" spacing={1}>
+              <Button size="small" variant="text" startIcon={<CategoryRoundedIcon />}>
+                Isolate
+              </Button>
+              <Button size="small" variant="text" startIcon={<AutoFixHighRoundedIcon />}>
+                Style
+              </Button>
+              <IconButton size="small" sx={{ ml: "auto" }}>
+                <SettingsRoundedIcon fontSize="small" />
+              </IconButton>
+            </Stack>
           </Stack>
-          <Paper variant="outlined" sx={{ p: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {activeEntry ? `${activeEntry.projectId}/${activeEntry.branchName}` : "No branch loaded"}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Sync: {activeEntry?.syncStatus ?? "idle"}
-            </Typography>
-          </Paper>
-          <Stack direction="row" spacing={1}>
-            <Button size="small" variant="text" startIcon={<CategoryRoundedIcon />}>
-              Isolate
-            </Button>
-            <Button size="small" variant="text" startIcon={<AutoFixHighRoundedIcon />}>
-              Style
-            </Button>
-            <IconButton size="small" sx={{ ml: "auto" }}>
-              <SettingsRoundedIcon fontSize="small" />
-            </IconButton>
-          </Stack>
-        </Stack>
+        )}
       </Paper>
 
       <Paper
