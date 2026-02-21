@@ -32,6 +32,8 @@ import type { PutNodeRequest } from "@beamos/openapi-client";
 import { apiClient } from "../api/client";
 import { BeamOsEditor } from "../components/editor/BeamOsEditor";
 import { EditorConfigurations } from "../components/editor/EditorConfigurations";
+import { TutorialTour } from "../components/TutorialTour";
+import { TUTORIAL_PROJECT_ID } from "./ModelsPage";
 import type {
   MoveNodeCommand,
 } from "../components/editor/EditorApi/EditorEventsApi";
@@ -103,6 +105,7 @@ export const ModelRevisionEditorPage = () => {
   const loadProjects = useModelsStore((state) => state.loadProjects);
   const trimmedProjectId = projectIdInput.trim();
   const trimmedBranch = branchInput.trim() || "main";
+  const isTutorial = trimmedProjectId === TUTORIAL_PROJECT_ID;
   const breadcrumbProjectId = activeEntry?.projectId ?? trimmedProjectId;
   const projectName =
     models.find((model) => model.id === breadcrumbProjectId)?.name ??
@@ -123,7 +126,7 @@ export const ModelRevisionEditorPage = () => {
         return;
       }
       await loadProjects();
-      setRevisionControlOpen(false);
+      setActivePanel("models");
       navigate(`/editor/projects/${data.id}/main`);
     } catch {
       setForkError("An unexpected error occurred.");
@@ -192,6 +195,12 @@ export const ModelRevisionEditorPage = () => {
     }
     void loadProjects();
   }, [loadProjects, models.length]);
+
+  useEffect(() => {
+    if (isTutorial) {
+      setActivePanel("revisionControl");
+    }
+  }, [isTutorial]);
 
   useEffect(() => {
     if (!editorRef.current) {
@@ -452,6 +461,7 @@ export const ModelRevisionEditorPage = () => {
               </Alert>
             ) : null}
             <Button
+              id="tutorial-fork-button"
               variant="contained"
               startIcon={<CallSplitRoundedIcon />}
               onClick={() => void handleFork()}
@@ -558,6 +568,8 @@ export const ModelRevisionEditorPage = () => {
           </Typography>
         </Stack>
       </Paper>
+
+      {isTutorial ? <TutorialTour /> : null}
     </Box>
   );
 };
