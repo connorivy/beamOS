@@ -216,4 +216,203 @@ describe("typed node api client integration", () => {
         expect(batchCreateResponse.data).toBeUndefined();
         expect(batchCreateResponse.response.status).toBe(409);
     });
+
+    it("supports node applicationId semantics for create and update", async () => {
+        const client = createApiClient(getIntegrationBaseUrl());
+
+        const createModelResponse = await client.POST("/api/projects", {
+            body: {
+                name: "Node ApplicationId Model",
+                description: "Create model for node applicationId test",
+                modelSettings: defaultModelSettings,
+            },
+        });
+
+        expect(createModelResponse.error).toBeUndefined();
+        expect(createModelResponse.response.status).toBe(200);
+        expect(createModelResponse.data).toBeDefined();
+
+        if (!createModelResponse.data) {
+            throw new Error("Expected model response");
+        }
+
+        const projectId = createModelResponse.data.id;
+        const branchName = "main";
+
+        const initialCreateResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    nodes: {
+                        create: [
+                            {
+                                tempId: "node-app-1",
+                                applicationId: "app-node-1",
+                                location: {
+                                    type: "spatial",
+                                    point: { x: 0, y: 0, z: 0 },
+                                },
+                            },
+                            {
+                                tempId: "node-app-2",
+                                applicationId: "app-node-2",
+                                location: {
+                                    type: "spatial",
+                                    point: { x: 1, y: 1, z: 1 },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+
+        expect(initialCreateResponse.error).toBeUndefined();
+        expect(initialCreateResponse.response.status).toBe(200);
+        expect(initialCreateResponse.data).toBeDefined();
+        expect(initialCreateResponse.data?.nodes[0]?.applicationId).toBe("app-node-1");
+
+        const createdNode = initialCreateResponse.data?.nodes.find(
+            (node) => node.applicationId === "app-node-1",
+        );
+        if (!createdNode) {
+            throw new Error("Expected created node with applicationId");
+        }
+
+        const otherCreatedNode = initialCreateResponse.data?.nodes.find(
+            (node) => node.applicationId === "app-node-2",
+        );
+        if (!otherCreatedNode) {
+            throw new Error("Expected second created node with applicationId");
+        }
+
+        const duplicateApplicationIdCreateResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    nodes: {
+                        create: [
+                            {
+                                tempId: "node-app-duplicate",
+                                applicationId: "app-node-1",
+                                location: {
+                                    type: "spatial",
+                                    point: { x: 2, y: 2, z: 2 },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+        expect(duplicateApplicationIdCreateResponse.response.status).toBe(409);
+        expect(duplicateApplicationIdCreateResponse.data).toBeUndefined();
+
+        const unknownApplicationIdUpdateResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    nodes: {
+                        update: [
+                            {
+                                applicationId: "app-node-unknown",
+                                location: {
+                                    type: "spatial",
+                                    point: { x: 3, y: 3, z: 3 },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+        expect(unknownApplicationIdUpdateResponse.response.status).toBe(404);
+        expect(unknownApplicationIdUpdateResponse.data).toBeUndefined();
+
+        const mismatchedIdAndApplicationIdResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    nodes: {
+                        update: [
+                            {
+                                id: otherCreatedNode.id,
+                                applicationId: "app-node-1",
+                                location: {
+                                    type: "spatial",
+                                    point: { x: 4, y: 4, z: 4 },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+        expect(mismatchedIdAndApplicationIdResponse.response.status).toBe(409);
+        expect(mismatchedIdAndApplicationIdResponse.data).toBeUndefined();
+
+        const validUpdateByApplicationIdResponse = await client.POST(
+            "/api/projects/{projectId}/branches/{branchName}/revisions",
+            {
+                params: {
+                    path: {
+                        projectId,
+                        branchName,
+                    },
+                },
+                body: {
+                    nodes: {
+                        update: [
+                            {
+                                id: createdNode.id,
+                                applicationId: "app-node-1",
+                                location: {
+                                    type: "spatial",
+                                    point: { x: 10, y: 20, z: 30 },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        );
+
+        expect(validUpdateByApplicationIdResponse.error).toBeUndefined();
+        expect(validUpdateByApplicationIdResponse.response.status).toBe(200);
+        expect(validUpdateByApplicationIdResponse.data).toBeDefined();
+
+        const updatedNode = validUpdateByApplicationIdResponse.data?.nodes.find(
+            (node) => node.applicationId === "app-node-1",
+        );
+        expect(updatedNode).toBeDefined();
+        expect(updatedNode?.id).toBe(createdNode.id);
+        expect(updatedNode?.location).toEqual({
+            type: "spatial",
+            point: { x: 10, y: 20, z: 30 },
+        });
+    });
 });

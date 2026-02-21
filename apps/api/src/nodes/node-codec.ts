@@ -45,6 +45,7 @@ export const nodeRevisionChangeCodec = {
             payload: {
                 location: entity.location,
                 restraint: entity.restraint,
+                applicationId: entity.applicationId,
             },
         };
     },
@@ -69,6 +70,7 @@ export const nodeRevisionChangeCodec = {
                 id: entityId,
                 location: parseResult.data.location,
                 restraint: parseResult.data.restraint,
+                applicationId: parseResult.data.applicationId,
             },
             revisionId,
         );

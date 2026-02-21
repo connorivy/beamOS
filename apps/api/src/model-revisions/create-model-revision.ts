@@ -78,6 +78,7 @@ export const createModelRevision = defineEndpoint({
                 projectId: modelRevision.projectId,
                 location: node.location,
                 restraint: node.restraint,
+                ...(node.applicationId ? { applicationId: node.applicationId } : {}),
             })),
             materials: modelRevision.materials.map((material) => ({
                 id: material.id,
