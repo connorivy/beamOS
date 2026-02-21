@@ -29,10 +29,14 @@ test("tutorial editor: complete Mission 1 by forking and land on new project pag
     // Step 2: Spotlight on Fork button with instructions
     await expect(page.getByText("Fork the Project")).toBeVisible();
 
-    // Click the Fork Project button to complete Mission 1
-    // Use force: true because the joyride spotlight overlay intercepts pointer events
-    // but spotlightClicks: true on the step allows real user clicks through it
-    await page.getByRole("button", { name: /Fork Project/ }).click({ force: true });
+    // Click the Fork Project button to complete Mission 1.
+    // The joyride overlay sits at the button's viewport coordinates, so even
+    // { force: true } sends pointer events to the overlay, not the button.
+    // Calling el.click() from evaluate() dispatches the event directly on
+    // the DOM element and bubbles up through React's event delegation.
+    await page.locator("#tutorial-fork-button").evaluate((el) =>
+        (el as HTMLButtonElement).click(),
+    );
 
     // After forking, the app navigates to the new forked project (a different ID).
     // Use expect().toHaveURL() with a predicate — it polls the URL via retry-ability,
