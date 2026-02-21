@@ -2,6 +2,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ArchitectureRoundedIcon from "@mui/icons-material/ArchitectureRounded";
 import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import BackHandRoundedIcon from "@mui/icons-material/BackHandRounded";
+import CallSplitRoundedIcon from "@mui/icons-material/CallSplitRounded";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import CenterFocusStrongRoundedIcon from "@mui/icons-material/CenterFocusStrongRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
@@ -17,13 +18,18 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
+  Divider,
   IconButton,
   Paper,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { PutNodeRequest } from "@beamos/openapi-client";
+import { apiClient } from "../api/client";
 import { BeamOsEditor } from "../components/editor/BeamOsEditor";
 import { EditorConfigurations } from "../components/editor/EditorConfigurations";
 import type {
@@ -71,9 +77,13 @@ const parseInitialRouteState = () => {
 };
 
 export const ModelRevisionEditorPage = () => {
+  const navigate = useNavigate();
   const initialRouteState = useMemo(() => parseInitialRouteState(), []);
   const [projectIdInput] = useState(initialRouteState.projectId);
   const [branchInput] = useState(initialRouteState.branchName);
+  const [revisionControlOpen, setRevisionControlOpen] = useState(false);
+  const [isForkLoading, setIsForkLoading] = useState(false);
+  const [forkError, setForkError] = useState<string | null>(null);
 
   const canvasRef = useRef<globalThis.HTMLCanvasElement | null>(null);
   const editorRef = useRef<BeamOsEditor | null>(null);
@@ -98,6 +108,29 @@ export const ModelRevisionEditorPage = () => {
     models.find((model) => model.id === breadcrumbProjectId)?.name ??
     breadcrumbProjectId ??
     "project";
+
+  const handleFork = async () => {
+    if (!breadcrumbProjectId) return;
+    setIsForkLoading(true);
+    setForkError(null);
+    try {
+      const { data, error } = await apiClient.POST("/api/projects/{projectId}/fork", {
+        params: { path: { projectId: breadcrumbProjectId } },
+        body: { name: `${projectName} (fork)` },
+      });
+      if (error || !data) {
+        setForkError("Failed to fork the project. Please try again.");
+        return;
+      }
+      await loadProjects();
+      setRevisionControlOpen(false);
+      navigate(`/editor/projects/${data.id}/main`);
+    } catch {
+      setForkError("An unexpected error occurred.");
+    } finally {
+      setIsForkLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!canvasRef.current || editorRef.current) {
@@ -346,16 +379,80 @@ export const ModelRevisionEditorPage = () => {
       >
         <Stack spacing={0.5}>
           {toolbarButtons.map((button) => (
-            <IconButton
-              key={button.label}
-              size="small"
-              aria-label={button.label}
-            >
-              {button.icon}
-            </IconButton>
+            <Tooltip key={button.label} title={button.label} placement="right">
+              <IconButton
+                size="small"
+                aria-label={button.label}
+              >
+                {button.icon}
+              </IconButton>
+            </Tooltip>
           ))}
+          <Divider />
+          <Tooltip title="Revision Control" placement="right">
+            <IconButton
+              size="small"
+              aria-label="Revision Control"
+              onClick={() => setRevisionControlOpen((o) => !o)}
+              sx={revisionControlOpen ? { color: "primary.main", bgcolor: "action.selected" } : {}}
+            >
+              <CallSplitRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Stack>
       </Paper>
+
+      {revisionControlOpen ? (
+        <Paper
+          elevation={3}
+          sx={{
+            position: "absolute",
+            top: editorTopBarHeight + 14,
+            left: 72,
+            zIndex: 13,
+            width: 280,
+            p: 1.5,
+            borderRadius: 2,
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <CallSplitRoundedIcon fontSize="small" color="primary" />
+              <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                Revision Control
+              </Typography>
+            </Stack>
+            <Paper variant="outlined" sx={{ p: 1 }}>
+              <Typography variant="caption" color="text.secondary">
+                Project
+              </Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {projectName}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Branch
+              </Typography>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Chip label={trimmedBranch} size="small" variant="outlined" />
+              </Stack>
+            </Paper>
+            {forkError ? (
+              <Alert severity="error" sx={{ py: 0 }}>
+                {forkError}
+              </Alert>
+            ) : null}
+            <Button
+              variant="contained"
+              startIcon={<CallSplitRoundedIcon />}
+              onClick={() => void handleFork()}
+              disabled={isForkLoading || !breadcrumbProjectId}
+              fullWidth
+            >
+              {isForkLoading ? "Forking…" : "Fork Project"}
+            </Button>
+          </Stack>
+        </Paper>
+      ) : null}
 
       <Paper
         elevation={3}
