@@ -173,7 +173,7 @@ const ensureTempId = <T extends { tempId?: string }>(payload: T): string => {
   return tempId;
 };
 
-const upsertById = <T extends { id: string }>(items: T[], nextItem: T): T[] => {
+const upsertById = <T extends { id?: string }>(items: T[], nextItem: T): T[] => {
   const index = items.findIndex((item) => item.id === nextItem.id);
   if (index === -1) {
     return [...items, nextItem];
@@ -217,7 +217,7 @@ const isCreatedInPending = <T extends { tempId?: string }>(
   id: string,
 ): boolean => Boolean((createItems ?? []).find((item) => item.tempId === id));
 
-const removeById = <T extends { id: string }>(
+const removeById = <T extends { id?: string }>(
   items: T[] | null | undefined,
   id: string,
 ): T[] | undefined => {
@@ -557,7 +557,7 @@ export const useModelRevisionStore = create<ModelRevisionState>((set, get) => ({
     withActiveEntry(set, get, (entry) => {
       const builder = createPendingRevisionBuilder(entry.pendingRevision);
       const nodes = builder.ensureNodes();
-      const createdNotSaved = isCreatedInPending(nodes.create, node.id);
+      const createdNotSaved = isCreatedInPending(nodes.create, node.id ?? "");
 
       if (createdNotSaved) {
         nodes.create = upsertCreateByTempId(nodes.create, {

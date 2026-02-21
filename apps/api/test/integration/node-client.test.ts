@@ -146,7 +146,6 @@ describe("typed node api client integration", () => {
             const nodeInRevision = getRevisionResponse.data?.nodes.find((n) => n.id === nodeId);
             expect(nodeInRevision).toBeDefined();
             expect(nodeInRevision?.id).toBe(nodeId);
-            expect(nodeInRevision?.projectId).toBe(projectId);
         }
 
         // Snapshot the nodes data structure
@@ -156,7 +155,6 @@ describe("typed node api client integration", () => {
             .map((node) => ({
                 ...node,
                 id: "<db-id>",
-                projectId: "<project-id>",
             }));
         expect(nodesSnapshot).toMatchSnapshot();
     });

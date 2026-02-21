@@ -14,9 +14,6 @@ export const projects = pgTable("projects", {
 
 export const modelRevisions = pgTable("model_revisions", {
     id: uuid("id").primaryKey(),
-    projectId: uuid("project_id")
-        .notNull()
-        .references(() => projects.id),
     parentRevisionId: uuid("parent_revision_id").references((): AnyPgColumn => modelRevisions.id),
     secondParentRevisionId: uuid("second_parent_revision_id").references(
         (): AnyPgColumn => modelRevisions.id,

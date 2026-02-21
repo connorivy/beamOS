@@ -118,7 +118,6 @@ export const createModelRevisionReqSchema = z
 export const modelRevisionResSchema = z
   .object({
     id: uuidV7Schema,
-    projectId: uuidV7Schema,
     parentRevisionId: uuidV7Schema.nullable(),
     secondParentRevisionId: uuidV7Schema.nullable(),
     authorId: z.uuid(),

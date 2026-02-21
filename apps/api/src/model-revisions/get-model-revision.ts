@@ -58,7 +58,6 @@ export const getModelRevision = defineEndpoint({
 
         return {
             id: modelRevision.id,
-            projectId: modelRevision.projectId,
             parentRevisionId: modelRevision.parentRevisionId,
             secondParentRevisionId: modelRevision.secondParentRevisionId,
             authorId: modelRevision.authorId,
@@ -66,7 +65,6 @@ export const getModelRevision = defineEndpoint({
             createdAt: modelRevision.createdAt.toISOString(),
             nodes: modelRevision.nodes.map((node) => ({
                 id: node.id,
-                projectId: modelRevision.projectId,
                 location: node.location,
                 restraint: node.restraint,
                 ...(node.applicationId ? { applicationId: node.applicationId } : {}),

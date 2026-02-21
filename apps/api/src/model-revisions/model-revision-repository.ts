@@ -189,7 +189,6 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
 
         const rehydrated = ModelRevisionAggregate.rehydrate({
             id: headRevision.id,
-            projectId: headRevision.projectId,
             parentRevisionId: headRevision.parentRevisionId,
             secondParentRevisionId: headRevision.secondParentRevisionId,
             authorId: headRevision.authorId,
@@ -216,7 +215,6 @@ export const drizzleModelRevisionRepository: ModelRevisionRepository = {
         await getDb().transaction(async (tx) => {
             await tx.insert(modelRevisions).values({
                 id: snapshot.id,
-                projectId: snapshot.projectId,
                 parentRevisionId: snapshot.parentRevisionId,
                 secondParentRevisionId: snapshot.secondParentRevisionId,
                 authorId: snapshot.authorId,

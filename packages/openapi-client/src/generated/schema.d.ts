@@ -103,6 +103,47 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/projects/{projectId}/fork": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ForkProjectRequest"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Project"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/projects/{projectId}/branches/{branchName}/materials/{materialId}": {
         parameters: {
             query?: never;
@@ -358,6 +399,9 @@ export interface components {
             /** Format: uuid */
             revisionId: string;
         };
+        ForkProjectRequest: {
+            name?: string;
+        };
         Material: {
             name: string;
             modulusOfElasticity: number;
@@ -483,8 +527,6 @@ export interface components {
             applicationId?: string;
             /** Format: uuid */
             id: string;
-            /** Format: uuid */
-            projectId: string;
         };
         ModelSettings: {
             units: components["schemas"]["ModelSettingsUnits"];
@@ -542,8 +584,6 @@ export interface components {
         ModelRevision: {
             /** Format: uuid */
             id: string;
-            /** Format: uuid */
-            projectId: string;
             parentRevisionId: string | null;
             secondParentRevisionId: string | null;
             /** Format: uuid */
@@ -838,6 +878,7 @@ export type CreateProjectRequest = components['schemas']['CreateProjectRequest']
 export type ProjectsArray = components['schemas']['ProjectsArray'];
 export type PatchModelResponse = components['schemas']['PatchModelResponse'];
 export type PatchModelRequest = components['schemas']['PatchModelRequest'];
+export type ForkProjectRequest = components['schemas']['ForkProjectRequest'];
 export type Material = components['schemas']['Material'];
 export type SectionProfile = components['schemas']['SectionProfile'];
 export type GetSectionProfileResponse = components['schemas']['GetSectionProfileResponse'];
