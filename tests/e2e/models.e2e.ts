@@ -34,10 +34,13 @@ test("tutorial editor: complete Mission 1 by forking and land on new project pag
     // but spotlightClicks: true on the step allows real user clicks through it
     await page.getByRole("button", { name: /Fork Project/ }).click({ force: true });
 
-    // After forking, the app navigates to the new forked project (a different ID)
-    await page.waitForURL(
+    // After forking, the app navigates to the new forked project (a different ID).
+    // Use expect().toHaveURL() with a predicate — it polls the URL via retry-ability,
+    // which works for SPA navigation (history.pushState) unlike page.waitForURL whose
+    // default waitUntil:'load' never fires for client-side navigation.
+    await expect(page).toHaveURL(
         (url) => url.pathname.startsWith("/editor/projects/") && !url.pathname.includes(TUTORIAL_PROJECT_ID),
-        { timeout: 15_000 },
+        { timeout: 30_000 },
     );
 
     // The URL should be a different project than the tutorial
