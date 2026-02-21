@@ -58,6 +58,5 @@ export const deleteNodeRequestSchema = z.string().trim().min(1).meta({ id: "Dele
 export const nodeResponseSchema = nodePropertiesSchema
     .extend({
         id: uuidV7Schema,
-        projectId: uuidV7Schema,
     })
     .meta({ id: "Node" });

@@ -199,7 +199,7 @@ export const ModelRevisionEditorPage = () => {
 
       return NodeResponse.fromJS({
         id: numericId,
-        modelId: modelRevision.projectId,
+        modelId: activeEntry?.projectId ?? trimmedProjectId,
         locationPoint: {
           x: locationPoint.x,
           y: locationPoint.y,
@@ -219,7 +219,7 @@ export const ModelRevisionEditorPage = () => {
 
         return Element1dResponse.fromJS({
           id: index + 1,
-          modelId: modelRevision.projectId,
+          modelId: activeEntry?.projectId ?? trimmedProjectId,
           startNodeId: startNumeric,
           endNodeId: endNumeric,
           materialId: 1,
@@ -234,8 +234,8 @@ export const ModelRevisionEditorPage = () => {
     nodeUuidToNumericRef.current = nextUuidToNumeric;
 
     const projection = ModelResponse.fromJS({
-      id: modelRevision.projectId,
-      name: `Project ${modelRevision.projectId.slice(0, 8)}`,
+      id: activeEntry?.projectId ?? trimmedProjectId,
+      name: `Project ${(activeEntry?.projectId ?? trimmedProjectId).slice(0, 8)}`,
       description: `Revision ${modelRevision.id.slice(0, 8)}`,
       settings: {
         yAxisUp: modelRevision.modelSettings?.yAxisUp ?? false,
@@ -263,7 +263,7 @@ export const ModelRevisionEditorPage = () => {
     });
 
     void editor.api.clear().then(() => editor.api.createModel(projection));
-  }, [activeModelRevision, activePendingRevision]);
+  }, [activeModelRevision, activePendingRevision, activeEntry, trimmedProjectId]);
 
   const toolbarButtons = [
     { label: "Select", icon: <PanToolAltRoundedIcon fontSize="small" /> },

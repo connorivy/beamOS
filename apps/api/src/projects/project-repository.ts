@@ -43,16 +43,30 @@ export const drizzleProjectRepository: ProjectRepository = {
         }
 
         const projectIds = projectRows.map((row) => row.id);
-        const revisionRows = await getDb()
-            .selectDistinctOn([modelRevisions.projectId])
-            .from(modelRevisions)
-            .where(inArray(modelRevisions.projectId, projectIds))
+        const branchHeadRows = await getDb()
+            .selectDistinctOn([modelBranchHeads.projectId])
+            .from(modelBranchHeads)
+            .where(inArray(modelBranchHeads.projectId, projectIds))
             .orderBy(
-                modelRevisions.projectId,
-                desc(modelRevisions.createdAt),
-                desc(modelRevisions.id),
+                modelBranchHeads.projectId,
+                desc(modelBranchHeads.updatedAt),
             );
-        const latestRevisionByProjectId = new Map(revisionRows.map((row) => [row.projectId, row]));
+
+        const latestRevisionIds = branchHeadRows.map((h) => h.headRevisionId);
+        const latestRevisionById = new Map<string, typeof modelRevisions.$inferSelect>();
+        if (latestRevisionIds.length > 0) {
+            const revisionRows = await getDb()
+                .select()
+                .from(modelRevisions)
+                .where(inArray(modelRevisions.id, latestRevisionIds));
+            for (const row of revisionRows) {
+                latestRevisionById.set(row.id, row);
+            }
+        }
+
+        const latestRevisionByProjectId = new Map(
+            branchHeadRows.map((h) => [h.projectId, latestRevisionById.get(h.headRevisionId)]),
+        );
 
         return projectRows.map((row) => {
             const latestRevision = latestRevisionByProjectId.get(row.id);
@@ -99,7 +113,6 @@ export const drizzleProjectRepository: ProjectRepository = {
                 .insert(modelRevisions)
                 .values({
                     id: initialRevisionId,
-                    projectId: input.model.id,
                     parentRevisionId: null,
                     secondParentRevisionId: null,
                     authorId: Bun.randomUUIDv7(),
@@ -209,7 +222,6 @@ const toLightweightModelRevisionAggregate = (input: {
     const modelSettings = ModelSettingsEntity.create(modelSettingsParams);
     return ModelRevisionAggregate.create({
         id: row.id,
-        projectId: row.projectId,
         parentRevisionId: row.parentRevisionId,
         secondParentRevisionId: row.secondParentRevisionId,
         authorId: row.authorId,

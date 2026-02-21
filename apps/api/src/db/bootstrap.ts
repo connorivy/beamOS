@@ -24,7 +24,6 @@ export const bootstrapDb = async () => {
     await getDb().execute(sql`
     CREATE TABLE IF NOT EXISTS model_revisions (
       id UUID PRIMARY KEY NOT NULL,
-      project_id UUID NOT NULL REFERENCES projects(id),
       parent_revision_id UUID REFERENCES model_revisions(id),
       second_parent_revision_id UUID REFERENCES model_revisions(id),
       author_id UUID NOT NULL,
@@ -35,6 +34,10 @@ export const bootstrapDb = async () => {
     await getDb().execute(sql`
     ALTER TABLE model_revisions
     DROP COLUMN IF EXISTS model_name;
+  `);
+    await getDb().execute(sql`
+    ALTER TABLE model_revisions
+    DROP COLUMN IF EXISTS project_id;
   `);
 
     await getDb().execute(sql`

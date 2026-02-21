@@ -12,7 +12,6 @@ exports[`typed node api client integration batch creates nodes and verifies pers
       },
       "type": "spatial",
     },
-    "projectId": "<project-id>",
     "restraint": {
       "canRotateAboutX": true,
       "canRotateAboutY": true,
@@ -32,7 +31,6 @@ exports[`typed node api client integration batch creates nodes and verifies pers
       },
       "type": "spatial",
     },
-    "projectId": "<project-id>",
     "restraint": {
       "canRotateAboutX": true,
       "canRotateAboutY": true,
@@ -52,7 +50,6 @@ exports[`typed node api client integration batch creates nodes and verifies pers
       },
       "type": "spatial",
     },
-    "projectId": "<project-id>",
     "restraint": {
       "canRotateAboutX": false,
       "canRotateAboutY": false,

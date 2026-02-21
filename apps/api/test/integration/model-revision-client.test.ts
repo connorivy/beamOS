@@ -273,7 +273,6 @@ describe("model revision integration", () => {
             throw new Error("Expected create model revision response");
         }
 
-        expect(createRevisionResponse.data.projectId).toBe(projectId);
         expect(createRevisionResponse.data.nodes).toHaveLength(1);
         expect(createRevisionResponse.data.sectionProfiles).toHaveLength(1);
         const createdNodeId = createRevisionResponse.data.nodes[0]?.id;

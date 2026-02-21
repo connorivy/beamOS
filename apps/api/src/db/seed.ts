@@ -58,7 +58,6 @@ export const ensureSeedData = async () => {
 
   await getDb().insert(modelRevisions).values({
     id: INITIAL_REVISION_ID,
-    projectId: projectRow.id,
     parentRevisionId: null,
     secondParentRevisionId: null,
     authorId: SYSTEM_AUTHOR_ID,

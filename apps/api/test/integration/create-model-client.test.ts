@@ -62,7 +62,6 @@ describe("typed openapi client integration", () => {
         }
 
         expect(mainBranchRevisionResponse.data.id).toMatch(/^[0-9a-f-]{36}$/i);
-        expect(mainBranchRevisionResponse.data.projectId).toBe(data.id);
         expect(mainBranchRevisionResponse.data.parentRevisionId).toBeNull();
         expect(mainBranchRevisionResponse.data.nodes).toHaveLength(0);
         expect(mainBranchRevisionResponse.data.materials).toHaveLength(0);

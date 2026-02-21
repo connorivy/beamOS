@@ -29,7 +29,6 @@ import { httpError } from "src/common/http-utils";
 
 export type ModelRevisionSnapshot = {
     id: string;
-    projectId: string;
     parentRevisionId: string | null;
     secondParentRevisionId: string | null;
     authorId: string;
@@ -79,7 +78,6 @@ export type ModelRevisionSingleEntityState<TEntity> = {
 
 export class ModelRevisionAggregate {
     readonly id: string;
-    readonly projectId: string;
     private _parentRevisionId: string | null;
     private _secondParentRevisionId: string | null;
     private _authorId: string;
@@ -97,7 +95,6 @@ export class ModelRevisionAggregate {
     private constructor(snapshot: ModelRevisionSnapshot) {
         const revisionId = snapshot.id ?? Bun.randomUUIDv7();
         assertUuidV7(revisionId, "id");
-        assertUuidV7(snapshot.projectId, "projectId");
         assertUuidV7(snapshot.authorId, "authorId");
         // this.assertRequired(snapshot.message, "message");
         // this.assertOptionalUuid(snapshot.parentRevisionId, "parentRevisionId");
@@ -107,7 +104,6 @@ export class ModelRevisionAggregate {
         // );
 
         this.id = revisionId;
-        this.projectId = snapshot.projectId;
         this._parentRevisionId = snapshot.parentRevisionId;
         this._secondParentRevisionId = snapshot.secondParentRevisionId;
         this._authorId = snapshot.authorId;
@@ -292,7 +288,6 @@ export class ModelRevisionAggregate {
     public toSnapshot(): ModelRevisionSnapshot {
         return {
             id: this.id,
-            projectId: this.projectId,
             parentRevisionId: this._parentRevisionId,
             secondParentRevisionId: this._secondParentRevisionId,
             authorId: this._authorId,
