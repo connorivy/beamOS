@@ -155,7 +155,6 @@ describe("typed node api client integration", () => {
             .map((node) => ({
                 ...node,
                 id: "<db-id>",
-                projectId: "<project-id>",
             }));
         expect(nodesSnapshot).toMatchSnapshot();
     });
