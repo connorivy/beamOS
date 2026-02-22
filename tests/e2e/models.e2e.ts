@@ -55,4 +55,11 @@ test("tutorial editor: complete Mission 1 by forking and land on new project pag
 
     // Should land on the editor page for the forked project
     await expect(page.getByRole("heading", { name: "beamOS Editor" })).toBeVisible();
+
+    // Action 2 (Mission 2): create/switch to a feature branch for isolated changes.
+    const branchName = "feature/add-loads";
+    await page.goto(`/editor/projects/${newProjectId}/${branchName}`);
+
+    await expect(page).toHaveURL(`/editor/projects/${newProjectId}/${branchName}`);
+    await expect(page.getByText(branchName)).toBeVisible();
 });
