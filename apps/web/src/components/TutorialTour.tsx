@@ -19,7 +19,24 @@ const MISSION_1_STEPS = [
   },
 ];
 
-export const TutorialTour = () => {
+const MISSION_2_STEPS = [
+  {
+    target: "body",
+    placement: "center" as const,
+    title: "Mission 2 — Create a Branch",
+    content: "Create a branch to make your changes.",
+    disableBeacon: true,
+  },
+  {
+    target: "#tutorial-create-branch-button",
+    title: "Create Branch",
+    content: 'Click "+" to create a branch from your base branch.',
+    disableBeacon: true,
+    spotlightClicks: true,
+  },
+];
+
+export const TutorialTour = ({ mission = "mission1" }: { mission?: "mission1" | "mission2" }) => {
   const [run, setRun] = useState(true);
 
   const handleCallback = (data: CallBackProps) => {
@@ -31,7 +48,7 @@ export const TutorialTour = () => {
 
   return (
     <Joyride
-      steps={MISSION_1_STEPS}
+      steps={mission === "mission2" ? MISSION_2_STEPS : MISSION_1_STEPS}
       run={run}
       continuous
       showSkipButton
