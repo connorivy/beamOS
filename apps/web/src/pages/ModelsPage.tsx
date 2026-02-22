@@ -27,6 +27,7 @@ type ModelCardItem = {
   id: string;
   name: string;
   description: string;
+  href?: string;
   badgeLabel?: string;
   createdAt?: string;
   role?: ModelRole;
@@ -36,6 +37,7 @@ const sampleModelCards: ModelCardItem[] = [
   {
     id: TUTORIAL_PROJECT_ID,
     name: "Tutorial",
+    href: "/tutorial",
     description: "Learn the basics of BeamOS with this interactive tutorial",
     createdAt: "2024-01-01T12:00:00Z",
     badgeLabel: "Sample",
@@ -59,7 +61,7 @@ const ModelCardsSection = ({
           <Paper
             key={model.id}
             component={RouterLink}
-            to={`/editor/projects/${model.id}/main`}
+            to={model.href ?? `/editor/projects/${model.id}/main`}
             variant="outlined"
             sx={{
               p: 2.5,

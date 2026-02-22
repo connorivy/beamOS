@@ -144,6 +144,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/projects/{projectId}/branches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    projectId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateBranchRequest"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CreateBranchResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/projects/{projectId}/branches/{branchName}/materials/{materialId}": {
         parameters: {
             query?: never;
@@ -401,6 +442,19 @@ export interface components {
         };
         ForkProjectRequest: {
             name?: string;
+        };
+        CreateBranchResponse: {
+            /** Format: uuid */
+            projectId: string;
+            branchName: string;
+            baseBranchName: string;
+            /** Format: uuid */
+            headRevisionId: string;
+        };
+        CreateBranchRequest: {
+            branchName: string;
+            /** @default main */
+            baseBranchName: string;
         };
         Material: {
             name: string;
@@ -879,6 +933,8 @@ export type ProjectsArray = components['schemas']['ProjectsArray'];
 export type PatchModelResponse = components['schemas']['PatchModelResponse'];
 export type PatchModelRequest = components['schemas']['PatchModelRequest'];
 export type ForkProjectRequest = components['schemas']['ForkProjectRequest'];
+export type CreateBranchResponse = components['schemas']['CreateBranchResponse'];
+export type CreateBranchRequest = components['schemas']['CreateBranchRequest'];
 export type Material = components['schemas']['Material'];
 export type SectionProfile = components['schemas']['SectionProfile'];
 export type GetSectionProfileResponse = components['schemas']['GetSectionProfileResponse'];

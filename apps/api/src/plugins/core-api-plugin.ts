@@ -2,6 +2,7 @@ import { createProject } from "src/projects/create-project";
 import { getProjects } from "src/projects/get-project";
 import { patchModel } from "../projects/patch-project";
 import { forkProject } from "src/projects/fork-project";
+import { createBranch } from "src/projects/create-branch";
 import { defineApiPlugin } from "./types";
 import { getMaterial } from "src/materials/get-material";
 import { getSectionProfile } from "src/section-profiles/get-section-profile";
@@ -16,6 +17,7 @@ export const coreApiPlugin = defineApiPlugin({
         getProjects,
         patchModel,
         forkProject,
+        createBranch,
         getMaterial,
         getSectionProfile,
         getElement1d,

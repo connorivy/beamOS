@@ -151,4 +151,53 @@ describe("typed openapi client integration", () => {
         expect(listedProjects.lastModified).toBe(revisionResponse.data.createdAt);
         expect(listedProjects.role).toBe("Owner");
     });
+
+    it("creates a branch from a base branch", async () => {
+        const client = createApiClient(getIntegrationBaseUrl());
+        const createProjectResponse = await client.POST("/api/projects", {
+            body: {
+                name: "Create Branch Integration Test",
+                description: "Create branch from main",
+                modelSettings: defaultModelSettings,
+            },
+        });
+
+        expect(createProjectResponse.error).toBeUndefined();
+        expect(createProjectResponse.data).toBeDefined();
+        if (!createProjectResponse.data) {
+            throw new Error("Expected response body from create model API");
+        }
+
+        const createBranchResponse = await client.POST("/api/projects/{projectId}/branches", {
+            params: {
+                path: {
+                    projectId: createProjectResponse.data.id,
+                },
+            },
+            body: {
+                branchName: "feature/add-loads",
+                baseBranchName: "main",
+            },
+        });
+
+        expect(createBranchResponse.error).toBeUndefined();
+        expect(createBranchResponse.response.status).toBe(200);
+        expect(createBranchResponse.data?.branchName).toBe("feature/add-loads");
+
+        const featureBranchRevisionResponse = await client.GET(
+            "/api/projects/{projectId}/branches/{branchName}",
+            {
+                params: {
+                    path: {
+                        projectId: createProjectResponse.data.id,
+                        branchName: "feature/add-loads",
+                    },
+                },
+            },
+        );
+
+        expect(featureBranchRevisionResponse.error).toBeUndefined();
+        expect(featureBranchRevisionResponse.response.status).toBe(200);
+        expect(featureBranchRevisionResponse.data).toBeDefined();
+    });
 });

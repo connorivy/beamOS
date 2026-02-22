@@ -19,21 +19,28 @@ import {
   Box,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import type { PutNodeRequest } from "@beamos/openapi-client";
 import { apiClient } from "../api/client";
 import { BeamOsEditor } from "../components/editor/BeamOsEditor";
 import { EditorConfigurations } from "../components/editor/EditorConfigurations";
-import { TutorialTour } from "../components/TutorialTour";
-import { TUTORIAL_PROJECT_ID } from "./ModelsPage";
 import type {
   MoveNodeCommand,
 } from "../components/editor/EditorApi/EditorEventsApi";
@@ -78,14 +85,36 @@ const parseInitialRouteState = () => {
   };
 };
 
-export const ModelRevisionEditorPage = () => {
+type ModelRevisionEditorPageProps = {
+  routeStateOverride?: {
+    projectId: string;
+    branchName: string;
+  };
+  onBranchChange?: (branchName: string) => void;
+  revisionControlActions?: ReactNode;
+  defaultActivePanel?: "models" | "revisionControl";
+};
+
+export const ModelRevisionEditorPage = ({
+  routeStateOverride,
+  onBranchChange,
+  revisionControlActions,
+  defaultActivePanel = "models",
+}: ModelRevisionEditorPageProps = {}) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const initialRouteState = useMemo(() => parseInitialRouteState(), []);
-  const [projectIdInput] = useState(initialRouteState.projectId);
-  const [branchInput] = useState(initialRouteState.branchName);
-  const [activePanel, setActivePanel] = useState<"models" | "revisionControl">("models");
-  const [isForkLoading, setIsForkLoading] = useState(false);
-  const [forkError, setForkError] = useState<string | null>(null);
+  const [projectIdInput, setProjectIdInput] = useState(initialRouteState.projectId);
+  const [branchInput, setBranchInput] = useState(initialRouteState.branchName);
+  const [knownBranches, setKnownBranches] = useState<string[]>(() =>
+    Array.from(new Set([initialRouteState.branchName || "main", "main"])),
+  );
+  const [activePanel, setActivePanel] = useState<"models" | "revisionControl">(defaultActivePanel);
+  const [isCreateBranchDialogOpen, setIsCreateBranchDialogOpen] = useState(false);
+  const [isCreateBranchLoading, setIsCreateBranchLoading] = useState(false);
+  const [createBranchError, setCreateBranchError] = useState<string | null>(null);
+  const [newBranchName, setNewBranchName] = useState("feature/add-loads");
+  const [baseBranchName, setBaseBranchName] = useState(initialRouteState.branchName || "main");
 
   const canvasRef = useRef<globalThis.HTMLCanvasElement | null>(null);
   const editorRef = useRef<BeamOsEditor | null>(null);
@@ -105,35 +134,73 @@ export const ModelRevisionEditorPage = () => {
   const loadProjects = useModelsStore((state) => state.loadProjects);
   const trimmedProjectId = projectIdInput.trim();
   const trimmedBranch = branchInput.trim() || "main";
-  const isTutorial = trimmedProjectId === TUTORIAL_PROJECT_ID;
   const breadcrumbProjectId = activeEntry?.projectId ?? trimmedProjectId;
   const projectName =
     models.find((model) => model.id === breadcrumbProjectId)?.name ??
     breadcrumbProjectId ??
     "project";
 
-  const handleFork = async () => {
-    if (!breadcrumbProjectId) return;
-    setIsForkLoading(true);
-    setForkError(null);
-    try {
-      const { data, error } = await apiClient.POST("/api/projects/{projectId}/fork", {
-        params: { path: { projectId: breadcrumbProjectId } },
-        body: { name: `${projectName} (fork)` },
-      });
-      if (error || !data) {
-        setForkError("Failed to fork the project. Please try again.");
-        return;
-      }
-      await loadProjects();
-      setActivePanel("models");
-      navigate(`/editor/projects/${data.id}/main`);
-    } catch {
-      setForkError("An unexpected error occurred.");
-    } finally {
-      setIsForkLoading(false);
+  const handleBranchSelect = (nextBranchName: string) => {
+    setBranchInput(nextBranchName);
+    setBaseBranchName(nextBranchName);
+    if (routeStateOverride) {
+      onBranchChange?.(nextBranchName);
+    } else if (trimmedProjectId) {
+      navigate(`/editor/projects/${trimmedProjectId}/${encodeURIComponent(nextBranchName)}`);
     }
   };
+
+  const handleCreateBranch = async () => {
+    const normalizedBranchName = newBranchName.trim();
+    if (!normalizedBranchName || !trimmedProjectId) {
+      return;
+    }
+
+    setIsCreateBranchLoading(true);
+    setCreateBranchError(null);
+    try {
+      const { data, error } = await apiClient.POST("/api/projects/{projectId}/branches", {
+        params: {
+          path: {
+            projectId: trimmedProjectId,
+          },
+        },
+        body: {
+          branchName: normalizedBranchName,
+          baseBranchName: baseBranchName.trim() || "main",
+        },
+      });
+      if (error || !data) {
+        setCreateBranchError("Failed to create branch. Please try again.");
+        return;
+      }
+
+      setKnownBranches((current) =>
+        current.includes(normalizedBranchName)
+          ? current
+          : [...current, normalizedBranchName],
+      );
+      handleBranchSelect(normalizedBranchName);
+      setIsCreateBranchDialogOpen(false);
+    } catch {
+      setCreateBranchError("An unexpected error occurred.");
+    } finally {
+      setIsCreateBranchLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (routeStateOverride) {
+      setProjectIdInput(routeStateOverride.projectId);
+      setBranchInput(routeStateOverride.branchName);
+      setBaseBranchName(routeStateOverride.branchName || "main");
+      return;
+    }
+    const routeState = parseInitialRouteState();
+    setProjectIdInput(routeState.projectId);
+    setBranchInput(routeState.branchName);
+    setBaseBranchName(routeState.branchName || "main");
+  }, [location.pathname, location.search, routeStateOverride]);
 
   useEffect(() => {
     if (!canvasRef.current || editorRef.current) {
@@ -197,10 +264,13 @@ export const ModelRevisionEditorPage = () => {
   }, [loadProjects, models.length]);
 
   useEffect(() => {
-    if (isTutorial) {
-      setActivePanel("revisionControl");
+    if (!trimmedBranch) {
+      return;
     }
-  }, [isTutorial]);
+    setKnownBranches((current) =>
+      current.includes(trimmedBranch) ? current : [...current, trimmedBranch],
+    );
+  }, [trimmedBranch]);
 
   useEffect(() => {
     if (!editorRef.current) {
@@ -350,8 +420,33 @@ export const ModelRevisionEditorPage = () => {
             beamOS Editor
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-            Projects / {projectName} / {trimmedBranch}
+            Projects / {projectName}
           </Typography>
+          <FormControl size="small" sx={{ minWidth: 170 }}>
+            <InputLabel id="editor-branch-select-label">Branch</InputLabel>
+            <Select
+              labelId="editor-branch-select-label"
+              label="Branch"
+              value={trimmedBranch}
+              onChange={(event) => handleBranchSelect(event.target.value)}
+            >
+              {knownBranches.map((branchName) => (
+                <MenuItem key={branchName} value={branchName}>
+                  {branchName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Tooltip title="Create branch">
+            <IconButton
+              id="tutorial-create-branch-button"
+              size="small"
+              aria-label="Create branch"
+              onClick={() => setIsCreateBranchDialogOpen(true)}
+            >
+              <AddRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <Box sx={{ flex: 1 }} />
           <Button
             variant="contained"
@@ -455,21 +550,7 @@ export const ModelRevisionEditorPage = () => {
                 <Chip label={trimmedBranch} size="small" variant="outlined" />
               </Stack>
             </Paper>
-            {forkError ? (
-              <Alert severity="error" sx={{ py: 0 }}>
-                {forkError}
-              </Alert>
-            ) : null}
-            <Button
-              id="tutorial-fork-button"
-              variant="contained"
-              startIcon={<CallSplitRoundedIcon />}
-              onClick={() => void handleFork()}
-              disabled={isForkLoading || !breadcrumbProjectId}
-              fullWidth
-            >
-              {isForkLoading ? "Forking…" : "Fork Project"}
-            </Button>
+            {revisionControlActions}
           </Stack>
         ) : (
           <Stack spacing={1}>
@@ -569,7 +650,47 @@ export const ModelRevisionEditorPage = () => {
         </Stack>
       </Paper>
 
-      {isTutorial ? <TutorialTour /> : null}
+      <Dialog
+        id="tutorial-create-branch-dialog"
+        open={isCreateBranchDialogOpen}
+        onClose={() => setIsCreateBranchDialogOpen(false)}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Create branch</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 0.5 }}>
+            {createBranchError ? <Alert severity="error">{createBranchError}</Alert> : null}
+            <TextField
+              label="Branch name"
+              value={newBranchName}
+              onChange={(event) => setNewBranchName(event.target.value)}
+              fullWidth
+            />
+            <FormControl fullWidth>
+              <InputLabel id="create-branch-base-select-label">Base branch</InputLabel>
+              <Select
+                labelId="create-branch-base-select-label"
+                label="Base branch"
+                value={baseBranchName}
+                onChange={(event) => setBaseBranchName(event.target.value)}
+              >
+                {knownBranches.map((branchName) => (
+                  <MenuItem key={branchName} value={branchName}>
+                    {branchName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsCreateBranchDialogOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={() => void handleCreateBranch()} disabled={isCreateBranchLoading}>
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
