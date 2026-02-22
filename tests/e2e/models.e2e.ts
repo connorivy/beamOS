@@ -5,15 +5,13 @@ const TUTORIAL_PROJECT_ID = kassimaliExample3_8Project.project.id;
 const DEFAULT_FEATURE_BRANCH = "feature/add-loads";
 
 const completeMission1ByForkingProject = async (page: Page) => {
-    await page.goto(`/editor/projects/${TUTORIAL_PROJECT_ID}/main`);
+    await page.goto("/tutorial");
 
     const mission1Visible = await page.getByText("Mission 1 — Fork the Model").isVisible();
     if (mission1Visible) {
         await expect(page.getByText("Fork this model to create your own working copy.")).toBeVisible();
         await page.getByRole("button", { name: /Next/ }).click();
         await expect(page.getByText("Fork the Project")).toBeVisible();
-    } else {
-        await page.getByRole("button", { name: "Revision Control" }).click();
     }
 
     await expect(page.locator("#tutorial-fork-button")).toBeEnabled({ timeout: 30_000 });
@@ -21,13 +19,15 @@ const completeMission1ByForkingProject = async (page: Page) => {
         (el as HTMLButtonElement).click(),
     );
 
-    await expect(page).toHaveURL(
-        (url) => url.pathname.startsWith("/editor/projects/") && !url.pathname.includes(TUTORIAL_PROJECT_ID),
-        { timeout: 30_000 },
-    );
+    await expect
+        .poll(async () => (await page.locator("#tutorial-project-id").innerText()).trim(), {
+            timeout: 30_000,
+        })
+        .not.toBe(TUTORIAL_PROJECT_ID);
 
-    const newUrl = page.url();
-    const newProjectId = newUrl.match(/\/editor\/projects\/([^/]+)\/main/)?.[1];
+    const branchValue = await page.getByRole("combobox", { name: "Branch" }).innerText();
+    expect(branchValue).toBe("main");
+    const newProjectId = (await page.locator("#tutorial-project-id").innerText()).trim();
     expect(newProjectId).toBeDefined();
     expect(newProjectId).not.toBe(TUTORIAL_PROJECT_ID);
 
@@ -35,16 +35,13 @@ const completeMission1ByForkingProject = async (page: Page) => {
     return newProjectId;
 };
 
-const completeMission2ByCreatingBranch = async (
-    page: Page,
-    newProjectId: string,
-) => {
+const completeMission2ByCreatingBranch = async (page: Page) => {
     const mission2Visible = await page.getByText("Mission 2 — Create a Branch").isVisible();
     if (mission2Visible) {
         await expect(page.getByText("Create a branch to make your changes.")).toBeVisible();
         await page.getByRole("button", { name: /Next/ }).click();
-        await expect(page.getByText("Create Branch")).toBeVisible();
     }
+    await expect(page.getByText("Create Branch")).toBeVisible();
 
     await page.locator("#tutorial-create-branch-button").evaluate((el) =>
         (el as HTMLButtonElement).click(),
@@ -56,9 +53,7 @@ const completeMission2ByCreatingBranch = async (
         (el as HTMLButtonElement).click(),
     );
 
-    await expect(page).toHaveURL(
-        `/editor/projects/${newProjectId}/${encodeURIComponent(DEFAULT_FEATURE_BRANCH)}`,
-    );
+    await expect(page).toHaveURL("/tutorial");
     await expect(page.getByRole("combobox", { name: "Branch" })).toHaveText(DEFAULT_FEATURE_BRANCH);
 };
 
@@ -72,14 +67,19 @@ test("clicking tutorial card navigates to the editor", async ({ page }) => {
 
     await tutorialCard.click();
 
-    await expect(page).toHaveURL(`/editor/projects/${TUTORIAL_PROJECT_ID}/main`);
+    await expect(page).toHaveURL("/tutorial");
 });
 
-test("tutorial editor: complete Mission 1 by forking and land on new project page", async ({ page }) => {
+test("tutorial editor: complete Mission 1+2 and create backend branch", async ({ page, request }) => {
     const newProjectId = await completeMission1ByForkingProject(page);
     if (!newProjectId) {
         throw new Error("Expected Mission 1 to navigate to a forked project.");
     }
 
-    await completeMission2ByCreatingBranch(page, newProjectId);
+    await completeMission2ByCreatingBranch(page);
+
+    const branchResponse = await request.get(
+        `/api/projects/${newProjectId}/branches/${encodeURIComponent(DEFAULT_FEATURE_BRANCH)}`,
+    );
+    expect(branchResponse.ok()).toBeTruthy();
 });

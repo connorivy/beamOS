@@ -35,14 +35,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { PutNodeRequest } from "@beamos/openapi-client";
 import { apiClient } from "../api/client";
 import { BeamOsEditor } from "../components/editor/BeamOsEditor";
 import { EditorConfigurations } from "../components/editor/EditorConfigurations";
-import { TutorialTour } from "../components/TutorialTour";
-import { TUTORIAL_PROJECT_ID } from "./ModelsPage";
 import type {
   MoveNodeCommand,
 } from "../components/editor/EditorApi/EditorEventsApi";
@@ -72,24 +70,37 @@ const canvasId = "beamos-editor-canvas";
 const editorTopBarHeight = 52;
 
 const parseInitialRouteState = () => {
-  const params = new window.URLSearchParams(window.location.search);
   const pathMatch = window.location.pathname.match(/^\/editor\/projects\/([^/]+)\/([^/]+)$/);
   if (pathMatch) {
     return {
       projectId: decodeURIComponent(pathMatch[1]),
       branchName: decodeURIComponent(pathMatch[2]),
-      tutorialMission: params.get("tutorial"),
     };
   }
 
+  const params = new window.URLSearchParams(window.location.search);
   return {
     projectId: params.get("projectId") ?? "",
     branchName: params.get("branch") ?? "main",
-    tutorialMission: params.get("tutorial"),
   };
 };
 
-export const ModelRevisionEditorPage = () => {
+type ModelRevisionEditorPageProps = {
+  routeStateOverride?: {
+    projectId: string;
+    branchName: string;
+  };
+  onBranchChange?: (branchName: string) => void;
+  revisionControlActions?: ReactNode;
+  defaultActivePanel?: "models" | "revisionControl";
+};
+
+export const ModelRevisionEditorPage = ({
+  routeStateOverride,
+  onBranchChange,
+  revisionControlActions,
+  defaultActivePanel = "models",
+}: ModelRevisionEditorPageProps = {}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const initialRouteState = useMemo(() => parseInitialRouteState(), []);
@@ -98,10 +109,10 @@ export const ModelRevisionEditorPage = () => {
   const [knownBranches, setKnownBranches] = useState<string[]>(() =>
     Array.from(new Set([initialRouteState.branchName || "main", "main"])),
   );
-  const [activePanel, setActivePanel] = useState<"models" | "revisionControl">("models");
-  const [isForkLoading, setIsForkLoading] = useState(false);
-  const [forkError, setForkError] = useState<string | null>(null);
+  const [activePanel, setActivePanel] = useState<"models" | "revisionControl">(defaultActivePanel);
   const [isCreateBranchDialogOpen, setIsCreateBranchDialogOpen] = useState(false);
+  const [isCreateBranchLoading, setIsCreateBranchLoading] = useState(false);
+  const [createBranchError, setCreateBranchError] = useState<string | null>(null);
   const [newBranchName, setNewBranchName] = useState("feature/add-loads");
   const [baseBranchName, setBaseBranchName] = useState(initialRouteState.branchName || "main");
 
@@ -123,75 +134,73 @@ export const ModelRevisionEditorPage = () => {
   const loadProjects = useModelsStore((state) => state.loadProjects);
   const trimmedProjectId = projectIdInput.trim();
   const trimmedBranch = branchInput.trim() || "main";
-  const tutorialMission = new window.URLSearchParams(window.location.search).get("tutorial");
-  const isTutorialProjectPath = window.location.pathname.includes(
-    `/editor/projects/${TUTORIAL_PROJECT_ID}/`,
-  );
-  const tutorialMode: "mission1" | "mission2" | null =
-    tutorialMission === "mission2"
-      ? "mission2"
-      : isTutorialProjectPath
-        ? "mission1"
-        : null;
-  const isTutorial = tutorialMode !== null;
   const breadcrumbProjectId = activeEntry?.projectId ?? trimmedProjectId;
   const projectName =
     models.find((model) => model.id === breadcrumbProjectId)?.name ??
     breadcrumbProjectId ??
     "project";
 
-  const handleFork = async () => {
-    if (!breadcrumbProjectId) return;
-    setIsForkLoading(true);
-    setForkError(null);
-    try {
-      const { data, error } = await apiClient.POST("/api/projects/{projectId}/fork", {
-        params: { path: { projectId: breadcrumbProjectId } },
-        body: { name: `${projectName} (fork)` },
-      });
-      if (error || !data) {
-        setForkError("Failed to fork the project. Please try again.");
-        return;
-      }
-      await loadProjects();
-      setActivePanel("models");
-      navigate(`/editor/projects/${data.id}/main?tutorial=mission2`);
-    } catch {
-      setForkError("An unexpected error occurred.");
-    } finally {
-      setIsForkLoading(false);
-    }
-  };
-
   const handleBranchSelect = (nextBranchName: string) => {
     setBranchInput(nextBranchName);
     setBaseBranchName(nextBranchName);
-    if (trimmedProjectId) {
+    if (routeStateOverride) {
+      onBranchChange?.(nextBranchName);
+    } else if (trimmedProjectId) {
       navigate(`/editor/projects/${trimmedProjectId}/${encodeURIComponent(nextBranchName)}`);
     }
   };
 
-  const handleCreateBranch = () => {
+  const handleCreateBranch = async () => {
     const normalizedBranchName = newBranchName.trim();
-    if (!normalizedBranchName) {
+    if (!normalizedBranchName || !trimmedProjectId) {
       return;
     }
 
-    setKnownBranches((current) =>
-      current.includes(normalizedBranchName)
-        ? current
-        : [...current, normalizedBranchName],
-    );
-    handleBranchSelect(normalizedBranchName);
-    setIsCreateBranchDialogOpen(false);
+    setIsCreateBranchLoading(true);
+    setCreateBranchError(null);
+    try {
+      const { data, error } = await apiClient.POST("/api/projects/{projectId}/branches", {
+        params: {
+          path: {
+            projectId: trimmedProjectId,
+          },
+        },
+        body: {
+          branchName: normalizedBranchName,
+          baseBranchName: baseBranchName.trim() || "main",
+        },
+      });
+      if (error || !data) {
+        setCreateBranchError("Failed to create branch. Please try again.");
+        return;
+      }
+
+      setKnownBranches((current) =>
+        current.includes(normalizedBranchName)
+          ? current
+          : [...current, normalizedBranchName],
+      );
+      handleBranchSelect(normalizedBranchName);
+      setIsCreateBranchDialogOpen(false);
+    } catch {
+      setCreateBranchError("An unexpected error occurred.");
+    } finally {
+      setIsCreateBranchLoading(false);
+    }
   };
 
   useEffect(() => {
+    if (routeStateOverride) {
+      setProjectIdInput(routeStateOverride.projectId);
+      setBranchInput(routeStateOverride.branchName);
+      setBaseBranchName(routeStateOverride.branchName || "main");
+      return;
+    }
     const routeState = parseInitialRouteState();
     setProjectIdInput(routeState.projectId);
     setBranchInput(routeState.branchName);
     setBaseBranchName(routeState.branchName || "main");
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, routeStateOverride]);
 
   useEffect(() => {
     if (!canvasRef.current || editorRef.current) {
@@ -253,12 +262,6 @@ export const ModelRevisionEditorPage = () => {
     }
     void loadProjects();
   }, [loadProjects, models.length]);
-
-  useEffect(() => {
-    if (isTutorial) {
-      setActivePanel("revisionControl");
-    }
-  }, [isTutorial]);
 
   useEffect(() => {
     if (!trimmedBranch) {
@@ -547,21 +550,7 @@ export const ModelRevisionEditorPage = () => {
                 <Chip label={trimmedBranch} size="small" variant="outlined" />
               </Stack>
             </Paper>
-            {forkError ? (
-              <Alert severity="error" sx={{ py: 0 }}>
-                {forkError}
-              </Alert>
-            ) : null}
-            <Button
-              id="tutorial-fork-button"
-              variant="contained"
-              startIcon={<CallSplitRoundedIcon />}
-              onClick={() => void handleFork()}
-              disabled={isForkLoading || !breadcrumbProjectId}
-              fullWidth
-            >
-              {isForkLoading ? "Forking…" : "Fork Project"}
-            </Button>
+            {revisionControlActions}
           </Stack>
         ) : (
           <Stack spacing={1}>
@@ -671,6 +660,7 @@ export const ModelRevisionEditorPage = () => {
         <DialogTitle>Create branch</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 0.5 }}>
+            {createBranchError ? <Alert severity="error">{createBranchError}</Alert> : null}
             <TextField
               label="Branch name"
               value={newBranchName}
@@ -696,13 +686,11 @@ export const ModelRevisionEditorPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsCreateBranchDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleCreateBranch}>
+          <Button variant="contained" onClick={() => void handleCreateBranch()} disabled={isCreateBranchLoading}>
             Create
           </Button>
         </DialogActions>
       </Dialog>
-
-      {isTutorial ? <TutorialTour mission={tutorialMode ?? "mission1"} /> : null}
     </Box>
   );
 };

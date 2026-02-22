@@ -133,6 +133,47 @@
         }
       }
     },
+    "/api/projects/{projectId}/branches": {
+      "post": {
+        "tags": [
+          "core.users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBranchResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBranchRequest"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/branches/{branchName}/materials/{materialId}": {
       "get": {
         "tags": [
@@ -740,6 +781,57 @@
           }
         },
         "additionalProperties": false
+      },
+      "CreateBranchResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "branchName": {
+            "type": "string"
+          },
+          "baseBranchName": {
+            "type": "string"
+          },
+          "headRevisionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "required": [
+          "projectId",
+          "branchName",
+          "baseBranchName",
+          "headRevisionId"
+        ],
+        "additionalProperties": false,
+        "id": "CreateBranchResponse"
+      },
+      "CreateBranchRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "branchName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "baseBranchName": {
+            "default": "main",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "branchName",
+          "baseBranchName"
+        ],
+        "additionalProperties": false,
+        "id": "CreateBranchRequest"
       },
       "Material": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
